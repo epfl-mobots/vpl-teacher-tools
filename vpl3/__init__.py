@@ -6,5 +6,3 @@ import vpl3.server_ws
 import vpl3.server
 import vpl3.urltiny
 import vpl3.urlutil
-import vpl3.tkapp
-import vpl3.wxapp
