@@ -1,0 +1,170 @@
+body {
+	font-family: sans-serif;
+	font-size: 10pt;
+}
+
+nav ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	margin-left: 3em;
+	margin-right: 3em;
+	border-bottom: solid 1px silver;
+}
+
+nav li {
+	float: left;
+}
+
+nav a {
+	color: inherit;
+	text-decoration: none;
+	display: block;
+	text-align: center;
+	padding: 16px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+
+nav span.space {
+	min-width: 3ex;
+	display: block;
+	padding: 16px;
+}
+
+nav a.current {
+	color: blue;
+	border-bottom-style: solid;
+	border-bottom-width: 3px;
+	border-bottom-color: blue;
+	cursor: default;
+}
+
+nav a:not(.current) {
+}
+
+nav a:not(.current):not(.disabled):hover {
+}
+
+nav a.disabled {
+	color: #999;
+}
+
+/*
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333333;
+}
+
+nav li {
+  float: left;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 16px;
+  text-decoration: none;
+}
+*/
+
+main > p {
+	margin-left: 3em;
+}
+
+div.border, div.border1 {
+	border-style: solid;
+ 	border-width: 1px;
+ 	border-color: silver;
+	border-top-width: 3px;
+	border-top-color: #88f;
+	padding: 1ex;
+	padding-left: 2em;
+	padding-right: 2em;
+	margin-top: 2ex;
+	margin-bottom: 2ex;
+	margin-left: 3em;
+	margin-right: 3em;
+}
+
+div.border h2 {
+	font-weight: normal;
+	font-size: 120%;
+	margin-top: 1ex;
+	margin-bottom: 1ex;
+}
+
+table {
+	border-spacing: 1ex 1em;
+}
+
+td {
+	background: #ddd;
+	border-style: none;
+	border-color: silver;
+	user-select: none;
+}
+td.selected {
+	border-width: 2px;
+	border-color: blue;
+}
+
+table#students td, table#students input, table#groups td, table#robots td, table#sessions td {
+	text-align: center;
+}
+
+input:focus {
+	outline: none;
+}
+
+td.rect {
+	min-width: 10em;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 5px;
+	padding: 1ex;
+	margin: 3ex;
+}
+td.rect.selected {
+	border-width: 2px;
+}
+td.rect span {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #888;
+	border-radius: 3px;
+	padding-left: 1em;
+	padding-right: 1em;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	margin: 1ex;
+}
+
+table#students td:first-child, table#groups td:first-child, table#robots td:first-child {
+}
+
+table#robots td:not(:first-child), table#students td:not(:first-child), table#groups td:not(:first-child) {
+	background: transparent;
+}
+
+table#sessions td:first-child {
+	border-style: solid;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	border-right-style: none;
+	padding: 1ex;
+	margin: 3ex;
+}
+table#sessions td:nth-child(2) {
+	border-style: solid;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	border-left-style: none;
+	padding: 1ex;
+	margin: 3ex;
+}
+table#sessions td:nth-child(3), table#sessions td:nth-child(4) {
+	background: transparent;
+}

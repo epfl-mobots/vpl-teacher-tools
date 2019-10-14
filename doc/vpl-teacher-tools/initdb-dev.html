@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, height=device-height, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<link rel="stylesheet" href="html-tools.css" />
+
+<title>VPL Tools</title>
+
+<style>
+html {
+	height: 100%;
+}
+body {
+	height: 100%;
+}
+</style>
+
+<script src="ns.js"></script>
+<script src="../client.js"></script>
+
+<script>
+
+window.addEventListener("load", function () {
+	var client = new VPLTeacherTools.HTTPClient();
+	var opt = {
+		logURL: function (url) {
+			document.getElementById("console").textContent += "URL: " + url + "\n";
+		},
+		onSuccess: function (r) {
+			document.getElementById("console").textContent += "Success: " + JSON.stringify(r, null, "\t") + "\n";
+		},
+		onError: function (msg) {
+			document.getElementById("console").textContent += "Error: " + msg + "\n";
+		}
+	};
+
+	var btn = document.getElementById("clc");
+	btn.addEventListener("click", function () {
+		document.getElementById("console").textContent = "";
+	});
+
+	btn = document.getElementById("reset-students");
+	btn.addEventListener("click", function () {
+		client.deleteAllStudents(opt);
+	});
+
+	btn = document.getElementById("init");
+	btn.addEventListener("click", function () {
+		client.addStudent("Alice", opt);
+		client.addStudent("Bob", opt);
+		client.addStudent("Carol", opt);
+		client.addStudent("David", opt);
+		client.addGroup("West", opt);
+		client.addGroup("East", opt);
+		client.addStudentToGroup("Alice", "West", opt);
+		client.addStudentToGroup("Bob", "West", opt);
+		client.addStudentToGroup("Carol", "East", opt);
+	});
+
+	btn = document.getElementById("list-students");
+	btn.addEventListener("click", function () {
+		client.listStudents(opt);
+	});
+
+	btn = document.getElementById("list-groups");
+	btn.addEventListener("click", function () {
+		client.listGroups(opt);
+	});
+
+	btn = document.getElementById("list-members");
+	btn.addEventListener("click", function () {
+		client.listGroups({
+			logURL: opt.logURL,
+			onSuccess: function (r) {
+				opt.onSuccess(r);
+				r.forEach(function (group) {
+					client.listGroupStudents(group.name, opt);
+				});
+			},
+			onError: opt.onError
+		});
+	});
+
+	btn = document.getElementById("reset-sessions");
+	btn.addEventListener("click", function () {
+		client.endAllSessions(opt);
+	});
+
+	btn = document.getElementById("list-sessions");
+	btn.addEventListener("click", function () {
+		client.listSessions(opt);
+	});
+
+	btn = document.getElementById("log");
+	btn.addEventListener("click", function () {
+		var sessionId = document.getElementById("log-file-sessionid").value;
+		client.getLog(sessionId, null, opt);
+	});
+
+	btn = document.getElementById("last-log");
+	btn.addEventListener("click", function () {
+		var sessionId = document.getElementById("log-file-sessionid").value;
+		client.getLog(sessionId, "vpl-changed", opt);
+	});
+
+	btn = document.getElementById("init-files");
+	btn.addEventListener("click", function () {
+		client.addFile("test-alice.txt", "Hello, Alice!\n",
+			{studentName: "Alice"}, opt);
+		client.addFile("test-east.txt", "Hello, East!\n",
+			{groupName: "East"}, opt);
+	});
+
+	btn = document.getElementById("remove-files");
+	btn.addEventListener("click", function () {
+		client.
+		client.addFile("test-alice.txt", "Hello, Alice!\n",
+			{studentName: "Alice"}, opt);
+		client.addFile("test-east.txt", "Hello, East!\n",
+			{groupName: "East"}, opt);
+		client.addFile("test-teacher.txt", "Hello, Teacher!\n",
+			{}, opt);
+	});
+
+	btn = document.getElementById("list-files");
+	btn.addEventListener("click", function () {
+		client.listFiles(opt);
+	});
+
+}, false);
+
+</script>
+
+</head>
+
+<body>
+
+<nav>
+<ul>
+<li><a href="students.html">Students</a></li>
+<li><a href="filebrowser.html">Files</a></li>
+<li><a href="pairing.html">Pairing</a></li>
+<li><a href="dashboard.html">Dashboard</a></li>
+<li><a class="disabled" href="#">VPL</a></li>
+<li><span class="space"></span></li>
+<li><a class="current" href="initdb-dev.html">Test data</a></li>
+<li><a href="doc.html">Documentation</a></li>
+</ul>
+</nav>
+
+<main>
+
+<p>This web app initializes the student and group tables with dummy values.</p>
+
+<div class="border">
+
+	<h2>Students</h2>
+
+	<p>
+		<button id="reset-students">reset</button>
+		<button id="init">init students</button>
+		<button id="list-students">list students</button>
+		<button id="list-groups">list groups</button>
+		<button id="list-members">list members</button>
+	</p>
+
+</div>
+
+<div class="border">
+
+	<h2>Sessions</h2>
+
+	<p>
+		<button id="reset-sessions">reset</button>
+		<button id="list-sessions">list</button>
+	</p>
+
+	<p>
+		<button id="log">log</button>
+		<button id="last-log">last log</button>
+		<input id="log-file-sessionid"></input>
+	</p>
+
+</div>
+
+<div class="border">
+
+	<h2>Files</h2>
+
+	<p>
+	<button id="init-files">init</button>
+	<button id="remove-files">remove</button>
+	<button id="list-files">list</button>
+	</p>
+
+</div>
+
+<div class="border">
+
+	<h2>Console</h2>
+
+	<p>
+	<button id="clc">clear</button>
+	</p>
+
+	<pre id="console">
+	</pre>
+
+</div>
+
+</main>
+
+</body>
+
+</html>

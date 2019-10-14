@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, height=device-height, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<link rel="stylesheet" href="html-tools.css" />
+
+<title>VPL Tools</title>
+
+<style>
+td {
+	padding: 0.5ex;
+}
+
+div#info {
+	margin: 0;
+	padding: 0;
+}
+</style>
+
+<script src="../vpl/thymio/thymio.js"></script>
+<script src="ns.js"></script>
+<script src="util-url.js"></script>
+<script src="../client.js"></script>
+<script src="../libs/qrcodejs/qrcode.min.js"></script>
+<script src="pairing.js"></script>
+
+<script>
+
+function clearChildren(id) {
+	var el = document.getElementById(id);
+	while (el.firstElementChild) {
+		el.removeChild(el.firstElementChild);
+	}
+}
+
+function updateGUI(pairing) {
+	document.getElementById("btn-begin-session").disabled = !pairing.canBeginSession();
+	document.getElementById("btn-end-sessions").disabled = !pairing.canEndAllSessions();
+};
+
+function fillRobotTable(robotArray, pairing) {
+	clearChildren("robots");
+	var table = document.getElementById("robots");
+
+	function addRow(robotName, flashFunction) {
+		var tr = document.createElement("tr");
+
+		var td = document.createElement("td");
+		td.textContent = flashFunction ? "Thymio II" : robotName;
+		td.addEventListener("click", function () {
+			pairing.selectRobot(robotName);
+			pairing.unselectPair();
+			fillRobotTable(robotArray, pairing);
+			fillPairTable(pairing.pairs, pairing);
+			updateGUI(pairing);
+		});
+		td.className = pairing.isRobotSelected(robotName) ? "rect selected" : "rect";
+
+		// drag robot name
+		td.draggable = true;
+		td.addEventListener("dragstart", function (ev) {
+			ev.dataTransfer.setData("text/plain", robotName);
+			ev.dataTransfer.setDragImage(tr.getElementsByTagName("td")[0], 0, 0);
+			ev.dataTransfer.effectAllowed = "copy";
+		});
+
+		tr.appendChild(td);
+
+		td = document.createElement("td");
+		if (flashFunction) {
+			var btn = document.createElement("button");
+			btn.textContent = "Flash";
+			btn.addEventListener("mousedown", function () { flashFunction(true); }, false);
+			btn.addEventListener("mouseup", function () { flashFunction(false); }, false);
+			td.appendChild(btn);
+		}
+		tr.appendChild(td);
+
+		table.appendChild(tr);
+	}
+
+	robotArray.forEach(function (robot) {
+		addRow(robot.name, robot.flash);
+	});
+}
+
+function fillGroupTable(groupArray, pairing) {
+
+	function checkDragType(ev) {
+		if (ev.dataTransfer.types.includes("text/plain")) {
+			ev.preventDefault();
+			return false;
+		}
+		return true;
+	}
+
+	clearChildren("groups");
+	var table = document.getElementById("groups");
+
+	groupArray.forEach(function (group) {
+		function select() {
+			pairing.selectGroup(group.name);
+			pairing.unselectPair();
+			fillGroupTable(groupArray, pairing);
+			fillPairTable(pairing.pairs, pairing);
+			updateGUI(pairing);
+		}
+
+		var tr = document.createElement("tr");
+
+		var td = document.createElement("td");
+		td.textContent = group.students ? group.students.join(",") : group.name;
+		td.addEventListener("click", select);
+		td.className = pairing.isGroupSelected(group.name) ? "rect selected" : "rect";
+
+		// drop robot name
+		tr.addEventListener("dragenter", checkDragType);
+		tr.addEventListener("dragover", checkDragType);
+		tr.addEventListener("drop", function (ev) {
+			var robotName = ev.dataTransfer.getData("text/plain");
+			pairing.beginSession(robotName, group.name);
+			pairing.selectGroup(group.name);
+		});
+
+		tr.appendChild(td);
+
+		table.appendChild(tr);
+	});
+}
+
+function fillPairTable(pairArray, pairing) {
+	clearChildren("sessions");
+	var table = document.getElementById("sessions");
+
+	pairArray.forEach(function (pair) {
+		function select() {
+			pairing.selectPair(pair.group || pair.special);
+			fillPairTable(pairArray, pairing);
+			pairing.unselectRobot();
+			fillRobotTable(pairing.robots, pairing);
+			pairing.unselectGroup();
+			fillGroupTable(pairing.groups, pairing);
+			updateGUI(pairing);
+		}
+
+		var tr = document.createElement("tr");
+		var td = document.createElement("td");
+		td.textContent = pair.robot;
+		td.addEventListener("click", select);
+		td.className = pairing.isPairSelected(pair.group) ? "rect selected" : "rect";
+		tr.appendChild(td);
+		td = document.createElement("td");
+		var groupDescr = pair.group ? "" : pair.special ? "(teacher)" : "?";
+		var group = pair.group && pairing.getGroup(pair.group);
+		if (group) {
+			groupDescr = group.students.length > 0 ? group.students.join(", ") : "(empty)";
+		}
+		td.textContent = groupDescr;
+		td.addEventListener("click", select);
+		td.className = pairing.isPairSelected(pair.group) ? "rect selected" : "rect";
+		tr.appendChild(td);
+		td = document.createElement("td");
+		var btn = document.createElement("button");
+		btn.textContent = "End session";
+		btn.addEventListener("click", function () {
+			pairing.endSession(pair.session_id);
+		});
+		td.appendChild(btn);
+		tr.appendChild(td);
+		table.appendChild(tr);
+	});
+
+	clearChildren("info");
+	var selectedPair = pairing.selectedPair();
+	if (selectedPair) {
+		var div = document.createElement("div");
+		div.setAttribute("class", "border");
+		var h2 = document.createElement("h2");
+		h2.textContent = "VPL launcher";
+		div.appendChild(h2);
+		var p = document.createElement("p");
+		var group = pairing.getGroup(selectedPair.group);
+		var groupDescr = group && group.students.length > 0
+			? group.students.join(", ")
+			: selectedPair.group;
+		p.textContent = "Group: " + groupDescr;
+		div.appendChild(p);
+		var p = document.createElement("p");
+		p.style.overflowWrap = "break-word";
+		var a = document.createElement("a");
+		a.style.fontFamily = "monospace";
+		var toolURL = pairing.getToolURL(selectedPair);
+		if (toolURL) {
+			var url = document.location.origin + toolURL;
+			a.textContent = url;
+			a.setAttribute("href", url);
+			a.setAttribute("target", "_blank");
+			a.setAttribute("rel", "noopener");
+			p.appendChild(a);
+		}
+		div.appendChild(p);
+		if (toolURL && window.QRCode) {
+			var qrdiv = document.createElement("div");
+			div.appendChild(qrdiv);
+			var viewport = window.visualViewport;
+			var size = Math.min(
+				Math.floor(Math.min(viewport.width, viewport.height) * 0.8),
+				400);
+			var qrcode = new window.QRCode(qrdiv,
+				{
+					text: url,
+					width: size,
+					height: size,
+					correctLevel: QRCode.CorrectLevel.L
+				});
+			pairing.shortenURL(url, function (shortenedURL) {
+				a.textContent = shortenedURL;
+				while (qrdiv.firstElementChild) {
+					qrdiv.removeChild(qrdiv.firstElementChild);
+				}
+				qrcode = new window.QRCode(qrdiv,
+					{
+						text: shortenedURL,
+						width: size,
+						height: size,
+						correctLevel: QRCode.CorrectLevel.L
+					});
+			});
+		} else {
+			pairing.shortenURL(url, function (shortenedURL) {
+				a.textContent = shortenedURL;
+			});
+		}
+		document.getElementById("info").appendChild(div);
+	}
+}
+
+window.addEventListener("load", function () {
+	var tdmURL = VPLTeacherTools.getHashOption("w") || "ws://" + document.location.hostname + ":8597/";
+	var url0 = "/vpl/vpl.html?ui=ui/classic/ui.json&server=ws://" + document.location.hostname + ":8001/";
+	var pairing = new VPLTeacherTools.Pairing({
+		tdmURL: tdmURL,
+		onRobots: function (robotArray, pairing) {
+    		fillRobotTable(robotArray, pairing);
+			updateGUI(pairing);
+		},
+		robot: {
+			name: function (nodeId) {
+				return nodeId;
+			},
+			url: function (pair) {
+				return url0 + "&robot=thymio-tdm&session=" + pair.session_id +
+					(pair.special === "!teacher"
+						? "&role=teacher"
+						: pair.students ? "&user=" + encodeURIComponent(pair.students.join(",")) : "") +
+					"#w=" + tdmURL + "&uuid=" + pair.robot;
+			}
+		},
+		nonRobots: [
+			{
+				name: function () {
+					return "(simulator)";
+				},
+				url: function (pair) {
+					// set user to comma-separated users if they exist
+					return url0 + "&robot=sim&session=" + pair.session_id +
+						(pair.special === "!teacher" ? "&role=teacher" : pair.students ? "&user=" + encodeURIComponent(pair.students.join(", ")) : "");
+				}
+			} /* ,
+			{
+				name: function () {
+					return "(debugging tool)";
+				},
+				url: function (sessionId) {
+					return "/vpl-teacher-tools/student-debug.html?session=" + sessionId;
+				}
+			} */
+		],
+		nonRobotNameMapping: {
+			"!sim": "(simulator)"
+		},
+		onGroups: function (groupArray) {
+			fillGroupTable(groupArray, pairing);
+			updateGUI(pairing);
+		},
+		nonGroups: [
+			"(teacher)"
+		],
+		onPairs: function (pairArray) {
+			fillPairTable(pairArray, pairing);
+			updateGUI(pairing);
+		}
+	});
+
+	document.getElementById("btn-begin-session").addEventListener("click", function () {
+		pairing.beginSession();
+	}, false);
+	document.getElementById("btn-end-sessions").addEventListener("click", function () {
+		pairing.endAllSessions();
+	}, false);
+}, false);
+
+</script>
+
+</head>
+
+<body>
+
+<nav>
+<ul>
+<li><a href="students.html">Students</a></li>
+<li><a href="filebrowser.html">Files</a></li>
+<li><a class="current" href="pairing.html">Pairing</a></li>
+<li><a href="dashboard.html">Dashboard</a></li>
+<li><a class="disabled" href="#">VPL</a></li>
+<li><span class="space"></span></li>
+<li><a href="initdb-dev.html">Test data</a></li>
+<li><a href="doc.html">Documentation</a></li>
+</ul>
+</nav>
+
+<main>
+
+<div class="border">
+
+	<h2>Robots</h2>
+
+	<table id="robots">
+	</table>
+
+	<p>Drag to a group to make a robot-group association.</p>
+
+</div>
+
+<div class="border">
+
+	<h2>Groups</h2>
+
+	<table id="groups">
+	</table>
+
+	<p id="no-group-msg">Students can be gathered into groups in the <a href="students.html">Students</a> tab.</p>
+
+</div>
+
+<div class="border">
+
+	<h2>Robot-group associations</h2>
+
+	<p>
+	<button id="btn-begin-session" disabled="true">Associate a robot with a group</button>
+	<button id="btn-end-sessions" disabled="true">End all sessions</button>
+	</p>
+
+	<table id="sessions">
+	</table>
+
+</div>
+
+<div id="info"></div>
+
+</main>
+
+</body>
+
+</html>

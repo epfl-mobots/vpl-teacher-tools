@@ -1,0 +1,48 @@
+{
+	"advanced": false,
+	"basicBlocks": [
+		"button 1",
+		"horiz prox",
+		"ground",
+		"tap",
+		"clap",
+		"init",
+		"motor",
+		"top color 8",
+		"bottom color 8",
+		"notes"
+	],
+	"basicMultiEvent": false,
+	"advancedBlocks": [
+		"button 1",
+		"horiz prox 1",
+		"ground 1",
+		"tap",
+		"roll",
+		"pitch",
+		"yaw",
+		"clap",
+		"init",
+		"timer",
+		"state",
+		"counter comparison",
+		"color 8 state",
+		"motor",
+		"top color",
+		"bottom color",
+		"notes",
+		"set state",
+		"set counter",
+		"set timer",
+		"picture comment"
+	],
+	"disabledUI": [
+		"src:language",
+		"vpl:about",
+		"vpl:save",
+		"vpl:load",
+		"vpl:exportToHTML",
+		"vpl:advanced",
+		"vpl:text"
+	]
+}

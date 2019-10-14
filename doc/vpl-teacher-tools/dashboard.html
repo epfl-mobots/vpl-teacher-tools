@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, height=device-height, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<link rel="stylesheet" href="html-tools.css" />
+
+<title>VPL Tools</title>
+
+<script src="ns.js"></script>
+<script src="../client.js"></script>
+<script src="dashboard.js"></script>
+
+<script>
+
+var dashboard = null;
+
+function clearChildren(id) {
+	var el = document.getElementById(id);
+	while (el.firstElementChild) {
+		el.removeChild(el.firstElementChild);
+	}
+}
+
+function fillGroupTable(sessionArray, dashboard) {
+	clearChildren("groups");
+	var table = document.getElementById("groups");
+
+	sessionArray.forEach(function (session) {
+		function select() {
+			dashboard.selectGroup(session, null);
+			fillGroupTable(sessionArray, dashboard);
+		}
+
+		var tr = document.createElement("tr");
+
+		var td = document.createElement("td");
+		td.textContent = session.students ? session.students.join(", ") : session.group;
+		td.addEventListener("click", select);
+		td.className = dashboard.isGroupSelected(session) ? "rect selected" : "rect";
+		tr.appendChild(td);
+
+		td = document.createElement("td");
+		td.textContent = session.isConnected ? "\u260d" : "";
+		tr.appendChild(td);
+
+		td = document.createElement("td");
+		if (session.lastLogEntry != null) {
+			var time = session.lastLogEntry["time"].split(" ")[1];
+			var data = JSON.parse(session.lastLogEntry["data"]);
+			var type = data["type"];
+			var details = "";
+			switch (type) {
+			case "cmd":
+				details = "cmd " + data["data"]["cmd"];
+				break;
+			case "drop":
+				details = "drop " + data["data"]["cmd"];
+				break;
+			case "vpl-changed":
+				details = data["data"]["nrules"].toString(10) + "\u25ad" +
+					"  " +
+					data["data"]["nblocks"].toString(10) + "\u25ab";
+				if (data["data"]["error"]) {
+					details += "  (error: " + data["data"]["error"] + ")";
+				}
+				if (data["data"]["warning"]) {
+					details += " (warning: " + data["data"]["warning"] + ")";
+				}
+				break;
+			}
+			td.textContent = time + " " + type + " " + details;
+		}
+		tr.appendChild(td);
+
+		table.appendChild(tr);
+	});
+
+	var msg = document.getElementById("no-session-msg");
+	if (sessionArray.length > 0) {
+		msg.style.display = "none";
+	} else {
+		msg.style.display = "block";
+	}
+}
+
+function fillFileTable(fileArray, dashboard) {
+	clearChildren("files");
+	var table = document.getElementById("files");
+
+	if (fileArray.length === 0) {
+		var tr = document.createElement("tr");
+		var td = document.createElement("td");
+		td.textContent = "(none)";
+		tr.appendChild(td);
+		table.appendChild(tr);
+		return;
+	}
+
+	fileArray.forEach(function (file) {
+		var tr = document.createElement("tr");
+
+		var td = document.createElement("td");
+		td.textContent = file.filename;
+		tr.appendChild(td);
+
+		td = document.createElement("td");
+		var btn = document.createElement("button");
+		btn.textContent = "\u2197";
+		btn.addEventListener("click", function () {
+			dashboard.sendFileById(file.id);
+		}, false);
+		td.appendChild(btn);
+
+		tr.appendChild(td);
+
+		table.appendChild(tr);
+	});
+}
+
+window.addEventListener("load", function () {
+	dashboard = new VPLTeacherTools.Dashboard("ws://127.0.0.1:8001/", {
+		log: function (str) {
+			document.getElementById("log").textContent += str + "\n";
+		},
+		onGroups: function (sessions) {
+			fillGroupTable(sessions, dashboard);
+		},
+		onFiles: function (fileArray) {
+			fillFileTable(fileArray, dashboard);
+		}
+	});
+	dashboard.connect();
+
+	[
+		"vpl:new",
+		"vpl:run",
+		"vpl:stop"
+	].forEach(function (name) {
+		document.getElementById(name).addEventListener("click", function () {
+			dashboard.sendCommand(name);
+		}, false);
+	});
+
+	document.getElementById("suspended").addEventListener("change", function () {
+		dashboard.suspend(this.checked,
+			"<p style='text-align: center;'>" +
+				document.getElementById("suspended-text").value +
+			"</p>");
+	});
+
+	document.getElementById("clear-log").addEventListener("click", function () {
+		document.getElementById("log").textContent = "";
+	}, false);
+}, false);
+
+</script>
+
+</head>
+
+<body>
+
+<nav>
+<ul>
+<li><a href="students.html">Students</a></li>
+<li><a href="filebrowser.html">Files</a></li>
+<li><a href="pairing.html">Pairing</a></li>
+<li><a class="current" href="dashboard.html">Dashboard</a></li>
+<li><a class="disabled" href="#">VPL</a></li>
+<li><span class="space"></span></li>
+<li><a href="initdb-dev.html">Test data</a></li>
+<li><a href="doc.html">Documentation</a></li>
+</ul>
+</nav>
+
+<main>
+
+<div class="border">
+	<h2>Groups</h2>
+	<table id="groups">
+	</table>
+
+	<p id="no-session-msg">Groups and robots can be associated in the <a href="pairing.html">Pairing</a> tab.</p>
+</div>
+
+<div class="border">
+	<h2>Files</h2>
+	<table id="files">
+	</table>
+</div>
+
+<div class="border">
+	<h2>Control</h2>
+	<p>
+	<button id="vpl:new">vpl:new</button>
+	<button id="vpl:run">vpl:run</button>
+	<button id="vpl:stop">vpl:stop</button>
+	</p>
+
+	<p>
+	<label><input id="suspended" type="checkbox">Suspended</label>
+	<input id="suspended-text" value="Suspended by the teacher">
+	</p>
+</div>
+
+<div class="border">
+	<h2>Log</h2>
+	<p>
+	<button id="clear-log">Clear</button>
+	</p>
+	<pre id="log"></pre>
+</div>
+
+</main>
+
+</body>
+
+</html>

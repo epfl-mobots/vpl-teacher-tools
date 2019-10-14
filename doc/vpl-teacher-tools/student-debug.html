@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, height=device-height, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<title>VPL Tools</title>
+
+<style>
+html {
+	height: 100%;
+}
+body {
+	height: 100%;
+}
+</style>
+
+<script src="ns.js"></script>
+<script src="util-url.js"></script>
+<script src="student-debug.js"></script>
+
+<script>
+
+window.addEventListener("load", function () {
+	var buttons = [
+		"vpl:new",
+		"vpl:undo",
+		"vpl:redo",
+		"vpl:run",
+		"vpl:stop"
+	];
+	var sessionId = VPLTeacherTools.getQueryOption("session");
+	var conn = new VPLTeacherTools.Connection("ws://127.0.0.1:8001/", sessionId);
+	conn.addEventListener("open", function () {
+		buttons.forEach(function (name) {
+			var btn = document.getElementById(name);
+			btn.disabled = false;
+		});
+	});
+	conn.addEventListener("log", function (ev) {
+		console.info(ev);
+	});
+	conn.connect();
+
+	buttons.forEach(function (name) {
+		var btn = document.getElementById(name);
+		btn.disabled = true;
+		btn.addEventListener("click", function () {
+			conn.logCommand(name);
+		}, false);
+	});
+}, false);
+
+</script>
+
+</head>
+
+<body>
+
+<h1>Student debugging tool</h1>
+
+<p>This web app is for testing websocket communication between the VPL web app and the websocket server. It is used in lieu of the VPL web app.</p>
+
+<p>
+<button id="vpl:new">vpl:new</button>
+<button id="vpl:undo">vpl:undo</button>
+<button id="vpl:redo">vpl:redo</button>
+<button id="vpl:run">vpl:run</button>
+<button id="vpl:stop">vpl:stop</button>
+</p>
+
+<pre id="console">
+</pre>
+
+</body>
+
+</html>

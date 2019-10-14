@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, height=device-height, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<link rel="stylesheet" href="html-tools.css" />
+
+<title>VPL Tools</title>
+
+<style>
+td {
+	padding: 0.5ex;
+	user-select: none;
+}
+
+.content {
+	display: inline-block;
+	min-width: 20ex;
+	min-height: 2em;
+	border: dotted black 1px;
+	vertical-align: middle;
+}
+</style>
+
+<script src="../vpl/thymio/thymio.js"></script>
+<script src="ns.js"></script>
+<script src="util-url.js"></script>
+<script src="../client.js"></script>
+<script src="filebrowser.js"></script>
+
+<script>
+
+function updateGUI(fileBrowser) {
+	document.getElementById("btn-create").disabled =
+		document.getElementById("v-create-filename").value == "";
+	document.getElementById("btn-open").disabled = !fileBrowser.canOpenFiles();
+	document.getElementById("btn-export").disabled = !fileBrowser.canExportFiles();
+	document.getElementById("btn-remove").disabled = !fileBrowser.canDeleteFiles();
+}
+
+function clearTable(id, labels) {
+	var table = document.getElementById(id);
+	while (table.firstElementChild) {
+		table.removeChild(table.firstElementChild);
+	}
+	if (labels) {
+		var tr = document.createElement("tr");
+		labels.forEach(function (label) {
+			var th = document.createElement("th");
+			th.textContent = label;
+			tr.appendChild(th);
+		});
+		table.appendChild(tr);
+	}
+}
+
+function fillFileTable(fileArray, fileBrowser) {
+	var table = document.getElementById("files");
+
+	if (fileArray.length === 0) {
+		clearTable("files");
+		var tr = document.createElement("tr");
+		var td = document.createElement("td");
+		td.textContent = "(none)";
+		tr.appendChild(td);
+		table.appendChild(tr);
+		return;
+	}
+
+	clearTable("files", ["Filename", "Student", "Group", "Time", "Size"]);
+
+	fileArray.forEach(function (file) {
+		function select(ev) {
+			fileBrowser.selectFile(file.id, ev.ctrlKey || ev.metaKey, ev.shiftKey);
+			ev.preventDefault();
+			fillFileTable(fileArray, fileBrowser);
+		}
+
+		function doubleclick(ev) {
+			if (!(ev.ctrlKey || ev.metaKey || ev.shiftKey)) {
+				fileBrowser.selectFile(file.id, false, false);
+				ev.preventDefault();
+				fillFileTable(fileArray, fileBrowser);
+				fileBrowser.openFiles();
+			}
+		}
+
+		var tr = document.createElement("tr");
+
+		var td = document.createElement("td");
+		td.textContent = file.filename;
+		td.addEventListener("click", select, false);
+		td.addEventListener("dblclick", doubleclick, false);
+		td.className = fileBrowser.isFileSelected(file.id) ? "selected" : "";
+		tr.appendChild(td);
+
+		td = document.createElement("td");
+		td.textContent = file.student || "";
+		td.addEventListener("click", select, false);
+		td.addEventListener("dblclick", doubleclick, false);
+		td.className = fileBrowser.isFileSelected(file.id) ? "selected" : "";
+		tr.appendChild(td);
+
+		td = document.createElement("td");
+		td.textContent = file.group || "";
+		td.addEventListener("click", select, false);
+		td.addEventListener("dblclick", doubleclick, false);
+		td.className = fileBrowser.isFileSelected(file.id) ? "selected" : "";
+		tr.appendChild(td);
+
+		td = document.createElement("td");
+		td.textContent = file.time || "";
+		td.addEventListener("click", select, false);
+		td.addEventListener("dblclick", doubleclick, false);
+		td.className = fileBrowser.isFileSelected(file.id) ? "selected" : "";
+		tr.appendChild(td);
+
+		td = document.createElement("td");
+		td.textContent = file.size != null ? file.size.toString(10) : "";
+		td.addEventListener("click", select, false);
+		td.addEventListener("dblclick", doubleclick, false);
+		td.className = fileBrowser.isFileSelected(file.id) ? "selected" : "";
+		tr.appendChild(td);
+
+		table.appendChild(tr);
+	});
+
+	updateGUI(fileBrowser);
+}
+
+window.addEventListener("load", function () {
+	var url0 = "/vpl/vpl.html?ui=ui/classic/ui.json&server=ws://" + document.location.hostname + ":8001/";
+	var fileBrowser = new VPLTeacherTools.FileBrowser({
+		onFiles: function (fileArray, fileBrowser) {
+    		fillFileTable(fileArray, fileBrowser);
+			updateGUI(fileBrowser);
+		},
+		onOpen: function (file) {
+            sessionStorage.setItem("initialFileName", file.filename);
+            sessionStorage.setItem("initialFileContent", file.content);
+			var readOnly = file.group_id != null || file.student_id != null;
+			sessionStorage.setItem("readOnly", readOnly ? "true" : "false");
+			sessionStorage.setItem("fileId", readOnly ? "" : file.id);
+			document.location = "vpl.html";
+		}
+	});
+
+	function importFile(file) {
+		var reader = new window.FileReader();
+		reader.addEventListener("load", function (event) {
+			fileBrowser.addFile(file.name,
+				event.target.result,
+				null, null);
+		});
+		reader["readAsText"](file);
+	}
+
+	document.body.addEventListener("dragover", function (ev) {
+		ev.preventDefault();
+	}, false);
+	document.body.addEventListener("drop", function (ev) {
+		ev.stopPropagation();
+		ev.preventDefault();
+		var files = ev.dataTransfer.files;
+		for (var i = 0; i < files.length; i++) {
+			importFile(files[i]);
+		}
+	}, false);
+
+	var btn;
+
+	btn = document.getElementById("btn-create");
+	btn.addEventListener("click", function () {
+		var filename = document.getElementById("v-create-filename").value;
+		var ext = VPLTeacherTools.FileBrowser.getFileSuffix(filename);
+		if (!ext) {
+			ext = "json";
+			filename += "." + ext;
+		}
+		fileBrowser.addFile(filename,
+			'{"disabledUI":["vpl:download","vpl:load"]}',
+			null, null);
+	}, false);
+	document.getElementById("v-create-filename").addEventListener("input", function () {
+		updateGUI(fileBrowser);
+	}, false);
+
+	var btn = document.getElementById("btn-open");
+	btn.addEventListener("click", function () {
+		fileBrowser.openFiles();
+	}, false);
+
+	btn = document.getElementById("btn-export");
+	btn.addEventListener("click", function () {
+		fileBrowser.exportFiles();
+	}, false);
+
+	btn = document.getElementById("btn-remove");
+	btn.addEventListener("click", function () {
+		fileBrowser.deleteFiles();
+	}, false);
+
+	var chkFilterStudent = document.getElementById("chk-filter-student");
+	var vFilterStudent = document.getElementById("v-filter-student");
+	chkFilterStudent.addEventListener("change", function () {
+		fileBrowser.filterStudent = chkFilterStudent.checked
+			? vFilterStudent.value
+			: null;
+		fileBrowser.updateFiles();
+	}, false);
+	vFilterStudent.addEventListener("input", function () {
+		if (chkFilterStudent.checked) {
+			fileBrowser.filterStudent = vFilterStudent.value;
+			fileBrowser.updateFiles();
+		}
+	}, false);
+
+	var chkFilterGroup = document.getElementById("chk-filter-group");
+	var vFilterGroup = document.getElementById("v-filter-group");
+	chkFilterGroup.addEventListener("change", function () {
+		fileBrowser.filterGroup = chkFilterGroup.checked
+			? vFilterGroup.value
+			: null;
+		fileBrowser.updateFiles();
+	}, false);
+	vFilterGroup.addEventListener("input", function () {
+		if (chkFilterGroup.checked) {
+			fileBrowser.filterGroup = vFilterGroup.value;
+			fileBrowser.updateFiles();
+		}
+	}, false);
+
+	var chkFilterLast = document.getElementById("chk-filter-last");
+	chkFilterLast.addEventListener("change", function () {
+		fileBrowser.filterLast = chkFilterLast.checked;
+		fileBrowser.updateFiles();
+	}, false);
+}, false);
+
+</script>
+
+</head>
+
+<body>
+
+<nav>
+<ul>
+<li><a href="students.html">Students</a></li>
+<li><a class="current" href="filebrowser.html">Files</a></li>
+<li><a href="pairing.html">Pairing</a></li>
+<li><a href="dashboard.html">Dashboard</a></li>
+<li><a class="disabled" href="#">VPL</a></li>
+<li><span class="space"></span></li>
+<li><a href="initdb-dev.html">Test data</a></li>
+<li><a href="doc.html">Documentation</a></li>
+</ul>
+</nav>
+
+<main>
+
+<div class="border">
+
+	<h2>Filter</h2>
+
+	<p>
+	<label>Student <input id="chk-filter-student" type="checkbox"></label>
+	<input id="v-filter-student"></input>
+	<br>
+	<label>Group <input id="chk-filter-group" type="checkbox"></label>
+	<input id="v-filter-group"></input>
+	<br>
+	<label>Most recent only <input id="chk-filter-last" type="checkbox"></label>
+	</p>
+
+</div>
+
+<div class="border">
+
+	<h2>Files</h2>
+
+	<table id="files">
+	</table>
+
+	<p>
+	<button id="btn-open" disabled="true">Open</button>
+	<button id="btn-export" disabled="true">Export</button>
+	<button id="btn-remove" disabled="true">Delete</button>
+	</p>
+
+	<p>
+	<input id="v-create-filename" placeholder="filename.json"></input>
+	<button id="btn-create" disabled>Create</button>
+	</p>
+
+</div>
+
+</main>
+
+</body>
+
+</html>

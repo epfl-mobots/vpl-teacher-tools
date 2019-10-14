@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, height=device-height, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<link rel="stylesheet" href="html-tools.css" />
+
+<style>
+
+body {
+	margin-bottom: 0;
+}
+
+#input {
+	position: absolute;
+	z-index: 1000;
+	font-family: sans-serif;
+	font-size: 15pt;
+	top: 10px;
+	left: 10px;
+	display: none;
+}
+
+</style>
+
+<title>VPL Tools</title>
+
+<script src="../vpl/vpl-min.js"></script>
+<script src="../vpl/thymio/thymio.js"></script>
+<script src="ns.js"></script>
+<script src="../client.js"></script>
+
+<script>
+
+window["vplStorageGetFunction"] = function (filename, fun) {
+
+	var progJSON = sessionStorage.getItem("initialFileContent");
+	filename = sessionStorage.getItem("initialFileName") || filename;
+	var readOnly = sessionStorage.getItem("readOnly") === "true";
+	if (progJSON) {
+		// change toolbars
+		var prog = JSON.parse(progJSON);
+		prog["disabledUI"] = [
+			"src:language",
+			"vpl:new",
+			"vpl:load",
+			"vpl:text"
+		];
+		progJSON = JSON.stringify(prog);
+
+		fun(progJSON, {"filename": filename, "readOnly": readOnly});
+	}
+};
+
+window.addEventListener("beforeunload", function () {
+	var readOnly = sessionStorage.getItem("readOnly") === "true";
+	if (!readOnly && window["vplIsProgramChanged"]()) {
+		var fileId = parseInt(sessionStorage.getItem("fileId"), 10);
+		var json = window["vplGetProgramAsJSON"]();
+		console.info(json);
+		var client = new VPLTeacherTools.HTTPClient();
+		client.updateFile(fileId, json);
+	}
+}, false);
+
+</script>
+
+</head>
+
+<body>
+
+<nav>
+<ul>
+<li><a href="students.html">Students</a></li>
+<li><a href="filebrowser.html">Files</a></li>
+<li><a href="pairing.html">Pairing</a></li>
+<li><a href="dashboard.html">Dashboard</a></li>
+<li><a class="current" href="vpl.html">VPL</a></li>
+<li><span class="space"></span></li>
+<li><a href="initdb-dev.html">Test data</a></li>
+<li><a href="doc.html">Documentation</a></li>
+</ul>
+</nav>
+
+<main>
+
+	<div id="vpl-editor">
+
+	<canvas id="programCanvas" width="900" height="700"></canvas>
+
+	<input id="input">
+
+	</div>
+
+	<div id="src-editor">
+	<!-- <pre id="editor-lines"></pre> -->
+	<textarea id="editor" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+	</textarea>
+	</div>
+
+</main>
+
+</body>
+
+</html>

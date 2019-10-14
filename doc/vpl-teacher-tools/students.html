@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, height=device-height, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<link rel="stylesheet" href="html-tools.css" />
+
+<title>VPL Tools</title>
+
+<style>
+td {
+	padding: 0.5ex;
+}
+</style>
+
+<script src="../vpl/thymio/thymio.js"></script>
+<script src="ns.js"></script>
+<script src="util-url.js"></script>
+<script src="../client.js"></script>
+<script src="students.js"></script>
+
+<script>
+
+function clearTable(id, labels) {
+	var table = document.getElementById(id);
+	while (table.firstElementChild) {
+		table.removeChild(table.firstElementChild);
+	}
+	if (labels) {
+		var tr = document.createElement("tr");
+		labels.forEach(function (label) {
+			var th = document.createElement("th");
+			th.textContent = label;
+			tr.appendChild(th);
+		});
+		table.appendChild(tr);
+	}
+}
+
+function fillStudentTable(studentArray, students) {
+	clearTable("students");
+	var table = document.getElementById("students");
+
+	function addRow(studentName, groupName) {
+
+		function selectRow() {
+			students.selectStudent(studentName);
+			fillStudentTable(studentArray, students);
+		}
+
+		var tr = document.createElement("tr");
+
+		// drag student name
+		tr.draggable = true;
+		tr.addEventListener("dragstart", function (ev) {
+			ev.dataTransfer.setData("text/plain", studentName);
+			ev.dataTransfer.setDragImage(tr.getElementsByTagName("td")[0], 0, 0);
+			ev.dataTransfer.effectAllowed = "copy";
+		});
+
+		var td = document.createElement("td");
+		td.textContent = studentName;
+		// td.addEventListener("click", selectRow, false);
+		td.className = students.isStudentSelected(studentName) ? "rect selected" : "rect";
+		tr.appendChild(td);
+
+/*
+		td = document.createElement("td");
+		var btn = document.createElement("button");
+		btn.textContent = (groupName ? "move to " : "add to ") +
+			(students.selectedGroup || groupName || "group");
+		if (!students.selectedGroup || students.selectedGroup === groupName) {
+			btn.disabled = true;
+		}
+		btn.addEventListener("click", function () {
+			students.addStudentToGroup(studentName, students.selectedGroup);
+		}, false);
+		td.appendChild(btn);
+		tr.appendChild(td);
+
+		td = document.createElement("td");
+		var btn = document.createElement("button");
+		btn.textContent = "remove from " + (groupName || "group");
+		if (!groupName) {
+			btn.disabled = true;
+		}
+		btn.addEventListener("click", function () {
+			students.removeStudentFromGroup(studentName, groupName);
+		}, false);
+		td.appendChild(btn);
+		tr.appendChild(td);
+*/
+
+		td = document.createElement("td");
+		var btn = document.createElement("button");
+		btn.textContent = "remove student";
+		btn.addEventListener("click", function () {
+			students.removeStudent(studentName);
+		}, false);
+		td.appendChild(btn);
+		tr.appendChild(td);
+
+		table.appendChild(tr);
+	}
+
+	studentArray.forEach(function (student) {
+		addRow(student.name, student.group);
+	});
+
+	// row for adding a new student
+	var tr = document.createElement("tr");
+
+	var td = document.createElement("td");
+	td.className = "rect";
+	var fldStudentName = document.createElement("input");
+	var btnAddStudent = document.createElement("button");
+	btnAddStudent.disabled = true;
+	fldStudentName.addEventListener("input", function () {
+		btnAddStudent.disabled = !students.canAddStudent(fldStudentName.value);
+	}, false);
+	fldStudentName.addEventListener("change", function () {
+		students.addStudent(fldStudentName.value);
+	}, false);
+	td.appendChild(fldStudentName);
+	tr.appendChild(td);
+
+	td = document.createElement("td");
+	btnAddStudent.textContent = "add";
+	btnAddStudent.addEventListener("click", function () {
+		students.addStudent(fldStudentName.value);
+	}, false);
+	td.appendChild(btnAddStudent);
+	tr.appendChild(td);
+
+	table.appendChild(tr);
+
+	fldStudentName.select();
+	fldStudentName.focus();
+}
+
+function fillGroupTable(groupArray, students) {
+
+	function checkDragType(ev) {
+		if (ev.dataTransfer.types.includes("text/plain")) {
+			ev.preventDefault();
+			return false;
+		}
+		return true;
+	}
+
+	function selectGroup(groupName) {
+		students.selectGroup(groupName);
+		fillStudentTable(students.students, students);	// update button labels
+		fillGroupTable(groupArray, students);
+	}
+
+	clearTable("groups", ["Students", "Count"]);
+	var table = document.getElementById("groups");
+
+	groupArray.forEach(function (group) {
+
+		function selectRow() {
+			selectGroup(group.name);
+		}
+
+		var tr = document.createElement("tr");
+
+		// drop student name
+		tr.addEventListener("dragenter", checkDragType);
+		tr.addEventListener("dragover", checkDragType);
+		tr.addEventListener("drop", function (ev) {
+			ev.stopPropagation();
+			var studentName = ev.dataTransfer.getData("text/plain").replace(/^G-/, "");
+			students.addStudentToGroup(studentName, group.name, true);
+			selectGroup(group.name);
+		}, false);
+
+		var td = document.createElement("td");
+		td.className = "rect";
+		var tdContent = document.createTextNode("");
+		group.students.forEach(function (studentName, i) {
+			var span = document.createElement("span");
+			span.textContent = studentName;
+
+			// drag student name
+			span.draggable = true;
+			span.addEventListener("dragstart", function (ev) {
+				ev.dataTransfer.setData("text/plain", "G-" + studentName);
+				ev.dataTransfer.effectAllowed = "move";
+			});
+
+			td.appendChild(span);
+		});
+		// td.addEventListener("click", selectRow, false);
+		// td.className = students.isGroupSelected(group.name) ? "rect selected" : "rect";
+		tr.appendChild(td);
+
+		td = document.createElement("td");
+		td.textContent = group.numStudents;
+		// td.addEventListener("click", selectRow, false);
+		// td.className = students.isGroupSelected(group.name) ? "rect selected" : "rect";
+		tr.appendChild(td);
+
+		td = document.createElement("td");
+		var btn = document.createElement("button");
+		btn.textContent = "remove group";
+		btn.addEventListener("click", function () {
+			students.removeGroup(group.name);
+		}, false);
+		td.appendChild(btn);
+		tr.appendChild(td);
+
+		table.appendChild(tr);
+	});
+
+	// row to create new group
+	var tr = document.createElement("tr");
+	var td = document.createElement("td");
+	td.className = "rect";
+	td.textContent = "\u00a0";
+
+	// drop student name
+	tr.addEventListener("dragenter", checkDragType);
+	tr.addEventListener("dragover", checkDragType);
+	tr.addEventListener("drop", function (ev) {
+		ev.stopPropagation();
+		var studentName = ev.dataTransfer.getData("text/plain").replace(/^G-/, "");
+		var groupName = studentName + Math.random().toString(10);
+		students.addGroup(groupName, studentName, true);
+		selectGroup(groupName);
+	}, false);
+
+	tr.appendChild(td);
+	td = document.createElement("td");
+	td.textContent = "0";
+	tr.appendChild(td);
+	table.appendChild(tr);
+
+	// drop student name outside a group -> delete
+	var body = document.body;
+	body.addEventListener("dragenter", checkDragType);
+	body.addEventListener("dragover", checkDragType);
+	body.addEventListener("drop", function (ev) {
+		ev.stopPropagation();
+		var studentName = ev.dataTransfer.getData("text/plain");
+		if (studentName.slice(0, 2) === "G-") {
+			studentName = studentName.slice(2);
+			var groupName = students.groupForStudent(studentName);
+			if (groupName) {
+				students.removeStudentFromGroup(studentName, groupName, true);
+				selectGroup(groupName);
+			}
+		}
+	}, false);
+}
+
+window.addEventListener("load", function () {
+	var url0 = "/vpl/vpl.html?ui=ui/classic/ui.json&server=ws://" + document.location.hostname + ":8001/";
+	var students = new VPLTeacherTools.StudentManagement({
+		onStudents: function (studentArray, students) {
+    		fillStudentTable(studentArray, students);
+		},
+		onGroups: function (groupArray) {
+			fillGroupTable(groupArray, students);
+		}
+	});
+
+	fillGroupTable([], students);
+
+}, false);
+
+</script>
+
+</head>
+
+<body>
+
+<nav>
+<ul>
+<li><a class="current" href="students.html">Students</a></li>
+<li><a href="filebrowser.html">Files</a></li>
+<li><a href="pairing.html">Pairing</a></li>
+<li><a href="dashboard.html">Dashboard</a></li>
+<li><a class="disabled" href="#">VPL</a></li>
+<li><span class="space"></span></li>
+<li><a href="initdb-dev.html">Test data</a></li>
+<li><a href="doc.html">Documentation</a></li>
+</ul>
+</nav>
+
+<main>
+
+<div class="border">
+
+	<h2>Students</h2>
+
+	<table id="students">
+	</table>
+
+</div>
+
+<div class="border">
+
+	<h2>Groups</h2>
+
+	<table id="groups">
+	</table>
+
+	<p>Drag and drop students to change groups. Drag students outside groups to remove them.</p>
+
+</div>
+
+</main>
+
+</body>
+
+</html>

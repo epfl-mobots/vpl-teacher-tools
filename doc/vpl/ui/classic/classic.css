@@ -1,0 +1,206 @@
+/*
+	CSS for VPL3 application
+    Classic version (blocks, buttons and widgets defined in JavaScript)
+	Copyright 2019, ECOLE POLYTECHNIQUE FEDERALE DE LAUSANNE
+*/
+
+view {
+	background: white;
+}
+
+toolbar {
+	padding: 5px;
+	margin: 0;
+}
+
+button {
+	width: 3.0ww;
+	height: 3.0ww;
+	min-width: 20px;
+	min-height: 20px;
+	margin: 0.2vw;
+}
+
+#vpl-close, #src-close, #sim-close {
+	width: 1.5ww;
+	min-width: 10px;
+}
+
+button.vpl.bottom {
+	font: 1.7vw sans-serif;
+}
+
+#vpl-message-error {
+	color: #e44;
+	width: 20vw;
+}
+
+#vpl-message-warning {
+	color: #f88;
+	width: 20vw;
+}
+
+#vpl-filename {
+	width: 9ww;
+	font: 1vw sans-serif;
+}
+
+separator {
+	width: 5px;
+	height: 5px;
+}
+
+vpl {
+	padding: 5px;
+	margin: 5px;
+	background: #eee;
+}
+
+block {
+	width: 6vw;
+	height: 6vw;
+	min-width: 32px;
+	min-height: 32px;
+}
+
+block.library {
+	margin: 4px;
+}
+
+block.event {
+	background: #f70;
+	border: none #f70;
+}
+block.event-aux, block.state {
+	width: 5vw;
+	height: 5vw;
+	min-width: 27px;
+	min-height: 27px;
+	vertical-align: bottom;
+}
+block.action {
+	background: #38f;
+	border: none #38f;
+}
+block.state {
+	background: #0c0;
+	border: none #0c0;
+}
+block.comment {
+	background: #aaa;
+	border: none #aaa;
+}
+block.empty {
+	border-width: 2px;
+	background: transparent;
+	width: 1.5vw;
+	min-width: 8px;
+}
+block.empty.event-aux {
+	height: 5vw;
+	min-height: 27px;
+	vertical-align: bottom;
+}
+block.empty:only-child {
+	width: 6vw;
+	min-width: 32px;
+}
+
+block-container {
+	padding: 0;
+	padding-bottom: 0.4vw;
+	margin: 0.6vw;
+	margin-bottom: 0.2vw;
+	border-bottom: transparent 3px;
+}
+
+block-container.error {
+	border-bottom: #e44 3px;
+}
+block-container.warning {
+	border-bottom: #f88 3px;
+}
+
+rule {
+	background: #ddd;
+	border: solid #666;
+	border-radius: 0.6vw;
+	padding: 0.3vw;
+	margin:0.6vw;
+}
+
+rule:small {
+	background: white;
+}
+
+overlay-rectangle.disabled {
+	background: rgba(255,255,255,0.5);
+}
+
+overlay-rectangle.drop-target {
+	border: 0.2vw rgba(0,0,0,0.5);
+	border-radius: 0.2vw;
+}
+
+crossout-line {
+	line-width: 0.75vw;
+ 	color: rgba(120,120,120,0.5);
+}
+crossout-line.vpl {
+	line-width: 5vw;
+}
+
+#widget-error, #widget-warning {
+	width: 3vw;
+	height: 3vw;
+	margin-right: 1vw;
+}
+
+conflict-line.error {
+	line: 3px #e44 dashed;
+}
+conflict-line.warning {
+	line: 3px #f88;
+}
+
+#widget-then {
+	width: 3vw;
+	height: 3vw;
+	padding: 1vw;
+}
+
+block-library {
+	padding: 5px;
+	padding-top: 0;
+}
+
+block.library {
+	width: 4vw;
+	height: 4vw;
+	min-width: 32px;
+	min-height: 32px;
+}
+
+/* simulator */
+
+sim-controller {
+	background: #eee;
+	margin: 5px;
+	padding: 1vw;
+}
+
+button.event {
+	width: 2vw;
+	height: 2vw;
+	margin: 0.2vw;
+}
+
+sim-playground-area {
+	background: #eee;
+	margin: 5px;
+	padding: 5px;
+}
+
+sim-playground {
+	border: 2px silver;
+}

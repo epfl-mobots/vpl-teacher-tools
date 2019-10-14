@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, height=device-height, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<title>DB Test</title>
+
+<style>
+</style>
+
+<script>
+
+window.addEventListener("load", function () {
+	function rest(url) {
+		var xhr = new XMLHttpRequest();
+		xhr.addEventListener("load", function () {
+			document.getElementById("r").textContent = xhr.responseText;
+		});
+		xhr.open("GET", url);
+		xhr.send(null);
+	}
+
+	document.getElementById("addStudent-btn").addEventListener("click", function () {
+		rest("/api/addStudent?name=" + encodeURIComponent(document.getElementById("addStudent-name").value));
+	}, false);
+	document.getElementById("removeStudent-btn").addEventListener("click", function () {
+		rest("/api/removeStudent?name=" + encodeURIComponent(document.getElementById("removeStudent-name").value));
+	}, false);
+	document.getElementById("listStudents-btn").addEventListener("click", function () {
+		rest("/api/listStudents");
+	}, false);
+	document.getElementById("addGroup-btn").addEventListener("click", function () {
+		rest("/api/addGroup?group=" + encodeURIComponent(document.getElementById("addGroup-group").value));
+	}, false);
+	document.getElementById("removeGroup-btn").addEventListener("click", function () {
+		rest("/api/removeGroup?group=" + encodeURIComponent(document.getElementById("removeGroup-group").value));
+	}, false);
+	document.getElementById("listGroups-btn").addEventListener("click", function () {
+		rest("/api/listGroups");
+	}, false);
+	document.getElementById("addStudentToGroup-btn").addEventListener("click", function () {
+		rest("/api/addStudentToGroup?name=" + encodeURIComponent(document.getElementById("addStudentToGroup-name").value) +
+			"&group=" + encodeURIComponent(document.getElementById("addStudentToGroup-group").value));
+	}, false);
+	document.getElementById("removeStudentFromGroup-btn").addEventListener("click", function () {
+		rest("/api/removeStudentFromGroup?name=" + encodeURIComponent(document.getElementById("removeStudentFromGroup-name").value) +
+			"&group=" + encodeURIComponent(document.getElementById("removeStudentFromGroup-group").value));
+	}, false);
+	document.getElementById("listGroupStudents-btn").addEventListener("click", function () {
+		rest("/api/listGroupStudents?group=" + encodeURIComponent(document.getElementById("listGroupStudents-group").value));
+	}, false);
+	document.getElementById("beginSession-btn").addEventListener("click", function () {
+		rest("/api/beginSession?group=" + encodeURIComponent(document.getElementById("beginSession-group").value));
+	}, false);
+	document.getElementById("endSession-btn").addEventListener("click", function () {
+		rest("/api/endSession?session=" + encodeURIComponent(document.getElementById("endSession-session").value));
+	}, false);
+	document.getElementById("endAllSessions-btn").addEventListener("click", function () {
+		rest("/api/endAllSession");
+	}, false);
+	document.getElementById("listSessions-btn").addEventListener("click", function () {
+		rest("/api/listSessions");
+	}, false);
+}, false);
+
+</script>
+
+</head>
+
+<body>
+
+<h1>VPL Database Test</h1>
+
+<dl>
+
+<dt>addStudent</dt>
+<dd>/api/addStudent?name= <input id="addStudent-name" value="Alice"> <button id="addStudent-btn">Exec</button></dd>
+
+<dt>removeStudent</dt>
+<dd>/api/removeStudent?name= <input id="removeStudent-name" value="Alice"> <button id="removeStudent-btn">Exec</button></dd>
+
+<dt>listStudents</dt>
+<dd>/api/listStudents <button id="listStudents-btn">Exec</button></dd>
+
+<dt>addGroup</dt>
+<dd>/api/addGroup?group= <input id="addGroup-group" value="Programmers"> <button id="addGroup-btn">Exec</button></dd>
+
+<dt>removeGroup</dt>
+<dd>/api/removeGroup?group= <input id="removeGroup-group" value="Programmers"> <button id="removeGroup-btn">Exec</button></dd>
+
+<dt>listGroups</dt>
+<dd>/api/listGroups <button id="listGroups-btn">Exec</button></dd>
+
+<dt>addStudentToGroup</dt>
+<dd>/api/addStudentToGroup?name= <input id="addStudentToGroup-name" value="Alice"> &group= <input id="addStudentToGroup-group" value="Programmers"> <button id="addStudentToGroup-btn">Exec</button></dd>
+
+<dt>removeStudentFromGroup</dt>
+<dd>/api/removeStudentFromGroup?name= <input id="removeStudentFromGroup-name" value="Alice"> &group= <input id="removeStudentFromGroup-group" value="Programmers"> <button id="removeStudentFromGroup-btn">Exec</button></dd>
+
+<dt>listGroupStudents</dt>
+<dd>/api/listGroupStudents?group= <input id="listGroupStudents-group" value="Programmers"> <button id="listGroupStudents-btn">Exec</button></dd>
+
+<dt>beginSession</dt>
+<dd>/api/beginSession?group= <input id="beginSession-group" value="Programmers"> <button id="beginSession-btn">Exec</button></dd>
+
+<dt>endSession</dt>
+<dd>/api/endSession?session= <input id="endSession-session" value=""> <button id="endSession-btn">Exec</button></dd>
+
+<dt>endAllSessions</dt>
+<dd>/api/endAllSessions <button id="endAllSessions-btn">Exec</button></dd>
+
+<dt>listSessions</dt>
+<dd>/api/listSessions <button id="listSessions-btn">Exec</button></dd>
+
+</dl>
+
+<pre id="r">
+</pre>
+
+</body>
+
+</html>
