@@ -1,0 +1,1975 @@
+{
+	"styles": {
+		"scrollbarThumbColor": "#b0bec5",
+		"scrollbarBackgroundColor": "transparent",
+		"scrollbarWidth": 2,
+		"errorColor": "#ff1744",
+		"warningColor": "#ff7777",
+		"minInteractiveBlockSize":"84",
+		"eventRightAlign": true
+	},
+
+	"css": [
+		"svg.css"
+	],
+
+	"miscSettings": {
+		"basicMultiEvent": true,
+		"viewRelativeSizes": {
+			"vpl": 2,
+			"src": 1,
+			"sim": 2
+		}
+	},
+
+	"fragments": {
+		"about.html": "<iframe src=\"vpl-about.html\" style=\"width:100%;height:100%;border:none;\"></iframe>",
+		"vpl-export-html.css": "td.events, td.then, td.actions {\n\tborder: solid 2px silver;\n\tborder-style: solid none;\n}\ntd.block {\n\tpadding: 15px;\n}\ntd.events {\n    min-width: 20px;\n    border-left-style: solid;\n    border-top-left-radius: 20px; \n    border-bottom-left-radius: 20px;\n}\ntd.event-aux {    transform: scale(0.8) translate(0,10px);\n}\ntd.actions {\n    min-width: 20px;\n    border-right-style: solid;\n    border-bottom-right-radius: 20px; \n    border-top-right-radius: 20px; \n}\ntable.program {\n\tborder-collapse: separate;\n\tborder-spacing: 0 10px;\n\tmargin-left: auto;\n\tmargin-right: auto;\n}\n"
+	},
+
+	"blocks": [
+		{
+			"name": "!stop",
+			"type": "hidden"
+		},
+		{
+			"name": "init",
+			"type": "event",
+			"modes": ["basic", "advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ev_Start"
+				}
+			],
+			"defaultParameters": []
+		},
+		{
+			"name": "button 1",
+			"type": "event",
+			"modes": ["basic", "advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Bg_Thymio"
+				},
+				{
+					"uri": "Blocks.svg#Ev_Buttons"
+				}
+			],
+			"defaultParameters": [0],
+			"radiobuttons": [
+				{
+					"id": "Btn2_Center",
+					"val": 0,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Forward",
+					"val": 1,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Backward",
+					"val": 2,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Right",
+					"val": 3,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Left",
+					"val": 4,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				}
+			]
+		},
+		{
+			"name": "roll",
+			"type": "event",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Rot360Rail"
+				},
+				{
+					"uri": "Blocks.svg#Acc1"
+				}
+			],
+			"defaultParameters": [0],
+			"rotating": [
+				{
+					"id": "Acc1",
+					"centerId": "RotationCenter1",
+					"thumbId": "Btn2_HandleAcc1",
+					"numSteps": 24
+				}
+			]
+		},
+		{
+			"name": "acc side",
+			"type": "event",
+			"modes": ["basic"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ground_accel_1"
+				},
+				{
+					"uri": "Blocks.svg#ThymioSideDown"
+				}
+			]
+		},
+		{
+			"name": "acc upside down",
+			"type": "event",
+			"modes": ["basic"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ground_accel_0"
+				},
+				{
+					"uri": "Blocks.svg#ThymioUpsideDown"
+				}
+			]
+		},
+		{
+			"name": "yaw",
+			"type": "event",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Rot360Rail"
+				},
+				{
+					"uri": "Blocks.svg#Acc2"
+				}
+			],
+			"defaultParameters": [0],
+			"rotating": [
+				{
+					"id": "Acc2",
+					"centerId": "RotationCenter2",
+					"thumbId": "Btn2_HandleAcc2",
+					"numSteps": 24
+				}
+			]
+		},
+		{
+			"name": "pitch",
+			"type": "event",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Rot360Rail"
+				},
+				{
+					"uri": "Blocks.svg#Acc0"
+				}
+			],
+			"defaultParameters": [0],
+			"rotating": [
+				{
+					"id": "Acc0",
+					"centerId": "RotationCenter0",
+					"thumbId": "Btn2_HandleAcc0",
+					"numSteps": 24
+				}
+			]
+		},
+		{
+			"name": "tap",
+			"type": "event",
+			"modes": ["basic", "advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ev_Acc_Hit"
+				}
+			],
+			"defaultParameters": []
+		},
+		{
+			"name": "fall",
+			"type": "event",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ev_Acc_Fall"
+				}
+			],
+			"defaultParameters": []
+		},
+		{
+			"name": "clap",
+			"type": "event",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ev_Clap"
+				}
+			],
+			"defaultParameters": []
+		},
+		{
+			"name": "ground mean",
+			"type": "event",
+			"modes": ["basic"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ev_ProxGr_bas"
+				}
+			],
+			"defaultParameters": [true],
+			"buttons": [
+				{
+					"id": "btn2_ProxGd_detection",
+					"val": [true, false],
+					"st": ["fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:4 6;stroke-dashoffset:.8;stroke-linecap:round"]
+				}
+			]
+		},
+		{
+			"name": "ground",
+			"type": "event",
+			"modes": ["basic"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ev_ProxGr_med"
+				}
+			],
+			"styles": [
+				{
+					"id": "Led_Gd0",
+					"st": "visibility:`$[0]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_Gd1",
+					"st": "visibility:`$[1]>0?'visible':'hidden'`"
+				}
+			],
+			"defaultParameters": [0, 0],
+			"typicalParameters": [1, 1],
+			"buttons": [
+				{
+					"id": "Btn3_ProxGd0",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:#000000"]
+				},
+				{
+					"id": "Btn3_ProxGd1",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:#000000"]
+				}
+			],
+			"validation": [
+				{
+					"assert": "`$.reduce(function (acc, p) { return acc || p != 0; }, false)`",
+					"warning": "No ground sensor specified"
+				}
+			]
+		},
+		{
+			"name": "ground 1",
+			"type": "event",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"js": "var gth = Math.floor($[2] * 255.99).toString(10); var g = 'rgb(' + [gth,gth,gth].join(',') + ')'; $.slice(0, 2).forEach(function (b, i) { if (b) { var lg = ctx.createLinearGradient(0, 40, 0, 460); lg.addColorStop(0, b > 0 ? 'white' : g); lg.addColorStop(1, b > 0 ? g : 'black'); ctx.fillStyle = lg; ctx.fillRect(40 + i * 325, 40, 325, 460); } });"
+				},
+				{
+					"uri": "Blocks.svg#Ev_ProxGround_adv"
+				}
+			],
+			"styles": [
+				{
+					"id": "Gradient_proxGd_0",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "Gradient_proxGd_1",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "Led_Gd0-2",
+					"st": "visibility:`$[0]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_Gd1-2",
+					"st": "visibility:`$[1]>0?'visible':'hidden'`"
+				}
+			],
+			"defaultParameters": [0, 0, 0.5],
+			"typicalParameters": [1, 1, 0.5],
+			"sliders": [
+				{
+					"id": "slider_threshold_proxGd",
+					"thumbId": "Cursor_proxGd",
+					"min": 0,
+					"max": 1,
+					"discrete": [
+						0.1,
+						0.3,
+						0.5,
+						0.7,
+						0.9
+					]
+				}
+			],
+			"buttons": [
+				{
+					"id": "Btn3_ProxGd0_adv",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:black;stroke-linecap:round"]
+				},
+				{
+					"id": "Btn3_ProxGd1_adv",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:black;stroke-linecap:round"]
+				}
+			],
+			"validation": [
+				{
+					"assert": "`$.slice(0, 2).reduce(function (acc, p) { return acc || p != 0; }, false)`",
+					"warning": "No ground sensor specified"
+				}
+			]
+		},
+		{
+			"name": "horiz prox front",
+			"type": "event",
+			"modes": ["basic"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ev_ProxH_Front_med"
+				},
+				{
+					"js": "ctx.lineWidth = 20; ctx.strokeStyle = '#6200ea'; ctx.lineCap = 'round'; var rg = ctx.createRadialGradient(0, 0, 300, 0, 0, 750); rg.addColorStop(0, 'red'); rg.addColorStop(1, 'rgba(255,0,0,0)'); ctx.fillStyle = rg; var r = 620; var w = 70; var sl = 0.2; $.forEach(function (b, i) { if (b) { var phi = 0.33 * (i - 2); ctx.save(); ctx.translate(500, 750); ctx.rotate(phi); var rgr = b > 0 ? 320 : 450; ctx.beginPath(); ctx.moveTo(-sl * 200, -300-200); ctx.lineTo(-sl * rgr, -300 - rgr); ctx.lineTo(sl * rgr, -300 - rgr); ctx.lineTo(sl * 200, -300-200); ctx.fill(); ctx.beginPath(); ctx.moveTo(-w, -r); ctx.lineTo(w, -r); ctx.setLineDash(b > 0 ? [] : [15, 30]); ctx.strokeStyle = b < 0 ? '#607d8b' : '#6200ea'; ctx.stroke(); ctx.restore(); } });"
+				}
+			],
+			"styles": [
+				{
+					"id": "Obstacles",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "IR_gradients_obst",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "IR_gradients_empty",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "Led_0",
+					"st": "visibility:`$[0]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_1",
+					"st": "visibility:`$[1]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_2",
+					"st": "visibility:`$[2]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_2_",
+					"st": "visibility:`$[2]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_3",
+					"st": "visibility:`$[3]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_4",
+					"st": "visibility:`$[4]>0?'visible':'hidden'`"
+				}
+			],
+			"defaultParameters": [0, 0, 0, 0, 0],
+			"typicalParameters": [0, 0, 1, 0, 0],
+			"buttons": [
+				{
+					"id": "Btn3_Prox0",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+				},
+				{
+					"id": "Btn3_Prox1",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+				},
+				{
+					"id": "Btn3_Prox2",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+				},
+				{
+					"id": "Btn3_Prox3",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+				},
+				{
+					"id": "Btn3_Prox4",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+				}
+			],
+			"validation": [
+				{
+					"assert": "`$.reduce(function (acc, p) { return acc || p != 0; }, false)`",
+					"warning": "No proximity sensor specified"
+				}
+			]
+		},
+		{
+			"name": "horiz prox back",
+			"type": "event",
+			"modes": ["basic"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ev_ProxH_Back_med"
+				},
+				{
+					"js": "ctx.lineWidth = 20; ctx.strokeStyle = '#6200ea'; ctx.lineCap = 'round'; var rg = ctx.createRadialGradient(0, 0, 300, 0, 0, 750); rg.addColorStop(0, 'red'); rg.addColorStop(1, 'rgba(255,0,0,0)'); ctx.fillStyle = rg; var r = 620; var w = 70; var sl = 0.2; $.forEach(function (b, i) { if (b) { ctx.save(); ctx.translate(335 + 330 * i, 250); ctx.rotate(Math.PI); var rgr = b > 0 ? 320 : 450; ctx.beginPath(); ctx.moveTo(-sl * 200, -300-200); ctx.lineTo(-sl * rgr, -300 - rgr); ctx.lineTo(sl * rgr, -300 - rgr); ctx.lineTo(sl * 200, -300-200); ctx.fill(); ctx.beginPath(); ctx.moveTo(-w, -r); ctx.lineTo(w, -r); ctx.setLineDash(b > 0 ? [] : [15, 30]); ctx.strokeStyle = b < 0 ? '#607d8b' : '#6200ea'; ctx.stroke(); ctx.restore(); } });"
+				}
+			],
+			"styles": [
+				{
+					"id": "IR_gradients_back_obst",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "IR_gradients_back_empty",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "Obstacles-2",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "Led_5",
+					"st": "visibility:`$[0]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_5_",
+					"st": "visibility:`$[0]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_6",
+					"st": "visibility:`$[1]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_6_",
+					"st": "visibility:`$[1]>0?'visible':'hidden'`"
+				}
+			],
+			"defaultParameters": [0, 0],
+			"typicalParameters": [1, 1],
+			"buttons": [
+				{
+					"id": "Btn3_Prox5",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+				},
+				{
+					"id": "Btn3_Prox6",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+				}
+			],
+			"validation": [
+				{
+					"assert": "`$.reduce(function (acc, p) { return acc || p != 0; }, false)`",
+					"warning": "No proximity sensor specified"
+				}
+			]
+		},
+		{
+			"name": "horiz prox front adv",
+			"type": "event",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ev_ProxH_Front_adv"
+				},
+				{
+					"js": "ctx.lineWidth = 20; ctx.strokeStyle = '#6200ea'; ctx.lineCap = 'round'; var rg = ctx.createRadialGradient(0, 0, 300, 0, 0, 1000); rg.addColorStop(0, 'red'); rg.addColorStop(1, 'rgba(255,0,0,0)'); ctx.fillStyle = rg; var r = 950 - 300 * $[5]; var sl = 0.2; var w = sl * (r - 300); $.slice(0, -1).forEach(function (b, i) { if (b) { var phi = 0.298 * (i + 0.65); ctx.save(); ctx.translate(0, 1000); ctx.rotate(phi); var rgr = b > 0 ? r - 300 : 950; ctx.beginPath(); ctx.moveTo(-sl * 300, -300-300); ctx.lineTo(-sl * rgr, -300 - rgr); ctx.lineTo(sl * rgr, -300 - rgr); ctx.lineTo(sl * 300, -300-300); ctx.fill(); ctx.beginPath(); ctx.moveTo(-w, -r); ctx.lineTo(w, -r); ctx.setLineDash(b > 0 ? [] : [15, 30]); ctx.strokeStyle = b < 0 ? '#607d8b' : '#6200ea'; ctx.stroke(); ctx.restore(); } });"
+				}
+			],
+			"styles": [
+				{
+					"id": "Obstacles-3",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "IR_gradients_adv_empty",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "Led_0_adv",
+					"st": "visibility:`$[0]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_1_adv",
+					"st": "visibility:`$[1]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_2_adv",
+					"st": "visibility:`$[2]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_2_adv_",
+					"st": "visibility:`$[2]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_3_adv",
+					"st": "visibility:`$[3]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_4_adv",
+					"st": "visibility:`$[4]>0?'visible':'hidden'`"
+				}
+
+			],
+			"defaultParameters": [0, 0, 0, 0, 0, 0.4],
+			"typicalParameters": [0, 0, 1, 0, 0, 0.4],
+			"sliders": [
+				{
+					"id": "value_threshold",
+					"thumbId": "cursor_threshold",
+					"min": 0.2,
+					"max": 0.8,
+					"discrete": [
+						0.2,
+						0.4,
+						0.6,
+						0.8
+					]
+				}
+			],
+			"buttons": [
+				{
+					"id": "Btn3_Prox0_adv",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+				},
+				{
+					"id": "Btn3_Prox1_adv",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+				},
+				{
+					"id": "Btn3_Prox2_adv",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+				},
+				{
+					"id": "Btn3_Prox3_adv",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+				},
+				{
+					"id": "Btn3_Prox4_adv",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+				}
+			],
+			"validation": [
+				{
+					"assert": "`$.slice(0,5).reduce(function (acc, p) { return acc || p != 0; }, false)`",
+					"warning": "No proximity sensor specified"
+				}
+			]
+		},
+		{
+			"name": "horiz prox back adv",
+			"type": "event",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ev_ProxH_Back_adv"
+				},
+				{
+					"js": "ctx.lineWidth = 20; ctx.strokeStyle = '#6200ea'; ctx.lineCap = 'round'; var rg = ctx.createRadialGradient(0, 0, 300, 0, 0, 1000); rg.addColorStop(0, 'red'); rg.addColorStop(1, 'rgba(255,0,0,0)'); ctx.fillStyle = rg; var r = 950 - 300 * $[2]; var sl = 0.2; var w = sl * (r - 300); $.slice(0, -1).forEach(function (b, i) { if (b) { var x = 335 + 330 * i; ctx.save(); ctx.translate(x, -250); ctx.rotate(Math.PI); var rgr = b > 0 ? r - 300 : 950; ctx.beginPath(); ctx.moveTo(-sl * 300, -300-300); ctx.lineTo(-sl * rgr, -300 - rgr); ctx.lineTo(sl * rgr, -300 - rgr); ctx.lineTo(sl * 300, -300-300); ctx.fill(); ctx.beginPath(); ctx.moveTo(-w, -r); ctx.lineTo(w, -r); ctx.setLineDash(b > 0 ? [] : [15, 30]); ctx.stroke(); ctx.restore(); } });"
+				}
+			],
+			"styles": [
+				{
+					"id": "Obstacles-4",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "IR_gradients_back_adv_obst",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "IR_gradients_back_adv_empty",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "Led_5_adv",
+					"st": "visibility:`$[0]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_5_adv_",
+					"st": "visibility:`$[0]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_6_adv",
+					"st": "visibility:`$[1]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_6_adv_",
+					"st": "visibility:`$[1]>0?'visible':'hidden'`"
+				}
+			],
+			"defaultParameters": [0, 0, 0.4],
+			"typicalParameters": [1, 1, 0.4],
+			"sliders": [
+				{
+					"id": "value_threshold_back",
+					"thumbId": "cursor_threshold_back",
+					"min": 0.2,
+					"max": 0.8,
+					"discrete": [
+						0.2,
+						0.4,
+						0.6,
+						0.8
+					]
+				}
+			],
+			"buttons": [
+				{
+					"id": "Btn3_Prox5_adv",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+				},
+				{
+					"id": "Btn3_Prox6_adv",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+				}
+			],
+			"validation": [
+				{
+					"assert": "`$.slice(0,2).reduce(function (acc, p) { return acc || p != 0; }, false)`",
+					"warning": "No proximity sensor specified"
+				}
+			]
+		},
+		{
+			"name": "remote control arrows",
+			"type": "event",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ev_Remote1"
+				}
+			],
+			"defaultParameters": [1],
+			"radiobuttons": [
+				{
+					"id": "Btn2_Remote1_85",
+					"val": 0,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote1_80",
+					"val": 1,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote1_81",
+					"val": 2,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote1_86",
+					"val": 3,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote1_87",
+					"val": 4,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				}
+			]
+		},
+		{
+			"name": "remote control keypad",
+			"type": "event",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ev_Remote2"
+				}
+			],
+			"defaultParameters": [1],
+			"radiobuttons": [
+				{
+					"id": "Btn2_Remote2_0",
+					"val": 0,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote2_1",
+					"val": 1,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote2_2",
+					"val": 2,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote2_3",
+					"val": 3,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote2_4",
+					"val": 4,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote2_5",
+					"val": 5,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote2_6",
+					"val": 6,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote2_7",
+					"val": 7,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote2_8",
+					"val": 8,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote2_9",
+					"val": 9,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote2_16",
+					"val": 16,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_Remote2_17",
+					"val": 17,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				}
+			]
+		},
+		{
+			"name": "timer",
+			"type": "event",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ev_TimersUp"
+				}
+			]
+		},
+		{
+			"name": "counter comparison",
+			"type": "state",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#EvCounter"
+				},
+				{
+					"js": "ctx.font = 'bold 170px sans-serif'; ctx.fillStyle = 'black'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText($[1].toString(10), 640, 520);"
+				}
+			],
+			"defaultParameters": [0, 0],
+			"otherParameters": 2,
+			"pushbuttons": [
+				{
+					"id": "ComparatorDown",
+					"newParameters": "`[Math.max($[0]-1,-2),$[1]]`"
+				},
+				{
+					"id": "ComparatorUp",
+					"newParameters": "`[Math.min($[0]+1,2),$[1]]`"
+				},
+				{
+					"id": "ValueDown",
+					"newParameters": "`[$[0],($[1]+255)%256]`"
+				},
+				{
+					"id": "ValueUp",
+					"newParameters": "`[$[0],($[1]+1)%256]`"
+				}
+			],
+			"styles": [
+				{
+					"id": "AboveValue",
+					"st": "visibility:`$[0]===-2?'visible':'hidden'`"
+				},
+				{
+					"id": "AboveValue-2",
+					"st": "visibility:`$[0]===-1?'visible':'hidden'`"
+				},
+				{
+					"id": "Equals",
+					"st": "visibility:`$[0]===0?'visible':'hidden'`"
+				},
+				{
+					"id": "StrictBelowValue",
+					"st": "visibility:`$[0]===1?'visible':'hidden'`"
+				},
+				{
+					"id": "BelowValue",
+					"st": "visibility:`$[0]===2?'visible':'hidden'`"
+				},
+				{
+					"id": "Btn2_State0-2",
+					"st": "fill:`$[1]&1?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn2_State1-2",
+					"st": "fill:`$[1]&2?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn2_State2-2",
+					"st": "fill:`$[1]&4?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn2_State3-2",
+					"st": "fill:`$[1]&8?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn2_State4-2",
+					"st": "fill:`$[1]&16?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn2_State5-2",
+					"st": "fill:`$[1]&32?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn2_State6-2",
+					"st": "fill:`$[1]&64?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn2_State7-2",
+					"st": "fill:`$[1]&128?'#a6f7d8':'transparent'`"
+				}
+			]
+		},
+		{
+			"name": "state 256",
+			"type": "state",
+			"modes": ["basic"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#event_Bg-2"
+				},
+				{
+					"uri": "Blocks.svg#StatesOff"
+				}
+			],
+			"defaultParameters": [false, false, false, false, false, false, false, false],
+			"typicalParameters": [true, false, false, false, false, false, false, false],
+			"buttons": [
+				{
+					"id": "Btn2_State0",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_State1",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_State2",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_State3",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_State4",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_State5",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_State6",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_State7",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				}
+			]
+		},
+		{
+			"name": "state 256 with mask",
+			"type": "state",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#CircleLeds_adv"
+				}
+
+			],
+			"defaultParameters": [0, 0, 0, 0, 0, 0, 0, 0],
+			"typicalParameters": [-1, 0, 0, 0, 0, 0, 0, 0],
+			"buttons": [
+				{
+					"id": "Btn3_State0_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				},
+				{
+					"id": "Btn3_State1_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				},
+				{
+					"id": "Btn3_State2_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				},
+				{
+					"id": "Btn3_State3_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				},
+				{
+					"id": "Btn3_State4_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				},
+				{
+					"id": "Btn3_State5_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				},
+				{
+					"id": "Btn3_State6_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				},
+				{
+					"id": "Btn3_State7_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				}
+			],
+			"styles": [
+				{
+					"id": "Led0",
+					"st": "visibility:`$[0]?'visible':'hidden'`"
+				},
+				{
+					"id": "Led1",
+					"st": "visibility:`$[1]?'visible':'hidden'`"
+				},
+				{
+					"id": "Led2",
+					"st": "visibility:`$[2]?'visible':'hidden'`"
+				},
+				{
+					"id": "Led3",
+					"st": "visibility:`$[3]?'visible':'hidden'`"
+				},
+				{
+					"id": "Led4",
+					"st": "visibility:`$[4]?'visible':'hidden'`"
+				},
+				{
+					"id": "Led5",
+					"st": "visibility:`$[5]?'visible':'hidden'`"
+				},
+				{
+					"id": "Led6",
+					"st": "visibility:`$[6]?'visible':'hidden'`"
+				},
+				{
+					"id": "Led7",
+					"st": "visibility:`$[7]?'visible':'hidden'`"
+				}
+			]
+		},
+		{
+			"name": "color 8 state",
+			"type": "state",
+			"modes": ["basic", "advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#ColorPalette"
+				},
+				{
+					"uri": "Blocks.svg#Bg_Thymio_front_color"
+				},
+				{
+					"uri": "Blocks.svg#Gradient_Top_basic"
+				},
+				{
+					"uri": "Blocks.svg#SelectedColors"
+				}
+			],
+			"defaultParameters": [0],
+			"radiobuttons": [
+				{
+					"id": "Btn2_SelectedNone",
+					"val": 0,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedRed",
+					"val": 1,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedGreen",
+					"val": 2,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedYel",
+					"val": 3,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedBlue",
+					"val": 4,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedMagenta",
+					"val": 5,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedCyan",
+					"val": 6,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedWhite",
+					"val": 7,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				}
+			],
+			"styles": [
+				{
+					"id": "Gradient_Top_basic",
+					"st": "fill:`['transparent','red','#3f0','yellow','blue','magenta','cyan','white'][$[0]]`"
+				}
+			]
+		},
+		{
+			"name": "bottom color 8 state",
+			"type": "state",
+			"modes": ["basic", "advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Events_bg"
+				},
+				{
+					"uri": "Blocks.svg#ColorPalette-2"
+				},
+				{
+					"uri": "Blocks.svg#Bg_Thymio_front_color-2"
+				},
+				{
+					"uri": "Blocks.svg#Gradient_Bottom_basic"
+				},
+				{
+					"uri": "Blocks.svg#SelectedColors_bottom"
+				}
+			],
+			"defaultParameters": [0],
+			"radiobuttons": [
+				{
+					"id": "Btn2_SelectedNone-2",
+					"val": 0,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedRed-2",
+					"val": 1,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedGreen-2",
+					"val": 2,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedYel-2",
+					"val": 3,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedBlue-2",
+					"val": 4,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedMagenta-2",
+					"val": 5,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedCyan-2",
+					"val": 6,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedWhite-2",
+					"val": 7,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				}
+			],
+			"styles": [
+				{
+					"id": "Gradient_Bottom_basic",
+					"st": "fill:`['transparent','red','#3f0','yellow','blue','magenta','cyan','white'][$[0]]`"
+				}
+			]
+		},
+		{
+			"name": "motor",
+			"type": "action",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Actions_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ac_Wheels"
+				}
+			],
+			"styles": [
+				{
+					"id": "SameSpeed_R",
+					"st": "fill:`Math.abs($[0])===Math.abs($[1])?'black':'transparent'`"
+				},
+				{
+					"id": "SameSpeed_L",
+					"st": "fill:`Math.abs($[0])===Math.abs($[1])?'black':'transparent'`"
+				}
+			],
+			"diffwheelmotion": {
+				"id": "ThymioTop_wheels_mini",
+				"dx": -0.1,
+				"dy": 0.05,
+				"adjscale": 0.55,
+				"color": "#aaf",
+				"linewidth": 0.8
+			},
+			"defaultParameters": [0, 0],
+			"sliders": [
+				{
+					"id": "SliderL_range",
+					"thumbId": "Cursor_left",
+					"min": -1,
+					"max": 1,
+					"snap": [
+						0,
+						"`$[1]`",
+						"`-$[1]`"
+					]
+				},
+				{
+					"id": "SliderR_range",
+					"thumbId": "Cursor_right",
+					"min": -1,
+					"max": 1,
+					"snap": [
+						0,
+						"`$[0]`",
+						"`-$[0]`"
+					]
+				}
+			]
+		},
+		{
+			"name": "move",
+			"type": "action",
+			"modes": ["basic"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Actions_bg"
+				},
+				{
+					"uri": "Blocks.svg#Ac_Directions"
+				}
+			],
+			"defaultParameters": [0],
+			"radiobuttons": [
+				{
+					"id": "Btn2_StopDir",
+					"val": 0,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_FwdDir",
+					"val": 1,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_FwdRightDir",
+					"val": 2,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_RightDir",
+					"val": 3,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_BwdRightDir",
+					"val": 4,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_BwdDir",
+					"val": 5,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_BwdLeftDir",
+					"val": 6,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_LeftDir",
+					"val": 7,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_FwdLeftDir",
+					"val": 8,
+					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+				}
+			]
+		},
+		{
+			"name": "top color 8",
+			"type": "action",
+			"modes": ["basic"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Actions_bg"
+				},
+				{
+					"uri": "Blocks.svg#ColorPalette"
+				},
+				{
+					"uri": "Blocks.svg#Bg_Thymio_front_color"
+				},
+				{
+					"uri": "Blocks.svg#Gradient_Top_basic"
+				},
+				{
+					"uri": "Blocks.svg#SelectedColors"
+				}
+			],
+			"defaultParameters": [0],
+			"radiobuttons": [
+				{
+					"id": "Btn2_SelectedNone",
+					"val": 0,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedRed",
+					"val": 1,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedGreen",
+					"val": 2,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedYel",
+					"val": 3,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedBlue",
+					"val": 4,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedMagenta",
+					"val": 5,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedCyan",
+					"val": 6,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedWhite",
+					"val": 7,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				}
+			],
+			"styles": [
+				{
+					"id": "Gradient_Top_basic",
+					"st": "fill:`['transparent','red','#3f0','yellow','blue','magenta','cyan','white'][$[0]]`"
+				}
+			]
+		},
+		{
+			"name": "bottom color 8",
+			"type": "action",
+			"modes": ["basic"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Actions_bg"
+				},
+				{
+					"uri": "Blocks.svg#ColorPalette-2"
+				},
+				{
+					"uri": "Blocks.svg#Bg_Thymio_front_color-2"
+				},
+				{
+					"uri": "Blocks.svg#Gradient_Bottom_basic"
+				},
+				{
+					"uri": "Blocks.svg#SelectedColors_bottom"
+				}
+			],
+			"defaultParameters": [0],
+			"radiobuttons": [
+				{
+					"id": "Btn2_SelectedNone-2",
+					"val": 0,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedRed-2",
+					"val": 1,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedGreen-2",
+					"val": 2,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedYel-2",
+					"val": 3,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedBlue-2",
+					"val": 4,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedMagenta-2",
+					"val": 5,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedCyan-2",
+					"val": 6,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				},
+				{
+					"id": "Btn2_SelectedWhite-2",
+					"val": 7,
+					"st": ["fill:transparent", "fill:rgba(255,255,255,.3);stroke:#263238;stroke-width:2px;stroke-linejoin:round"]
+				}
+			],
+			"styles": [
+				{
+					"id": "Gradient_Bottom_basic",
+					"st": "fill:`['transparent','red','#3f0','yellow','blue','magenta','cyan','white'][$[0]]`"
+				}
+			]
+		},
+		{
+			"name": "top color",
+			"type": "action",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Actions_bg"
+				},
+				{
+					"uri": "Blocks.svg#Color_top_adv"
+				}
+			],
+			"defaultParameters": [0, 0, 0],
+			"sliders": [
+				{
+					"id": "Slid_red",
+					"thumbId": "Cursor_red",
+					"lowerPartId": "Slid_red_value",
+					"min": 0,
+					"max": 1
+				},
+				{
+					"id": "Slid_green",
+					"thumbId": "Cursor_green",
+					"lowerPartId": "Slid_green_value",
+					"min": 0,
+					"max": 1
+				},
+				{
+					"id": "Slid_blue",
+					"thumbId": "Cursor_blue",
+					"lowerPartId": "Slid_blue_value",
+					"min": 0,
+					"max": 1
+				}
+			],
+			"styles": [
+				{
+					"id": "Gradient_top",
+					"st": "fill:#`rgb($).map(function (c) { return Math.floor(c * 15.999).toString(16); }).join('')`"
+				}
+			]
+		},
+		{
+			"name": "bottom color",
+			"type": "action",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Actions_bg"
+				},
+				{
+					"uri": "Blocks.svg#Color_bot_adv"
+				}
+			],
+			"defaultParameters": [0, 0, 0],
+			"sliders": [
+				{
+					"id": "Slid_red_bot",
+					"thumbId": "Cursor_red_bot",
+					"lowerPartId": "Slid_red_value_bot",
+					"min": 0,
+					"max": 1
+				},
+				{
+					"id": "Slid_green_bot",
+					"thumbId": "Cursor_green_bot",
+					"lowerPartId": "Slid_green_value_bot",
+					"min": 0,
+					"max": 1
+				},
+				{
+					"id": "Slid_blue_bot",
+					"thumbId": "Cursor_blue_bot",
+					"lowerPartId": "Slid_blue_value_bot",
+					"min": 0,
+					"max": 1
+				}
+			],
+			"styles": [
+				{
+					"id": "Gradient_bottom",
+					"st": "fill:#`rgb($).map(function (c) { return Math.floor(c * 15.999).toString(16); }).join('')`"
+				}
+			]
+		},
+		{
+			"name": "notes",
+			"type": "action",
+			"modes": ["basic"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Actions_bg"
+				},
+				{
+					"uri": "Blocks.svg#zones_Bg"
+				},
+				{
+					"uri": "Blocks.svg#NoteIcon"
+				}
+			],
+			"defaultParameters": [0, 1, 1, 1, 2, 1, 0, 1, 2, 1, 4, 2],
+			"score": {
+				"id": "zones_Bg",
+				"numHeights": 5,
+				"noteSize": 0.9
+			}
+		},
+		{
+			"name": "notes with speed",
+			"type": "action",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Actions_bg"
+				},
+				{
+					"uri": "Blocks.svg#zones_Bg"
+				},
+				{
+					"uri": "Blocks.svg#beat"
+				},
+				{
+					"uri": "Blocks.svg#Music_Slider"
+				}
+			],
+			"defaultParameters": [0, 0, 1, 1, 1, 2, 1, 0, 1, 2, 1, 4, 2],
+			"sliders": [
+				{
+					"id": "slid_tempo",
+					"thumbId": "cursor_tempo",
+					"min": -1,
+					"max": 1
+				}
+			],
+			"score": {
+				"id": "zones_Bg",
+				"numHeights": 5,
+				"noteSize": 0.9
+			}
+		},
+		{
+			"name": "set state 256",
+			"type": "action",
+			"modes": ["basic"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Actions_bg"
+				},
+				{
+					"uri": "Blocks.svg#act_Bg-2"
+				},
+				{
+					"uri": "Blocks.svg#StatesOff"
+				}
+			],
+			"defaultParameters": [false, false, false, false, false, false, false, false],
+			"typicalParameters": [true, false, false, false, false, false, false, false],
+			"buttons": [
+				{
+					"id": "Btn2_State0",
+					"val": [false, true],
+					"st": ["fill:#455a64","fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_State1",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_State2",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_State3",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_State4",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_State5",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_State6",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				},
+				{
+					"id": "Btn2_State7",
+					"val": [false, true],
+					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+				}
+			]
+		},
+		{
+			"name": "set state 256 with mask",
+			"type": "action",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Actions_bg"
+				},
+				{
+					"uri": "Blocks.svg#act_Bg_Thymio"
+				},
+				{
+					"uri": "Blocks.svg#StatesOff_adv"
+				},
+				{
+					"uri": "Blocks.svg#SelectedBits"
+				}
+
+			],
+			"defaultParameters": [0, 0, 0, 0, 0, 0, 0, 0],
+			"typicalParameters": [-1, 0, 0, 0, 0, 0, 0, 0],
+			"buttons": [
+				{
+					"id": "Btn3_State0_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				},
+				{
+					"id": "Btn3_State1_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				},
+				{
+					"id": "Btn3_State2_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				},
+				{
+					"id": "Btn3_State3_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				},
+				{
+					"id": "Btn3_State4_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				},
+				{
+					"id": "Btn3_State5_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				},
+				{
+					"id": "Btn3_State6_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				},
+				{
+					"id": "Btn3_State7_adv",
+					"val": [0, 1, -1],
+					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+				}
+			],
+			"styles": [
+				{
+					"id": "Led0",
+					"st": "visibility:`$[0]?'visible':'hidden'`"
+				},
+				{
+					"id": "Led1",
+					"st": "visibility:`$[1]?'visible':'hidden'`"
+				},
+				{
+					"id": "Led2",
+					"st": "visibility:`$[2]?'visible':'hidden'`"
+				},
+				{
+					"id": "Led3",
+					"st": "visibility:`$[3]?'visible':'hidden'`"
+				},
+				{
+					"id": "Led4",
+					"st": "visibility:`$[4]?'visible':'hidden'`"
+				},
+				{
+					"id": "Led5",
+					"st": "visibility:`$[5]?'visible':'hidden'`"
+				},
+				{
+					"id": "Led6",
+					"st": "visibility:`$[6]?'visible':'hidden'`"
+				},
+				{
+					"id": "Led7",
+					"st": "visibility:`$[7]?'visible':'hidden'`"
+				}
+			]
+		},
+		{
+			"name": "set timer",
+			"type": "action",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Actions_bg"
+				},
+				{
+					"uri": "Blocks.svg#timer10Secods_bg"
+				},
+				{
+					"uri": "Blocks.svg#text_TimeDisplay"
+				},
+				{
+					"uri": "Blocks.svg#Slider_timer"
+				},
+				{
+					"js":
+						"ctx.moveTo(500, 470); ctx.lineTo(650, 400); ctx.lineTo(650, 380 - 50 * $[0]); ctx.lineTo(350, 380 - 50 * $[0]); ctx.lineTo(350, 400); ctx.closePath(); ctx.fillStyle = 'white'; ctx.strokeStyle = 'black'; ctx.lineWidth = 15; ctx.fill(); ctx.stroke(); ctx.font = '150px sans-serif'; ctx.fillStyle = 'black'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText($[0].toFixed(1)+'s', 22, 500);"
+				}
+			],
+			"defaultParameters": [1],
+			"sliders": [
+				{
+					"id": "Slider_timer",
+					"thumbId": "Cursor_units",
+					"min": 0,
+					"max": 4
+				}
+			]
+		},
+		{
+			"name": "arithmetic",
+			"type": "action",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Actions_bg"
+				},
+				{
+					"uri": "Blocks.svg#AcCounter"
+				},
+				{
+					"js": "ctx.font = 'bold 170px sans-serif'; ctx.fillStyle = 'black'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(['=','+','\u2212','\u00d7','\u00f7'][$[0]], 340, 520); ctx.fillText($[1].toString(10), 650, 520);"
+				}
+			],
+			"defaultParameters": [0, 0, true],
+			"otherParameters": 3,
+			"pushbuttons": [
+				{
+					"id": "ComparatorDown-2",
+					"newParameters": "`[($[0]+4)%5,$[1],$[2]]`"
+				},
+				{
+					"id": "ComparatorUp-2",
+					"newParameters": "`[($[0]+1)%5,$[1],$[2]]`"
+				},
+				{
+					"id": "ValueDown-2",
+					"newParameters": "`[$[0],($[1]+255)%256,$[2]]`"
+				},
+				{
+					"id": "ValueUp-2",
+					"newParameters": "`[$[0],($[1]+1)%256,$[2]]`"
+				},
+				{
+					"id": "Btn_Saturate_On",
+					"newParameters": "`[$[0],$[1],!$[2]]`"
+				},
+				{
+					"id": "Btn_Saturate_Off",
+					"newParameters": "`[$[0],$[1],!$[2]]`"
+				}
+			],
+			"styles": [
+				{
+					"id": "Equals-2",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "Plus",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "Minus",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "Multiply",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "Divide",
+					"st": "visibility:hidden"
+				},
+				{
+					"id": "Btn2_State0-3",
+					"st": "fill:`$[1]&1?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn2_State1-3",
+					"st": "fill:`$[1]&2?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn2_State2-3",
+					"st": "fill:`$[1]&4?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn2_State3-3",
+					"st": "fill:`$[1]&8?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn2_State4-3",
+					"st": "fill:`$[1]&16?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn2_State5-3",
+					"st": "fill:`$[1]&32?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn2_State6-3",
+					"st": "fill:`$[1]&64?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn2_State7-3",
+					"st": "fill:`$[1]&128?'#a6f7d8':'transparent'`"
+				},
+				{
+					"id": "Btn_Saturate_On",
+					"st": "visibility:`$[2]?'visible':'hidden'`"
+				},
+				{
+					"id": "Btn_Saturate_Off",
+					"st": "visibility:`$[2]?'hidden':'visible'`"
+				}
+			]
+		}
+	],
+	"widgets": [
+		{
+			"name": "vpl:then",
+			"draw": [
+				{
+					"uri": "Icons.svg#ic_then"
+				}
+			]
+		},
+		{
+			"name": "vpl:error",
+			"draw": [
+				{
+					"uri": "Icons.svg#Error"
+				}
+			]
+		},
+		{
+			"name": "vpl:warning",
+			"draw": [
+				{
+					"uri": "Icons.svg#Warning"
+				}
+			]
+		},
+		{
+			"name": "vpl:moreLow",
+			"draw": [
+				{
+					"uri": "Icons.svg#ScrollDown"
+				}
+			]
+		},
+		{
+			"name": "vpl:moreHigh",
+			"draw": [
+				{
+					"uri": "Icons.svg#ScrollUp"
+				}
+			]
+		}
+	],
+	"svgFilenames": [
+		"Icons.svg",
+		"Blocks.svg"
+	],
+	"overlays": [
+		"aseba.json",
+		"l2.json",
+		"js.json",
+		"python.json",
+		"toolbars.json",
+		"buttons.json"
+	]
+}

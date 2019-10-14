@@ -1,0 +1,507 @@
+{
+	"buttons": [
+		{
+			"name": "vpl:about",
+			"state": ["pressed"],
+			"draw": [
+				{
+					"uri": "Icons.svg#Pressed_bg"
+				},
+				{
+					"uri": "Icons.svg#about_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:about",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#about_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:new",
+			"state": ["pressed"],
+			"draw": [
+				{
+					"uri": "Icons.svg#Pressed_bg"
+				},
+				{
+					"uri": "Icons.svg#new2_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:new",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#new2_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:load",
+			"state": ["pressed"],
+			"draw": [
+				{
+					"uri": "Icons.svg#Pressed_bg"
+
+				},
+				{
+					"uri": "Icons.svg#open_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:load",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#open_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:save",
+			"state": ["pressed"],
+			"draw": [
+				{
+					"uri": "Icons.svg#Pressed_bg",
+					"alpha": 1.0
+				},
+				{
+					"uri": "Icons.svg#download_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:save",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#download_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:text-toggle",
+			"state": ["pressed"],
+			"draw": [
+				{
+					"uri": "Icons.svg#Pressed_bg",
+					"alpha": 1.0
+				},
+				{
+					"uri": "Icons.svg#textMode_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:text-toggle",
+			"state": ["selected"],
+			"draw": [
+
+				{
+					"uri": "Icons.svg#textMode_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:text-toggle",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#textMode_default"
+				}
+			]
+		},
+		{
+			"name": "src:locked",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#locked_default"
+				}
+			]
+		},
+		{
+			"name": "src:locked",
+			"state": ["pressed"],
+			"draw": [
+				{
+					"uri": "Icons.svg#unlocked_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:connected",
+			"state": ["unselected"],
+			"draw": [
+			{
+					"uri": "Icons.svg#Selected_bg"
+				},
+				{
+					"uri": "Icons.svg#disconnect_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:connected",
+			"state": ["selected"],
+			"draw": [
+				{
+					"uri": "Icons.svg#Selected_bg"
+				},
+				{
+					"uri": "Icons.svg#robotConnect_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:connected",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#Selected_bg"
+				},
+				{
+					"uri": "Icons.svg#robotConnect_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:run",
+			"state": ["pressed"],
+			"draw": [
+				{
+					"uri": "Icons.svg#play_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:run",
+			"state": ["disabled"],
+			"draw": [
+				{
+					"uri": "Icons.svg#play_default",
+					"alpha": 0.5
+				}
+			]
+		},
+		{
+			"name": "vpl:run",
+			"state": ["=canLoad"],
+			"draw": [
+				{
+					"uri": "Icons.svg#play_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:run",
+			"state": ["=running"],
+			"draw": [
+				{
+					"uri": "Icons.svg#reload_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:run",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#play_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:stop",
+			"state": ["pressed"],
+			"draw": [
+			{
+					"uri": "Icons.svg#Pressed_bg"
+				},
+				{
+					"uri": "Icons.svg#stop_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:stop",
+			"state": ["disabled"],
+			"draw": [
+				{
+					"uri": "Icons.svg#stop_default",
+					"alpha": 0.5
+				}
+			]
+		},
+		{
+			"name": "vpl:stop",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#stop_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:undo",
+			"state": ["disabled"],
+			"draw": [
+				{
+					"uri": "Icons.svg#undo_default",
+					"alpha": 0.5
+				}
+			]
+		},
+		{
+			"name": "vpl:undo",
+			"state": ["pressed"],
+			"draw": [
+				{
+					"uri": "Icons.svg#Pressed_bg"
+				},
+				{
+					"uri": "Icons.svg#undo_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:undo",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#undo_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:redo",
+			"state": ["pressed"],
+			"draw": [
+				{
+					"uri": "Icons.svg#Pressed_bg"
+				},
+				{
+					"uri": "Icons.svg#redo_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:redo",
+			"state": ["disabled"],
+			"draw": [
+				{
+					"uri": "Icons.svg#redo_default",
+					"alpha": 0.5
+				}
+			]
+		},
+		{
+			"name": "vpl:redo",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#redo_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:duplicate",
+			"state": ["pressed"],
+			"draw": [
+				{
+					"uri": "Icons.svg#Pressed_bg"
+				},
+				{
+					"uri": "Icons.svg#duplicate_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:duplicate",
+			"state": ["disabled"],
+			"draw": [
+				{
+					"uri": "Icons.svg#duplicate_default",
+					"alpha": 0.5
+				}
+			]
+		},
+		{
+			"name": "vpl:duplicate",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#duplicate_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:disable",
+			"state": ["pressed"],
+			"draw": [
+				{
+					"uri": "Icons.svg#Pressed_bg"
+				},
+				{
+					"uri": "Icons.svg#disable_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:disable",
+			"state": ["disabled"],
+			"draw": [
+				{
+					"uri": "Icons.svg#disable_default",
+					"alpha": 0.5
+				}
+			]
+		},
+		{
+			"name": "vpl:disable",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#disable_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:trashcan",
+			"state": ["pressed"],
+			"draw": [
+				{
+					"uri": "Icons.svg#Pressed_bg"
+				},
+				{
+					"uri": "Icons.svg#delete_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:trashcan",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#delete_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:sim",
+			"state": ["pressed"],
+			"draw": [
+				{
+					"uri": "Icons.svg#Circle_bg"
+				},
+				{
+					"uri": "Icons.svg#simulator_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:sim",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#simulator_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:advanced",
+			"state": ["pressed"],
+			"draw": [
+
+				{
+					"uri": "Icons.svg#Pressed_bg"
+				},
+				{
+					"uri": "Icons.svg#mediumMode_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:advanced",
+			"state": ["selected"],
+			"draw": [
+				{
+					"uri": "Icons.svg#mediumMode_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:advanced",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#basicMode_default"
+				}
+			]
+		},
+		{
+			"name": "src:sim",
+			"state": ["pressed"],
+			"draw": [
+				{
+					"uri": "Icons.svg#Circle_bg"
+				},
+				{
+					"uri": "Icons.svg#simulator_highlight"
+				}
+			]
+		},
+		{
+			"name": "src:sim",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#simulator_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:teacher",
+			"state": ["pressed","selected"],
+			"draw": [
+				{
+					"uri": "Icons.svg#uiSettings_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:teacher",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#uiSettings_default"
+				}
+			]
+		},
+		{
+			"name": "vpl:teacher-reset",
+			"state": ["pressed","selected"],
+			"draw": [
+				{
+					"uri": "Icons.svg#clearSettings_highlight"
+				}
+			]
+		},
+		{
+			"name": "vpl:teacher-reset",
+			"state": [],
+			"draw": [
+				{
+					"uri": "Icons.svg#clearSettings_default"
+				}
+			]
+		}
+	]
+}
