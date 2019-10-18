@@ -63,6 +63,14 @@ VPLTeacherTools.Pairing = function (options) {
         options.onRobots(this.nonRobots, this);
     }
 	this.client = new VPLTeacherTools.HTTPClient();
+	this.client.listStudents({
+		onSuccess: function (students) {
+            self.students = students;
+            if (self.options.onStudents) {
+                self.options.onStudents(students);
+            }
+        }
+	});
 	this.client.listGroups({
 		onSuccess: function (groups) {
             function update() {
@@ -114,6 +122,124 @@ VPLTeacherTools.Pairing.prototype.updateSessions = function () {
             });
         }
 	});
+};
+
+/** Find the group a student belongs to
+    @param {string} studentName
+    @return {?string} group name, or null if student isn't found or doesn't belong to a group
+*/
+VPLTeacherTools.Pairing.prototype.groupForStudent = function (studentName) {
+    for (var i = 0; i < this.students.length; i++) {
+        if (this.students[i].name === studentName) {
+            return this.students[i].group;
+        }
+    }
+    return null;
+};
+
+/** Find group
+    @param {string} groupName
+    @return {?Object}
+*/
+VPLTeacherTools.Pairing.prototype.findGroup = function (groupName) {
+    for (var i = 0; i < this.groups.length; i++) {
+        if (this.groups[i].name === groupName) {
+            return this.groups[i];
+        }
+    }
+    return null;
+};
+
+VPLTeacherTools.Pairing.prototype.updateGroups = function () {
+    var self = this;
+	this.client.listGroupsWithStudents({
+		onSuccess: function (groups) {
+            self.groups = groups;
+            if (self.options.onGroups) {
+                self.options.onGroups(groups, self);
+            }
+        }
+	});
+};
+
+/** Add a new group with optional initial student
+    @param {string} groupName group name
+    @param {string=} studentName student name
+    @param {boolean=} true to autoremove group left by student if empty
+    @return {void}
+*/
+VPLTeacherTools.Pairing.prototype.addGroup = function (groupName, studentName, autoremove) {
+    groupName = groupName.trim();
+    var self = this;
+    this.client.addGroup(groupName, {
+        onSuccess: function (r) {
+            self.updateGroups();
+            if (studentName) {
+                self.addStudentToGroup(studentName, groupName, autoremove);
+            }
+        }
+    });
+};
+
+VPLTeacherTools.Pairing.prototype.removeGroup = function (groupName) {
+    groupName = groupName.trim();
+    var self = this;
+    this.client.removeGroup(groupName, {
+        onSuccess: function (r) {
+            self.updateGroups();
+        }
+    });
+};
+
+/** Add or move a student to a group
+    @param {string} groupName group name
+    @param {string=} studentName student name
+    @param {boolean=} true to autoremove group left by student if empty
+    @return {void}
+*/
+VPLTeacherTools.Pairing.prototype.addStudentToGroup = function (studentName, groupName, autoremove) {
+    studentName = studentName.trim();
+    groupName = groupName.trim();
+    var previousGroupName = this.groupForStudent(studentName);
+	if (groupName !== previousGroupName) {
+	    var self = this;
+	    this.client.addStudentToGroup(studentName, groupName, {
+	        onSuccess: function (r) {
+	            if (autoremove && previousGroupName) {
+	                var group = self.findGroup(previousGroupName);
+	                if (group && group.students && group.students.length <= 1) {   // not yet updated
+	                    self.removeGroup(previousGroupName);
+	                    return;
+	                }
+	            }
+	            self.updateGroups();
+	        }
+	    });
+	}
+};
+
+/** Remove a student from a group
+    @param {string} studentName
+    @param {string} groupName
+    @param {boolean=} autoremove true to remove group if it becomes empty
+    @return {void}
+*/
+VPLTeacherTools.Pairing.prototype.removeStudentFromGroup = function (studentName, groupName, autoremove) {
+    studentName = studentName.trim();
+    groupName = groupName.trim();
+    var self = this;
+    this.client.removeStudentFromGroup(studentName, groupName, {
+        onSuccess: function (r) {
+            if (autoremove) {
+                var group = self.findGroup(groupName);
+                if (group && group.students.length <= 1) {   // not yet updated
+                    self.removeGroup(groupName);
+                    return;
+                }
+            }
+            self.updateGroups();
+        }
+    });
 };
 
 VPLTeacherTools.Pairing.prototype.getRobotNodes = function () {

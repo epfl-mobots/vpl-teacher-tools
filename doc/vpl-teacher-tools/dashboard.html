@@ -81,13 +81,6 @@ function fillGroupTable(sessionArray, dashboard) {
 
 		table.appendChild(tr);
 	});
-
-	var msg = document.getElementById("no-session-msg");
-	if (sessionArray.length > 0) {
-		msg.style.display = "none";
-	} else {
-		msg.style.display = "block";
-	}
 }
 
 function fillFileTable(fileArray, dashboard) {
@@ -183,11 +176,11 @@ window.addEventListener("load", function () {
 <main>
 
 <div class="border">
-	<h2>Groups</h2>
+	<h2>Groups and robots</h2>
 	<table id="groups">
 	</table>
 
-	<p id="no-session-msg">Groups and robots can be associated in the <a href="pairing.html">Robot setup</a> tab.</p>
+	<p>Groups and robots can be associated in the <a href="pairing.html">Robot setup</a> tab.</p>
 </div>
 
 <div class="border">

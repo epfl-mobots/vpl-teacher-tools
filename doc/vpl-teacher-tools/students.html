@@ -70,33 +70,6 @@ function fillStudentTable(studentArray, students) {
 		td.className = students.isStudentSelected(studentName) ? "rect selected" : "rect";
 		tr.appendChild(td);
 
-/*
-		td = document.createElement("td");
-		var btn = document.createElement("button");
-		btn.textContent = (groupName ? "move to " : "add to ") +
-			(students.selectedGroup || groupName || "group");
-		if (!students.selectedGroup || students.selectedGroup === groupName) {
-			btn.disabled = true;
-		}
-		btn.addEventListener("click", function () {
-			students.addStudentToGroup(studentName, students.selectedGroup);
-		}, false);
-		td.appendChild(btn);
-		tr.appendChild(td);
-
-		td = document.createElement("td");
-		var btn = document.createElement("button");
-		btn.textContent = "remove from " + (groupName || "group");
-		if (!groupName) {
-			btn.disabled = true;
-		}
-		btn.addEventListener("click", function () {
-			students.removeStudentFromGroup(studentName, groupName);
-		}, false);
-		td.appendChild(btn);
-		tr.appendChild(td);
-*/
-
 		td = document.createElement("td");
 		var btn = document.createElement("button");
 		btn.textContent = "remove student";
@@ -183,7 +156,6 @@ function fillGroupTable(groupArray, students) {
 
 		var td = document.createElement("td");
 		td.className = "rect";
-		var tdContent = document.createTextNode("");
 		group.students.forEach(function (studentName, i) {
 			var span = document.createElement("span");
 			span.textContent = studentName;
@@ -267,11 +239,11 @@ window.addEventListener("load", function () {
     		fillStudentTable(studentArray, students);
 		},
 		onGroups: function (groupArray) {
-			fillGroupTable(groupArray, students);
+//			fillGroupTable(groupArray, students);
 		}
 	});
 
-	fillGroupTable([], students);
+//	fillGroupTable([], students);
 
 }, false);
 
@@ -299,13 +271,14 @@ window.addEventListener("load", function () {
 
 <div class="border">
 
-	<h2>Students</h2>
+	<h2>Pupils</h2>
 
 	<table id="students">
 	</table>
 
 </div>
 
+<!--
 <div class="border">
 
 	<h2>Groups</h2>
@@ -313,9 +286,10 @@ window.addEventListener("load", function () {
 	<table id="groups">
 	</table>
 
-	<p>Drag and drop students to change groups. Drag students outside groups to remove them.</p>
+	<p>Drag and drop pupils to change groups. Drag pupils outside groups to remove them.</p>
 
 </div>
+-->
 
 </main>
 

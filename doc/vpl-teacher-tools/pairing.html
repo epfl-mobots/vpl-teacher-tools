@@ -45,6 +45,13 @@ function updateGUI(pairing) {
 	document.getElementById("btn-end-sessions").disabled = !pairing.canEndAllSessions();
 };
 
+/*
+Drag-and-drop data:
+"S/" + student name: item in the pupil table (to add to a group)
+"G/" + student name: item in the group table (to move to another group or remove)
+"R/" + robot name: item in the robot table (to add to a group to make an association)
+*/
+
 function fillRobotTable(robotArray, pairing) {
 	clearChildren("robots");
 	var table = document.getElementById("robots");
@@ -66,7 +73,7 @@ function fillRobotTable(robotArray, pairing) {
 		// drag robot name
 		td.draggable = true;
 		td.addEventListener("dragstart", function (ev) {
-			ev.dataTransfer.setData("text/plain", robotName);
+			ev.dataTransfer.setData("text/plain", "R/" + robotName);
 			ev.dataTransfer.setDragImage(tr.getElementsByTagName("td")[0], 0, 0);
 			ev.dataTransfer.effectAllowed = "copy";
 		});
@@ -88,6 +95,35 @@ function fillRobotTable(robotArray, pairing) {
 
 	robotArray.forEach(function (robot) {
 		addRow(robot.name, robot.flash);
+	});
+}
+
+function fillStudentTable(studentArray) {
+	clearChildren("students");
+	var table = document.getElementById("students");
+
+	function addRow(studentName, groupName) {
+
+		var tr = document.createElement("tr");
+
+		// drag student name
+		tr.draggable = true;
+		tr.addEventListener("dragstart", function (ev) {
+			ev.dataTransfer.setData("text/plain", "S/" + studentName);
+			ev.dataTransfer.setDragImage(tr.getElementsByTagName("td")[0], 0, 0);
+			ev.dataTransfer.effectAllowed = "copy";
+		});
+
+		var td = document.createElement("td");
+		td.textContent = studentName;
+		td.className = "rect";
+		tr.appendChild(td);
+
+		table.appendChild(tr);
+	}
+
+	studentArray.forEach(function (student) {
+		addRow(student.name, student.group);
 	});
 }
 
@@ -113,26 +149,88 @@ function fillGroupTable(groupArray, pairing) {
 			updateGUI(pairing);
 		}
 
-		var tr = document.createElement("tr");
+		if (group.students && group.students.length > 0) {
+			var tr = document.createElement("tr");
 
-		var td = document.createElement("td");
-		td.textContent = group.students ? group.students.join(",") : group.name;
-		td.addEventListener("click", select);
-		td.className = pairing.isGroupSelected(group.name) ? "rect selected" : "rect";
+			var td = document.createElement("td");
+			td.className = pairing.isGroupSelected(group.name) ? "rect selected" : "rect";
+			group.students.forEach(function (studentName, i) {
+				var span = document.createElement("span");
+				span.textContent = studentName;
 
-		// drop robot name
-		tr.addEventListener("dragenter", checkDragType);
-		tr.addEventListener("dragover", checkDragType);
-		tr.addEventListener("drop", function (ev) {
-			var robotName = ev.dataTransfer.getData("text/plain");
-			pairing.beginSession(robotName, group.name);
-			pairing.selectGroup(group.name);
-		});
+				// drag student name
+				span.draggable = true;
+				span.addEventListener("dragstart", function (ev) {
+					ev.dataTransfer.setData("text/plain", "G/" + studentName);
+					ev.dataTransfer.effectAllowed = "move";
+				});
 
-		tr.appendChild(td);
+				td.appendChild(span);
+			});
+			td.addEventListener("click", select);
 
-		table.appendChild(tr);
+			// drop student or robot name
+			tr.addEventListener("dragenter", checkDragType);
+			tr.addEventListener("dragover", checkDragType);
+			tr.addEventListener("drop", function (ev) {
+				var data = ev.dataTransfer.getData("text/plain");
+				if (data && /^[SG]\//.test(data)) {
+					ev.stopPropagation();
+					var studentName = data.slice(2);
+					pairing.addStudentToGroup(studentName, group.name, true);
+					pairing.selectGroup(group.name);
+				} else if (data && /^R\//.test(data)) {
+					ev.stopPropagation();
+					var robotName = data.slice(2);
+					pairing.beginSession(robotName, group.name);
+					pairing.selectGroup(group.name);
+				}
+			});
+
+			tr.appendChild(td);
+			table.appendChild(tr);
+		}
 	});
+
+	// row to create new group
+	var tr = document.createElement("tr");
+	var td = document.createElement("td");
+	td.className = "rect";
+	td.textContent = "\u00a0";
+
+	// drop student name
+	tr.addEventListener("dragenter", checkDragType);
+	tr.addEventListener("dragover", checkDragType);
+	tr.addEventListener("drop", function (ev) {
+		ev.stopPropagation();
+		var data = ev.dataTransfer.getData("text/plain");
+		if (data && /^[SG]\//.test(data)) {
+			var studentName = data.slice(2);
+			var groupName = studentName + "-" + Math.random().toString(10).replace("0.", "");
+			pairing.addGroup(groupName, studentName, true);
+			pairing.selectGroup(groupName);
+		}
+	}, false);
+
+	tr.appendChild(td);
+	table.appendChild(tr);
+
+	// drop student name outside a group -> delete
+	var body = document.body;
+	body.addEventListener("dragenter", checkDragType);
+	body.addEventListener("dragover", checkDragType);
+	body.addEventListener("drop", function (ev) {
+		ev.stopPropagation();
+		var studentName = ev.dataTransfer.getData("text/plain");
+		if (studentName.slice(0, 2) === "G/") {
+			studentName = studentName.slice(2);
+			var groupName = pairing.groupForStudent(studentName);
+			if (groupName) {
+				pairing.removeStudentFromGroup(studentName, groupName, true);
+				pairing.selectGroup(groupName);
+			}
+		}
+	}, false);
 }
 
 function fillPairTable(pairArray, pairing) {
@@ -152,17 +250,17 @@ function fillPairTable(pairArray, pairing) {
 
 		var tr = document.createElement("tr");
 		var td = document.createElement("td");
-		td.textContent = pair.robot;
+		var groupDescr = pair.group ? "" : pair.special ? "(teacher)" : "?";
+		var group = pair.group && pairing.getGroup(pair.group);
+		if (group && group.students) {
+			groupDescr = group.students.length > 0 ? group.students.join(", ") : "(empty)";
+		}
+		td.textContent = groupDescr;
 		td.addEventListener("click", select);
 		td.className = pairing.isPairSelected(pair.group) ? "rect selected" : "rect";
 		tr.appendChild(td);
 		td = document.createElement("td");
-		var groupDescr = pair.group ? "" : pair.special ? "(teacher)" : "?";
-		var group = pair.group && pairing.getGroup(pair.group);
-		if (group) {
-			groupDescr = group.students.length > 0 ? group.students.join(", ") : "(empty)";
-		}
-		td.textContent = groupDescr;
+		td.textContent = pair.robot;
 		td.addEventListener("click", select);
 		td.className = pairing.isPairSelected(pair.group) ? "rect selected" : "rect";
 		tr.appendChild(td);
@@ -286,6 +384,9 @@ window.addEventListener("load", function () {
 		nonRobotNameMapping: {
 			"!sim": "(simulator)"
 		},
+		onStudents: function (studentArray) {
+    		fillStudentTable(studentArray);
+		},
 		onGroups: function (groupArray) {
 			fillGroupTable(groupArray, pairing);
 			updateGUI(pairing);
@@ -336,7 +437,18 @@ window.addEventListener("load", function () {
 	<table id="robots">
 	</table>
 
-	<p>Drag to a group to make a robot-group association.</p>
+	<p>Drag to a group to make a group-robot association.</p>
+
+</div>
+
+<div class="border">
+
+	<h2>Pupils</h2>
+
+	<table id="students">
+	</table>
+
+	<p>Drag to a group to build groups of pupils.</p>
 
 </div>
 
@@ -353,7 +465,7 @@ window.addEventListener("load", function () {
 
 <div class="border">
 
-	<h2>Robot-group associations</h2>
+	<h2>Group-robot associations</h2>
 
 	<p>
 	<button id="btn-begin-session" disabled="true">Associate a robot with a group</button>
