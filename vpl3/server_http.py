@@ -250,11 +250,9 @@ class VPLHTTPServer:
     def http_get_api_listFiles(self, handler):
         q = VPLHTTPServer.query_param(handler)
         student = q["student"][0] if "student" in q else None
-        group = q["group"][0] if "group" in q else None
         last = q["last"][0].lower() == "true" if "last" in q else False
         return self.call_api(Db.list_files,
                              student=student,
-                             group=group,
                              last=last)
 
     @http_get("/api/getLog")

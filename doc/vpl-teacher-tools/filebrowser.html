@@ -73,7 +73,7 @@ function fillFileTable(fileArray, fileBrowser) {
 		return;
 	}
 
-	clearTable("files", ["Filename", "Student", "Group", "Time", "Size"]);
+	clearTable("files", ["Filename", "Student", "Time", "Size"]);
 
 	fileArray.forEach(function (file) {
 		function select(ev) {
@@ -101,14 +101,7 @@ function fillFileTable(fileArray, fileBrowser) {
 		tr.appendChild(td);
 
 		td = document.createElement("td");
-		td.textContent = file.student || "";
-		td.addEventListener("click", select, false);
-		td.addEventListener("dblclick", doubleclick, false);
-		td.className = fileBrowser.isFileSelected(file.id) ? "selected" : "";
-		tr.appendChild(td);
-
-		td = document.createElement("td");
-		td.textContent = file.group || "";
+		td.textContent = file.student || file.group || "";
 		td.addEventListener("click", select, false);
 		td.addEventListener("dblclick", doubleclick, false);
 		td.className = fileBrowser.isFileSelected(file.id) ? "selected" : "";
@@ -176,7 +169,7 @@ window.addEventListener("load", function () {
 	var btn;
 
 	btn = document.getElementById("btn-create");
-	btn.addEventListener("click", function () {
+	function addFile() {
 		var filename = document.getElementById("v-create-filename").value;
 		var ext = VPLTeacherTools.FileBrowser.getFileSuffix(filename);
 		if (!ext) {
@@ -186,10 +179,12 @@ window.addEventListener("load", function () {
 		fileBrowser.addFile(filename,
 			'{"disabledUI":["vpl:download","vpl:load"]}',
 			null, null);
-	}, false);
+	}
+	btn.addEventListener("click", addFile, false);
 	document.getElementById("v-create-filename").addEventListener("input", function () {
 		updateGUI(fileBrowser);
 	}, false);
+	document.getElementById("v-create-filename").addEventListener("change", addFile, false);
 
 	var btn = document.getElementById("btn-open");
 	btn.addEventListener("click", function () {
@@ -215,25 +210,9 @@ window.addEventListener("load", function () {
 		fileBrowser.updateFiles();
 	}, false);
 	vFilterStudent.addEventListener("input", function () {
-		if (chkFilterStudent.checked) {
-			fileBrowser.filterStudent = vFilterStudent.value;
-			fileBrowser.updateFiles();
-		}
-	}, false);
-
-	var chkFilterGroup = document.getElementById("chk-filter-group");
-	var vFilterGroup = document.getElementById("v-filter-group");
-	chkFilterGroup.addEventListener("change", function () {
-		fileBrowser.filterGroup = chkFilterGroup.checked
-			? vFilterGroup.value
-			: null;
+		chkFilterStudent.checked = true;
+		fileBrowser.filterStudent = vFilterStudent.value;
 		fileBrowser.updateFiles();
-	}, false);
-	vFilterGroup.addEventListener("input", function () {
-		if (chkFilterGroup.checked) {
-			fileBrowser.filterGroup = vFilterGroup.value;
-			fileBrowser.updateFiles();
-		}
 	}, false);
 
 	var chkFilterLast = document.getElementById("chk-filter-last");
@@ -251,14 +230,15 @@ window.addEventListener("load", function () {
 
 <nav>
 <ul>
-<li><a href="students.html">Students</a></li>
+<li><a href="students.html">Pupils</a></li>
 <li><a class="current" href="filebrowser.html">Files</a></li>
-<li><a href="pairing.html">Pairing</a></li>
+<li><a href="pairing.html">Robot setup</a></li>
 <li><a href="dashboard.html">Dashboard</a></li>
 <li><a class="disabled" href="#">VPL</a></li>
+<li><a href="doc.html">Documentation</a></li>
 <li><span class="space"></span></li>
 <li><a href="initdb-dev.html">Test data</a></li>
-<li><a href="doc.html">Documentation</a></li>
+<li><a href="dev.html">Development doc</a></li>
 </ul>
 </nav>
 
@@ -269,11 +249,8 @@ window.addEventListener("load", function () {
 	<h2>Filter</h2>
 
 	<p>
-	<label>Student <input id="chk-filter-student" type="checkbox"></label>
+	<label>Pupil <input id="chk-filter-student" type="checkbox"></label>
 	<input id="v-filter-student"></input>
-	<br>
-	<label>Group <input id="chk-filter-group" type="checkbox"></label>
-	<input id="v-filter-group"></input>
 	<br>
 	<label>Most recent only <input id="chk-filter-last" type="checkbox"></label>
 	</p>

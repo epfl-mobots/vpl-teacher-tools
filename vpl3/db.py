@@ -517,7 +517,7 @@ class Db:
         }
 
     def list_files(self,
-                   filename=None, student=None, group=None,
+                   filename=None, student=None,
                    order=None,
                    last=False):
         """Get a list of files, optionnally filtering, ordering and last"""
@@ -533,13 +533,6 @@ class Db:
                 raise ValueError("student not found")
             student_id = re.sub("[^0-9]", "", r[0])  # sanitizd b/c ins in sql
             group_id = re.sub("[^0-9]", "", r[1])  # sanitizd b/c ins in sql
-        if group:
-            r = self.get_first_result("groupid",
-                                      "groups", "name=?",
-                                      (group,))
-            if r is None:
-                raise ValueError("group not found")
-            group_id = r[0]
         sql = f"""
             SELECT fileid, name,
                    {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
@@ -560,12 +553,6 @@ class Db:
                         + " OR files.groupid = " + str(group_id)
                         + ")"
                     if student is not None else ""
-                }
-                {
-                    "AND files.groupid IS NULL"
-                    if group == "" else
-                    "AND files.groupid = " + str(group_id)
-                    if group is not None else ""
                 }
             ORDER BY {
                 "fileid DESC" if order is Db.ORDER_TIME

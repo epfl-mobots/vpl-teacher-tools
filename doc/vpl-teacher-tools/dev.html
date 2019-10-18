@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, height=device-height, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<link rel="stylesheet" href="html-tools.css" />
+
+<style>
+main {
+	max-width: 900px;
+}
+</style>
+
+<title>VPL Tools</title>
+
+</head>
+
+<body>
+
+<nav>
+<ul>
+<li><a href="students.html">Pupils</a></li>
+<li><a href="filebrowser.html">Files</a></li>
+<li><a href="pairing.html">Robot setup</a></li>
+<li><a href="dashboard.html">Dashboard</a></li>
+<li><a class="disabled" href="#">VPL</a></li>
+<li><a href="doc.html">Documentation</a></li>
+<li><span class="space"></span></li>
+<li><a href="initdb-dev.html">Test data</a></li>
+<li><a class="current" href="dev.html">Development doc</a></li>
+</ul>
+</nav>
+
+<main>
+
+<div class="border1">
+
+<h2>Overview</h2>
+
+<p>Here is a brief overview of the communication between the different web applications, the http and websocket servers, and the Thymio Device Manager (tdm), in the typical order they are used. The http server and the web server have access to the same data, but they fill two very different purposes: the http server gives a reply to each request; and the websocket server handles real-time streams and pushes data without a request from the web app it pushes messages to. Static files (typically obtained by typing a URL in the browser location field) are served only by the http server.<p>
+
+<dl>
+
+<dt>Setup</dt>
+<dd>A setup web application is run by the teacher. Its goal is to store in the database the name of the students, the name of the groups, and student-group memberships. The functionality could also be available in tools used in the classroom for ad hoc updates.</dd>
+<dd>Communication is handled by the web app with XMLHttpRequest calls to the http server.</dd>
+
+<dt>Program and other file setup</dt>
+<dd>The teacher has a file browser web app where she can upload files, create empty programs and set their metadata.</dd>
+<dd>Communication is handled by the web app with XMLHttpRequest calls to the http server.</dd>
+<dd>In addition, the teacher can pair a tablet with a robot or the simulator and prepare and test VPL programs. Pairing is done the same way as for students (see below), but then there is no websocket for continuous exchange with a dashboard, only the capability to save program changes with the http server.</dd>
+
+<dt>Classroom setup</dt>
+<dd>Classroom setup consists in pairing the tablets, robots and groups. This is done in a web application which communicates with the http server and the tdm, as follows:</dd>
+<ol>
+<li>The web app connects to the tdm.</li>
+<li>The web app obtains from the tdm a list of available robots with their id.</li>
+<li>The web app displays the list of robots, each of them with a button to blink the yellow leds to identify them (an Aseba program is sent and executed via the tdm using the robot id), and a list of student groups. A click on a robot and on a group select them (up to one robot and one group), and a click on a button "Pair" associates them by sending a request to the http server, which returns a session id, and adds them to a third list. The URL to use on the group tablet and its QR code are displayed. Buttons on the list can dissociate the robot and the group, or display the URL and QR code again. In the robot and group lists, those already associated are disabled.</li>
+<li>The URL of previous step is used to launch the VPL web app. It contains the session id used to connect to the websocket server, and the robot id used with the tdm.</li>
+</ol>
+
+<dt>Classroom programming</dt>
+<dd>Communication between the teacher dashboard and the group vpl web app instances is done via the websocket server, which has multiple purposes:</dd>
+<ul>
+<li>Forward commands from dashboard and programs from database (under dashboard control) to the VPL web apps.</li>
+<li>Store modified programs from VPL web apps with the relevant metadata (group, time, etc.).</li>
+<li>Log everything.</li>
+</ul>
+<dd>Only the VPL web applications communicate with the robots (observation of robot state is not totally excluded in the future). Stopping all the robots is performed by sending a command to the VPL web apps which "forward" it to the tdm (the protocol is completely different).</dd>
+
+<dt>Program analysis and corrections</dt>
+<dd>The last versions of programs and groups can be loaded by the teacher and executed in the simulator or a robot, and additional metadata can be added. In addition, the information displayed during the course in the dashboard can be replayed or further analyzed.</dd>
+
+</dl>
+
+<h2>SQLite database</h2>
+
+<h3>Tables</h3>
+
+<h4>Sessions</h4>
+
+<table>
+<tr><th>Field</th><th>Type</th></tr>
+<tr><td>id</td><td>text</td><td>opaque id created with <code>lower(hex(randomblob(16)))</code></td></tr>
+<tr><td>studentid</td><td>integer</td><td>student id, or null for group</td></tr>
+<tr><td>groupid</td><td>integer</td><td>group id, or null for student</td></tr>
+<tr><td>robot</td><td>text</td><td>robot guid (null if no robot)</td></tr>
+</table>
+
+<h4>Students</h4>
+
+<table>
+<tr><th>Field</th><th>Type</th></tr>
+<tr><td>studentid</td><td>integer</td><td><code>primary key autoincrement</code></td></tr>
+<tr><td>name</td><td>text</td><td>student name</td></tr>
+<tr><td>time</td><td>text</td><td>creation time <code>default current_timestamp</code></td></tr>
+<tr><td>groupid</td><td>integer</td><td>group id, or null if unassigned</td></tr>
+</table>
+
+<h4>Groups</h4>
+
+<table>
+<tr><th>Field</th><th>Type</th></tr>
+<tr><td>groupid</td><td>integer</td><td><code>primary key autoincrement</code></td></tr>
+<tr><td>name</td><td>text</td><td>group name</td></tr>
+<tr><td>time</td><td>text</td><td>creation time <code>default current_timestamp</code></td></tr>
+</table>
+
+<h4>Membership</h4>
+
+<table>
+<tr><th>Field</th><th>Type</th></tr>
+<tr><td>studentid</td><td>integer</td><td>student id</td></tr>
+<tr><td>groupid</td><td>integer</td><td>group id</td></tr>
+<tr><td>begintime</td><td>text</td><td>time the student joined the group</td></tr>
+<tr><td>endtime</td><td>text</td><td>time the student left the group, or null</td></tr>
+</table>
+
+<h4>Files</h4>
+
+<table>
+<tr><th>Field</th><th>Type</th></tr>
+<tr><td>fileid</td><td>integer</td><td>primary key autoincrement</td></tr>
+<tr><td>studentid</td><td>integer</td><td>student id or null</td></tr>
+<tr><td>groupid</td><td>integer</td><td>group id or null</td></tr>
+<tr><td>name</td><td>text</td><td>filename</td></tr>
+<tr><td>time</td><td>text</td><td>time the file was added</td></tr>
+<tr><td>metadata</td><td>text</td><td>properties in a json object</td></tr>
+<tr><td>content</td><td>text</td><td>file content (typically json)</td></tr>
+</table>
+
+<h2>REST API</h2>
+
+<p>Common to all requests: GET method (or POST where specified), result: application/json unless specified otherwise</p>
+
+<h3>Student and group management</h3>
+
+<h4>addStudent</h4>
+
+<pre>
+GET /api/addStudent?name=name
+</pre>
+
+<p>Result: {"status":"ok"} or {"status":"err","msg":"duplicate"}</p>
+
+<h4>listStudents</h4>
+
+<pre>
+GET /api/listStudents
+</pre>
+
+<p>Result: {"status":"ok","result":["name1","name2",...]}</p>
+
+<h4>removeStudent</h4>
+
+<pre>
+GET /api/removeStudent?name=name
+</pre>
+
+<p>Result: {"status":"ok"} or {"status":"err","msg":"student not found"}</p>
+
+<h4>addGroup</h4>
+
+<pre>
+GET /api/addGroup?group=groupName
+</pre>
+
+<p>Result: {"status":"ok"} or {"status":"err","msg":"duplicate"}</p>
+
+<h4>listGroups</h4>
+
+<pre>
+GET /api/listGroups
+</pre>
+
+<p>Result: {"status":"ok","result":["name1","name2",...]}</p>
+
+<h4>removeGroup</h4>
+
+<pre>
+GET /api/removeGroup?group=groupName
+</pre>
+
+<p>Result: {"status":"ok"} or {"status":"err","msg":"group not found"}</p>
+
+<h4>addStudentToGroup</h4>
+
+<pre>
+GET /api/addStudentToGroup?name=name&group=groupName
+</pre>
+
+<p>Result: {"status":"ok"} or {"status":"err","msg":"duplicate"} or {"status":"err","msg":"student not found"} or {"status":"err","msg":"group not found"}</p>
+
+<h4>listGroupStudents</h4>
+
+<pre>
+GET /api/listGroupStudents?group=groupName
+</pre>
+
+<p>Result: {"status":"ok","result":["name1","name2",...]} or {"status":"err","msg":"group not found"}</p>
+
+<h4>removeStudentFromGroup</h4>
+
+<pre>
+GET /api/removeStudentFromGroup?name=name
+</pre>
+
+<p>Result: {"status":"ok"} or {"status":"err","msg":"student not found"} or {"status":"err","msg":"group not found"}</p>
+
+<h3>Sessions</h3>
+
+<h4>beginSession</h4>
+
+<pre>
+GET /api/beginSession?group=groupName&robot=guid
+</pre>
+
+<pre>
+GET /api/beginSession?name=studentName&robot=guid
+</pre>
+
+<pre>
+GET /api/beginSession?group=groupName
+</pre>
+
+<pre>
+GET /api/beginSession?name=studentName
+</pre>
+
+<pre>
+...&force=true
+</pre>
+
+<p>Result: {"status":"ok","result":"sessionId"} or {"status":"err","msg":"student not found"} or {"status":"err","msg":"group not found"} or {"status":"err","msg":"session already open for student"} or {"status":"err","msg":"session already open for group"}</p>
+
+<h4>endSession</h4>
+
+<pre>
+GET /api/endSession?session=sessionId
+</pre>
+
+<p>Result: {"status":"ok"} or {"status":"err","msg":"session not found"}</p>
+
+<h4>endAllSessions</h4>
+
+<pre>
+GET /api/endAllSessions
+</pre>
+
+<p>Result: {"status":"ok"}</p>
+
+<h4>listSessions</h4>
+
+<pre>
+GET /api/listSessions
+</pre>
+
+<p>Result: {"status":"ok","result":["name1","name2",...]}</p>
+
+<h3>Files</h3>
+
+<h4>addFile</h4>
+
+<pre>
+POST /api/addFile?filename=name&student=studentName
+content...
+</pre>
+
+<pre>
+POST /api/addFile?filename=name&group=groupName
+content...
+</pre>
+
+<p>Result: {"status":"ok"}</p>
+
+<h4>updateFile</h4>
+
+<pre>
+POST /api/updateFile?id=id
+content...
+</pre>
+
+<pre>
+GET /api/addFile?filename=name&group=groupName
+</pre>
+
+<p>Result: {"status":"ok"}</p>
+
+<h4>removeFiles</h4>
+
+<pre>
+GET /api/removeFiles?id=id1+id2+...
+</pre>
+
+<h4>listFiles</h4>
+
+<pre>
+GET /api/listFiles
+</pre>
+
+<p>Result: {"status":"ok","result":[{"id":id,"filename":"...","time":"...","size":...,"metadata":null|"json","student":null|"...","group":null|"..."},...]}</p>
+
+<pre>
+GET /api/listFiles?filename=filename
+GET /api/listFiles?student=studentName
+GET /api/listFiles?group=groupName
+</pre>
+
+<p>Filter by filename, student, and/or group</p>
+
+<pre>
+GET /api/listFiles?order=filename
+GET /api/listFiles?order=time
+</pre>
+
+<p>Sort by filename or time (most recent first)</p>
+
+<pre>
+GET /api/listFiles?last=true
+</pre>
+
+<p>Pick most recent enrty only</p>
+
+<h2>WebSocket API</h2>
+
+<ul>
+<li>Websocket on separate port because of Python library constraints.</li>
+<li>JSON messages.</li>
+<li>Basic format:</li>
+<pre>
+{
+    "sender": {
+        "type": "vpl|dashboard",
+        "sessionid": "sessionid"
+    },
+    "type": "cmd|log|file",
+    "data": ...
+}
+</pre>
+<li>All messages sent by vpl are forwarded to the dashboard, and most messages sent by the dashboard are forwarded to vpl.</li>
+</ul>
+
+<h3>Handshake</h3>
+
+<p>Upon connection, the client sends the following packet, with a session id if it is known, or null to request one:</p>
+
+<pre>
+{
+    "sender": {
+        "type": "vpl|dashboard",
+        "sessionid": "sessionid" | null,
+        "role": "student|teacher"
+    },
+    "type": "hello"
+}
+</pre>
+
+<p>Contrary to all other packets, this one is acknowledged by the server which sends back the following packet:</p>
+
+<pre>
+{
+    "sender": {
+        "type": "server"
+    },
+    "type": "hello",
+	"data": {
+		"sessionid": "sessionid"
+	}
+}
+</pre>
+
+<p>Before closing the websocket, one last packet is sent:</p>
+
+<pre>
+{
+    "sender": {
+        "type": "vpl|dashboard",
+        "sessionid": "sessionid" | null,
+        "role": "student|teacher"
+    },
+    "type": "bye"
+}
+</pre>
+
+<h3>From vpl web applications</h3>
+
+<h4>log</h4>
+
+<p>All packets received by the server are logged with the current date and time. For commands, "selected" and "state" are defined only for commands which define them; the represent the value after the command has been executed.</p>
+
+<pre>
+{
+    "sender": {
+        "type": "vpl",
+        "sessionid": "sessionid"
+    },
+    "type": "log",
+    "data": {
+        "type": "cmd",
+        "data": {
+            "cmd": "vpl command id",
+            "selected": true | false,
+            "state": "state string"
+        }
+    }
+}
+</pre>
+
+<pre>
+{
+    "sender": {
+        "type": "vpl",
+        "sessionid": "sessionid"
+    },
+    "type": "log",
+    "data": {
+        "type": "drop",
+        "data": {
+            "cmd": "vpl command id"
+        }
+    }
+}
+</pre>
+
+<pre>
+{
+    "sender": {
+        "type": "vpl",
+        "sessionid": "sessionid"
+    },
+    "type": "log",
+    "data": {
+        "type": "vpl-changed",
+        "data": {
+            "nrules": num,
+            "nblocks": num,
+            "err": "msg" | null
+        }
+    }
+}
+</pre>
+
+<h4>file</h4>
+
+<p>Files are added to table "files".</p>
+
+<pre>
+{
+    "sender": {
+        "type": "vpl",
+        "sessionid": "sessionid"
+    },
+    "type": "file",
+    "data": {
+        "name": "...",
+        "student": "..." (or undefined),
+        "group": "..." (or undefined),
+        "metadata": {...} (or undefined)
+    }
+}
+</pre>
+
+<h3>To vpl web applications</h3>
+
+<h4>cmd</h4>
+
+<p>A command is executed as if it were clicked in the VPL web application. No log packet is sent back to the server.</p>
+
+<pre>
+{
+    "sender": {
+        "type": "dashboard"
+    },
+    "type": "cmd",
+    "data": {
+        "cmd": "vpl command id"
+    }
+}
+</pre>
+
+<p>For commands with selected/unselected state, or state string, the requested value can be specified:
+
+<pre>
+{
+    ...,
+    "data": {
+        "cmd": "vpl command id",
+        "selected": true | false
+    }
+}
+</pre>
+
+<pre>
+{
+    ...,
+    "data": {
+        "cmd": "vpl command id",
+        "state": "state string"
+    }
+}
+</pre>
+
+<h4>file</h4>
+
+<p>A file is loaded as a VPL program (json or aesl), a document for the help or suspend panel, or as an image in the simulator. For programs, the name is retained and used when sending back a new version to the server.</p>
+
+<pre>
+{
+    "sender": {
+        "type": "dashboard"
+    },
+    "type": "file",
+    "data": {
+        "name": "...",
+        "kind": "vpl" | "help" | "suspend"
+                | "sim:ground" | "sim:height" | "sim:obstacles",
+        "metadata": {...},
+        "content": "..."
+    }
+}
+</pre>
+
+<h3>From dashboard</h3>
+
+<p>Packets sent by the dashboard are forwarded to some or to all VPL web applications. They have the same content as packets sent to VPL web applications, with an additional field for the recipient (session id or null for all):</p>
+
+<pre>
+{
+    ...
+    "rcpt": ["sessionid1", ...] | null
+}
+</pre>
+
+<h3>To dashboard</h3>
+
+<p>All packets sent by VPL web applications are forwarded to the dashboard.</p>
+
+</div>
+
+</main>
+
+</body>
+
+</html>

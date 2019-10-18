@@ -177,9 +177,6 @@ VPLTeacherTools.HTTPClient.prototype.listFiles = function (queryProps, opt) {
 		if (queryProps.filterStudent != null) {
 			params.push("student=" + encodeURIComponent(queryProps.filterStudent));
 		}
-		if (queryProps.filterGroup != null) {
-			params.push("group=" + encodeURIComponent(queryProps.filterGroup));
-		}
 		if (queryProps.last) {
 			params.push("last=true");
 		}
