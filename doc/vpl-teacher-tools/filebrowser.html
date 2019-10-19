@@ -137,10 +137,10 @@ window.addEventListener("load", function () {
 		onOpen: function (file) {
             sessionStorage.setItem("initialFileName", file.filename);
             sessionStorage.setItem("initialFileContent", file.content);
-			var readOnly = file.group_id != null || file.student_id != null;
-			sessionStorage.setItem("readOnly", readOnly ? "true" : "false");
-			sessionStorage.setItem("fileId", readOnly ? "" : file.id);
-			document.location = "vpl.html";
+			var teacherFile = file.group_id == null && file.student_id == null;
+			sessionStorage.setItem("readOnly", teacherFile ? "false" : "true");
+			sessionStorage.setItem("fileId", teacherFile ? file.id : "");
+			document.location = "vpl.html" + (teacherFile ? "?role=teacher" : "");
 		}
 	});
 

@@ -55,12 +55,15 @@ window["vplStorageGetFunction"] = function (filename, fun) {
 		progJSON = JSON.stringify(prog);
 
 		fun(progJSON, {"filename": filename, "readOnly": readOnly});
+		sessionStorage.setItem("initialUISettings", window["vplGetUIAsJSON"]());
 	}
 };
 
 window.addEventListener("beforeunload", function () {
 	var readOnly = sessionStorage.getItem("readOnly") === "true";
-	if (!readOnly && window["vplIsProgramChanged"]()) {
+	if (!readOnly &&
+		(window["vplIsProgramChanged"]() ||
+			window["vplGetUIAsJSON"]() !== sessionStorage.getItem("initialUISettings"))) {
 		var fileId = parseInt(sessionStorage.getItem("fileId"), 10);
 		var json = window["vplGetProgramAsJSON"]();
 		console.info(json);
