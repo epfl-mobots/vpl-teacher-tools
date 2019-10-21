@@ -57,10 +57,11 @@ function fillRobotTable(robotArray, pairing) {
 		var td = document.createElement("td");
 		td.textContent = flashFunction ? "Thymio II" : robotName;
 		td.addEventListener("click", function () {
-			pairing.selectRobot(robotName);
-			fillRobotTable(robotArray, pairing);
+			if (pairing.selectByRobotName(robotName)) {
+				pairing.updateGroups();
+			}
 		});
-		td.className = pairing.isRobotSelected(robotName) ? "rect selected" : "rect";
+		td.className = "rect";
 
 		// drag robot name
 		td.draggable = true;
@@ -91,7 +92,7 @@ function fillRobotTable(robotArray, pairing) {
 	});
 }
 
-function fillStudentTable(studentArray) {
+function fillStudentTable(studentArray, pairing) {
 	clearChildren("students");
 	var table = document.getElementById("students");
 
@@ -110,6 +111,11 @@ function fillStudentTable(studentArray) {
 		var td = document.createElement("td");
 		td.textContent = studentName;
 		td.className = "rect";
+		td.addEventListener("click", function () {
+			if (pairing.selectByStudentName(studentName)) {
+				pairing.updateGroups();
+			}
+		}, false);
 		tr.appendChild(td);
 
 		var td = document.createElement("td");
@@ -352,7 +358,7 @@ window.addEventListener("load", function () {
 			"!sim": "(simulator)"
 		},
 		onStudents: function (studentArray) {
-    		fillStudentTable(studentArray);
+    		fillStudentTable(studentArray, pairing);
 		},
 		onGroups: function (groupArray) {
 			fillGroupTable(groupArray, pairing);

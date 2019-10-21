@@ -206,16 +206,24 @@ VPLTeacherTools.Pairing.prototype.getRobotNodes = function () {
     return this.tdm.nodes;
 };
 
-VPLTeacherTools.Pairing.prototype.selectRobot = function (robotName) {
-    this.selectedRobot = robotName;
+VPLTeacherTools.Pairing.prototype.selectByStudentName = function (studentName) {
+    for (var i = 0; i < this.groups.length; i++) {
+        if (this.groups[i].students && this.groups[i].students.indexOf(studentName) >= 0) {
+            this.selectedGroup = this.groups[i].name;
+            return true;
+        }
+    }
+    return false;
 };
 
-VPLTeacherTools.Pairing.prototype.unselectRobot = function () {
-    this.selectedRobot = "";
-};
-
-VPLTeacherTools.Pairing.prototype.isRobotSelected = function (robotName) {
-    return this.selectedRobot === robotName;
+VPLTeacherTools.Pairing.prototype.selectByRobotName = function (robotName) {
+    for (var i = 0; i < this.groups.length; i++) {
+        if (this.groups[i].pair && this.groups[i].pair.robot === robotName) {
+            this.selectedGroup = this.groups[i].name;
+            return true;
+        }
+    }
+    return false;
 };
 
 VPLTeacherTools.Pairing.prototype.isRobot = function (robotName) {
