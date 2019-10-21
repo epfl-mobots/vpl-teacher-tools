@@ -275,7 +275,6 @@ class VPLHTTPServer:
 
     @http_get_any
     def http_get_shortenedURL(path, self, handler):
-        print("http_get_shortenedURL: path=" + path)
         if path.startswith("/xx"):
             key = path[3:]
             url = self.url_shortcuts.get(key)

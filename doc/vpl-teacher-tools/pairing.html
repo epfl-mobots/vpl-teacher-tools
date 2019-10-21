@@ -58,11 +58,6 @@ function clearChildren(id) {
 	}
 }
 
-function updateGUI(pairing) {
-	document.getElementById("btn-begin-session").disabled = !pairing.canBeginSession();
-	document.getElementById("btn-end-sessions").disabled = !pairing.canEndAllSessions();
-};
-
 /*
 Drag-and-drop data:
 "S/" + student name: item in the pupil table (to add to a group)
@@ -81,10 +76,8 @@ function fillRobotTable(robotArray, pairing) {
 		td.textContent = flashFunction ? "Thymio II" : robotName;
 		td.addEventListener("click", function () {
 			pairing.selectRobot(robotName);
-			pairing.unselectPair();
 			fillRobotTable(robotArray, pairing);
 			fillPairTable(pairing.pairs, pairing);
-			updateGUI(pairing);
 		});
 		td.className = pairing.isRobotSelected(robotName) ? "rect selected" : "rect";
 
@@ -161,10 +154,7 @@ function fillGroupTable(groupArray, pairing) {
 	groupArray.forEach(function (group) {
 		function select() {
 			pairing.selectGroup(group.name);
-			pairing.unselectPair();
 			fillGroupTable(groupArray, pairing);
-			fillPairTable(pairing.pairs, pairing);
-			updateGUI(pairing);
 		}
 
 		if (group.students && group.students.length > 0) {
@@ -174,6 +164,7 @@ function fillGroupTable(groupArray, pairing) {
 			td.className = pairing.isGroupSelected(group.name) ? "rect selected" : "rect";
 			group.students.forEach(function (studentName, i) {
 				var span = document.createElement("span");
+				span.className = "rect";
 				span.textContent = studentName;
 
 				// drag student name
@@ -206,6 +197,23 @@ function fillGroupTable(groupArray, pairing) {
 			});
 
 			tr.appendChild(td);
+
+			if (group.pair) {
+				td = document.createElement("td");
+				td.className = pairing.isGroupSelected(group.name) ? "rect selected" : "rect";
+				td.textContent = group.pair.robot + " ";
+				var rmBtn = document.createElement("span");
+				rmBtn.textContent = "\u2716";	// heavy multiplication mark
+				rmBtn.style.cursor = "pointer";
+				rmBtn.addEventListener("click", function (ev) {
+					ev.stopPropagation();
+					pairing.endSession(group.pair.session_id);
+				}, false);
+				td.appendChild(rmBtn);
+				td.addEventListener("click", select);
+				tr.appendChild(td);
+			}
+
 			table.appendChild(tr);
 		}
 	});
@@ -249,70 +257,26 @@ function fillGroupTable(groupArray, pairing) {
 			}
 		}
 	}, false);
-}
-
-function fillPairTable(pairArray, pairing) {
-	clearChildren("sessions");
-	var table = document.getElementById("sessions");
-
-	pairArray.forEach(function (pair) {
-		function select() {
-			pairing.selectPair(pair.group || pair.special);
-			fillPairTable(pairArray, pairing);
-			pairing.unselectRobot();
-			fillRobotTable(pairing.robots, pairing);
-			pairing.unselectGroup();
-			fillGroupTable(pairing.groups, pairing);
-			updateGUI(pairing);
-		}
-
-		var tr = document.createElement("tr");
-		var td = document.createElement("td");
-		var groupDescr = pair.group ? "" : pair.special ? "(teacher)" : "?";
-		var group = pair.group && pairing.getGroup(pair.group);
-		if (group && group.students) {
-			groupDescr = group.students.length > 0 ? group.students.join(", ") : "(empty)";
-		}
-		td.textContent = groupDescr;
-		td.addEventListener("click", select);
-		td.className = pairing.isPairSelected(pair.group) ? "rect selected" : "rect";
-		tr.appendChild(td);
-		td = document.createElement("td");
-		td.textContent = pair.robot;
-		td.addEventListener("click", select);
-		td.className = pairing.isPairSelected(pair.group) ? "rect selected" : "rect";
-		tr.appendChild(td);
-		td = document.createElement("td");
-		var btn = document.createElement("button");
-		btn.textContent = "End session";
-		btn.addEventListener("click", function () {
-			pairing.endSession(pair.session_id);
-		});
-		td.appendChild(btn);
-		tr.appendChild(td);
-		table.appendChild(tr);
-	});
 
 	clearChildren("info");
-	var selectedPair = pairing.selectedPair();
-	if (selectedPair) {
+	var selectedGroup = pairing.getSelectedGroup();
+	if (selectedGroup && selectedGroup.pair) {
 		var div = document.createElement("div");
 		div.setAttribute("class", "border");
 		var h2 = document.createElement("h2");
 		h2.textContent = "VPL launcher";
 		div.appendChild(h2);
 		var p = document.createElement("p");
-		var group = pairing.getGroup(selectedPair.group);
-		var groupDescr = group && group.students.length > 0
-			? group.students.join(", ")
-			: selectedPair.group;
+		var groupDescr = selectedGroup.students.length > 0
+			? selectedGroup.students.join(", ")
+			: selectedGroup.name;
 		p.textContent = "Group: " + groupDescr;
 		div.appendChild(p);
 		var p = document.createElement("p");
 		p.style.overflowWrap = "break-word";
 		var a = document.createElement("a");
 		a.style.fontFamily = "monospace";
-		var toolURL = pairing.getToolURL(selectedPair);
+		var toolURL = pairing.getToolURL(selectedGroup.pair);
 		if (toolURL) {
 			var url = document.location.origin + toolURL;
 			a.textContent = url;
@@ -365,7 +329,6 @@ window.addEventListener("load", function () {
 		tdmURL: tdmURL,
 		onRobots: function (robotArray, pairing) {
     		fillRobotTable(robotArray, pairing);
-			updateGUI(pairing);
 		},
 		robot: {
 			name: function (nodeId) {
@@ -407,23 +370,11 @@ window.addEventListener("load", function () {
 		},
 		onGroups: function (groupArray) {
 			fillGroupTable(groupArray, pairing);
-			updateGUI(pairing);
 		},
 		nonGroups: [
 			"(teacher)"
-		],
-		onPairs: function (pairArray) {
-			fillPairTable(pairArray, pairing);
-			updateGUI(pairing);
-		}
+		]
 	});
-
-	document.getElementById("btn-begin-session").addEventListener("click", function () {
-		pairing.beginSession();
-	}, false);
-	document.getElementById("btn-end-sessions").addEventListener("click", function () {
-		pairing.endAllSessions();
-	}, false);
 }, false);
 
 </script>
@@ -468,7 +419,8 @@ window.addEventListener("load", function () {
 	<table id="groups">
 	</table>
 
-	<p id="no-group-msg">Students can be gathered into groups in the <a href="students.html">Students</a> tab.</p>
+	<p>Drag pupils between groups or out of group to reorganize.</p>
+	<p>Select a group with a robot to display the VPL launch code.</p>
 
 </div>
 
@@ -482,20 +434,6 @@ window.addEventListener("load", function () {
 	<p>Drag to a group to make a group-robot association.</p>
 
 </div>
-
-</div>
-
-<div class="border">
-
-	<h2>Group-robot associations</h2>
-
-	<p>
-	<button id="btn-begin-session" disabled="true">Associate a robot with a group</button>
-	<button id="btn-end-sessions" disabled="true">End all sessions</button>
-	</p>
-
-	<table id="sessions">
-	</table>
 
 </div>
 

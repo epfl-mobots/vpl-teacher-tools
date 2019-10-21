@@ -50,10 +50,6 @@ VPLTeacherTools.Pairing = function (options) {
                 if (options && options.onRobots) {
 				    options.onRobots(a, self);
                 }
-                if (options && options.onPairs) {
-                    // in case onPairs needs the robots
-                    options.onPairs(self.pairs);
-                }
 			}
 		});
 
@@ -71,57 +67,7 @@ VPLTeacherTools.Pairing = function (options) {
             }
         }
 	});
-	this.client.listGroups({
-		onSuccess: function (groups) {
-            function update() {
-                self.groups = groups.concat(nonGroups);
-                if (options.onGroups) {
-                    options.onGroups(self.groups, self);
-                }
-            }
-			groups.forEach(function (group) {
-				self.client.listGroupStudents(group.name, {
-                    onSuccess: function (students) {
-                        group.students = students;
-                        self.groups = groups.concat(nonGroups);
-                        if (options.onGroups) {
-                            options.onGroups(self.groups, self);
-                        }
-                    }
-                });
-			});
-        }
-	});
-    this.updateSessions();
-};
-
-VPLTeacherTools.Pairing.prototype.updateSessions = function () {
-    var self = this;
-	this.client.listSessions({
-		onSuccess: function (pairs) {
-            pairs = pairs.map(function (pair) {
-                if (!self.isRobot(pair.robot)) {
-                    pair.robot = self.nonRobotNameMapping[pair.robot] || pair.robot;
-                }
-                return pair;
-            });
-            self.pairs = pairs;
-            if (self.options.onPairs) {
-                self.options.onPairs(pairs);
-            }
-            // get students
-            pairs.forEach(function (pair) {
-				self.client.listGroupStudents(pair.group, {
-                    onSuccess: function (students) {
-                        pair.students = students;
-                        if (self.options.onPairs) {
-                            self.options.onPairs(pairs);
-                        }
-                    }
-                });
-            });
-        }
-	});
+    this.updateGroups();
 };
 
 /** Find the group a student belongs to
@@ -158,6 +104,29 @@ VPLTeacherTools.Pairing.prototype.updateGroups = function () {
             if (self.options.onGroups) {
                 self.options.onGroups(groups, self);
             }
+        	self.client.listSessions({
+        		onSuccess: function (pairs) {
+                    pairs = pairs.map(function (pair) {
+                        if (!self.isRobot(pair.robot)) {
+                            pair.robot = self.nonRobotNameMapping[pair.robot] || pair.robot;
+                        }
+                        return pair;
+                    });
+                    // add pair to group
+                    pairs.forEach(function (pair) {
+                        var i = self.groups.findIndex(function (group) {
+                            return pair.group === group.name;
+                        });
+                        if (i >= 0) {
+                            self.groups[i].pair = pair;
+                        }
+                    });
+                    self.pairs = pairs;
+                    if (self.options.onGroups) {
+                        self.options.onGroups(self.groups, self);
+                    }
+                }
+        	});
         }
 	});
 };
@@ -275,6 +244,12 @@ VPLTeacherTools.Pairing.prototype.isGroupSelected = function (groupName) {
     return this.selectedGroup === groupName;
 };
 
+VPLTeacherTools.Pairing.prototype.getSelectedGroup = function () {
+    return this.groups.find(function (group) {
+        return group.name === this.selectedGroup;
+    }, this);
+};
+
 VPLTeacherTools.Pairing.prototype.canBeginSession = function (robotName, groupName) {
     robotName = robotName || this.selectedRobot;
     groupName = groupName || this.selectedGroup;
@@ -296,6 +271,12 @@ VPLTeacherTools.Pairing.prototype.deletePairBySessionId = function (sessionId) {
         return pair.session_id === sessionId;
     });
     if (ix >= 0) {
+        var groupIx = this.groups.findIndex(function (group) {
+            return group.pair === this.pairs[ix];
+        }, this);
+        if (groupIx >= 0) {
+            this.groups[groupIx].pair = null;
+        }
         this.pairs.splice(ix, 1);
     }
 };
@@ -315,34 +296,11 @@ VPLTeacherTools.Pairing.prototype.beginSession = function (robotName, groupName)
             true,
             {
                 onSuccess: function (r) {
-                    self.selectPair(group);
-                    self.updateSessions();
+                    self.selectGroup(group);
+                    self.updateGroups();
                 }
             });
     }
-};
-
-VPLTeacherTools.Pairing.prototype.selectPair = function (groupName) {
-    this.groupOfSelectedPair = groupName;
-};
-
-VPLTeacherTools.Pairing.prototype.unselectPair = function () {
-    this.groupOfSelectedPair = "";
-};
-
-VPLTeacherTools.Pairing.prototype.isPairSelected = function (groupName) {
-    return this.groupOfSelectedPair === groupName;
-};
-
-VPLTeacherTools.Pairing.prototype.selectedPair = function () {
-	if (this.groupOfSelectedPair) {
-	    var ix = this.pairs.findIndex(function (pair) {
-	        return pair.group === this.groupOfSelectedPair;
-	    }, this);
-		return this.pairs[ix];
-	} else {
-		return null;
-	}
 };
 
 VPLTeacherTools.Pairing.prototype.getGroup = function (groupName) {
@@ -365,8 +323,8 @@ VPLTeacherTools.Pairing.prototype.endSession = function (sessionId) {
     this.client.endSession(sessionId, {
         onSuccess: function (r) {
             self.deletePairBySessionId(sessionId);
-            if (self.options.onPairs) {
-                self.options.onPairs(self.pairs);
+            if (self.options.onGroups) {
+                self.options.onGroups(self.groups, self);
             }
         }
     });
@@ -382,8 +340,11 @@ VPLTeacherTools.Pairing.prototype.endAllSessions = function () {
         {
             onSuccess: function (r) {
                 self.pairs = [];
-                if (self.options.onPairs) {
-                    self.options.onPairs([]);
+                self.groups.forEach(function (group) {
+                    group.pair = null;
+                });
+                if (self.options.onGroups) {
+                    self.options.onGroups(self.groups, self);
                 }
             }
         });
