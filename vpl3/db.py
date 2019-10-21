@@ -225,8 +225,21 @@ class Db:
             """, (group_id, name))
             self._db.commit()
 
+            # remove previous group if empty
+            if membership is not None:
+                c.execute("""
+                    SELECT count(*)
+                    FROM students
+                    WHERE groupid=?
+                          """, (membership,))
+                num_students_left = int(c.fetchone()[0])
+                if num_students_left == 0:
+                    c.execute("DELETE FROM groups WHERE groupid=?",
+                              (membership,))
+                    self._db.commit()
+
     def remove_student_from_group(self, name):
-        """Remove a student from her group"""
+        """Remove a student from her group, and the group itself if empty"""
         r = self.get_first_result("groupid", "students", "name=?",
                                   (name,))
         if r is None:
@@ -248,6 +261,17 @@ class Db:
                 WHERE name=?
             """, (name,))
             self._db.commit()
+
+            # remove group if empty
+            c.execute("""
+                SELECT count(*)
+                FROM students
+                WHERE groupid=?
+                      """, (group_id,))
+            num_students_left = int(c.fetchone()[0])
+            if num_students_left == 0:
+                c.execute("DELETE FROM groups WHERE groupid=?", (group_id,))
+                self._db.commit()
 
     def list_group_students(self, group):
         """Get a list of all students belonging to a group"""
