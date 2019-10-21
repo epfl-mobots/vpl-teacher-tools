@@ -69,7 +69,7 @@ function fillRobotTable(robotArray, pairing) {
 	clearChildren("robots");
 	var table = document.getElementById("robots");
 
-	function addRow(robotName, flashFunction) {
+	function addRow(robotName, flashFunction, flashFunctionDisabled) {
 		var tr = document.createElement("tr");
 
 		var td = document.createElement("td");
@@ -77,7 +77,6 @@ function fillRobotTable(robotArray, pairing) {
 		td.addEventListener("click", function () {
 			pairing.selectRobot(robotName);
 			fillRobotTable(robotArray, pairing);
-			fillPairTable(pairing.pairs, pairing);
 		});
 		td.className = pairing.isRobotSelected(robotName) ? "rect selected" : "rect";
 
@@ -94,7 +93,8 @@ function fillRobotTable(robotArray, pairing) {
 		td = document.createElement("td");
 		if (flashFunction) {
 			var btn = document.createElement("button");
-			btn.textContent = "Flash";
+			btn.textContent = "flash";
+			btn.disabled = flashFunctionDisabled;
 			btn.addEventListener("mousedown", function () { flashFunction(true); }, false);
 			btn.addEventListener("mouseup", function () { flashFunction(false); }, false);
 			td.appendChild(btn);
@@ -105,7 +105,7 @@ function fillRobotTable(robotArray, pairing) {
 	}
 
 	robotArray.forEach(function (robot) {
-		addRow(robot.name, robot.flash);
+		addRow(robot.name, robot.flash, !robot.canFlash);
 	});
 }
 
@@ -205,7 +205,7 @@ function fillGroupTable(groupArray, pairing) {
 			if (group.pair) {
 				td = document.createElement("td");
 				td.className = pairing.isGroupSelected(group.name) ? "rect selected" : "rect";
-				td.textContent = group.pair.robot + " ";
+				td.textContent = (/^\{/.test(group.pair.robot) ? "Thymio II" : group.pair.robot.replace(/[()]/g, "")) + " ";
 				var rmBtn = document.createElement("span");
 				rmBtn.textContent = "\u2716";	// heavy multiplication mark
 				rmBtn.style.cursor = "pointer";

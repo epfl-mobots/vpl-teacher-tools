@@ -39232,9 +39232,34 @@ window.TDM = function (url, options) {
     };
   }();
 
-  client.onClose = function () {
-    options.change && options.change(false);
-  };
+  client.onClose =
+  /*#__PURE__*/
+  _asyncToGenerator(
+  /*#__PURE__*/
+  regeneratorRuntime.mark(function _callee2() {
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            options.change && options.change(false);
+
+          case 1:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  }));
+};
+
+window.TDM.status = {
+  // from thymio.fbs
+  unknown: 0,
+  connected: 1,
+  available: 2,
+  busy: 3,
+  ready: 4,
+  disconnected: 5
 };
 
 window.TDM.prototype.isConnected = function () {
@@ -39265,98 +39290,98 @@ window.TDM.prototype.canRun = function () {
 window.TDM.prototype.run =
 /*#__PURE__*/
 function () {
-  var _ref2 = _asyncToGenerator(
+  var _ref3 = _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee2(program, success) {
-    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+  regeneratorRuntime.mark(function _callee3(program, success) {
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
-            _context2.prev = 0;
+            _context3.prev = 0;
 
             if (!(this.selectedNode.status == _mobsya_thymio_api__WEBPACK_IMPORTED_MODULE_0__["NodeStatus"].ready)) {
-              _context2.next = 7;
+              _context3.next = 7;
               break;
             }
 
-            _context2.next = 4;
+            _context3.next = 4;
             return this.selectedNode.sendAsebaProgram(program);
 
           case 4:
-            _context2.next = 6;
+            _context3.next = 6;
             return this.selectedNode.runProgram();
 
           case 6:
             success && success();
 
           case 7:
-            _context2.next = 12;
+            _context3.next = 12;
             break;
 
           case 9:
-            _context2.prev = 9;
-            _context2.t0 = _context2["catch"](0);
-            console.log(_context2.t0);
+            _context3.prev = 9;
+            _context3.t0 = _context3["catch"](0);
+            console.log(_context3.t0);
 
           case 12:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
       }
-    }, _callee2, this, [[0, 9]]);
+    }, _callee3, this, [[0, 9]]);
   }));
 
   return function (_x2, _x3) {
-    return _ref2.apply(this, arguments);
+    return _ref3.apply(this, arguments);
   };
 }();
 
 window.TDM.runOnNode =
 /*#__PURE__*/
 function () {
-  var _ref3 = _asyncToGenerator(
+  var _ref4 = _asyncToGenerator(
   /*#__PURE__*/
-  regeneratorRuntime.mark(function _callee3(node, program, success) {
-    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+  regeneratorRuntime.mark(function _callee4(node, program, success) {
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
-        switch (_context3.prev = _context3.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
-            _context3.prev = 0;
-            _context3.next = 3;
+            _context4.prev = 0;
+            _context4.next = 3;
             return node.lock();
 
           case 3:
-            _context3.next = 5;
+            _context4.next = 5;
             return node.sendAsebaProgram(program);
 
           case 5:
-            _context3.next = 7;
+            _context4.next = 7;
             return node.runProgram();
 
           case 7:
-            _context3.next = 9;
+            _context4.next = 9;
             return node.unlock();
 
           case 9:
             success && success();
-            _context3.next = 15;
+            _context4.next = 15;
             break;
 
           case 12:
-            _context3.prev = 12;
-            _context3.t0 = _context3["catch"](0);
-            console.log(_context3.t0);
+            _context4.prev = 12;
+            _context4.t0 = _context4["catch"](0);
+            console.log(_context4.t0);
 
           case 15:
           case "end":
-            return _context3.stop();
+            return _context4.stop();
         }
       }
-    }, _callee3, null, [[0, 12]]);
+    }, _callee4, null, [[0, 12]]);
   }));
 
   return function (_x4, _x5, _x6) {
-    return _ref3.apply(this, arguments);
+    return _ref4.apply(this, arguments);
   };
 }();
 

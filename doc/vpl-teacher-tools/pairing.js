@@ -36,6 +36,7 @@ VPLTeacherTools.Pairing = function (options) {
                         return {
                             name: options.robot.name(node.id.toString()),
 							url: options.robot.url,
+                            canFlash: node.status === window["TDM"].status.ready || node.status === window["TDM"].status.available,
                             flash: function (on) {
                 				window["TDM"].runOnNode(node,
                                     on
