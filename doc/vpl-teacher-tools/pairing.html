@@ -18,24 +18,6 @@ td {
 	padding: 0.5ex;
 }
 
-div.columncontainer {
-	display: flex;
-	margin-left: 3em;
-	margin-right: 3em;
-}
-
-div.column {
-	width: 33%;
-	margin-left: 0.5em;
-	margin-right: 0.5em;
-}
-div.column:first-child {
-	margin-left: 0;
-}
-div.column:last-child {
-	margin-right: 0;
-}
-
 div#info {
 	margin: 0;
 	padding: 0;
@@ -405,39 +387,39 @@ window.addEventListener("load", function () {
 
 <div class="columncontainer">
 
-<div class="border column">
+	<div class="border column3">
 
-	<h2>Pupils</h2>
+		<h2>Pupils</h2>
 
-	<table id="students">
-	</table>
+		<table id="students">
+		</table>
 
-	<p>Drag to a group to build groups of pupils.</p>
+		<p>Drag to a group to build groups of pupils.</p>
 
-</div>
+	</div>
 
-<div class="border column">
+	<div class="border column3">
 
-	<h2>Groups</h2>
+		<h2>Groups</h2>
 
-	<table id="groups">
-	</table>
+		<table id="groups">
+		</table>
 
-	<p>Drag pupils between groups or out of group to reorganize.</p>
-	<p>Select a group with a robot to display the VPL launch code.</p>
+		<p>Drag pupils between groups or out of group to reorganize.</p>
+		<p>Select a group with a robot to display the VPL launch code.</p>
 
-</div>
+	</div>
 
-<div class="border column">
+	<div class="border column3">
 
-	<h2>Robots</h2>
+		<h2>Robots</h2>
 
-	<table id="robots">
-	</table>
+		<table id="robots">
+		</table>
 
-	<p>Drag to a group to make a group-robot association.</p>
+		<p>Drag to a group to make a group-robot association.</p>
 
-</div>
+	</div>
 
 </div>
 
