@@ -130,6 +130,10 @@ function fillStudentTable(studentArray) {
 		td.className = "rect";
 		tr.appendChild(td);
 
+		var td = document.createElement("td");
+		td.textContent = groupName ? "\u2713" : "";	// checkmark
+		tr.appendChild(td);
+
 		table.appendChild(tr);
 	}
 

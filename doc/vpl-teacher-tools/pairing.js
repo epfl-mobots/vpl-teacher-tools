@@ -59,15 +59,20 @@ VPLTeacherTools.Pairing = function (options) {
         options.onRobots(this.nonRobots, this);
     }
 	this.client = new VPLTeacherTools.HTTPClient();
+    this.updateStudents();
+    this.updateGroups();
+};
+
+VPLTeacherTools.Pairing.prototype.updateStudents = function () {
+    var self = this;
 	this.client.listStudents({
 		onSuccess: function (students) {
             self.students = students;
             if (self.options.onStudents) {
-                self.options.onStudents(students);
+                self.options.onStudents(self.students);
             }
         }
 	});
-    this.updateGroups();
 };
 
 /** Find the group a student belongs to
@@ -134,17 +139,16 @@ VPLTeacherTools.Pairing.prototype.updateGroups = function () {
 /** Add a new group with optional initial student
     @param {string} groupName group name
     @param {string=} studentName student name
-    @param {boolean=} true to autoremove group left by student if empty
     @return {void}
 */
-VPLTeacherTools.Pairing.prototype.addGroup = function (groupName, studentName, autoremove) {
+VPLTeacherTools.Pairing.prototype.addGroup = function (groupName, studentName) {
     groupName = groupName.trim();
     var self = this;
     this.client.addGroup(groupName, {
         onSuccess: function (r) {
             self.updateGroups();
             if (studentName) {
-                self.addStudentToGroup(studentName, groupName, autoremove);
+                self.addStudentToGroup(studentName, groupName);
             }
         }
     });
@@ -163,10 +167,9 @@ VPLTeacherTools.Pairing.prototype.removeGroup = function (groupName) {
 /** Add or move a student to a group
     @param {string} groupName group name
     @param {string=} studentName student name
-    @param {boolean=} true to autoremove group left by student if empty
     @return {void}
 */
-VPLTeacherTools.Pairing.prototype.addStudentToGroup = function (studentName, groupName, autoremove) {
+VPLTeacherTools.Pairing.prototype.addStudentToGroup = function (studentName, groupName) {
     studentName = studentName.trim();
     groupName = groupName.trim();
     var previousGroupName = this.groupForStudent(studentName);
@@ -174,13 +177,7 @@ VPLTeacherTools.Pairing.prototype.addStudentToGroup = function (studentName, gro
 	    var self = this;
 	    this.client.addStudentToGroup(studentName, groupName, {
 	        onSuccess: function (r) {
-	            if (autoremove && previousGroupName) {
-	                var group = self.findGroup(previousGroupName);
-	                if (group && group.students && group.students.length <= 1) {   // not yet updated
-	                    self.removeGroup(previousGroupName);
-	                    return;
-	                }
-	            }
+                self.updateStudents();
 	            self.updateGroups();
 	        }
 	    });
@@ -190,22 +187,15 @@ VPLTeacherTools.Pairing.prototype.addStudentToGroup = function (studentName, gro
 /** Remove a student from a group
     @param {string} studentName
     @param {string} groupName
-    @param {boolean=} autoremove true to remove group if it becomes empty
     @return {void}
 */
-VPLTeacherTools.Pairing.prototype.removeStudentFromGroup = function (studentName, groupName, autoremove) {
+VPLTeacherTools.Pairing.prototype.removeStudentFromGroup = function (studentName, groupName) {
     studentName = studentName.trim();
     groupName = groupName.trim();
     var self = this;
     this.client.removeStudentFromGroup(studentName, groupName, {
         onSuccess: function (r) {
-            if (autoremove) {
-                var group = self.findGroup(groupName);
-                if (group && group.students.length <= 1) {   // not yet updated
-                    self.removeGroup(groupName);
-                    return;
-                }
-            }
+            self.updateStudents();
             self.updateGroups();
         }
     });
