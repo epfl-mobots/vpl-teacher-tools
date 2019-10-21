@@ -63,7 +63,7 @@ VPLTeacherTools.Dashboard.prototype.loadSessions = function () {
 		onSuccess: function (sessions) {
             self.sessions = sessions.map(function (session) {
 				session.students = [];
-				session.lastLogEntry = null;
+				session.lastVPLChangedLogEntry = null;
 				session.selected = false;
 
 				self.client.listGroupStudents(session.group, {
@@ -76,7 +76,7 @@ VPLTeacherTools.Dashboard.prototype.loadSessions = function () {
 				self.client.getLog(session.session_id, "vpl-changed", {
 					onSuccess: function (logEntries) {
 						if (logEntries.length > 0) {
-							session.lastLogEntry = logEntries[0];
+							session.lastVPLChangedLogEntry = logEntries[0];
 			            	self.refreshSessions(sessions);
 						}
 					}
@@ -104,7 +104,7 @@ VPLTeacherTools.Dashboard.prototype.updateSessions = function (sessionIndex, msg
 			" " + s(d.getHours(), 2) + ":" + s(d.getMinutes(), 2) + ":" + s(d.getSeconds(), 2);
 	}
 
-	this.sessions[sessionIndex].lastLogEntry = {
+	this.sessions[sessionIndex].lastVPLChangedLogEntry = {
 		"type": "log",
 		"time": datetimeStr(new Date()),
 		"data": JSON.stringify(msg["data"])
