@@ -18,6 +18,24 @@ td {
 	padding: 0.5ex;
 }
 
+div.columncontainer {
+	display: flex;
+	margin-left: 3em;
+	margin-right: 3em;
+}
+
+div.column {
+	width: 33%;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+}
+div.column:first-child {
+	margin-left: 0;
+}
+div.column:last-child {
+	margin-right: 0;
+}
+
 div#info {
 	margin: 0;
 	padding: 0;
@@ -310,7 +328,7 @@ function fillPairTable(pairArray, pairing) {
 			var viewport = window.visualViewport;
 			var size = Math.min(
 				Math.floor(Math.min(viewport.width, viewport.height) * 0.8),
-				400);
+				200);
 			var qrcode = new window.QRCode(qrdiv,
 				{
 					text: url,
@@ -418,7 +436,7 @@ window.addEventListener("load", function () {
 <ul>
 <li><a href="students.html">Pupils</a></li>
 <li><a href="filebrowser.html">Files</a></li>
-<li><a class="current" href="pairing.html">Robot setup</a></li>
+<li><a class="current" href="pairing.html">Classroom setup</a></li>
 <li><a href="dashboard.html">Dashboard</a></li>
 <li><a class="disabled" href="#">VPL</a></li>
 <li><a href="doc.html">Documentation</a></li>
@@ -430,18 +448,9 @@ window.addEventListener("load", function () {
 
 <main>
 
-<div class="border">
+<div class="columncontainer">
 
-	<h2>Robots</h2>
-
-	<table id="robots">
-	</table>
-
-	<p>Drag to a group to make a group-robot association.</p>
-
-</div>
-
-<div class="border">
+<div class="border column">
 
 	<h2>Pupils</h2>
 
@@ -452,7 +461,7 @@ window.addEventListener("load", function () {
 
 </div>
 
-<div class="border">
+<div class="border column">
 
 	<h2>Groups</h2>
 
@@ -460,6 +469,19 @@ window.addEventListener("load", function () {
 	</table>
 
 	<p id="no-group-msg">Students can be gathered into groups in the <a href="students.html">Students</a> tab.</p>
+
+</div>
+
+<div class="border column">
+
+	<h2>Robots</h2>
+
+	<table id="robots">
+	</table>
+
+	<p>Drag to a group to make a group-robot association.</p>
+
+</div>
 
 </div>
 
