@@ -45,11 +45,11 @@ main {
 
 <p>Here is how computers and robots are connected and where applications run.</p>
 
-<p>The central program is the <i>VPL server</i>. It runs typically on the teacher's laptop or on a desktop computer in the classroom (the <i>server computer</i>). It provides all the web applications, both to the teacher and the pupils, and manages data. Its data are stored in a single file (a local database), <tt>vpl.sqlite</tt>, located in the home directory.</p>
+<p>The central program is the <i>VPL server</i>. It runs typically on the teacher's laptop or on a desktop computer in the classroom (the <i>server computer</i>). It provides all the web applications, both to the teacher and the pupils, and manages data. Its data are stored in a single file, <tt>vpl.sqlite</tt>, located in the home directory.</p>
 
 <p>All the robots are connected wirelessly to the server computer. The communication between the web applications and the robots is managed by Mobsya's <a href="https://www.thymio.org/news/thymio-suite/" target="mobsya">Thymio Suite 2</a>, which should be installed and started before the VPL server.</p>
 
-<p>The main user interface, for the teacher as well as for the pupils, are delivered in web applications. Typically, the teacher uses a web browser (Chrome or Firefox) on the server computer and the pupils use tablets, but other setups are also possible. Web applications do not require any specific installation.</p>
+<p>The main user interface, for the teacher as well as for the pupils, is delivered in web applications. Typically, the teacher uses a web browser (Chrome or Firefox) on the server computer and the pupils use tablets, but other setups are also possible. Web applications do not require any specific installation.</p>
 
 <p>To launch the teacher web applications:</p>
 
@@ -80,7 +80,7 @@ main {
 <dl>
 
 <dt>Pupils</dt>
-<dd>This is where the list of pupils is managed, and groups of pupils are created, changed, and removed. Each group of pupils will be given one tablet or computer and one robot. Groups can be changed at any time, including during a session with the robots.</dd>
+<dd>This is where the list of pupils is managed.</dd>
 
 <dt>Files</dt>
 <dd>The teacher has a file browser web app where she can upload files or create programs. Programs are created empty; they can be modified by opening them in the VPL tool.</dd>
@@ -88,7 +88,7 @@ main {
 <dd>Files are also added automatically each time pupils run their VPL program. The teacher can load them in read-only mode and replay them.</dd>
 
 <dt>Classroom setup</dt>
-<dd>Classroom setup consists in pairing the tablets, robots and groups. The list of robots shows all the robots connected to the server computer and recognized by Thymio Suite.</dd>
+<dd>Classroom setup consists in making groups of pupils, giving them a robot or a simulator, and launching VPL on a tablet with all the identification and connection parameters. The list on the left shows all the pupils who were entered in the Pupils tab. The list of robots on the right shows all the robots connected to the server computer and recognized by Thymio Suite. To create a new group, drag a pupil's name and drop it to the empty box in the center. You can add more pupils to an existing group, or move a pupil's name between groups or elsewhere to remove it. To give a robot to a group, move it from the list on right to a group. A robot can be given only to one group; there is no such constraint on the simulator, of course.</dd>
 
 <dt>Dashboard</dt>
 <dd>The dashboard is the main tool used during the lesson with the pupils. It gives an overview of the activity of groups and some control to the teacher:</dd>
