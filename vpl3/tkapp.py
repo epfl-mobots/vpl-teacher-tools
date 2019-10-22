@@ -40,8 +40,8 @@ class Application(ApplicationBase, tk.Tk):
         file_menu.add_command(label="Open in Browser",
                               command=self.start_browser,
                               accelerator="Meta-B")
-        self.bind("<Command-b>", self.start_browser)
-        self.bind("<Control-b>", self.start_browser)
+        self.bind("<Command-b>", lambda event: self.start_browser())
+        self.bind("<Control-q>", lambda event: self.quit())
         menubar.add_cascade(label="File", menu=file_menu)
 
     def writeln(self, str):
