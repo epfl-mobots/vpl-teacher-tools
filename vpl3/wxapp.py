@@ -5,41 +5,22 @@
 
 # server gui with wxPython
 
-from vpl3.server import Server
-from vpl3.urlutil import URLUtil
-from vpl3.db import Db
-
-import threading
+from vpl3.baseapp import ApplicationBase
 
 import wx  # Ubuntu: sudo apt install python3-wxgtk4.0
 
 
-class Application(wx.App):
+class Application(ApplicationBase, wx.App):
 
-    DEFAULT_HTTP_PORT = Server.DEFAULT_HTTP_PORT
-    DEFAULT_WS_PORT = Server.DEFAULT_WS_PORT
-
-    def __init__(self,
-                 db_path=Db.DEFAULT_PATH,
-                 http_port=DEFAULT_HTTP_PORT,
-                 ws_port=DEFAULT_WS_PORT,
-                 ws_link_url=None):
-        self.http_port = http_port
-        self.logger_lock = threading.Lock()
-        self.server = Server(db_path=db_path,
-                             http_port=http_port,
-                             ws_port=ws_port,
-                             ws_link_url=ws_link_url,
-                             logger=self.logger,
-                             update_connection=self.update_connection)
-        self.server.start()
-
-        super().__init__()
+    def __init__(self, **kwargs):
+        ApplicationBase.__init__(self, **kwargs)
+        wx.App.__init__(self)
 
         self.frame = wx.Frame(None,
-                              title=f"VPL Server - {URLUtil.get_local_IP()}:{self.http_port}",
+                              title="VPL Server - " + self.address,
                               size=wx.Size(800, 500))
-        self.frame.Bind(wx.EVT_CLOSE, self.quit)
+        self.frame.Bind(wx.EVT_CLOSE,
+                        lambda event: self.quit())
         self.frame.Show()
 
         panel = wx.Panel(self.frame)
@@ -64,31 +45,22 @@ class Application(wx.App):
         menubar = wx.MenuBar()
         menubar.Append(file_menu, "File")
         self.frame.SetMenuBar(menubar)
-        self.frame.Bind(wx.EVT_MENU, self.start_browser, open_in_browser_item)
-        self.frame.Bind(wx.EVT_MENU, self.quit, exit_item)
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.start_browser(),
+                        open_in_browser_item)
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.quit(),
+                        exit_item)
 
-    def mainloop(self):
+    def main_loop(self):
         self.MainLoop()
 
-    def logger(self, str):
-        def write():
-            self.log.AppendText(str + "\n")
-            self.log.PageDown()
+    def writeln(self, str):
+        self.log.AppendText(str + "\n")
+        self.log.PageDown()
 
-        with self.logger_lock:
-            wx.CallAfter(write)
+    def show_connection_status(self, str):
+        self.ws_info_label.SetLabel(str)
 
-    def update_connection(self, session_id=None):
-        def update():
-            self.ws_info_label.SetLabel(
-                f"Number of connections: {self.server.ws_server.connection_count}"
-            )
-
-        wx.CallAfter(update)
-
-    def start_browser(self, event=None):
-        URLUtil.start_browser(self.http_port, using="chrome")
-
-    def quit(self, event=None):
-        self.server.stop()
+    def exit_app(self):
         self.frame.Destroy()

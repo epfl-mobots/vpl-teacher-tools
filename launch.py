@@ -5,8 +5,8 @@
 
 # server app launcher
 
-# from vpl3.tkapp import Application
-from vpl3.wxapp import Application
+from vpl3.tkapp import Application
+# from vpl3.wxapp import Application
 # from vpl3.noguiapp import Application
 from vpl3.db import Db
 
@@ -56,4 +56,4 @@ Options:
                       http_port=http_port,
                       ws_port=ws_port,
                       ws_link_url=ws_link_url)
-    app.mainloop()
+    app.run()
