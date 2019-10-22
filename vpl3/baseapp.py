@@ -48,10 +48,12 @@ class ApplicationBase:
     def update_connection(self, session_id=None):
         str = f"""Number of connections: {
             self.server.ws_server.connection_count
+            if self.server.ws_server
+            else "-"
         }"""
         self.show_connection_status(str)
 
-    def start_browser(self):
+    def start_browser(self, event=None):
         URLUtil.start_browser(self.http_port, using="chrome")
 
     def quit(self):
