@@ -7,7 +7,7 @@ Usage:
 
 from setuptools import setup
 
-APPNAME = "VPL3 Server"
+APPNAME = "VPL3Server"
 APP = ['launch.py']
 DATA_FILES = [
     ("doc",
@@ -78,7 +78,7 @@ OPTIONS = {
     "packages": "sqlite3,tkinter,websocket,websockets",
     "dist_dir": ".",
     "plist": {
-        "CFBundleIdentifier": "ch.epfl.mobots.vpl3-server",
+        "CFBundleIdentifier": "ch.epfl.mobots.vpl3server",
         "CFBundleVersion": "0.1",
         "NSHumanReadableCopyright":
             "2019, École polytechnique fédérale de Lausanne (EPFL)",

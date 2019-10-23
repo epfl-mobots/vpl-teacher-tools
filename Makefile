@@ -12,6 +12,7 @@ ROOTFILES = \
 
 PKGFILES = \
 	vpl3/__init__.py \
+	vpl3/cacaoapp.py \
 	vpl3/com_http.py \
 	vpl3/com_ws.py \
 	vpl3/db.py \
@@ -93,9 +94,16 @@ all:
 	cp -p $(DATAFILES) $(DIR)/data
 	zip -r - $(DIR) >$(DIR).zip
 
-launch.app: setup.py launch.py
+VPL3Server.app: setup.py launch.py $(PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UICLASSICFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES)
 	rm -rf build
 	python3 setup.py py2app
+
+VPLServer.dmg: VPL3Server.app
+	rm -Rf "VPL Server" $@
+	mkdir "VPL Server"
+	cp -R $^ "VPL Server"
+	hdiutil create -srcfolder "VPL Server" $@
+	rm -Rf "VPL Server"
 
 .PHONY: oh
 oh:
