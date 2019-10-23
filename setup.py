@@ -25,6 +25,7 @@ DATA_FILES = [
         [
             "doc/vpl-teacher-tools/dashboard.html",
             "doc/vpl-teacher-tools/dashboard.js",
+            "doc/vpl-teacher-tools/dev.html",
             "doc/vpl-teacher-tools/doc.html",
             "doc/vpl-teacher-tools/filebrowser.html",
             "doc/vpl-teacher-tools/filebrowser.js",
@@ -38,6 +39,10 @@ DATA_FILES = [
             "doc/vpl-teacher-tools/students.js",
             "doc/vpl-teacher-tools/ui.json",
             "doc/vpl-teacher-tools/util-url.js",
+            "doc/vpl-teacher-tools/vpl_load.png",
+            "doc/vpl-teacher-tools/vpl_new.png",
+            "doc/vpl-teacher-tools/vpl_run.png",
+            "doc/vpl-teacher-tools/vpl_stop.png",
             "doc/vpl-teacher-tools/vpl-about.html",
             "doc/vpl-teacher-tools/vpl.html",
         ]),
