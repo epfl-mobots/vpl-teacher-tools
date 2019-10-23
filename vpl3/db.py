@@ -96,11 +96,13 @@ class Db:
         """Remove the SQLite database"""
         os.remove(path if path is not None else Db.DEFAULT_PATH)
 
-    def get_first_result(self, select, from_table, where, *args):
+    def get_first_result(self, select, from_table, where, *args, order=None):
         """Get the first result of an SQL query as a tupple"""
         c = self._db.cursor()
         c.execute("SELECT " + select + " FROM " + from_table
-                  + " WHERE " + where + " LIMIT 1",
+                  + " WHERE " + where
+                  + (" ORDER BY " + order if order else "")
+                  + " LIMIT 1",
                   *args)
         return c.fetchone()
 
@@ -187,6 +189,27 @@ class Db:
         c.execute("DELETE FROM groups WHERE name=?", (group,))
         self._db.commit()
 
+    def end_membership(self, group_id, name):
+        """Update membership table to end a membership now"""
+        r = self.get_first_result("studentid", "students", "name=?", (name,))
+        if r is None:
+            raise ValueError("student not found")
+        student_id = r[0]
+        r = self.get_first_result("rowid", "membership",
+                                  "studentid=? AND groupid=?",
+                                  (student_id, group_id),
+                                  order="julianday(begintime) DESC")
+        if r is None:
+            raise ValueError("membership not found")
+        row_id = r[0]
+        c = self._db.cursor()
+        c.execute("""
+            UPDATE membership
+            SET endtime = datetime('now')
+            WHERE rowid=?
+        """, (row_id,))
+        self._db.commit()
+
     def add_student_to_group(self, name, group):
         """Add an existing student to a group (or change group)"""
         r = self.get_first_result("groupid", "groups", "name=?",
@@ -199,17 +222,9 @@ class Db:
             raise ValueError("student not found")
         membership = r[0]
         if membership != group_id:
-            c = self._db.cursor()
             if membership is not None:
-                c.execute("""
-                    UPDATE membership
-                    SET endtime = datetime('now')
-                    WHERE groupid=?
-                        AND studentid
-                            = (SELECT studentid FROM students WHERE name=?)
-                    ORDER BY julianday(begintime) DESC
-                    LIMIT 1
-                """, (group_id, name))
+                self.end_membership(membership, name)
+            c = self._db.cursor()
             c.execute("""
                 INSERT INTO membership (studentid, groupid, begintime)
                 VALUES (
@@ -246,15 +261,8 @@ class Db:
             raise ValueError("student not found")
         group_id = r[0]
         if group_id is not None:
+            self.end_membership(group_id, name)
             c = self._db.cursor()
-            c.execute("""
-                UPDATE membership
-                SET endtime = datetime('now')
-                WHERE groupid=?
-                    AND studentid=(SELECT studentid FROM students WHERE name=?)
-                ORDER BY julianday(begintime) DESC
-                LIMIT 1
-            """, (group_id, name))
             c.execute("""
                 UPDATE students
                 SET groupid = NULL
@@ -407,10 +415,8 @@ class Db:
             return self.begin_session(None, group_id, None, robot, force)
 
     def add_log(self, session_id, type, data=""):
-        print("add_log session_id=" + session_id)
         r = self.get_session(session_id)
         if r[2] is None or not r[2].startswith("!"):
-            print(f"will log data='{data}' for r='{r}'")
             c = self._db.cursor()
             c.execute("""
                 INSERT INTO log (studentid, groupid, type, data)
@@ -418,7 +424,7 @@ class Db:
             """, (r[0], r[1], type, data))
             self._db.commit()
         else:
-            print("oops, add_log's session_id not found")
+            print("add_log's session_id not found")
             print(r)
 
     def get_log(self, session_id, last_of_type=None):
@@ -470,7 +476,6 @@ class Db:
         student_id = None
         group_id = None
         if student:
-            print(student)
             r = self.get_first_result("studentid,groupid",
                                       "students", "name=?",
                                       (student,))
@@ -585,7 +590,7 @@ class Db:
         """
         c.execute(sql)
         if last:
-            xx = [
+            return [
                 next(group) for key, group in itertools.groupby(({
                         "id": row[0],
                         "filename": row[1],
@@ -597,8 +602,6 @@ class Db:
                     } for row in c.fetchall()),
                     key=lambda e: (e["filename"], e["student"], e["group"]))
             ]
-            # print(xx)
-            return xx
         else:
             return [
                 {
