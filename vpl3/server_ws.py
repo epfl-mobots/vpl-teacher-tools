@@ -126,6 +126,15 @@ class VPLWebSocketServer:
                 tuple = db.get_session(msg["sender"]["sessionid"])
                 if tuple is not None:
                     await self.notify_dashboard()
+        elif msg["type"] == "file" and msg["sender"]["type"] == "vpl":
+            # save file
+            session_id = msg["sender"]["sessionid"]
+            filename = msg["data"]["name"]
+            content = msg["data"]["content"]
+            students = db.get_session_student_names(session_id)
+            # TO DO: store student ids which each file and log entry
+            db.add_file(filename, content,
+                        student=999, group=None)
         elif msg["type"] in ("cmd", "file"):
             # forward command to all (or msg["rcpt"]) other websockets but self
             await self.ws.sendToAll(msg,

@@ -185,9 +185,11 @@ VPLTeacherTools.HTTPClient.prototype.listFiles = function (queryProps, opt) {
 };
 
 VPLTeacherTools.HTTPClient.prototype.getLog = function (sessionId, last, opt) {
-	var params = [
-		"id=" + encodeURIComponent(sessionId)
-	];
+	var params = sessionId
+		? [
+			"id=" + encodeURIComponent(sessionId)
+		]
+		: [];
 	if (last) {
 		params.push("last=" + last);
 	}

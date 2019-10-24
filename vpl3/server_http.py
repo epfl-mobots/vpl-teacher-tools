@@ -258,9 +258,9 @@ class VPLHTTPServer:
     @http_get("/api/getLog")
     def http_get_api_getLog(self, handler):
         q = VPLHTTPServer.query_param(handler)
+        id = q["id"][0] if "id" in q else None
         last = q["last"][0] if "last" in q else None
-        return self.call_api(Db.get_log,
-                             session_id=q["id"][0], last_of_type=last)
+        return self.call_api(Db.get_log, session_id=id, last_of_type=last)
 
     @http_get("/api/shortenURL")
     def http_get_api_shortenURL(self, handler):

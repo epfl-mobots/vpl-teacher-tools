@@ -358,6 +358,20 @@ class Db:
         self.session_cache[session_id] = r
         return r
 
+    def get_session_student_names(self, session_id):
+        r = self.get_session(session_id)
+        if r[0] is not None:
+            return [self.get_first_result("name", "students",
+                                          "studentid=?", (r[0],))[0]]
+        elif r[1] is not None:
+            c = self._db.cursor()
+            c.execute("SELECT FROM students WHERE groupid=?", (r[1],))
+            return [r[0] for r in c.fetchall()]
+        elif r[2] is not None:
+            return [r[2]]
+        else:
+            return []
+
     def list_sessions(self):
         """Get a list of all sessions"""
         c = self._db.cursor()
@@ -427,21 +441,35 @@ class Db:
             print("add_log's session_id not found")
             print(r)
 
-    def get_log(self, session_id, last_of_type=None):
-        r = self.get_session(session_id)
-        group_id = r[1]
+    def get_log(self, session_id=None, last_of_type=None):
+        group_id = None
+        if session_id is not None:
+            r = self.get_session(session_id)
+            group_id = r[1]
         c = self._db.cursor()
         if last_of_type:
-            c.execute(f"""
-                SELECT type,
-                       {"datetime(time,'localtime')"
-                        if Db.ORDER_TIME
-                        else "time"},
-                       data
-                FROM log
-                WHERE groupid IS ? AND type == ?
-                ORDER BY time DESC
-            """, (group_id, last_of_type))
+            if group_id is None:
+                c.execute(f"""
+                    SELECT type,
+                           {"datetime(time,'localtime')"
+                            if Db.ORDER_TIME
+                            else "time"},
+                           data
+                    FROM log
+                    WHERE type == ?
+                    ORDER BY time DESC
+                """, (last_of_type,))
+            else:
+                c.execute(f"""
+                    SELECT type,
+                           {"datetime(time,'localtime')"
+                            if Db.ORDER_TIME
+                            else "time"},
+                           data
+                    FROM log
+                    WHERE groupid IS ? AND type == ?
+                    ORDER BY time DESC
+                """, (group_id, last_of_type))
             row = c.fetchone()
             return [
                 {
@@ -451,16 +479,27 @@ class Db:
                 }
             ] if row is not None else []
         else:
-            c.execute(f"""
-                SELECT type,
-                       {"datetime(time,'localtime')"
-                        if Db.ORDER_TIME
-                        else "time"},
-                       data
-                FROM log
-                WHERE groupid IS ?
-                ORDER BY time DESC
-            """, (group_id,))
+            if group_id is not None:
+                c.execute(f"""
+                    SELECT type,
+                           {"datetime(time,'localtime')"
+                            if Db.ORDER_TIME
+                            else "time"},
+                           data
+                    FROM log
+                    WHERE groupid IS ?
+                    ORDER BY time DESC
+                """, (group_id,))
+            else:
+                c.execute(f"""
+                    SELECT type,
+                           {"datetime(time,'localtime')"
+                            if Db.ORDER_TIME
+                            else "time"},
+                           data
+                    FROM log
+                    ORDER BY time DESC
+                """)
             return [
                 {
                     "type": row[0],
