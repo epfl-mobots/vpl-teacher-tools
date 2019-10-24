@@ -11,8 +11,11 @@ class URLUtil:
     def get_local_IP():
         import socket
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-            s.connect(("128.178.255.255", 9))
-            return s.getsockname()[0]
+            try:
+                s.connect(("128.178.255.255", 9))
+                return s.getsockname()[0]
+            except OSError:
+                return "127.0.0.1"
 
     @staticmethod
     def teacher_tools_URL(port=None):
