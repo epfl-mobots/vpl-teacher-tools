@@ -27,16 +27,16 @@ window.addEventListener("load", function () {
 	}
 
 	document.getElementById("addStudent-btn").addEventListener("click", function () {
-		rest("/api/addStudent?name=" + encodeURIComponent(document.getElementById("addStudent-name").value));
+		rest("/api/addStudent?student=" + encodeURIComponent(document.getElementById("addStudent-name").value));
 	}, false);
 	document.getElementById("removeStudent-btn").addEventListener("click", function () {
-		rest("/api/removeStudent?name=" + encodeURIComponent(document.getElementById("removeStudent-name").value));
+		rest("/api/removeStudent?student=" + encodeURIComponent(document.getElementById("removeStudent-name").value));
 	}, false);
 	document.getElementById("listStudents-btn").addEventListener("click", function () {
 		rest("/api/listStudents");
 	}, false);
 	document.getElementById("addGroup-btn").addEventListener("click", function () {
-		rest("/api/addGroup?group=" + encodeURIComponent(document.getElementById("addGroup-group").value));
+		rest("/api/addGroup?student=" + encodeURIComponent(document.getElementById("addGroup-group").value));
 	}, false);
 	document.getElementById("removeGroup-btn").addEventListener("click", function () {
 		rest("/api/removeGroup?group=" + encodeURIComponent(document.getElementById("removeGroup-group").value));
@@ -45,7 +45,7 @@ window.addEventListener("load", function () {
 		rest("/api/listGroups");
 	}, false);
 	document.getElementById("addStudentToGroup-btn").addEventListener("click", function () {
-		rest("/api/addStudentToGroup?name=" + encodeURIComponent(document.getElementById("addStudentToGroup-name").value) +
+		rest("/api/addStudentToGroup?student=" + encodeURIComponent(document.getElementById("addStudentToGroup-name").value) +
 			"&group=" + encodeURIComponent(document.getElementById("addStudentToGroup-group").value));
 	}, false);
 	document.getElementById("removeStudentFromGroup-btn").addEventListener("click", function () {

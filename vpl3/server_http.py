@@ -109,16 +109,16 @@ class VPLHTTPServer:
     @http_get("/api/addStudent")
     def http_get_api_addStudent(self, handler):
         q = VPLHTTPServer.query_param(handler)
-        if "name" not in q:
-            return VPLHTTPServer.error("Missing name")
-        return self.call_api(Db.add_student, q["name"][0])
+        if "student" not in q:
+            return VPLHTTPServer.error("Missing student name")
+        return self.call_api(Db.add_student, q["student"][0])
 
     @http_get("/api/removeStudent")
     def http_get_api_removeStudent(self, handler):
         q = VPLHTTPServer.query_param(handler)
-        if "name" not in q:
-            return VPLHTTPServer.error("Missing name")
-        return self.call_api(Db.remove_student, q["name"][0])
+        if "student" not in q:
+            return VPLHTTPServer.error("Missing student name")
+        return self.call_api(Db.remove_student, q["student"][0])
 
     @http_get("/api/listStudents")
     def http_get_api_listStudents(self, handler):
@@ -127,16 +127,15 @@ class VPLHTTPServer:
     @http_get("/api/addGroup")
     def http_get_api_addGroup(self, handler):
         q = VPLHTTPServer.query_param(handler)
-        if "group" not in q:
-            return VPLHTTPServer.error("Missing group")
-        return self.call_api(Db.add_group, q["group"][0])
+        student_name = q["student"][0] if "student" in q else None
+        return self.call_api(Db.add_group, student_name)
 
     @http_get("/api/removeGroup")
     def http_get_api_removeGroup(self, handler):
         q = VPLHTTPServer.query_param(handler)
-        if "group" not in q:
-            return VPLHTTPServer.error("Missing group")
-        return self.call_api(Db.remove_group, q["group"][0])
+        if "groupid" not in q:
+            return VPLHTTPServer.error("Missing group id")
+        return self.call_api(Db.remove_group, q["groupid"][0])
 
     @http_get("/api/listGroups")
     def http_get_api_listGroups(self, handler):
@@ -145,46 +144,39 @@ class VPLHTTPServer:
     @http_get("/api/addStudentToGroup")
     def http_get_api_addStudentToGroup(self, handler):
         q = VPLHTTPServer.query_param(handler)
-        if "name" not in q:
-            return VPLHTTPServer.error("Missing name")
-        if "group" not in q:
-            return VPLHTTPServer.error("Missing group")
+        if "student" not in q:
+            return VPLHTTPServer.error("Missing student name")
+        if "groupid" not in q:
+            return VPLHTTPServer.error("Missing group id")
         return self.call_api(Db.add_student_to_group,
-                             q["name"][0], q["group"][0])
+                             q["student"][0], q["groupid"][0])
 
     @http_get("/api/removeStudentFromGroup")
     def http_get_api_removeStudentFromGroup(self, handler):
         q = VPLHTTPServer.query_param(handler)
-        if "name" not in q:
-            return VPLHTTPServer.error("Missing name")
+        if "student" not in q:
+            return VPLHTTPServer.error("Missing student name")
         return self.call_api(Db.remove_student_from_group,
-                             q["name"][0])
+                             q["student"][0])
 
     @http_get("/api/listGroupStudents")
     def http_get_api_listGroupStudents(self, handler):
         q = VPLHTTPServer.query_param(handler)
-        if "group" not in q:
-            return VPLHTTPServer.error("Missing group")
+        if "groupid" not in q:
+            return VPLHTTPServer.error("Missing group id")
         return self.call_api(Db.list_group_students,
-                             q["group"][0])
+                             q["groupid"][0])
 
     @http_get("/api/beginSession")
     def http_get_api_beginSession(self, handler):
         q = VPLHTTPServer.query_param(handler)
-        name = q["name"][0] if "name" in q else None
-        group = q["group"][0] if "group" in q else None
-        if (name is None and group is None):
-            return VPLHTTPServer.error("Missing name and group")
-        elif name is not None and group is not None:
-            return VPLHTTPServer.error("Both name and group")
+        if "groupid" not in q:
+            return VPLHTTPServer.error("Missing group id")
+        group_id = q["groupid"][0]
         robot = q["robot"][0] if "robot" in q else None
         force = "force" in q and q["force"][0] == "true"
-        if name is not None:
-            return self.call_api(Db.begin_student_session,
-                                 name, robot, force)
-        else:
-            return self.call_api(Db.begin_group_session,
-                                 group, robot, force)
+        return self.call_api(Db.begin_session,
+                             group_id, robot, force)
 
     @http_get("/api/endSession")
     def http_get_api_endSession(self, handler):
@@ -211,10 +203,7 @@ class VPLHTTPServer:
         return self.call_api(Db.add_file,
                              q["filename"][0],
                              content,
-                             q["student"][0]
-                             if "student" in q
-                             else None,
-                             q["group"][0] if "group" in q else None,
+                             q["groupid"][0] if "groupid" in q else None,
                              q["metadata"][0]
                              if "metadata" in q
                              else None)
@@ -224,9 +213,6 @@ class VPLHTTPServer:
         q = VPLHTTPServer.query_param(handler)
         if "id" not in q:
             return VPLHTTPServer.error("Missing id")
-        print(handler.path)
-        print(q)
-        print(q["id"][0])
         return self.call_api(Db.get_file, int(q["id"][0]))
 
     @http_post("/api/updateFile")
@@ -255,12 +241,20 @@ class VPLHTTPServer:
                              student=student,
                              last=last)
 
+    @http_get("/api/clearFiles")
+    def http_get_api_clearFiles(self, handler):
+        return self.call_api(Db.clear_files)
+
     @http_get("/api/getLog")
     def http_get_api_getLog(self, handler):
         q = VPLHTTPServer.query_param(handler)
         id = q["id"][0] if "id" in q else None
         last = q["last"][0] if "last" in q else None
         return self.call_api(Db.get_log, session_id=id, last_of_type=last)
+
+    @http_get("/api/clearLog")
+    def http_get_api_clearLog(self, handler):
+        return self.call_api(Db.clear_log)
 
     @http_get("/api/shortenURL")
     def http_get_api_shortenURL(self, handler):

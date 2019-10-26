@@ -66,7 +66,7 @@ VPLTeacherTools.Dashboard.prototype.loadSessions = function () {
 				session.lastVPLChangedLogEntry = null;
 				session.selected = false;
 
-				self.client.listGroupStudents(session.group, {
+				self.client.listGroupStudents(session.group_id, {
                     onSuccess: function (students) {
                         session.students = students;
 			            self.refreshSessions(sessions);

@@ -48,7 +48,7 @@ main {
 <dl>
 
 <dt>Setup</dt>
-<dd>A setup web application is run by the teacher. Its goal is to store in the database the name of the students, the name of the groups, and student-group memberships. The functionality could also be available in tools used in the classroom for ad hoc updates.</dd>
+<dd>A setup web application is run by the teacher. Its goal is to store in the database the name of the students, a list of groups, and student-group memberships. The functionality could also be available in tools used in the classroom for ad hoc updates.</dd>
 <dd>Communication is handled by the web app with XMLHttpRequest calls to the http server.</dd>
 
 <dt>Program and other file setup</dt>
@@ -88,7 +88,6 @@ main {
 <table>
 <tr><th>Field</th><th>Type</th></tr>
 <tr><td>id</td><td>text</td><td>opaque id created with <code>lower(hex(randomblob(16)))</code></td></tr>
-<tr><td>studentid</td><td>integer</td><td>student id, or null for group</td></tr>
 <tr><td>groupid</td><td>integer</td><td>group id, or null for student</td></tr>
 <tr><td>robot</td><td>text</td><td>robot guid (null if no robot)</td></tr>
 </table>
@@ -105,10 +104,11 @@ main {
 
 <h4>Groups</h4>
 
+<p>Since groups are highly dynamic and can change or be removed at any time, tables where records have a group owner, such as files and log, have a field which lists all the students in the group at the time the record was created. Such a list is stored as a comma-separated list of numbers in a string. An empty string (not a NULL) stands for the teacher. In Python, python-defined functions are added to sqlite3 to facilitate queries.</p>
+
 <table>
 <tr><th>Field</th><th>Type</th></tr>
 <tr><td>groupid</td><td>integer</td><td><code>primary key autoincrement</code></td></tr>
-<tr><td>name</td><td>text</td><td>group name</td></tr>
 <tr><td>time</td><td>text</td><td>creation time <code>default current_timestamp</code></td></tr>
 </table>
 
@@ -127,12 +127,21 @@ main {
 <table>
 <tr><th>Field</th><th>Type</th></tr>
 <tr><td>fileid</td><td>integer</td><td>primary key autoincrement</td></tr>
-<tr><td>studentid</td><td>integer</td><td>student id or null</td></tr>
-<tr><td>groupid</td><td>integer</td><td>group id or null</td></tr>
+<tr><td>owner</td><td>string</td><td>comma-separated list of student id, or null for teacher</td></tr>
 <tr><td>name</td><td>text</td><td>filename</td></tr>
 <tr><td>time</td><td>text</td><td>time the file was added</td></tr>
 <tr><td>metadata</td><td>text</td><td>properties in a json object</td></tr>
 <tr><td>content</td><td>text</td><td>file content (typically json)</td></tr>
+</table>
+
+<h4>Log</h4>
+
+<table>
+<tr><th>Field</th><th>Type</th></tr>
+<tr><td>owner</td><td>string</td><td>comma-separated list of student id, or null for teacher</td></tr>
+<tr><td>type</td><td>text</td><td>cmd, drop, or vpl-changed</td></tr>
+<tr><td>time</td><td>text</td><td>time the file was added</td></tr>
+<tr><td>data</td><td>text</td><td>type-specific json data</td></tr>
 </table>
 
 <h2>REST API</h2>
@@ -144,7 +153,7 @@ main {
 <h4>addStudent</h4>
 
 <pre>
-GET /api/addStudent?name=name
+GET /api/addStudent?student=studentName
 </pre>
 
 <p>Result: {"status":"ok"} or {"status":"err","msg":"duplicate"}</p>
@@ -160,18 +169,27 @@ GET /api/listStudents
 <h4>removeStudent</h4>
 
 <pre>
-GET /api/removeStudent?name=name
+GET /api/removeStudent?student=studentName
 </pre>
 
 <p>Result: {"status":"ok"} or {"status":"err","msg":"student not found"}</p>
 
+<h4>deleteAllStudents</h4>
+
+<pre>
+GET /api/deleteAllStudents
+</pre>
+
+<p>Result: {"status":"ok"}</p>
+
 <h4>addGroup</h4>
 
 <pre>
-GET /api/addGroup?group=groupName
+GET /api/addGroup
+GET /api/addGroup?student=firstStudentName
 </pre>
 
-<p>Result: {"status":"ok"} or {"status":"err","msg":"duplicate"}</p>
+<p>Result: {"status":"ok","result":groupId}</p>
 
 <h4>listGroups</h4>
 
@@ -184,7 +202,7 @@ GET /api/listGroups
 <h4>removeGroup</h4>
 
 <pre>
-GET /api/removeGroup?group=groupName
+GET /api/removeGroup?groupid=groupId
 </pre>
 
 <p>Result: {"status":"ok"} or {"status":"err","msg":"group not found"}</p>
@@ -192,7 +210,7 @@ GET /api/removeGroup?group=groupName
 <h4>addStudentToGroup</h4>
 
 <pre>
-GET /api/addStudentToGroup?name=name&group=groupName
+GET /api/addStudentToGroup?student=studentName&groupid=groupId
 </pre>
 
 <p>Result: {"status":"ok"} or {"status":"err","msg":"duplicate"} or {"status":"err","msg":"student not found"} or {"status":"err","msg":"group not found"}</p>
@@ -200,7 +218,7 @@ GET /api/addStudentToGroup?name=name&group=groupName
 <h4>listGroupStudents</h4>
 
 <pre>
-GET /api/listGroupStudents?group=groupName
+GET /api/listGroupStudents?groupid=groupId
 </pre>
 
 <p>Result: {"status":"ok","result":["name1","name2",...]} or {"status":"err","msg":"group not found"}</p>
@@ -208,7 +226,7 @@ GET /api/listGroupStudents?group=groupName
 <h4>removeStudentFromGroup</h4>
 
 <pre>
-GET /api/removeStudentFromGroup?name=name
+GET /api/removeStudentFromGroup?student=studentName
 </pre>
 
 <p>Result: {"status":"ok"} or {"status":"err","msg":"student not found"} or {"status":"err","msg":"group not found"}</p>
@@ -218,19 +236,11 @@ GET /api/removeStudentFromGroup?name=name
 <h4>beginSession</h4>
 
 <pre>
-GET /api/beginSession?group=groupName&robot=guid
+GET /api/beginSession?groupid=groupId&robot=guid
 </pre>
 
 <pre>
-GET /api/beginSession?name=studentName&robot=guid
-</pre>
-
-<pre>
-GET /api/beginSession?group=groupName
-</pre>
-
-<pre>
-GET /api/beginSession?name=studentName
+GET /api/beginSession?groupid=groupId
 </pre>
 
 <pre>
@@ -268,12 +278,12 @@ GET /api/listSessions
 <h4>addFile</h4>
 
 <pre>
-POST /api/addFile?filename=name&student=studentName
+POST /api/addFile?filename=name
 content...
 </pre>
 
 <pre>
-POST /api/addFile?filename=name&group=groupName
+POST /api/addFile?filename=name&groupid=groupId
 content...
 </pre>
 
@@ -285,12 +295,6 @@ content...
 POST /api/updateFile?id=id
 content...
 </pre>
-
-<pre>
-GET /api/addFile?filename=name&group=groupName
-</pre>
-
-<p>Result: {"status":"ok"}</p>
 
 <h4>removeFiles</h4>
 
@@ -309,10 +313,9 @@ GET /api/listFiles
 <pre>
 GET /api/listFiles?filename=filename
 GET /api/listFiles?student=studentName
-GET /api/listFiles?group=groupName
 </pre>
 
-<p>Filter by filename, student, and/or group</p>
+<p>Filter by filename or student</p>
 
 <pre>
 GET /api/listFiles?order=filename
@@ -326,6 +329,36 @@ GET /api/listFiles?last=true
 </pre>
 
 <p>Pick most recent enrty only</p>
+
+<h4>clearFiles</h4>
+
+<pre>
+GET /api/clearFiles
+</pre>
+
+<p>Result: {"status":"ok"}</p>
+
+<h3>Log</h3>
+
+<h4>getLog</h4>
+
+<pre>
+GET /api/getLog
+GET /api/getLog?id=sessionid&last=true
+GET /api/getLog
+GET /api/getLog?id=sessionid&last=true
+</pre>
+
+<p>Result: {"status":"ok","result":[{"type":id,"time":"...","data":...},...]}</p>
+
+<h4>clearLog</h4>
+
+<pre>
+GET /api/clearLog
+</pre>
+
+<p>Result: {"status":"ok"}</p>
+
 
 <h2>WebSocket API</h2>
 

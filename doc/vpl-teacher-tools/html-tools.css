@@ -116,6 +116,7 @@ div.border, div.border1 {
 	margin-bottom: 2ex;
 	margin-left: 3em;
 	margin-right: 3em;
+	box-shadow: 3px 3px 5px #ddd;
 }
 
 div.border h2 {
@@ -130,7 +131,7 @@ table {
 }
 
 td {
-	background: #ddd;
+	background: #eee;
 	border-style: none;
 	border-color: silver;
 	user-select: none;
@@ -138,6 +139,9 @@ td {
 td.selected {
 	border-width: 2px;
 	border-color: blue;
+}
+#files-teacher td.selected, #files-students td.selected {
+	background: #acf;
 }
 
 table#students td, table#students input, table#groups td, table#robots td, table#sessions td {
@@ -153,6 +157,7 @@ td.rect {
 	border-style: solid;
 	border-width: 1px;
 	border-radius: 5px;
+	box-shadow: 2px 2px 3px #ddd;
 	padding: 1ex;
 	margin: 3ex;
 }

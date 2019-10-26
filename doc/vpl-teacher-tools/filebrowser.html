@@ -60,69 +60,73 @@ function clearTable(id, labels) {
 	}
 }
 
-function fillFileTable(fileArray, fileBrowser) {
-	var table = document.getElementById("files");
+function fillFileTable(fileArray, fileBrowser, forStudents) {
+	var tableId = forStudents ? "files-students" : "files-teacher";
+	var table = document.getElementById(tableId);
+	if (fileArray.length > 0) {
+		clearTable(tableId,
+			forStudents
+				? ["Filename", "Students", "Time", "Size"]
+				: ["Filename", "Students", "Time", "Size"]);
 
-	if (fileArray.length === 0) {
-		clearTable("files");
+		fileArray.forEach(function (file) {
+			function select(ev) {
+				fileBrowser.selectFile(forStudents, file.id,
+					ev.ctrlKey || ev.metaKey, ev.shiftKey);
+				ev.preventDefault();
+				fileBrowser.refreshFiles();
+			}
+			function doubleclick(ev) {
+				if (!(ev.ctrlKey || ev.metaKey || ev.shiftKey)) {
+					fileBrowser.selectFile(forStudents, file.id, false, false);
+					ev.preventDefault();
+					fillFileTable(fileArray, fileBrowser, forStudents);
+					fileBrowser.openFiles();
+				}
+			}
+
+			var tr = document.createElement("tr");
+
+			var td = document.createElement("td");
+			td.textContent = file.filename;
+			td.addEventListener("click", select, false);
+			td.addEventListener("dblclick", doubleclick, false);
+			td.className = fileBrowser.isFileSelected(forStudents, file.id) ? "selected" : "";
+			tr.appendChild(td);
+
+			if (forStudents) {
+				td = document.createElement("td");
+				td.textContent = file.students.join(", ");
+				td.addEventListener("click", select, false);
+				td.addEventListener("dblclick", doubleclick, false);
+				td.className = fileBrowser.isFileSelected(forStudents, file.id) ? "selected" : "";
+				tr.appendChild(td);
+			}
+
+			td = document.createElement("td");
+			td.textContent = file.time || "";
+			td.addEventListener("click", select, false);
+			td.addEventListener("dblclick", doubleclick, false);
+			td.className = fileBrowser.isFileSelected(forStudents, file.id) ? "selected" : "";
+			tr.appendChild(td);
+
+			td = document.createElement("td");
+			td.textContent = file.size != null ? file.size.toString(10) : "";
+			td.addEventListener("click", select, false);
+			td.addEventListener("dblclick", doubleclick, false);
+			td.className = fileBrowser.isFileSelected(forStudents, file.id) ? "selected" : "";
+			tr.appendChild(td);
+
+			table.appendChild(tr);
+		});
+	} else {
+		clearTable(tableId);
 		var tr = document.createElement("tr");
 		var td = document.createElement("td");
 		td.textContent = "(none)";
 		tr.appendChild(td);
 		table.appendChild(tr);
-		return;
 	}
-
-	clearTable("files", ["Filename", "Student", "Time", "Size"]);
-
-	fileArray.forEach(function (file) {
-		function select(ev) {
-			fileBrowser.selectFile(file.id, ev.ctrlKey || ev.metaKey, ev.shiftKey);
-			ev.preventDefault();
-			fillFileTable(fileArray, fileBrowser);
-		}
-
-		function doubleclick(ev) {
-			if (!(ev.ctrlKey || ev.metaKey || ev.shiftKey)) {
-				fileBrowser.selectFile(file.id, false, false);
-				ev.preventDefault();
-				fillFileTable(fileArray, fileBrowser);
-				fileBrowser.openFiles();
-			}
-		}
-
-		var tr = document.createElement("tr");
-
-		var td = document.createElement("td");
-		td.textContent = file.filename;
-		td.addEventListener("click", select, false);
-		td.addEventListener("dblclick", doubleclick, false);
-		td.className = fileBrowser.isFileSelected(file.id) ? "selected" : "";
-		tr.appendChild(td);
-
-		td = document.createElement("td");
-		td.textContent = file.student || file.group || "";
-		td.addEventListener("click", select, false);
-		td.addEventListener("dblclick", doubleclick, false);
-		td.className = fileBrowser.isFileSelected(file.id) ? "selected" : "";
-		tr.appendChild(td);
-
-		td = document.createElement("td");
-		td.textContent = file.time || "";
-		td.addEventListener("click", select, false);
-		td.addEventListener("dblclick", doubleclick, false);
-		td.className = fileBrowser.isFileSelected(file.id) ? "selected" : "";
-		tr.appendChild(td);
-
-		td = document.createElement("td");
-		td.textContent = file.size != null ? file.size.toString(10) : "";
-		td.addEventListener("click", select, false);
-		td.addEventListener("dblclick", doubleclick, false);
-		td.className = fileBrowser.isFileSelected(file.id) ? "selected" : "";
-		tr.appendChild(td);
-
-		table.appendChild(tr);
-	});
 
 	updateGUI(fileBrowser);
 }
@@ -130,17 +134,21 @@ function fillFileTable(fileArray, fileBrowser) {
 window.addEventListener("load", function () {
 	var url0 = "/vpl/vpl.html?ui=ui/classic/ui.json&server=ws://" + document.location.hostname + ":8001/";
 	var fileBrowser = new VPLTeacherTools.FileBrowser({
-		onFiles: function (fileArray, fileBrowser) {
-    		fillFileTable(fileArray, fileBrowser);
+		onTeacherFiles: function (fileArray, fileBrowser) {
+    		fillFileTable(fileArray, fileBrowser, false);
+			updateGUI(fileBrowser);
+		},
+		onStudentFiles: function (fileArray, fileBrowser) {
+    		fillFileTable(fileArray, fileBrowser, true);
 			updateGUI(fileBrowser);
 		},
 		onOpen: function (file) {
             sessionStorage.setItem("initialFileName", file.filename);
             sessionStorage.setItem("initialFileContent", file.content);
-			var teacherFile = file.group_id == null && file.student_id == null;
+			var teacherFile = !file.owner || file.owner.length == 0;
 			sessionStorage.setItem("readOnly", teacherFile ? "false" : "true");
 			sessionStorage.setItem("fileId", teacherFile ? file.id : "");
-			document.location = "vpl.html" + (teacherFile ? "?role=teacher" : "");
+			document.location = "vpl.html?robot=sim" + (teacherFile ? "&role=teacher" : "");
 		}
 	});
 
@@ -201,23 +209,15 @@ window.addEventListener("load", function () {
 		fileBrowser.deleteFiles();
 	}, false);
 
-	var chkFilterStudent = document.getElementById("chk-filter-student");
 	var vFilterStudent = document.getElementById("v-filter-student");
-	chkFilterStudent.addEventListener("change", function () {
-		fileBrowser.filterStudent = chkFilterStudent.checked
-			? vFilterStudent.value
-			: null;
-		fileBrowser.updateFiles();
-	}, false);
 	vFilterStudent.addEventListener("input", function () {
-		chkFilterStudent.checked = true;
 		fileBrowser.filterStudent = vFilterStudent.value;
 		fileBrowser.updateFiles();
 	}, false);
 
-	var chkFilterLast = document.getElementById("chk-filter-last");
-	chkFilterLast.addEventListener("change", function () {
-		fileBrowser.filterLast = chkFilterLast.checked;
+	var chkFilterStLast = document.getElementById("chk-filter-students-last");
+	chkFilterStLast.addEventListener("change", function () {
+		fileBrowser.filterStudentLast = chkFilterStLast.checked;
 		fileBrowser.updateFiles();
 	}, false);
 }, false);
@@ -246,22 +246,13 @@ window.addEventListener("load", function () {
 
 <div class="border">
 
-	<h2>Filter</h2>
+	<h2>Teacher files</h2>
 
 	<p>
-	<label>Pupil <input id="chk-filter-student" type="checkbox"></label>
-	<input id="v-filter-student"></input>
-	<br>
-	<label>Most recent only <input id="chk-filter-last" type="checkbox"></label>
+	<label><input id="chk-filter-teacher-last" type="checkbox" checked> most recent version only</label>
 	</p>
 
-</div>
-
-<div class="border">
-
-	<h2>Files</h2>
-
-	<table id="files">
+	<table id="files-teacher">
 	</table>
 
 	<p>
@@ -273,6 +264,27 @@ window.addEventListener("load", function () {
 	<p>
 	<input id="v-create-filename" placeholder="filename.json"></input>
 	<button id="btn-create" disabled>Create</button>
+	</p>
+
+</div>
+
+<div class="border">
+
+	<h2>Pupil files</h2>
+
+	<p>
+	<label>Pupil <input id="v-filter-student"></input></label>
+	&nbsp;&nbsp;
+	<label><input id="chk-filter-students-last" type="checkbox" checked> most recent version only</label>
+	</p>
+
+	<table id="files-students">
+	</table>
+
+	<p>
+	<button id="btn-open" disabled="true">Open</button>
+	<button id="btn-export" disabled="true">Export</button>
+	<button id="btn-remove" disabled="true">Delete</button>
 	</p>
 
 </div>

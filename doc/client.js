@@ -51,43 +51,43 @@ VPLTeacherTools.HTTPClient.prototype.deleteAllStudents = function (opt) {
 };
 
 VPLTeacherTools.HTTPClient.prototype.addStudent = function (name, opt) {
-	this.rest("/api/addStudent?name=" + encodeURIComponent(name), opt);
+	this.rest("/api/addStudent?student=" + encodeURIComponent(name), opt);
 };
 
 VPLTeacherTools.HTTPClient.prototype.removeStudent = function (name, opt) {
-	this.rest("/api/removeStudent?name=" + encodeURIComponent(name), opt);
+	this.rest("/api/removeStudent?student=" + encodeURIComponent(name), opt);
 };
 
 VPLTeacherTools.HTTPClient.prototype.listStudents = function (opt) {
 	this.rest("/api/listStudents", opt);
 };
 
-VPLTeacherTools.HTTPClient.prototype.addGroup = function (groupName, opt) {
-	this.rest("/api/addGroup?group=" + encodeURIComponent(groupName), opt);
+VPLTeacherTools.HTTPClient.prototype.addGroup = function (student, opt) {
+	this.rest("/api/addGroup" + (student ? "?student=" + encodeURIComponent(student) : ""), opt);
 };
 
-VPLTeacherTools.HTTPClient.prototype.removeGroup = function (groupName, opt) {
-	this.rest("/api/removeGroup?group=" + encodeURIComponent(groupName), opt);
+VPLTeacherTools.HTTPClient.prototype.removeGroup = function (groupId, opt) {
+	this.rest("/api/removeGroup?groupid=" + encodeURIComponent(groupId), opt);
 };
 
 VPLTeacherTools.HTTPClient.prototype.listGroups = function (opt) {
 	this.rest("/api/listGroups", opt);
 };
 
-VPLTeacherTools.HTTPClient.prototype.addStudentToGroup = function (name, groupName, opt) {
-	this.rest("/api/addStudentToGroup?name=" +
-		encodeURIComponent(name) + "&group=" + encodeURIComponent(groupName),
+VPLTeacherTools.HTTPClient.prototype.addStudentToGroup = function (student, groupId, opt) {
+	this.rest("/api/addStudentToGroup?student=" +
+		encodeURIComponent(student) + "&groupid=" + encodeURIComponent(groupId),
 		opt);
 };
 
-VPLTeacherTools.HTTPClient.prototype.removeStudentFromGroup = function (name, groupName, opt) {
-	this.rest("/api/removeStudentFromGroup?name=" +
-		encodeURIComponent(name) + "&group=" + encodeURIComponent(groupName),
+VPLTeacherTools.HTTPClient.prototype.removeStudentFromGroup = function (student, groupId, opt) {
+	this.rest("/api/removeStudentFromGroup?student=" +
+		encodeURIComponent(student) + "&groupid=" + encodeURIComponent(groupId),
 		opt);
 };
 
-VPLTeacherTools.HTTPClient.prototype.listGroupStudents = function (groupName, opt) {
-	this.rest("/api/listGroupStudents?group=" + encodeURIComponent(groupName), opt);
+VPLTeacherTools.HTTPClient.prototype.listGroupStudents = function (groupId, opt) {
+	this.rest("/api/listGroupStudents?groupid=" + encodeURIComponent(groupId), opt);
 };
 
 VPLTeacherTools.HTTPClient.prototype.listGroupsWithStudents = function (opt) {
@@ -98,7 +98,7 @@ VPLTeacherTools.HTTPClient.prototype.listGroupsWithStudents = function (opt) {
 			var errMsg = null;
 			if (groups.length > 0) {
 				groups.forEach(function (group) {
-					self.listGroupStudents(group.name, {
+					self.listGroupStudents(group.group_id, {
 	                    onSuccess: function (students) {
 	                        group.students = students;
 							remaining--;
@@ -128,8 +128,8 @@ VPLTeacherTools.HTTPClient.prototype.listGroupsWithStudents = function (opt) {
 	});
 };
 
-VPLTeacherTools.HTTPClient.prototype.beginSession = function (groupName, robot, force, opt) {
-	var url = "/api/beginSession?group=" + encodeURIComponent(groupName);
+VPLTeacherTools.HTTPClient.prototype.beginSession = function (groupId, robot, force, opt) {
+	var url = "/api/beginSession?groupid=" + encodeURIComponent(groupId);
 	if (robot) {
 		url += "&robot=" + encodeURIComponent(robot);
 	}
@@ -153,8 +153,7 @@ VPLTeacherTools.HTTPClient.prototype.listSessions = function (opt) {
 
 VPLTeacherTools.HTTPClient.prototype.addFile = function (filename, content, props, opt) {
 	this.rest("/api/addFile?filename=" + encodeURIComponent(filename) +
-		(props && props.studentName ? "&student=" + encodeURIComponent(props.studentName) : "") +
-		(props && props.groupName ? "&group=" + encodeURIComponent(props.groupName) : "") +
+		(props && props.groupId ? "&groupid=" + encodeURIComponent(props.groupId) : "") +
 		(props && props.metadata ? "&metadata=" + encodeURIComponent(props.metadata) : ""),
 		opt, content);
 };
@@ -184,6 +183,10 @@ VPLTeacherTools.HTTPClient.prototype.listFiles = function (queryProps, opt) {
 	this.rest("/api/listFiles" + (params.length > 0 ? "?" + params.join("&") : ""), opt);
 };
 
+VPLTeacherTools.HTTPClient.prototype.clearFiles = function (opt) {
+	this.rest("/api/clearFiles", opt);
+};
+
 VPLTeacherTools.HTTPClient.prototype.getLog = function (sessionId, last, opt) {
 	var params = sessionId
 		? [
@@ -194,6 +197,10 @@ VPLTeacherTools.HTTPClient.prototype.getLog = function (sessionId, last, opt) {
 		params.push("last=" + last);
 	}
 	this.rest("/api/getLog" + "?" + params.join("&"), opt);
+};
+
+VPLTeacherTools.HTTPClient.prototype.clearLog = function (opt) {
+	this.rest("/api/clearLog", opt);
 };
 
 VPLTeacherTools.HTTPClient.prototype.shortenURL = function (url, cb) {

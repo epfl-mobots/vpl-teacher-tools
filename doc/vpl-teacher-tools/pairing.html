@@ -96,7 +96,7 @@ function fillStudentTable(studentArray, pairing) {
 	clearChildren("students");
 	var table = document.getElementById("students");
 
-	function addRow(studentName, groupName) {
+	function addRow(studentName, groupId) {
 
 		var tr = document.createElement("tr");
 
@@ -119,14 +119,14 @@ function fillStudentTable(studentArray, pairing) {
 		tr.appendChild(td);
 
 		var td = document.createElement("td");
-		td.textContent = groupName ? "\u2713" : "";	// checkmark
+		td.textContent = groupId ? "\u2713" : "";	// checkmark
 		tr.appendChild(td);
 
 		table.appendChild(tr);
 	}
 
 	studentArray.forEach(function (student) {
-		addRow(student.name, student.group);
+		addRow(student.name, student.group_id);
 	});
 }
 
@@ -145,7 +145,7 @@ function fillGroupTable(groupArray, pairing) {
 
 	groupArray.forEach(function (group) {
 		function select() {
-			pairing.selectGroup(group.name);
+			pairing.selectGroup(group.group_id);
 			fillGroupTable(groupArray, pairing);
 		}
 
@@ -153,7 +153,7 @@ function fillGroupTable(groupArray, pairing) {
 			var tr = document.createElement("tr");
 
 			var td = document.createElement("td");
-			td.className = pairing.isGroupSelected(group.name) ? "rect selected" : "rect";
+			td.className = pairing.isGroupSelected(group.group_id) ? "rect selected" : "rect";
 			group.students.forEach(function (studentName, i) {
 				var span = document.createElement("span");
 				span.className = "rect";
@@ -178,13 +178,11 @@ function fillGroupTable(groupArray, pairing) {
 				if (data && /^[SG]\//.test(data)) {
 					ev.stopPropagation();
 					var studentName = data.slice(2);
-					pairing.addStudentToGroup(studentName, group.name, true);
-					pairing.selectGroup(group.name);
+					pairing.addStudentToGroup(studentName, group.group_id, true);
 				} else if (data && /^R\//.test(data)) {
 					ev.stopPropagation();
 					var robotName = data.slice(2);
-					pairing.beginSession(robotName, group.name);
-					pairing.selectGroup(group.name);
+					pairing.beginSession(robotName, group.group_id);
 				}
 			});
 
@@ -192,7 +190,7 @@ function fillGroupTable(groupArray, pairing) {
 
 			if (group.pair) {
 				td = document.createElement("td");
-				td.className = pairing.isGroupSelected(group.name) ? "rect selected" : "rect";
+				td.className = pairing.isGroupSelected(group.group_id) ? "rect selected" : "rect";
 				td.textContent = (/^\{/.test(group.pair.robot) ? "Thymio II" : group.pair.robot.replace(/[()]/g, "")) + " ";
 				var rmBtn = document.createElement("span");
 				rmBtn.textContent = "\u2716";	// heavy multiplication mark
@@ -224,9 +222,7 @@ function fillGroupTable(groupArray, pairing) {
 		var data = ev.dataTransfer.getData("text/plain");
 		if (data && /^[SG]\//.test(data)) {
 			var studentName = data.slice(2);
-			var groupName = studentName + "-" + Math.random().toString(10).replace("0.", "");
-			pairing.addGroup(groupName, studentName, true);
-			pairing.selectGroup(groupName);
+			pairing.addGroup(studentName);
 		}
 	}, false);
 
@@ -242,10 +238,10 @@ function fillGroupTable(groupArray, pairing) {
 		var studentName = ev.dataTransfer.getData("text/plain");
 		if (studentName.slice(0, 2) === "G/") {
 			studentName = studentName.slice(2);
-			var groupName = pairing.groupForStudent(studentName);
-			if (groupName) {
-				pairing.removeStudentFromGroup(studentName, groupName, true);
-				pairing.selectGroup(groupName);
+			var groupId = pairing.groupForStudent(studentName);
+			if (groupId) {
+				pairing.removeStudentFromGroup(studentName, groupId, true);
+				pairing.selectGroup(groupId);
 			}
 		}
 	}, false);
@@ -261,14 +257,14 @@ function fillGroupTable(groupArray, pairing) {
 		var p = document.createElement("p");
 		var groupDescr = selectedGroup.students.length > 0
 			? selectedGroup.students.join(", ")
-			: selectedGroup.name;
+			: selectedGroup.group_id;
 		p.textContent = "Group: " + groupDescr;
 		div.appendChild(p);
 		var p = document.createElement("p");
 		p.style.overflowWrap = "break-word";
 		var a = document.createElement("a");
 		a.style.fontFamily = "monospace";
-		var toolURL = pairing.getToolURL(selectedGroup.pair);
+		var toolURL = pairing.getToolURL(selectedGroup);
 		if (toolURL) {
 			var url = document.location.origin + toolURL;
 			a.textContent = url;
@@ -326,12 +322,10 @@ window.addEventListener("load", function () {
 			name: function (nodeId) {
 				return nodeId;
 			},
-			url: function (pair) {
+			url: function (group) {
 				return url0 + "&robot=thymio-tdm&session=" + pair.session_id +
-					(pair.special === "!teacher"
-						? "&role=teacher"
-						: pair.students ? "&user=" + encodeURIComponent(pair.students.join(",")) : "") +
-					"#w=" + tdmURL + "&uuid=" + pair.robot;
+					(group.students ? "&user=" + encodeURIComponent(group.students.join(",")) : "") +
+					"#w=" + tdmURL + "&uuid=" + group.pair.robot;
 			}
 		},
 		nonRobots: [
@@ -339,20 +333,12 @@ window.addEventListener("load", function () {
 				name: function () {
 					return "(simulator)";
 				},
-				url: function (pair) {
+				url: function (group) {
 					// set user to comma-separated users if they exist
-					return url0 + "&robot=sim&session=" + pair.session_id +
-						(pair.special === "!teacher" ? "&role=teacher" : pair.students ? "&user=" + encodeURIComponent(pair.students.join(", ")) : "");
+					return url0 + "&robot=sim&session=" + group.pair.session_id +
+						(group.students ? "&user=" + encodeURIComponent(group.students.join(", ")) : "");
 				}
-			} /* ,
-			{
-				name: function () {
-					return "(debugging tool)";
-				},
-				url: function (sessionId) {
-					return "/vpl-teacher-tools/student-debug.html?session=" + sessionId;
-				}
-			} */
+			}
 		],
 		nonRobotNameMapping: {
 			"!sim": "(simulator)"

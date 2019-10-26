@@ -57,11 +57,15 @@ window.addEventListener("load", function () {
 		client.addStudent("Bob", opt);
 		client.addStudent("Carol", opt);
 		client.addStudent("David", opt);
-		client.addGroup("West", opt);
-		client.addGroup("East", opt);
-		client.addStudentToGroup("Alice", "West", opt);
-		client.addStudentToGroup("Bob", "West", opt);
-		client.addStudentToGroup("Carol", "East", opt);
+		client.addGroup("Alice", {
+			logURL: opt.logURL,
+			onSuccess: function (r) {
+				opt.onSuccess(r);
+				client.addStudentToGroup("Bob", r, opt);
+				client.addGroup("Carol", opt);
+			},
+			onError: opt.onError
+		});
 	});
 
 	btn = document.getElementById("list-students");
@@ -74,18 +78,23 @@ window.addEventListener("load", function () {
 		client.listGroups(opt);
 	});
 
-	btn = document.getElementById("list-members");
+	btn = document.getElementById("list-members-a");
 	btn.addEventListener("click", function () {
 		client.listGroups({
 			logURL: opt.logURL,
 			onSuccess: function (r) {
 				opt.onSuccess(r);
 				r.forEach(function (group) {
-					client.listGroupStudents(group.name, opt);
+					client.listGroupStudents(group.group_id, opt);
 				});
 			},
 			onError: opt.onError
 		});
+	});
+
+	btn = document.getElementById("list-members-b");
+	btn.addEventListener("click", function () {
+		client.listGroupsWithStudents(opt);
 	});
 
 	btn = document.getElementById("reset-sessions");
@@ -110,28 +119,55 @@ window.addEventListener("load", function () {
 		client.getLog(sessionId, "vpl-changed", opt);
 	});
 
-	btn = document.getElementById("init-files");
+	btn = document.getElementById("clear-log");
 	btn.addEventListener("click", function () {
-		client.addFile("test-alice.txt", "Hello, Alice!\n",
-			{studentName: "Alice"}, opt);
-		client.addFile("test-east.txt", "Hello, East!\n",
-			{groupName: "East"}, opt);
+		client.clearLog(opt);
+	});
+
+	btn = document.getElementById("init-files-teacher");
+	btn.addEventListener("click", function () {
+		client.addFile("test-teacher.txt",
+			"Hello, teacher!\n",
+			{},
+			opt);
+	});
+
+	btn = document.getElementById("init-files-students");
+	btn.addEventListener("click", function () {
+		// add one file for each group
+		client.listGroups({
+			logURL: opt.logURL,
+			onSuccess: function (r) {
+				opt.onSuccess(r);
+				r.forEach(function (group) {
+					client.addFile("test-gr" + group.group_id + ".txt",
+						"Hello, group " + group.group_id + "!\n",
+						{groupId: group.group_id},
+						opt);
+				});
+			},
+			onError: opt.onError
+		});
 	});
 
 	btn = document.getElementById("remove-files");
 	btn.addEventListener("click", function () {
-		client.
-		client.addFile("test-alice.txt", "Hello, Alice!\n",
-			{studentName: "Alice"}, opt);
-		client.addFile("test-east.txt", "Hello, East!\n",
-			{groupName: "East"}, opt);
-		client.addFile("test-teacher.txt", "Hello, Teacher!\n",
-			{}, opt);
+		document.getElementById("console").textContent += "Not implemented\n";
 	});
 
-	btn = document.getElementById("list-files");
+	btn = document.getElementById("list-files-teacher");
 	btn.addEventListener("click", function () {
-		client.listFiles(opt);
+		client.listFiles(null, opt);
+	});
+
+	btn = document.getElementById("list-files-students");
+	btn.addEventListener("click", function () {
+		client.listFiles({filterStudent: "*"}, opt);
+	});
+
+	btn = document.getElementById("clear-files");
+	btn.addEventListener("click", function () {
+		client.clearFiles(opt);
 	});
 
 }, false);
@@ -169,7 +205,8 @@ window.addEventListener("load", function () {
 		<button id="init">init students</button>
 		<button id="list-students">list students</button>
 		<button id="list-groups">list groups</button>
-		<button id="list-members">list members</button>
+		<button id="list-members-a">list members (a)</button>
+		<button id="list-members-b">list members (b)</button>
 	</p>
 
 </div>
@@ -189,6 +226,10 @@ window.addEventListener("load", function () {
 		<input id="log-file-sessionid"></input>
 	</p>
 
+	<p>
+		<button id="clear-log">clear log</button>
+	</p>
+
 </div>
 
 <div class="border">
@@ -196,9 +237,18 @@ window.addEventListener("load", function () {
 	<h2>Files</h2>
 
 	<p>
-	<button id="init-files">init</button>
-	<button id="remove-files">remove</button>
-	<button id="list-files">list</button>
+		<button id="init-files-teacher">create teacher file</button>
+		<button id="init-files-students">create student files</button>
+		<button id="remove-files">remove all files</button>
+	</p>
+
+	<p>
+		<button id="list-files-teacher">list teacher files</button>
+		<button id="list-files-students">list student files</button>
+	</p>
+
+	<p>
+		<button id="clear-files">remove all files</button>
 	</p>
 
 </div>

@@ -117,133 +117,13 @@ function fillStudentTable(studentArray, students) {
 	fldStudentName.focus();
 }
 
-function fillGroupTable(groupArray, students) {
-
-	function checkDragType(ev) {
-		if (ev.dataTransfer.types.includes("text/plain")) {
-			ev.preventDefault();
-			return false;
-		}
-		return true;
-	}
-
-	function selectGroup(groupName) {
-		students.selectGroup(groupName);
-		fillStudentTable(students.students, students);	// update button labels
-		fillGroupTable(groupArray, students);
-	}
-
-	clearTable("groups", ["Students", "Count"]);
-	var table = document.getElementById("groups");
-
-	groupArray.forEach(function (group) {
-
-		function selectRow() {
-			selectGroup(group.name);
-		}
-
-		var tr = document.createElement("tr");
-
-		// drop student name
-		tr.addEventListener("dragenter", checkDragType);
-		tr.addEventListener("dragover", checkDragType);
-		tr.addEventListener("drop", function (ev) {
-			ev.stopPropagation();
-			var studentName = ev.dataTransfer.getData("text/plain").replace(/^G-/, "");
-			students.addStudentToGroup(studentName, group.name, true);
-			selectGroup(group.name);
-		}, false);
-
-		var td = document.createElement("td");
-		td.className = "rect";
-		group.students.forEach(function (studentName, i) {
-			var span = document.createElement("span");
-			span.textContent = studentName;
-
-			// drag student name
-			span.draggable = true;
-			span.addEventListener("dragstart", function (ev) {
-				ev.dataTransfer.setData("text/plain", "G-" + studentName);
-				ev.dataTransfer.effectAllowed = "move";
-			});
-
-			td.appendChild(span);
-		});
-		// td.addEventListener("click", selectRow, false);
-		// td.className = students.isGroupSelected(group.name) ? "rect selected" : "rect";
-		tr.appendChild(td);
-
-		td = document.createElement("td");
-		td.textContent = group.numStudents;
-		// td.addEventListener("click", selectRow, false);
-		// td.className = students.isGroupSelected(group.name) ? "rect selected" : "rect";
-		tr.appendChild(td);
-
-		td = document.createElement("td");
-		var btn = document.createElement("button");
-		btn.textContent = "remove group";
-		btn.addEventListener("click", function () {
-			students.removeGroup(group.name);
-		}, false);
-		td.appendChild(btn);
-		tr.appendChild(td);
-
-		table.appendChild(tr);
-	});
-
-	// row to create new group
-	var tr = document.createElement("tr");
-	var td = document.createElement("td");
-	td.className = "rect";
-	td.textContent = "\u00a0";
-
-	// drop student name
-	tr.addEventListener("dragenter", checkDragType);
-	tr.addEventListener("dragover", checkDragType);
-	tr.addEventListener("drop", function (ev) {
-		ev.stopPropagation();
-		var studentName = ev.dataTransfer.getData("text/plain").replace(/^G-/, "");
-		var groupName = studentName + Math.random().toString(10);
-		students.addGroup(groupName, studentName, true);
-		selectGroup(groupName);
-	}, false);
-
-	tr.appendChild(td);
-	td = document.createElement("td");
-	td.textContent = "0";
-	tr.appendChild(td);
-	table.appendChild(tr);
-
-	// drop student name outside a group -> delete
-	var body = document.body;
-	body.addEventListener("dragenter", checkDragType);
-	body.addEventListener("dragover", checkDragType);
-	body.addEventListener("drop", function (ev) {
-		ev.stopPropagation();
-		var studentName = ev.dataTransfer.getData("text/plain");
-		if (studentName.slice(0, 2) === "G-") {
-			studentName = studentName.slice(2);
-			var groupName = students.groupForStudent(studentName);
-			if (groupName) {
-				students.removeStudentFromGroup(studentName, groupName, true);
-				selectGroup(groupName);
-			}
-		}
-	}, false);
-}
-
 window.addEventListener("load", function () {
 	var url0 = "/vpl/vpl.html?ui=ui/classic/ui.json&server=ws://" + document.location.hostname + ":8001/";
 	var students = new VPLTeacherTools.StudentManagement({
 		onStudents: function (studentArray, students) {
     		fillStudentTable(studentArray, students);
 		},
-		onGroups: function (groupArray) {
-//			fillGroupTable(groupArray, students);
-		}
 	});
-
-//	fillGroupTable([], students);
 
 }, false);
 

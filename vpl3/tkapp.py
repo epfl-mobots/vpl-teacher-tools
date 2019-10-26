@@ -39,8 +39,8 @@ class Application(ApplicationBase, tk.Tk):
         file_menu = tk.Menu(menubar)
         file_menu.add_command(label="Open in Browser",
                               command=self.start_browser,
-                              accelerator="Meta-B")
-        self.bind("<Command-b>", lambda event: self.start_browser())
+                              accelerator="Control-B")
+        self.bind("<Control-b>", lambda event: self.start_browser())
         self.bind("<Control-q>", lambda event: self.quit())
         menubar.add_cascade(label="File", menu=file_menu)
 

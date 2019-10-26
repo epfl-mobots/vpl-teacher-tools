@@ -99,16 +99,8 @@ class VPLWebSocketServer:
                 })
             elif msg["sender"]["type"] == "vpl":
                 # accept if a session id was provided
-                tuple = db.get_session(msg["sender"]["sessionid"])
-                if tuple is None:
-                    await self.ws.send(websocket, {
-                        "sender": {
-                            "type": "server"
-                        },
-                        "type": "err",
-                        "msg": "bad sessionid"
-                    })
-                else:
+                try:
+                    session_group_id = db.get_session_group_id(msg["sender"]["sessionid"])
                     await self.ws.send(websocket, {
                         "sender": {
                             "type": "server"
@@ -117,24 +109,32 @@ class VPLWebSocketServer:
                         "data": None
                     })
                     await self.notify_dashboard()
+                except:
+                    await self.ws.send(websocket, {
+                        "sender": {
+                            "type": "server"
+                        },
+                        "type": "err",
+                        "msg": "bad sessionid"
+                    })
         elif msg["type"] == "bye":
             websocket.is_connected = False
             if msg["sender"]["type"] == "dashboard":
                 # unregister dashboard
                 self.log_recipients.remove(websocket)
             elif msg["sender"]["type"] == "vpl":
-                tuple = db.get_session(msg["sender"]["sessionid"])
-                if tuple is not None:
+                try:
+                    session_group_id = db.get_session_group_id(msg["sender"]["sessionid"])
                     await self.notify_dashboard()
+                except:
+                    pass
         elif msg["type"] == "file" and msg["sender"]["type"] == "vpl":
             # save file
             session_id = msg["sender"]["sessionid"]
             filename = msg["data"]["name"]
             content = msg["data"]["content"]
-            students = db.get_session_student_names(session_id)
-            # TO DO: store student ids which each file and log entry
-            db.add_file(filename, content,
-                        student=999, group=None)
+            group_id = db.get_session_group_id(session_id)
+            db.add_file(filename, content, group_id=group_id)
         elif msg["type"] in ("cmd", "file"):
             # forward command to all (or msg["rcpt"]) other websockets but self
             await self.ws.sendToAll(msg,

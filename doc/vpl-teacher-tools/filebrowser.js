@@ -4,97 +4,130 @@
     @param {Object} options
 */
 VPLTeacherTools.FileBrowser = function (options) {
-    this.files = [];
+    this.teacherFiles = [];
+    this.studentFiles = [];
     this.options = options || {};
+    this.filterTeacherLast = true;
     this.filterStudent = null;
-    this.filterLast = false;
+    this.filterStudentLast = true;
 	this.client = new VPLTeacherTools.HTTPClient();
     this.updateFiles();
 };
 
 VPLTeacherTools.FileBrowser.prototype.updateFiles = function () {
     var self = this;
+
+	// teacher files
 	this.client.listFiles({
-        filterStudent: this.filterStudent,
-        last: this.filterLast
+        last: this.filterTeacherLast
     },
     {
 		onSuccess: function (files) {
-            self.files = files.map(function (file) {
+            self.teacherFiles = files.map(function (file) {
                 var file1 = Object.create(file);    // prototype-based "copy"
                 file1.selected = false;
                 return file1;
             });
-            if (self.options.onFiles) {
-                self.options.onFiles(files, self);
+            if (self.options.onTeacherFiles) {
+                self.options.onTeacherFiles(files, self);
+            }
+        }
+	});
+	this.client.listFiles({
+        filterStudent: this.filterStudent || "*",
+        last: this.filterStudentLast
+    },
+    {
+		onSuccess: function (files) {
+            self.studentFiles = files.map(function (file) {
+                var file1 = Object.create(file);    // prototype-based "copy"
+                file1.selected = false;
+                return file1;
+            });
+            if (self.options.onStudentFiles) {
+                self.options.onStudentFiles(files, self);
             }
         }
 	});
 };
 
-VPLTeacherTools.FileBrowser.prototype.fileIdToIndex = function (fileId) {
-    return this.files.findIndex(function (file) { return file.id === fileId; });
+VPLTeacherTools.FileBrowser.prototype.refreshFiles = function () {
+    if (this.options.onTeacherFiles) {
+        this.options.onTeacherFiles(this.teacherFiles, this);
+    }
+    if (this.options.onStudentFiles) {
+        this.options.onStudentFiles(this.studentFiles, this);
+    }
 };
 
-VPLTeacherTools.FileBrowser.prototype.selectFile = function (fileId, toggleKey, extendKey) {
-    var ix = this.fileIdToIndex(fileId);
+VPLTeacherTools.FileBrowser.prototype.fileIdToIndex = function (isStudentFile, fileId) {
+    return (isStudentFile ? this.studentFiles : this.teacherFiles)
+		.findIndex(function (file) { return file.id === fileId; });
+};
+
+VPLTeacherTools.FileBrowser.prototype.selectFile = function (isStudentFile, fileId, toggleKey, extendKey) {
+    var ix = this.fileIdToIndex(isStudentFile, fileId);
     if (ix < 0) {
         return;
     }
+	this.unselectFile(!isStudentFile);
+	var files = isStudentFile ? this.studentFiles : this.teacherFiles;
     if (toggleKey) {
         if (ix >= 0) {
-            this.files[ix].selected = !this.files[ix].selected;
+            files[ix].selected = !files[ix].selected;
         }
     } else if (extendKey) {
-        if (!this.files[ix].selected) {
+        if (!files[ix].selected) {
             // not already selected
             var state = 1;
                 // 1=before first selected, 2=after first selected, 3=after clicked item before 1st selected
-            for (var i = 0; i < this.files.length; i++) {
-                if (this.files[i].id === fileId) {
+            for (var i = 0; i < files.length; i++) {
+                if (files[i].id === fileId) {
                     if (state === 1) {
-                        if (this.files[i].selected) {
+                        if (files[i].selected) {
                             break;  // extend by clicking first selected file: no op
                         }
                         // start selecting until first already selected
                         state = 3;
-                        this.files[i].selected = true;
+                        files[i].selected = true;
                     } else if (state === 2) {
-                        this.files[i].selected = true;
+                        files[i].selected = true;
                         break;
                     }
                 } else if (state === 2) {
-                    this.files[i].selected = true;
+                    files[i].selected = true;
                 } else if (state === 3) {
-                    if (this.files[i].selected) {
+                    if (files[i].selected) {
                         break;  // stop extending
                     }
-                    this.files[i].selected = true;
-                } else if (this.files[i].selected) {
+                    files[i].selected = true;
+                } else if (files[i].selected) {
                     state = 2;
                 }
             }
         }
     } else {
-        for (var i = 0; i < this.files.length; i++) {
-            this.files[i].selected = i === ix;
+        for (var i = 0; i < files.length; i++) {
+            files[i].selected = i === ix;
         }
     }
 };
 
-VPLTeacherTools.FileBrowser.prototype.unselectFile = function () {
-    for (var i = 0; i < this.files.length; i++) {
-        this.files[i].selected = false;
+VPLTeacherTools.FileBrowser.prototype.unselectFile = function (isStudentFile) {
+	var files = isStudentFile ? this.studentFiles : this.teacherFiles;
+    for (var i = 0; i < files.length; i++) {
+        files[i].selected = false;
     }
 };
 
-VPLTeacherTools.FileBrowser.prototype.isFileSelected = function (fileId) {
-    var ix = this.fileIdToIndex(fileId);
-    return ix >= 0 && this.files[ix].selected;
+VPLTeacherTools.FileBrowser.prototype.isFileSelected = function (isStudentFile, fileId) {
+    var ix = this.fileIdToIndex(isStudentFile, fileId);
+    return ix >= 0 && (isStudentFile ? this.studentFiles : this.teacherFiles)[ix].selected;
 };
 
-VPLTeacherTools.FileBrowser.prototype.countSelectedFiles = function () {
-    return this.files.reduce(function (acc, val) { return val.selected ? acc + 1 : acc; }, 0);
+VPLTeacherTools.FileBrowser.prototype.countSelectedFiles = function (isStudentFile) {
+    return (isStudentFile ? this.studentFiles : this.teacherFiles)
+		.reduce(function (acc, val) { return val.selected ? acc + 1 : acc; }, 0);
 };
 
 VPLTeacherTools.FileBrowser.prototype.canAddFile = function (filename, content, owner, isGroupOwner) {
@@ -121,12 +154,14 @@ VPLTeacherTools.FileBrowser.prototype.addFile = function (filename, content, own
 };
 
 VPLTeacherTools.FileBrowser.prototype.canOpenFiles = function () {
-    return this.countSelectedFiles() == 1;
+    return this.countSelectedFiles(false) + this.countSelectedFiles(true) == 1;
 };
 
 VPLTeacherTools.FileBrowser.prototype.openFiles = function () {
     if (this.canOpenFiles()) {
-        var file = this.files.find(function (val) {
+        var file = this.teacherFiles.find(function (val) {
+            return val.selected;
+        }) || this.studentFiles.find(function (val) {
             return val.selected;
         });
         var self = this;
@@ -139,7 +174,7 @@ VPLTeacherTools.FileBrowser.prototype.openFiles = function () {
 };
 
 VPLTeacherTools.FileBrowser.prototype.canExportFiles = function () {
-    return this.countSelectedFiles() == 1;
+    return this.countSelectedFiles(false) + this.countSelectedFiles(true) == 1;
 };
 
 /** Set anchor element so that it downloads text
@@ -205,7 +240,9 @@ VPLTeacherTools.FileBrowser.downloadText = (function () {
 
 VPLTeacherTools.FileBrowser.prototype.exportFiles = function () {
     if (this.canExportFiles()) {
-        var file = this.files.find(function (val) {
+        var file = this.teacherFiles.find(function (val) {
+            return val.selected;
+        }) || this.studentFiles.find(function (val) {
             return val.selected;
         });
         var self = this;
@@ -220,11 +257,11 @@ VPLTeacherTools.FileBrowser.prototype.exportFiles = function () {
 };
 
 VPLTeacherTools.FileBrowser.prototype.canDeleteFiles = function () {
-    return this.countSelectedFiles() > 0;
+    return this.countSelectedFiles(false) + this.countSelectedFiles(true) > 0;
 };
 
 VPLTeacherTools.FileBrowser.prototype.deleteFiles = function () {
-    var selectedFileIds = this.files.reduce(function (acc, val) {
+    var selectedFileIds = this.teacherFiles.concat(this.studentFiles).reduce(function (acc, val) {
         return val.selected ? acc.concat(val.id) : acc;
     }, []);
     if (selectedFileIds.length > 0) {
