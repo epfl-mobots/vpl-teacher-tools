@@ -39,8 +39,13 @@ class Db:
             a2 = {int(el) for el in l2.split(",")}
             return a1.isdisjoint(a2)
 
+        def fun_equal_ic(str1, str2):
+            """True if strings are equal, ignoring case"""
+            return str1.casefold() == str2.casefold()
+
         self._db.create_function("list_doesinclude", 2, fun_list_doesinclude)
         self._db.create_function("list_aredisjoint", 2, fun_list_aredisjoint)
+        self._db.create_function("equal_ic", 2, fun_equal_ic)
 
         # create all tables if they don't exist yet
         sql = [
@@ -133,7 +138,7 @@ class Db:
         return list({int(el) for el in str.split(",")}) if str else []
 
     def get_student_id(self, name):
-        r = self.get_first_result("studentid", "students", "name=?", (name,))
+        r = self.get_first_result("studentid", "students", "equal_ic(name,?)", (name,))
         if r is None:
             raise ValueError("student not found")
         return r[0]
@@ -157,7 +162,7 @@ class Db:
 
     def add_student(self, name):
         """Add a new student"""
-        if self.select_has_result("students", "name=?", (name,)):
+        if self.select_has_result("students", "equal_ic(name,?)", (name,)):
             raise ValueError("duplicate student")
         c = self._db.cursor()
         c.execute("INSERT INTO students (name) VALUES (?)", (name,))
@@ -179,10 +184,10 @@ class Db:
 
     def remove_student(self, name):
         """Remove a student"""
-        if not self.select_has_result("students", "name=?", (name,)):
+        if not self.select_has_result("students", "equal_ic(name,?)", (name,)):
             raise ValueError("student not found")
         c = self._db.cursor()
-        c.execute("DELETE FROM students WHERE name=?", (name,))
+        c.execute("DELETE FROM students WHERE equal_ic(name,?)", (name,))
         self._db.commit()
 
     def add_group(self, student_name=None):
@@ -239,7 +244,7 @@ class Db:
 
     def add_student_to_group(self, student_name, group_id):
         """Add an existing student to a group (or change group)"""
-        r = self.get_first_result("groupid", "students", "name=?", (student_name,))
+        r = self.get_first_result("groupid", "students", "equal_ic(name,?)", (student_name,))
         if r is None:
             raise ValueError("student not found")
         membership = r[0]
@@ -250,7 +255,7 @@ class Db:
             c.execute("""
                 INSERT INTO membership (studentid, groupid, begintime)
                 VALUES (
-                    (SELECT studentid FROM students WHERE name=?),
+                    (SELECT studentid FROM students WHERE equal_ic(name,?)),
                     ?,
                     datetime('now')
                 )
@@ -277,7 +282,7 @@ class Db:
 
     def remove_student_from_group(self, student_name):
         """Remove a student from her group, and the group itself if empty"""
-        r = self.get_first_result("groupid", "students", "name=?",
+        r = self.get_first_result("groupid", "students", "equal_ic(name,?)",
                                   (student_name,))
         if r is None:
             raise ValueError("student not found")
@@ -288,7 +293,7 @@ class Db:
             c.execute("""
                 UPDATE students
                 SET groupid = NULL
-                WHERE name=?
+                WHERE equal_ic(name,?)
             """, (student_name,))
             self._db.commit()
 
@@ -505,6 +510,25 @@ class Db:
                                         (rowid,))[0]
         return file_id
 
+    def copy_file(self, file_id, filename, metadata=None):
+        """Copy a file"""
+        r = self.get_first_result("content", "files", "fileid=?", (file_id,))
+        if r is None:
+            raise ValueError("file id not found")
+        content = r[0]
+
+        c = self._db.cursor()
+        c.execute("""
+            INSERT
+            INTO files (name, content, owner, metadata)
+            VALUES (?,?,'',?)
+        """, (filename, content, metadata))
+        self._db.commit()
+        rowid = c.lastrowid
+        file_id = self.get_first_result("fileid", "files", "rowid=?",
+                                        (rowid,))[0]
+        return file_id
+
     def update_file(self, file_id, content):
         """Replace file content"""
         c = self._db.cursor()
@@ -513,6 +537,16 @@ class Db:
             SET time=CURRENT_TIMESTAMP, content=?
             WHERE fileid=?
         """, (content, file_id))
+        self._db.commit()
+
+    def rename_file(self, file_id, new_filename):
+        """Rename file"""
+        c = self._db.cursor()
+        c.execute("""
+            UPDATE files
+            SET name=?
+            WHERE fileid=?
+        """, (new_filename, file_id))
         self._db.commit()
 
     def remove_files(self, file_id_list):
@@ -559,7 +593,7 @@ class Db:
         group_id = None
         if student is not None and student != "*":
             r = self.get_first_result("studentid",
-                                      "students", "name=?",
+                                      "students", "equal_ic(name,?)",
                                       (student,))
             if r is None:
                 raise ValueError("student not found")

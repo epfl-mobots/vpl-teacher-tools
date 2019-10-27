@@ -153,9 +153,14 @@ VPLTeacherTools.HTTPClient.prototype.listSessions = function (opt) {
 
 VPLTeacherTools.HTTPClient.prototype.addFile = function (filename, content, props, opt) {
 	this.rest("/api/addFile?filename=" + encodeURIComponent(filename) +
-		(props && props.groupId ? "&groupid=" + encodeURIComponent(props.groupId) : "") +
 		(props && props.metadata ? "&metadata=" + encodeURIComponent(props.metadata) : ""),
 		opt, content);
+};
+
+VPLTeacherTools.HTTPClient.prototype.copyFile = function (id, filename, props, opt) {
+	this.rest("/api/copyFile?id=" + id.toString(10) + "&filename=" + encodeURIComponent(filename) +
+		(props && props.metadata ? "&metadata=" + encodeURIComponent(props.metadata) : ""),
+		opt);
 };
 
 VPLTeacherTools.HTTPClient.prototype.getFile = function (id, opt) {
@@ -164,6 +169,10 @@ VPLTeacherTools.HTTPClient.prototype.getFile = function (id, opt) {
 
 VPLTeacherTools.HTTPClient.prototype.updateFile = function (id, content, opt) {
 	this.rest("/api/updateFile?id=" + id.toString(10), opt, content);
+};
+
+VPLTeacherTools.HTTPClient.prototype.renameFiles = function (id, newFilename, opt) {
+	this.rest("/api/renameFile?id=" + id.toString(10) + "&name=" + encodeURIComponent(newFilename), opt);
 };
 
 VPLTeacherTools.HTTPClient.prototype.removeFiles = function (idArray, opt) {

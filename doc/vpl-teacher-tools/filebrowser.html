@@ -37,11 +37,14 @@ td {
 <script>
 
 function updateGUI(fileBrowser) {
-	document.getElementById("btn-create").disabled =
-		document.getElementById("v-create-filename").value == "";
-	document.getElementById("btn-open").disabled = !fileBrowser.canOpenFiles();
-	document.getElementById("btn-export").disabled = !fileBrowser.canExportFiles();
-	document.getElementById("btn-remove").disabled = !fileBrowser.canDeleteFiles();
+	document.getElementById("btn-edit-teacher").disabled = !fileBrowser.canEditTeacherFile();
+	document.getElementById("btn-rename-teacher").disabled = !fileBrowser.canRenameTeacherFile();
+	document.getElementById("btn-duplicate-teacher").disabled = !fileBrowser.canDuplicateTeacherFile();
+	document.getElementById("btn-export-teacher").disabled = !fileBrowser.canExportTeacherFile();
+	document.getElementById("btn-remove-teacher").disabled = !fileBrowser.canDeleteTeacherFiles();
+	document.getElementById("btn-view-st").disabled = !fileBrowser.canViewStudentFile();
+	document.getElementById("btn-export-st").disabled = !fileBrowser.canExportStudentFile();
+	document.getElementById("btn-remove-st").disabled = !fileBrowser.canDeleteStudentFiles();
 }
 
 function clearTable(id, labels) {
@@ -63,32 +66,50 @@ function clearTable(id, labels) {
 function fillFileTable(fileArray, fileBrowser, forStudents) {
 	var tableId = forStudents ? "files-students" : "files-teacher";
 	var table = document.getElementById(tableId);
+	var renamedFilename = null;
 	if (fileArray.length > 0) {
 		clearTable(tableId,
 			forStudents
 				? ["Filename", "Students", "Time", "Size"]
-				: ["Filename", "Students", "Time", "Size"]);
+				: ["Filename", "Time", "Size"]);
 
 		fileArray.forEach(function (file) {
-			function select(ev) {
-				fileBrowser.selectFile(forStudents, file.id,
-					ev.ctrlKey || ev.metaKey, ev.shiftKey);
-				ev.preventDefault();
-				fileBrowser.refreshFiles();
-			}
-			function doubleclick(ev) {
-				if (!(ev.ctrlKey || ev.metaKey || ev.shiftKey)) {
-					fileBrowser.selectFile(forStudents, file.id, false, false);
+			if (!file.renamed) {
+				function select(ev) {
+					fileBrowser.selectFile(forStudents, file.id,
+						ev.ctrlKey || ev.metaKey, ev.shiftKey);
 					ev.preventDefault();
-					fillFileTable(fileArray, fileBrowser, forStudents);
-					fileBrowser.openFiles();
+					fileBrowser.refreshFiles();
+				}
+				function doubleclick(ev) {
+					if (!(ev.ctrlKey || ev.metaKey || ev.shiftKey)) {
+						fileBrowser.selectFile(forStudents, file.id, false, false);
+						ev.preventDefault();
+						fillFileTable(fileArray, fileBrowser, forStudents);
+						fileBrowser.openFile(forStudents);
+					}
 				}
 			}
 
 			var tr = document.createElement("tr");
 
 			var td = document.createElement("td");
-			td.textContent = file.filename;
+			if (file.renamed) {
+				renamedFilename = document.createElement("input");
+				renamedFilename.value = file.filename;
+				renamedFilename.addEventListener("change", function () {
+					fileBrowser.renameTeacherFile(renamedFilename.value);
+				});
+				renamedFilename.addEventListener("keydown", function (ev) {
+					if (ev.key === "Escape") {
+						file.renamed = false;
+						fillFileTable(fileArray, fileBrowser, forStudents);
+					}
+				}, false);
+				td.appendChild(renamedFilename);
+			} else {
+				td.textContent = file.filename;
+			}
 			td.addEventListener("click", select, false);
 			td.addEventListener("dblclick", doubleclick, false);
 			td.className = fileBrowser.isFileSelected(forStudents, file.id) ? "selected" : "";
@@ -129,6 +150,10 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 	}
 
 	updateGUI(fileBrowser);
+	if (renamedFilename) {
+		renamedFilename.focus();
+		renamedFilename.select();
+	}
 }
 
 window.addEventListener("load", function () {
@@ -142,11 +167,11 @@ window.addEventListener("load", function () {
     		fillFileTable(fileArray, fileBrowser, true);
 			updateGUI(fileBrowser);
 		},
-		onOpen: function (file) {
+		onOpen: function (file, readOnly) {
             sessionStorage.setItem("initialFileName", file.filename);
             sessionStorage.setItem("initialFileContent", file.content);
 			var teacherFile = !file.owner || file.owner.length == 0;
-			sessionStorage.setItem("readOnly", teacherFile ? "false" : "true");
+			sessionStorage.setItem("readOnly", readOnly ? "true" : "false");
 			sessionStorage.setItem("fileId", teacherFile ? file.id : "");
 			document.location = "vpl.html?robot=sim" + (teacherFile ? "&role=teacher" : "");
 		}
@@ -156,8 +181,7 @@ window.addEventListener("load", function () {
 		var reader = new window.FileReader();
 		reader.addEventListener("load", function (event) {
 			fileBrowser.addFile(file.name,
-				event.target.result,
-				null, null);
+				event.target.result);
 		});
 		reader["readAsText"](file);
 	}
@@ -176,35 +200,54 @@ window.addEventListener("load", function () {
 
 	var btn;
 
-	btn = document.getElementById("btn-create");
-	function addFile() {
-		var filename = document.getElementById("v-create-filename").value;
-		var ext = VPLTeacherTools.FileBrowser.getFileSuffix(filename);
-		if (!ext) {
-			ext = "json";
-			filename += "." + ext;
-		}
-		fileBrowser.addFile(filename,
-			'{"disabledUI":["vpl:download","vpl:load"]}',
-			null, null);
-	}
-	btn.addEventListener("click", addFile, false);
-	document.getElementById("v-create-filename").addEventListener("input", function () {
-		updateGUI(fileBrowser);
-	}, false);
-	document.getElementById("v-create-filename").addEventListener("change", addFile, false);
-
-	var btn = document.getElementById("btn-open");
+	btn = document.getElementById("btn-new");
 	btn.addEventListener("click", function () {
-		fileBrowser.openFiles();
+		fileBrowser.addFile("untitled.json",
+			'{"disabledUI":["vpl:download","vpl:load"]}');
 	}, false);
 
-	btn = document.getElementById("btn-export");
+	btn = document.getElementById("btn-edit-teacher");
 	btn.addEventListener("click", function () {
-		fileBrowser.exportFiles();
+		fileBrowser.openFile(false);
 	}, false);
 
-	btn = document.getElementById("btn-remove");
+	btn = document.getElementById("btn-rename-teacher");
+	btn.addEventListener("click", function () {
+		fileBrowser.renameTeacherFile(null);
+	}, false);
+
+	btn = document.getElementById("btn-duplicate-teacher");
+	btn.addEventListener("click", function () {
+		fileBrowser.duplicateTeacherFile(null);
+	}, false);
+
+	btn = document.getElementById("btn-export-teacher");
+	btn.addEventListener("click", function () {
+		fileBrowser.exportFile();
+	}, false);
+
+	btn = document.getElementById("btn-remove-teacher");
+	btn.addEventListener("click", function () {
+		fileBrowser.deleteFiles();
+	}, false);
+
+	var chkFilterTeacherLast = document.getElementById("chk-filter-teacher-last");
+	chkFilterTeacherLast.addEventListener("change", function () {
+		fileBrowser.filterTeacherLast = chkFilterTeacherLast.checked;
+		fileBrowser.updateFiles();
+	}, false);
+
+	var btn = document.getElementById("btn-view-st");
+	btn.addEventListener("click", function () {
+		fileBrowser.openFile(true);
+	}, false);
+
+	btn = document.getElementById("btn-export-st");
+	btn.addEventListener("click", function () {
+		fileBrowser.exportFile();
+	}, false);
+
+	btn = document.getElementById("btn-remove-st");
 	btn.addEventListener("click", function () {
 		fileBrowser.deleteFiles();
 	}, false);
@@ -256,14 +299,12 @@ window.addEventListener("load", function () {
 	</table>
 
 	<p>
-	<button id="btn-open" disabled="true">Open</button>
-	<button id="btn-export" disabled="true">Export</button>
-	<button id="btn-remove" disabled="true">Delete</button>
-	</p>
-
-	<p>
-	<input id="v-create-filename" placeholder="filename.json"></input>
-	<button id="btn-create" disabled>Create</button>
+	<button id="btn-new">New</button>
+	<button id="btn-edit-teacher" disabled="true">Edit</button>
+	<button id="btn-rename-teacher" disabled="true">Rename</button>
+	<button id="btn-duplicate-teacher" disabled="true">Duplicate</button>
+	<button id="btn-export-teacher" disabled="true">Export</button>
+	<button id="btn-remove-teacher" disabled="true">Delete</button>
 	</p>
 
 </div>
@@ -282,9 +323,9 @@ window.addEventListener("load", function () {
 	</table>
 
 	<p>
-	<button id="btn-open" disabled="true">Open</button>
-	<button id="btn-export" disabled="true">Export</button>
-	<button id="btn-remove" disabled="true">Delete</button>
+	<button id="btn-view-st" disabled="true">View</button>
+	<button id="btn-export-st" disabled="true">Export</button>
+	<button id="btn-remove-st" disabled="true">Delete</button>
 	</p>
 
 </div>

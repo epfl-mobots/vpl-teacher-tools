@@ -14,7 +14,10 @@ VPLTeacherTools.FileBrowser = function (options) {
     this.updateFiles();
 };
 
-VPLTeacherTools.FileBrowser.prototype.updateFiles = function () {
+/** Fetch all files from db and refresh their display
+	@param {number=} renamedFileId id of the file to rename, or undefined
+*/
+VPLTeacherTools.FileBrowser.prototype.updateFiles = function (renamedFileId) {
     var self = this;
 
 	// teacher files
@@ -25,11 +28,12 @@ VPLTeacherTools.FileBrowser.prototype.updateFiles = function () {
 		onSuccess: function (files) {
             self.teacherFiles = files.map(function (file) {
                 var file1 = Object.create(file);    // prototype-based "copy"
-                file1.selected = false;
+                file1.selected = file.id === renamedFileId;
+				file1.renamed = file.id === renamedFileId;
                 return file1;
             });
             if (self.options.onTeacherFiles) {
-                self.options.onTeacherFiles(files, self);
+                self.options.onTeacherFiles(self.teacherFiles, self);
             }
         }
 	});
@@ -130,35 +134,34 @@ VPLTeacherTools.FileBrowser.prototype.countSelectedFiles = function (isStudentFi
 		.reduce(function (acc, val) { return val.selected ? acc + 1 : acc; }, 0);
 };
 
-VPLTeacherTools.FileBrowser.prototype.canAddFile = function (filename, content, owner, isGroupOwner) {
-    return filename != "" && owner != "";
+VPLTeacherTools.FileBrowser.prototype.countSelectedNotRenamedFiles = function () {
+    return this.teacherFiles
+		.reduce(function (acc, val) { return val.selected && !val.renamed ? acc + 1 : acc; }, 0);
 };
 
-VPLTeacherTools.FileBrowser.prototype.addFile = function (filename, content, owner, isGroupOwner) {
+VPLTeacherTools.FileBrowser.prototype.addFile = function (filename, content) {
     var props = {};
-    if (owner) {
-        if (isGroupOwner) {
-            props.groupName = owner;
-        } else {
-            props.studentName = owner;
-        }
-    }
     var self = this;
     this.client.addFile(filename, content,
         props,
         {
-            onSuccess: function () {
-                self.updateFiles();
+            onSuccess: function (r) {
+				// rename immediately
+                self.updateFiles(r);
             }
         });
 };
 
-VPLTeacherTools.FileBrowser.prototype.canOpenFiles = function () {
-    return this.countSelectedFiles(false) + this.countSelectedFiles(true) == 1;
+VPLTeacherTools.FileBrowser.prototype.canEditTeacherFile = function () {
+    return this.countSelectedNotRenamedFiles() == 1;
 };
 
-VPLTeacherTools.FileBrowser.prototype.openFiles = function () {
-    if (this.canOpenFiles()) {
+VPLTeacherTools.FileBrowser.prototype.canViewStudentFile = function () {
+    return this.countSelectedFiles(true) == 1;
+};
+
+VPLTeacherTools.FileBrowser.prototype.openFile = function (readOnly) {
+    if (this.countSelectedFiles(false) + this.countSelectedFiles(true) === 1) {
         var file = this.teacherFiles.find(function (val) {
             return val.selected;
         }) || this.studentFiles.find(function (val) {
@@ -167,14 +170,72 @@ VPLTeacherTools.FileBrowser.prototype.openFiles = function () {
         var self = this;
         this.client.getFile(file.id, {
             onSuccess: function (file) {
-                self.options.onOpen && self.options.onOpen(file);
+                self.options.onOpen && self.options.onOpen(file, readOnly);
             }
         });
     }
 };
 
-VPLTeacherTools.FileBrowser.prototype.canExportFiles = function () {
-    return this.countSelectedFiles(false) + this.countSelectedFiles(true) == 1;
+VPLTeacherTools.FileBrowser.prototype.canRenameTeacherFile = function () {
+    return this.countSelectedNotRenamedFiles() == 1;
+};
+
+VPLTeacherTools.FileBrowser.prototype.renameTeacherFile = function (newFilename) {
+	if (newFilename) {
+		// rename file for which file.renamed is true
+        var file = this.teacherFiles.find(function (val) {
+            return val.renamed;
+        });
+		newFilename = newFilename.trim();
+		file.filename = newFilename;
+		var self = this;
+        this.client.renameFiles(file.id, newFilename, {
+            onSuccess: function () {
+				file.renamed = false;
+		        if (self.options.onTeacherFiles) {
+		            self.options.onTeacherFiles(self.teacherFiles, self);
+		        }
+            }
+        });
+	} else {
+		// start renaming selected file
+        var file = this.teacherFiles.find(function (val) {
+            return val.selected;
+        });
+		file.renamed = true;
+        if (this.options.onTeacherFiles) {
+            this.options.onTeacherFiles(this.teacherFiles, this);
+        }
+	}
+};
+
+VPLTeacherTools.FileBrowser.prototype.canDuplicateTeacherFile = function () {
+    return this.countSelectedNotRenamedFiles() == 1;
+};
+
+VPLTeacherTools.FileBrowser.prototype.duplicateTeacherFile = function () {
+	if (this.canDuplicateTeacherFile()) {
+		var file = this.teacherFiles.find(function (val) {
+            return val.selected;
+        });
+	    var self = this;
+	    this.client.copyFile(file.id, "copy of " + file.filename,
+	        {},
+	        {
+	            onSuccess: function (r) {
+					// rename immediately
+	                self.updateFiles(r);
+	            }
+	        });
+	}
+};
+
+VPLTeacherTools.FileBrowser.prototype.canExportTeacherFile = function () {
+    return this.countSelectedNotRenamedFiles() == 1;
+};
+
+VPLTeacherTools.FileBrowser.prototype.canExportStudentFile = function () {
+    return this.countSelectedFiles(true) == 1;
 };
 
 /** Set anchor element so that it downloads text
@@ -256,8 +317,12 @@ VPLTeacherTools.FileBrowser.prototype.exportFiles = function () {
     }
 };
 
-VPLTeacherTools.FileBrowser.prototype.canDeleteFiles = function () {
-    return this.countSelectedFiles(false) + this.countSelectedFiles(true) > 0;
+VPLTeacherTools.FileBrowser.prototype.canDeleteTeacherFiles = function () {
+    return this.countSelectedFiles(false) > 0;
+};
+
+VPLTeacherTools.FileBrowser.prototype.canDeleteStudentFiles = function () {
+    return this.countSelectedFiles(true) > 0;
 };
 
 VPLTeacherTools.FileBrowser.prototype.deleteFiles = function () {

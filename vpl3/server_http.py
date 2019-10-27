@@ -195,7 +195,7 @@ class VPLHTTPServer:
         return self.call_api(Db.list_sessions)
 
     @http_post("/api/addFile")
-    def http_put_api_addFile(self, handler):
+    def http_post_api_addFile(self, handler):
         q = VPLHTTPServer.query_param(handler)
         if "filename" not in q:
             return VPLHTTPServer.error("Missing filename")
@@ -208,6 +208,20 @@ class VPLHTTPServer:
                              if "metadata" in q
                              else None)
 
+    @http_get("/api/copyFile")
+    def http_get_api_copyFile(self, handler):
+        q = VPLHTTPServer.query_param(handler)
+        if "id" not in q:
+            return VPLHTTPServer.error("Missing id")
+        if "filename" not in q:
+            return VPLHTTPServer.error("Missing filename")
+        return self.call_api(Db.copy_file,
+                             int(q["id"][0]),
+                             q["filename"][0],
+                             q["metadata"][0]
+                             if "metadata" in q
+                             else None)
+
     @http_get("/api/getFile")
     def http_get_api_getFile(self, handler):
         q = VPLHTTPServer.query_param(handler)
@@ -216,13 +230,23 @@ class VPLHTTPServer:
         return self.call_api(Db.get_file, int(q["id"][0]))
 
     @http_post("/api/updateFile")
-    def http_get_api_updateFile(self, handler):
+    def http_post_api_updateFile(self, handler):
         q = VPLHTTPServer.query_param(handler)
         if "id" not in q:
             return VPLHTTPServer.error("Missing id")
         content = VPLHTTPServer.get_data(handler)
         return self.call_api(Db.update_file,
                              int(q["id"][0]), content)
+
+    @http_get("/api/renameFile")
+    def http_get_api_renameFile(self, handler):
+        q = VPLHTTPServer.query_param(handler)
+        if "id" not in q:
+            return VPLHTTPServer.error("Missing id")
+        if "name" not in q:
+            return VPLHTTPServer.error("Missing name")
+        return self.call_api(Db.rename_file,
+                             int(q["id"][0]), q["name"][0])
 
     @http_get("/api/removeFiles")
     def http_get_api_removeFiles(self, handler):

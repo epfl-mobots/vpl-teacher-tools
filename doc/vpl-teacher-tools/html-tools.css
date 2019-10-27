@@ -130,6 +130,9 @@ table {
 	border-spacing: 1ex 1em;
 }
 
+th {
+	text-align: left;
+}
 td {
 	background: #eee;
 	border-style: none;
