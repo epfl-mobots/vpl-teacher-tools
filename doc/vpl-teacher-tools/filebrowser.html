@@ -151,8 +151,11 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 
 	updateGUI(fileBrowser);
 	if (renamedFilename) {
+		var str = renamedFilename.value;
+		var r = /^(.*)\.([^.]*)$/.exec(str);
+		var basename = r ? r[1] : str;
 		renamedFilename.focus();
-		renamedFilename.select();
+		renamedFilename.setSelectionRange(0, basename.length);
 	}
 }
 
