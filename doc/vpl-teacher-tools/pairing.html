@@ -323,8 +323,8 @@ window.addEventListener("load", function () {
 				return nodeId;
 			},
 			url: function (group) {
-				return url0 + "&robot=thymio-tdm&session=" + pair.session_id +
-					(group.students ? "&user=" + encodeURIComponent(group.students.join(",")) : "") +
+				return url0 + "&robot=thymio-tdm&session=" + group.pair.session_id +
+					(group.students ? "&user=" + encodeURIComponent(group.students.join(", ")) : "") +
 					"#w=" + tdmURL + "&uuid=" + group.pair.robot;
 			}
 		},

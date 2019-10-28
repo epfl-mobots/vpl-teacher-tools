@@ -446,7 +446,7 @@ class Db:
                     FROM log
                     WHERE NOT list_aredisjoint(owner, ?) AND type == ?
                     ORDER BY time DESC
-                """, (group_id, last_of_type))
+                """, (student_id_list, last_of_type))
             row = c.fetchone()
             return [
                 {
