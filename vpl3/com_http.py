@@ -119,8 +119,21 @@ def http_post(path):
 
 class HTTPServerWithContext(http.server.HTTPServer):
 
-    def __init__(self, context=None, port=8000, logger=None):
-        super(http.server.HTTPServer, self) \
-            .__init__(('', port), context.handler)
+    DEFAULT_PORT = 8000
+
+    def __init__(self, context=None, port=None, logger=None):
+        if port is None:
+            try:
+                super(http.server.HTTPServer, self) \
+                    .__init__(('', self.DEFAULT_PORT), context.handler)
+            except:
+                super(http.server.HTTPServer, self) \
+                    .__init__(('', 0), context.handler)
+        else:
+            super(http.server.HTTPServer, self) \
+                .__init__(('', port), context.handler)
         self.context = context
         self.logger = logger
+
+    def get_port(self):
+        return self.server_port

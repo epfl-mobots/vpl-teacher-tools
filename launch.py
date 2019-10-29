@@ -5,8 +5,8 @@
 
 # server app launcher
 
-from vpl3.tkapp import Application
-# from vpl3.wxapp import Application
+# from vpl3.tkapp import Application
+from vpl3.wxapp import Application
 # from vpl3.objcapp import Application
 # from vpl3.noguiapp import Application
 from vpl3.db import Db
@@ -16,7 +16,7 @@ import sys
 
 
 if __name__ == "__main__":
-    http_port = Application.DEFAULT_HTTP_PORT
+    http_port = None
     ws_port = Application.DEFAULT_WS_PORT
     ws_link_url = None
     db_path = Db.DEFAULT_PATH
@@ -41,9 +41,9 @@ VPL 3 teacher tools server
 Options:
   --db path       path of sqlite database (default: {Db.DEFAULT_PATH})
   --help          display help message and exit
-  --http-port num HTTP port (default: {Application.DEFAULT_HTTP_PORT})
+  --http-port num HTTP port, or auto (default: auto, trying first {Application.DEFAULT_HTTP_PORT})
   --link uri      websocket uri for linked server (default: no linked server)
-  --ws-port num   websocket server port number (default: {Application.DEFAULT_WS_PORT})
+  --ws-port num   websocket server port, or auto (default: auto, trying first {Application.DEFAULT_WS_PORT})
             """)
             sys.exit(0)
         elif arg == "--http-port":

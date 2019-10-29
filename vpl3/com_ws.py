@@ -10,6 +10,8 @@ import json
 
 class WSServer:
 
+    DEFAULT_PORT = 8001
+
     def __init__(self, port, context):
         self.instances = set()
 
@@ -37,7 +39,13 @@ class WSServer:
                     context.on_disconnect(websocket.session_id)
 
         self.context = context
-        self.ws_server = websockets.serve(ws_handler, port=port)
+        if port is None:
+            try:
+                self.ws_server = websockets.serve(ws_handler, port=self.DEFAULT_PORT)
+            except:
+                self.ws_server = websockets.serve(ws_handler, port=0)
+        else:
+            self.ws_server = websockets.serve(ws_handler, port=port)
         self.loop = asyncio.get_event_loop()
 
     def run(self):

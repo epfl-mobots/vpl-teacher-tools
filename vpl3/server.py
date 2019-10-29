@@ -37,10 +37,20 @@ class Server:
 
     def start(self):
 
+        # let know the main thread that both servers have been started
+        http_started = False
+        ws_started = False
+        servers_started = threading.Event()
+
         def http_thread():
             self.http_server = VPLHTTPServer(db_path=self.db_path,
                                              http_port=self.http_port,
                                              logger=self.logger)
+            self.http_port = self.http_server.get_port()
+            nonlocal http_started
+            http_started = True
+            if ws_started:
+                servers_started.set()
             self.http_server.run()
 
         def ws_thread():
@@ -51,6 +61,10 @@ class Server:
                                                 ws_link_url=self.ws_link_url,
                                                 on_connect=self.update_con,
                                                 on_disconnect=self.update_con)
+            nonlocal ws_started
+            ws_started = True
+            if http_started:
+                servers_started.set()
             self.ws_server.run()
 
         self.http = threading.Thread(target=http_thread)
@@ -58,8 +72,15 @@ class Server:
         self.http.start()
         self.ws.start()
 
+        # wait until both servers have been started before returning,
+        # so that self.http_port and self.ws_port are known
+        servers_started.wait(timeout=2)
+
     def stop(self):
         self.http_server.stop()
         self.ws_server.stop()
         self.http.join()
         self.ws.join()
+
+    def get_http_port(self):
+        return self.http_port

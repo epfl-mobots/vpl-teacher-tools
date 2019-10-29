@@ -30,11 +30,11 @@ class VPLHTTPRequestHandler(HTTPRequestHandler):
 
 class VPLHTTPServer:
 
-    DEFAULT_PORT = 8000
+    DEFAULT_PORT = HTTPServerWithContext.DEFAULT_PORT
 
     def __init__(self,
                  db_path=Db.DEFAULT_PATH,
-                 http_port=DEFAULT_PORT,
+                 http_port=None,
                  logger=None):
         self.http_port = http_port
         self.db_path = db_path
@@ -49,6 +49,9 @@ class VPLHTTPServer:
 
     def stop(self):
         self.httpd.shutdown()
+
+    def get_port(self):
+        return self.httpd.get_port()
 
     def query_param(handler):
         p = urllib.parse.urlparse(handler.path)

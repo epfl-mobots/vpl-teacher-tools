@@ -18,7 +18,7 @@ from vpl3.db import Db
 
 class VPLWebSocketServer:
 
-    DEFAULT_PORT = 8001
+    DEFAULT_PORT = WSServer.DEFAULT_PORT
 
     def __init__(self,
                  db_path=None,

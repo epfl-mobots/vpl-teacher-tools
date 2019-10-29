@@ -19,10 +19,9 @@ class ApplicationBase:
 
     def __init__(self,
                  db_path=Db.DEFAULT_PATH,
-                 http_port=DEFAULT_HTTP_PORT,
+                 http_port=None,
                  ws_port=DEFAULT_WS_PORT,
                  ws_link_url=None):
-        self.http_port = http_port
         self.logger_lock = threading.Lock()
         self.server = Server(db_path=db_path,
                              http_port=http_port,
@@ -30,8 +29,9 @@ class ApplicationBase:
                              ws_link_url=ws_link_url,
                              logger=self.logger,
                              update_connection=self.update_connection)
-        self.address = f"{URLUtil.get_local_IP()}:{self.http_port}"
         self.server.start()
+        self.http_port = self.server.get_http_port()
+        self.address = f"{URLUtil.get_local_IP()}:{self.http_port}"
 
         # to implement in subclasses:
         # GUI initialization showing self.address w/ a way to call
