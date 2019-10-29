@@ -12,10 +12,19 @@ VPLTeacherTools.Dashboard = function (wsURL, options) {
 	this.wsURL = wsURL;
 	/** @type {WebSocket} */
 	this.ws = null;
+	this.wasConnected = false;
+	/** @type {function(boolean):void} */
+	this.onConnectionStateChanged = null;
 	var self = this;
 	this.reconnectId = setInterval(function () {
 		if (self.ws != null && self.ws.readyState >= 2) {
-			// closing or closed websocket: try to reconnect every 3 s
+			// closing or closed websocket:
+			// notify once
+			if (self.onConnectionStateChanged && self.wasConnected) {
+				self.onConnectionStateChanged(false);
+			}
+			self.wasConnected = false;
+			// try to reconnect every 3 s
 			self.connect();
 		}
 	}, 3000);
@@ -41,6 +50,13 @@ VPLTeacherTools.Dashboard = function (wsURL, options) {
 			});
 		}
 	});
+};
+
+/** Check if websocket connection is open
+	@return {boolean}
+*/
+VPLTeacherTools.Dashboard.prototype.isConnected = function () {
+	return this.ws && self.ws.readyState == 1;
 };
 
 /** Refresh sessions by calling onGroups
@@ -278,6 +294,10 @@ VPLTeacherTools.Dashboard.prototype.connect = function () {
 		}
 	});
 	this.ws.addEventListener("open", function () {
+		if (self.onConnectionStateChanged) {
+			self.onConnectionStateChanged(true);
+		}
+		self.wasConnected = true;
 		this.send(JSON.stringify({
 			"sender": {
 				"type": "dashboard"

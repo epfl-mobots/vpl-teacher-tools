@@ -132,6 +132,9 @@ window.addEventListener("load", function () {
 			fillFileTable(fileArray, dashboard);
 		}
 	});
+	dashboard.onConnectionStateChanged = function (state) {
+		document.getElementById("disconnected-msg").style.display = state ? "none" : "block";
+	};
 	dashboard.connect();
 
 	[
@@ -177,6 +180,10 @@ window.addEventListener("load", function () {
 </nav>
 
 <main>
+
+<div id="disconnected-msg" class="border-error" style="display: none;">
+	<p>No connection with the VPL server.</p>
+</div>
 
 <div class="columncontainer">
 

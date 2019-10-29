@@ -103,12 +103,10 @@ div.column4 {
 }
 
 
-div.border, div.border1 {
+div.border, div.border1, div.border-error {
 	border-style: solid;
  	border-width: 1px;
  	border-color: silver;
-	border-top-width: 3px;
-	border-top-color: #88f;
 	padding: 1ex;
 	padding-left: 2em;
 	padding-right: 2em;
@@ -117,6 +115,16 @@ div.border, div.border1 {
 	margin-left: 3em;
 	margin-right: 3em;
 	box-shadow: 3px 3px 5px #ddd;
+}
+
+div.border, div.border1 {
+	border-top-width: 3px;
+	border-top-color: #88f;
+}
+
+div.border-error {
+	border-top-width: 4px;
+	border-top-color: red;
 }
 
 div.border h2 {
