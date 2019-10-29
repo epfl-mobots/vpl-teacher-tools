@@ -281,10 +281,16 @@ function fillGroupTable(groupArray, pairing) {
 		if (toolURL && window.QRCode) {
 			var qrdiv = document.createElement("div");
 			div.appendChild(qrdiv);
-			var viewport = window.visualViewport;
-			var size = Math.min(
-				Math.floor(Math.min(viewport.width, viewport.height) * 0.8),
-				200);
+			var minViewportSize = window.visualViewport ?
+				Math.min(window.visualViewport.width,
+					window.visualViewport.height)
+				: document.documentElement.clientWidth ?
+				Math.min(document.documentElement.clientWidth,
+					document.documentElement.clientHeight)
+				: window.innerWidth ?
+				Math.min(window.innerWidth, window.innerHeight)
+				: 200;
+			var size = Math.min(Math.floor(minViewportSize * 0.8), 200);
 			var qrcode = new window.QRCode(qrdiv,
 				{
 					text: url,
