@@ -121,7 +121,7 @@ function fillFileTable(fileArray, dashboard) {
 }
 
 window.addEventListener("load", function () {
-	dashboard = new VPLTeacherTools.Dashboard("ws://127.0.0.1:8001/", {
+	dashboard = new VPLTeacherTools.Dashboard("ws://" + document.location.hostname + ":8001/", {
 		log: function (str) {
 			document.getElementById("log").textContent += str + "\n";
 		},
