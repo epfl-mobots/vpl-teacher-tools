@@ -12,6 +12,13 @@ VPLTeacherTools.Dashboard = function (wsURL, options) {
 	this.wsURL = wsURL;
 	/** @type {WebSocket} */
 	this.ws = null;
+	var self = this;
+	this.reconnectId = setInterval(function () {
+		if (self.ws != null && self.ws.readyState >= 2) {
+			// closing or closed websocket: try to reconnect every 3 s
+			self.connect();
+		}
+	}, 3000);
 
 	this.options = options;
 
@@ -22,7 +29,6 @@ VPLTeacherTools.Dashboard = function (wsURL, options) {
 	this.loadSessions();
 	this.updateFiles();
 
-	var self = this;
 	window.addEventListener("unload", function () {
 		if (self.ws) {
 			self.ws.addEventListener("open", function () {
