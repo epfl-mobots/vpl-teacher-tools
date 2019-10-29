@@ -54,7 +54,7 @@ class ApplicationBase:
         self.show_connection_status(str)
 
     def start_browser(self, event=None):
-        URLUtil.start_browser(self.http_port, using="chrome")
+        URLUtil.start_browser(self.http_port, using=["firefox", "chrome"])
 
     def quit(self):
         self.server.stop()

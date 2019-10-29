@@ -26,9 +26,10 @@ class URLUtil:
     def start_browser(port=None, using=None):
         import webbrowser
         if using is not None:
-            try:
-                webbrowser.get(using).open(URLUtil.teacher_tools_URL(port), new=2)
-            except:
-                webbrowser.open(URLUtil.teacher_tools_URL(port), new=2)
-        else:
-            webbrowser.open(URLUtil.teacher_tools_URL(port), new=2)
+            for browser in using:
+                try:
+                    webbrowser.get(browser).open(URLUtil.teacher_tools_URL(port), new=2)
+                    return browser
+                except:
+                    pass
+        webbrowser.open(URLUtil.teacher_tools_URL(port), new=2)
