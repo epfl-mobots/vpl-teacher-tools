@@ -125,9 +125,16 @@ function fillStudentTable(studentArray, pairing) {
 		table.appendChild(tr);
 	}
 
-	studentArray.forEach(function (student) {
-		addRow(student.name, student.group_id);
-	});
+    if (studentArray.length > 0) {
+        studentArray.forEach(function (student) {
+            addRow(student.name, student.group_id);
+        });
+        document.getElementById("student-help").style.display = "block";
+        document.getElementById("nostudent-help").style.display = "none";
+    } else {
+        document.getElementById("student-help").style.display = "none";
+        document.getElementById("nostudent-help").style.display = "block";
+    }
 }
 
 function fillGroupTable(groupArray, pairing) {
@@ -396,7 +403,8 @@ window.addEventListener("load", function () {
 		<table id="students">
 		</table>
 
-		<p>Drag to a group to build groups of pupils.</p>
+		<p id="student-help">Drag to a group to build groups of pupils.</p>
+		<p id="nostudent-help" style="display: none;">Pupils can be added in the <a href="students.html">Pupils</a> tab.</p>
 
 	</div>
 
