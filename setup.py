@@ -63,6 +63,7 @@ DATA_FILES = [
     ("doc/vpl/ui/classic",
         [
             "doc/vpl/ui/classic/classic.css",
+            "doc/vpl/ui/classic/french.json",
             "doc/vpl/ui/classic/ui.json",
         ]),
     ("doc/vpl/ui/svg",

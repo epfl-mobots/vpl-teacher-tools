@@ -42,6 +42,7 @@ THYMIOFILES = \
 
 UICLASSICFILES = \
 	doc/vpl/ui/classic/classic.css \
+	doc/vpl/ui/classic/french.json \
 	doc/vpl/ui/classic/ui.json
 
 TOOLSFILES = \

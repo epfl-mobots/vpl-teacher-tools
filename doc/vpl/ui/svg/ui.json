@@ -214,7 +214,7 @@
 		{
 			"name": "fall",
 			"type": "event",
-			"modes": ["advanced"],
+			"modes": [],
 			"draw": [
 				{
 					"uri": "Blocks.svg#Events_bg"
@@ -1970,6 +1970,7 @@
 		"js.json",
 		"python.json",
 		"toolbars.json",
-		"buttons.json"
+		"buttons.json",
+		"french.json"
 	]
 }
