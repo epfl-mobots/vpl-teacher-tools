@@ -110,6 +110,17 @@ VPLServer.dmg: VPL3Server.app
 	hdiutil create -srcfolder "VPL Server" $@
 	rm -Rf "VPL Server"
 
+Serve\ File.app: setup_serve_via_http.py serve_via_http.py
+	rm -rf build
+	python3 setup_serve_via_http.py py2app
+
+ServeFile.dmg: Serve\ File.app
+	rm -Rf "Serve File" $@
+	mkdir "Serve File"
+	cp -R "$^" "Serve File"
+	hdiutil create -srcfolder "Serve File" $@
+	rm -Rf "Serve File"
+
 .PHONY: oh
 oh:
 	ohcount $(PKGFILES) launch.py setup.py $(DOCFILES) $(TOOLSFILES)
