@@ -289,7 +289,7 @@ class VPLHTTPServer:
         if "u" in q:
             return {
                 "mime": "text/plain",
-                "data": f"http://{URLUtil.get_local_IP()}:{self.http_port}/xx{self.url_shortcuts.add(q['u'][0])}\n"
+                "data": f"http://{URLUtil.get_local_IP()}:{self.get_port()}/vv{self.url_shortcuts.add(q['u'][0])}\n"
             }
         else:
             return VPLHTTPServer.error("missing url")
