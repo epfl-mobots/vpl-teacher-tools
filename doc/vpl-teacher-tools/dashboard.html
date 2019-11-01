@@ -52,34 +52,23 @@ function fillGroupTable(sessionArray, dashboard) {
 
 		if (session.lastVPLChangedLogEntry != null) {
 			var time = session.lastVPLChangedLogEntry["time"].split(" ")[1];
-			var data = JSON.parse(session.lastVPLChangedLogEntry["data"]);
-			var type = data["type"];
+			var lastVPLChangedData = JSON.parse(session.lastVPLChangedLogEntry["data"]);
 			var details = "";
-			switch (type) {
-			case "cmd":
-				details = "cmd " + data["data"]["cmd"];
-				break;
-			case "drop":
-				details = "drop " + data["data"]["cmd"];
-				break;
-			case "vpl-changed":
-				details = [
-					time,
-					data["data"]["nrules"].toString(10) + "\u25ad",
-					data["data"]["nblocks"].toString(10) + "\u25ab"
-				];
-				if (data["data"]["error"]) {
-					details.push("error: " + data["data"]["error"]);
-				} else if (data["data"]["warning"]) {
-					details.push("warning: " + data["data"]["warning"]);
-				}
-				details.forEach(function (str) {
-					td = document.createElement("td");
-					td.textContent = str;
-					tr.appendChild(td);
-				});
-				break;
+			details = [
+				time,
+				lastVPLChangedData["nrules"].toString(10) + "\u25ad",
+				lastVPLChangedData["nblocks"].toString(10) + "\u25ab"
+			];
+			if (lastVPLChangedData["error"]) {
+				details.push("error: " + lastVPLChangedData["error"]);
+			} else if (lastVPLChangedData["warning"]) {
+				details.push("warning: " + lastVPLChangedData["warning"]);
 			}
+			details.forEach(function (str) {
+				td = document.createElement("td");
+				td.textContent = str;
+				tr.appendChild(td);
+			});
 		}
 
 		table.appendChild(tr);

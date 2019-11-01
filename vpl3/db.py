@@ -173,12 +173,18 @@ class Db:
         c = self._db.cursor()
         c.execute(f"""
             SELECT name,
+                   studentid,
                    {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
                    groupid
             FROM students
         """)
         return [
-            {"name": row[0], "time": row[1], "group_id": row[2]}
+            {
+                "name": row[0],
+                "student_id": row[1],
+                "time": row[2],
+                "group_id": row[3]
+            }
             for row in c.fetchall()
         ]
 
@@ -426,33 +432,39 @@ class Db:
         c = self._db.cursor()
         if last_of_type:
             if group_id is None:
+                print("get_log group_id=None last_of_type=", last_of_type)
                 c.execute(f"""
                     SELECT type,
                            {"datetime(time,'localtime')"
                             if Db.ORDER_TIME
                             else "time"},
+                           owner,
                            data
                     FROM log
                     WHERE type == ?
                     ORDER BY time DESC
                 """, (last_of_type,))
             else:
+                print("get_log group_id=", group_id, " last_of_type=", last_of_type, " student_id_list=", student_id_list)
                 c.execute(f"""
                     SELECT type,
                            {"datetime(time,'localtime')"
                             if Db.ORDER_TIME
                             else "time"},
+                           owner,
                            data
                     FROM log
                     WHERE NOT list_aredisjoint(owner, ?) AND type == ?
                     ORDER BY time DESC
                 """, (student_id_list, last_of_type))
             row = c.fetchone()
+            print(row)
             return [
                 {
                     "type": row[0],
                     "time": row[1],
-                    "data": row[2]
+                    "owner": row[2],
+                    "data": row[3]
                 }
             ] if row is not None else []
         else:
@@ -462,6 +474,7 @@ class Db:
                            {"datetime(time,'localtime')"
                             if Db.ORDER_TIME
                             else "time"},
+                           owner,
                            data
                     FROM log
                     WHERE groupid IS ?
@@ -473,6 +486,7 @@ class Db:
                            {"datetime(time,'localtime')"
                             if Db.ORDER_TIME
                             else "time"},
+                           owner,
                            data
                     FROM log
                     ORDER BY time DESC
@@ -481,7 +495,8 @@ class Db:
                 {
                     "type": row[0],
                     "time": row[1],
-                    "data": row[2]
+                    "owner": row[2],
+                    "data": row[3]
                 }
                 for row in c.fetchall()
             ]

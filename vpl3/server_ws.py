@@ -142,8 +142,8 @@ class VPLWebSocketServer:
                                     only_websockets=msg["rcpt"])
         elif msg["type"] == "log":
             # save log message to database and forward to all dashboards
-            db.add_log(msg["sender"]["sessionid"], "log",
-                       json.dumps(msg["data"]))
+            db.add_log(msg["sender"]["sessionid"], msg["data"]["type"],
+                       json.dumps(msg["data"]["data"]))
             for ws in self.log_recipients:
                 await self.ws.send(ws, msg)
             if self.ws_link:
