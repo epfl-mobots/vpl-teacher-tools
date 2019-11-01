@@ -52,10 +52,21 @@ function fillGroupTable(sessionArray, dashboard) {
 
 		if (session.lastVPLChangedLogEntry != null) {
 			var time = session.lastVPLChangedLogEntry["time"].split(" ")[1];
+			var hms = time.split(":").map(function (str) { return parseInt(str, 10); });
+			var now = new Date();
+			var elapsedSec = ((((now.getHours() * 60) + now.getMinutes()) * 60 + now.getSeconds() + 86400 -
+				((hms[0] * 60) + hms[1]) * 60 + hms[2])) % 86400;
+			var elapsedStr = elapsedSec < 60 ? elapsedSec.toString(10) + " sec"
+ 				: elapsedSec < 300 ? Math.floor(elapsedSec / 60).toString(10) + " min " +
+					(elapsedSec % 60).toString(10) + " sec"
+				: elapsedSec < 3600 ? Math.floor(elapsedSec / 60).toString(10) + " min"
+				: elapsedSec < 18000 ? Math.floor(elapsedSec / 3600).toString(10) + " hr " +
+					Math.floor(elapsedSec % 3600 / 60).toString(10) + " min"
+				: Math.floor(elapsedSec / 3600).toString(10) + " hr";
 			var lastVPLChangedData = JSON.parse(session.lastVPLChangedLogEntry["data"]);
 			var details = "";
 			details = [
-				time,
+				elapsedStr,
 				lastVPLChangedData["nrules"].toString(10) + "\u25ad",
 				lastVPLChangedData["nblocks"].toString(10) + "\u25ab"
 			];
@@ -110,17 +121,24 @@ function fillFileTable(fileArray, dashboard) {
 }
 
 window.addEventListener("load", function () {
+	var sessions = null;
 	dashboard = new VPLTeacherTools.Dashboard("ws://" + document.location.hostname + ":8001/", {
 		log: function (str) {
 			document.getElementById("log").textContent += str + "\n";
 		},
-		onGroups: function (sessions) {
+		onGroups: function (newSessions) {
+			sessions = newSessions;
 			fillGroupTable(sessions, dashboard);
 		},
 		onFiles: function (fileArray) {
 			fillFileTable(fileArray, dashboard);
 		}
 	});
+	setInterval(function () {
+		if (sessions) {
+			fillGroupTable(sessions, dashboard);
+		}
+	}, 5000);
 	dashboard.onConnectionStateChanged = function (state) {
 		document.getElementById("disconnected-msg").style.display = state ? "none" : "block";
 	};
