@@ -14,6 +14,34 @@ list_get_any = []
 dict_post = {}
 
 
+class DocFilterSet:
+    """Filter text documents before serving them"""
+
+    def __init__(self):
+        self.filters = []
+
+    class Filter:
+
+        def __init__(self, fun, path_regex=None):
+            self.fun = fun
+            self.re = re.compile(path_regex) if path_regex is not None else None
+
+        def process(self, path, content):
+            if self.re is None or self.re.search(path):
+                return self.fun(content)
+            else:
+                return content
+
+
+    def add_filter(self, fun, path_regex=None):
+        self.filters.append(self.Filter(fun, path_regex))
+
+    def process(self, path, content):
+        for f in self.filters:
+            content = f.process(path, content)
+        return content
+
+
 class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     """Request handler class for HTTP server"""
 
@@ -51,7 +79,10 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                                          else "text/plain")
                         self.end_headers()
                         if not head_only:
-                            self.wfile.write(f.read())
+                            content = f.read()
+                            content = self.server.doc_filter_set.process(p.path,
+                                                                         content)
+                            self.wfile.write(content)
                     return
                 except OSError:
                     pass
@@ -133,7 +164,11 @@ class HTTPServerWithContext(http.server.HTTPServer):
             super(http.server.HTTPServer, self) \
                 .__init__(('', port), context.handler)
         self.context = context
+        self.doc_filter_set = DocFilterSet()
         self.logger = logger
 
     def get_port(self):
         return self.server_port
+
+    def add_filter(self, fun, path_regex=None):
+        self.doc_filter_set.add_filter(fun, path_regex)
