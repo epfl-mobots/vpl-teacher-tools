@@ -42,6 +42,8 @@ class VPLHTTPServer:
         self.url_shortcuts = URLShortcuts()
         self.httpd = HTTPServerWithContext(context=self,
                                            port=http_port, logger=logger)
+        self.httpd.add_filter(lambda s: s.replace(b"$LANGUAGE", b"fr"),
+                              r"^/vpl-teacher-tools/.*\.(html|css|json)$")
         self.groups = []
 
     def run(self):

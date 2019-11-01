@@ -160,7 +160,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 }
 
 window.addEventListener("load", function () {
-	var url0 = "/vpl/vpl.html?ui=ui/classic/ui.json&server=ws://" + document.location.hostname + ":8001/";
+	var url0 = "/vpl/vpl.html?ui=ui/classic/ui.json&uilanguage=$LANGUAGE&server=ws://" + document.location.hostname + ":8001/";
 	var fileBrowser = new VPLTeacherTools.FileBrowser({
 		onTeacherFiles: function (fileArray, fileBrowser) {
     		fillFileTable(fileArray, fileBrowser, false);

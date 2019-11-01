@@ -118,7 +118,6 @@ function fillStudentTable(studentArray, students) {
 }
 
 window.addEventListener("load", function () {
-	var url0 = "/vpl/vpl.html?ui=ui/classic/ui.json&server=ws://" + document.location.hostname + ":8001/";
 	var students = new VPLTeacherTools.StudentManagement({
 		onStudents: function (studentArray, students) {
     		fillStudentTable(studentArray, students);
