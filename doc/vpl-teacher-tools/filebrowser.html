@@ -171,11 +171,15 @@ window.addEventListener("load", function () {
 			updateGUI(fileBrowser);
 		},
 		onOpen: function (file, readOnly) {
-            sessionStorage.setItem("initialFileName", file.filename);
-            sessionStorage.setItem("initialFileContent", file.content);
 			var teacherFile = !file.owner || file.owner.length == 0;
-			sessionStorage.setItem("readOnly", readOnly ? "true" : "false");
-			sessionStorage.setItem("fileId", teacherFile ? file.id : "");
+			var options = {
+				"initialFileName": file.filename,
+				"fileId": teacherFile ? file.id : null,
+				"readOnly": readOnly,
+				"customizationMode": /\.vpl3ui/.test(file.filename)
+			};
+            sessionStorage.setItem("options", JSON.stringify(options));
+            sessionStorage.setItem("initialFileContent", file.content);
 			document.location = "vpl.html?robot=sim" + (teacherFile ? "&role=teacher" : "");
 		}
 	});
@@ -205,7 +209,13 @@ window.addEventListener("load", function () {
 
 	btn = document.getElementById("btn-new");
 	btn.addEventListener("click", function () {
-		fileBrowser.addFile("untitled.json",
+		fileBrowser.addFile("untitled.vpl3",
+			'{"disabledUI":["vpl:download","vpl:load"]}');
+	}, false);
+
+	btn = document.getElementById("btn-new-conf");
+	btn.addEventListener("click", function () {
+		fileBrowser.addFile("untitled.vpl3ui",
 			'{"disabledUI":["vpl:download","vpl:load"]}');
 	}, false);
 
@@ -302,7 +312,8 @@ window.addEventListener("load", function () {
 	</table>
 
 	<p>
-	<button id="btn-new">New</button>
+	<button id="btn-new">New program</button>
+	<button id="btn-new-conf">New config</button>
 	<button id="btn-edit-teacher" disabled="true">Edit</button>
 	<button id="btn-rename-teacher" disabled="true">Rename</button>
 	<button id="btn-duplicate-teacher" disabled="true">Duplicate</button>

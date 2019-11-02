@@ -46,8 +46,10 @@ body {
 window["vplStorageGetFunction"] = function (filename, fun) {
 
 	var progJSON = sessionStorage.getItem("initialFileContent");
-	filename = sessionStorage.getItem("initialFileName") || filename;
-	var readOnly = sessionStorage.getItem("readOnly") === "true";
+	var options = JSON.parse(sessionStorage.getItem("options") || "{}");
+	filename = options && options["initialFileName"] || filename;
+	var readOnly = options ? options["readOnly"] === true : false;
+	var customizationMode = options ? options["customizationMode"] === true : false;
 	if (progJSON) {
 		// change toolbars
 		var prog = JSON.parse(progJSON);
@@ -59,18 +61,25 @@ window["vplStorageGetFunction"] = function (filename, fun) {
 		];
 		progJSON = JSON.stringify(prog);
 
-		fun(progJSON, {"filename": filename, "readOnly": readOnly});
+		fun(progJSON,
+			{
+				"filename": filename,
+				"readOnly": readOnly,
+				"customizationMode": customizationMode
+			});
 		sessionStorage.setItem("initialUISettings", window["vplGetUIAsJSON"]());
 	}
 };
 
 window.addEventListener("beforeunload", function () {
-	var readOnly = sessionStorage.getItem("readOnly") === "true";
-	if (!readOnly &&
+	var options = JSON.parse(sessionStorage.getItem("options") || "{}");
+	var readOnly = options ? options["readOnly"] === true : false;
+	var customizationMode = options ? options["customizationMode"] === true : false;
+	var fileId = options ? options["fileId"] : null;
+	if (!readOnly && fileId !== null &&
 		(window["vplIsProgramChanged"]() ||
 			window["vplGetUIAsJSON"]() !== sessionStorage.getItem("initialUISettings"))) {
-		var fileId = parseInt(sessionStorage.getItem("fileId"), 10);
-		var json = window["vplGetProgramAsJSON"]();
+		var json = window["vplGetProgramAsJSON"](customizationMode);
 		console.info(json);
 		var client = new VPLTeacherTools.HTTPClient();
 		client.updateFile(fileId, json);
