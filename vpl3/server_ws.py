@@ -102,7 +102,6 @@ class VPLWebSocketServer:
                 try:
                     error_msg = "bad sessionid"
                     session_group_id = db.get_session_group_id(msg["sender"]["sessionid"])
-                    print(1)
                     await self.ws.send(websocket, {
                         "sender": {
                             "type": "server"
@@ -110,15 +109,11 @@ class VPLWebSocketServer:
                         "type": "hello",
                         "data": None
                     })
-                    print(2)
                     await self.notify_dashboard()
-                    print(3)
                     # send default vpl3 program if any
                     error_msg = "default file error"
                     default_file = db.get_default_file()
-                    print("default file:", default_file)
                     if default_file:
-                        print("will send default file:", default_file)
                         await self.ws.send(websocket, {
                             "sender": {
                                 "type": "server"

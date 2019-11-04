@@ -78,12 +78,12 @@ QRFILES = \
 	doc/libs/qrcodejs/qrcode.min.js
 
 DATAFILES = \
-	data/basic-sensors.json \
-	data/basic-touch.json \
-	data/basic-track.json \
-	data/simple-sensors.json \
-	data/simple-touch.json \
-	data/simple-track.json
+	data/basic-sensors.vpl3ui \
+	data/basic-touch.vpl3ui \
+	data/basic-track.vpl3ui \
+	data/simple-sensors.vpl3ui \
+	data/simple-touch.vpl3ui \
+	data/simple-track.vpl3ui
 
 .PHONY: all
 all:
@@ -109,6 +109,7 @@ VPL3Server.app: setup.py launch.py $(PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOF
 	rm -rf build
 	python3 setup.py py2app
 
+.PHONY: VPL3Server.app
 VPLServer.dmg: VPL3Server.app
 	rm -Rf "VPL Server" $@
 	mkdir "VPL Server"
@@ -116,16 +117,17 @@ VPLServer.dmg: VPL3Server.app
 	hdiutil create -srcfolder "VPL Server" $@
 	rm -Rf "VPL Server"
 
-Serve\ File.app: setup_serve_via_http.py serve_via_http.py
-	rm -rf build
-	python3 setup_serve_via_http.py py2app
-
 ServeFile.dmg: Serve\ File.app
 	rm -Rf "Serve File" $@
 	mkdir "Serve File"
 	cp -R "$^" "Serve File"
 	hdiutil create -srcfolder "Serve File" $@
 	rm -Rf "Serve File"
+
+.PHONY: Serve\ File.app
+Serve\ File.app: setup_serve_via_http.py serve_via_http.py
+	rm -rf build
+	python3 setup_serve_via_http.py py2app
 
 .PHONY: oh
 oh:

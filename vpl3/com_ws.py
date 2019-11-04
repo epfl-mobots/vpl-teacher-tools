@@ -21,7 +21,6 @@ class WSServer:
             self.instances.add(websocket)
             try:
                 async for message in websocket:
-                    print(message)
                     message_dec = json.loads(message)
                     if websocket.session_id is None:
                         id = context.get_session_id(message_dec)

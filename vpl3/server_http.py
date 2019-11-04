@@ -236,7 +236,6 @@ class VPLHTTPServer:
 
     @http_post("/api/updateFile")
     def http_post_api_updateFile(self, handler):
-        print("/api/updateFile")
         q = VPLHTTPServer.query_param(handler)
         if "id" not in q:
             return VPLHTTPServer.error("Missing id")

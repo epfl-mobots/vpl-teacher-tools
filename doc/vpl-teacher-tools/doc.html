@@ -47,7 +47,7 @@ main {
 
 <p>The central program is the <i>VPL server</i>. It runs typically on the teacher's laptop or on a desktop computer in the classroom (the <i>server computer</i>). It provides all the web applications, both to the teacher and the pupils, and manages data. Its data are stored in a single file, <tt>vpl.sqlite</tt>, located in the home directory.</p>
 
-<p>All the robots are connected wirelessly to the server computer. The communication between the web applications and the robots is managed by Mobsya's <a href="https://www.thymio.org/news/thymio-suite/" target="mobsya">Thymio Suite 2</a>, which should be installed and started before the VPL server.</p>
+<p>All the robots are connected wirelessly to the server computer. The communication between the web applications and the robots is managed by Mobsya's <a href="https://www.thymio.org/news/thymio-suite/" target="mobsya">Thymio Suite 2</a>, which should be installed and started at the same time as the VPL server.</p>
 
 <p>The main user interface, for the teacher as well as for the pupils, is delivered in web applications. Typically, the teacher uses a web browser (Chrome or Firefox) on the server computer and the pupils use tablets, but other setups are also possible. Web applications do not require any specific installation.</p>
 
@@ -55,7 +55,7 @@ main {
 
 <dl>
 <dt>Browser on the server computer</dt>
-<dd>In the VPL server GUI, type command-B, or choose menu File&gt;Open in Browser. If the server doesn't have a GUI, see below.</dd>
+<dd>In the VPL server GUI, click the button “Open tools in browser”, type command-B, or choose menu File&gt;Open Tools in Browser. If the server doesn't have a GUI, see below.</dd>
 <dt>Browser on another computer or tablet, or no GUI</dt>
 <dd>In Chrome or Firefox, enter the URL <tt>http://</tt><i>(IP-address)</i><tt>:8000</tt> where the IP address is displayed either in the window title of the VPL server or in the terminal at startup.</dd>
 </dl>
@@ -65,9 +65,9 @@ main {
 <p>Launching the pupils VPL web application is performed once a group of pupils and a robot have been associated in the VPL teacher tools. The URL <strong>specific to each group and  robot</strong> is displayed in the Classroom setup tab (see below).</p>
 
 <dl>
-<dt>Tablet</dt>
+<dt>VPL on tablet</dt>
 <dd>In the Classroom setup tab, click the group name to display a QR code. Scan the QR code to launch the web application (on the iPad: Camera application, QR code scanner in the Control Center, or widget appearing in the address bar of Firefox when you click it).</dd>
-<dt>Computer without QR code scanning device</dt>
+<dt>VPL on computer without QR code scanning device</dt>
 <dd>Start Chrome or Firefox and type the URL displayed in the Classroom setup tab of the teacher.</dd>
 </dl>
 
@@ -80,12 +80,17 @@ main {
 <dl>
 
 <dt>Pupils</dt>
-<dd>This is where the list of pupils is managed.</dd>
+<dd>This is where the list of pupils is managed. Pupils can be added or removed. Pupils should not be removed once the they have generated data with VPL (programs or activity recording).</dd>
 
 <dt>Files</dt>
-<dd>The teacher has a file browser web app where they can upload files or create programs. Programs are created empty; they can be modified by opening them in the VPL tool.</dd>
-<dd>In addition, the teacher can pair a tablet with a robot or the simulator and prepare and test VPL programs. Pairing is done the same way as for pupils (see below), but then there is no connection with the dashboard (the teacher doesn't supervise herself).</dd>
-<dd>Files are also added automatically each time pupils run their VPL program. The teacher can load them in read-only mode and replay them.</dd>
+<dd>The teacher has a file browser web app where they can upload files or create programs. Two types of files are supported for the moment:
+<ul>
+<li>UI configuration files which defined which event and action blocs are available and which UI button is displayed (extension <code>.vpl3ui</code>);
+<li>VPL programs, also with UI configuration (extension <code>.vpl3</code>). VPL programs can be empty, ready to be completed by pupils.</li>
+</ul>
+<dd>Pupils are asked to modify existing program files, typically starting from an empty program. This way, they don't have to enter filenames and manage different versions. The teacher should prepare one file for each program they expect, even if they're the same.</dd>
+<dd>Initial UI configuration files are provided. They can be duplicated and modified. A program is always based on a UI configuration file. To modify a UI configuration file or a program file, select it, click the “Edit” button to open it in the VPL tab, and switch back to the file tab when you're done (files are saved automatically).</dd>
+<dd>Files are also added automatically each time pupils run their VPL program. They appear in a separate list. The teacher can load them in read-only mode and replay them.</dd>
 
 <dt>Classroom setup</dt>
 <dd>Classroom setup consists in making groups of pupils, giving them a robot or a simulator, and launching VPL on a tablet with all the identification and connection parameters. The list on the left shows all the pupils who were entered in the Pupils tab. The list of robots on the right shows all the robots connected to the server computer and recognized by Thymio Suite. To create a new group, drag a pupil's name and drop it to the empty box in the center. You can add more pupils to an existing group, or move a pupil's name between groups or elsewhere to remove it. To give a robot to a group, move it from the list on right to a group. A robot can be given only to one group; there is no such constraint on the simulator, of course.</dd>
@@ -97,10 +102,10 @@ main {
 <li>Store modified programs from VPL web apps with the relevant metadata (group, time, etc.).</li>
 <li>Log everything.</li>
 </ul>
-<dd>Only the VPL web applications communicate with the robots. Stopping all the robots is performed by sending a command to the VPL web apps which "forward" it to Thymio Suite 2.</dd>
+<dd>Only the VPL web applications communicate with the robots. Stopping all the robots is performed by sending a command to the VPL web apps which "forward" it to Thymio Suite.</dd>
 
 <dt>VPL</dt>
-<dd>The VPL tool is launched when a program is opened in the Files tool. It has two purposes: preparing a lesson by creating and running new programs, and inspecting the programs created by the pupils.</dd>
+<dd>The VPL tool is launched when a UI configuration file or a program is opened in the Files tool. It has two purposes: preparing a lesson by creating and running new programs, and inspecting the programs created by the pupils.</dd>
 
 </dl>
 

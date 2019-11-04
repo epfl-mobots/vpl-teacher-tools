@@ -12,12 +12,12 @@ APP = ['launch.py']
 DATA_FILES = [
     ("data",
         [
-        	"data/basic-sensors.json",
-        	"data/basic-touch.json",
-        	"data/basic-track.json",
-        	"data/simple-sensors.json",
-        	"data/simple-touch.json",
-        	"data/simple-track.json",
+        	"data/basic-sensors.vpl3ui",
+        	"data/basic-touch.vpl3ui",
+        	"data/basic-track.vpl3ui",
+        	"data/simple-sensors.vpl3ui",
+        	"data/simple-touch.vpl3ui",
+        	"data/simple-track.vpl3ui",
         ]),
     ("doc",
         [

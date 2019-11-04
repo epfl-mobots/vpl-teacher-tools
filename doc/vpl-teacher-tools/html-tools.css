@@ -151,19 +151,19 @@ td.selected {
 	border-width: 2px;
 	border-color: blue;
 }
-#files-teacher, #files-student {
+#files-teacher, #files-student, #files-dashboard {
 	border-spacing: 0 0;
 }
-#files-teacher th, #files-students th {
+#files-teacher th, #files-students th, #files-dashboard th {
 	padding: 1ex;
 }
-#files-teacher td, #files-students td {
-	border-top: solid 1px red;
+#files-teacher td, #files-students td, #files-dashboard td {
+	border-top: solid 1px silver;
 	background: transparent;
 	padding: 1ex;
 	margin: 0;
 }
-#files-teacher td.empty, #files-students td.empty {
+#files-teacher td.empty, #files-students td.empty, #files-dashboard td.empty {
 	border-top: none;
 }
 #files-teacher td.selected, #files-students td.selected {
