@@ -13,8 +13,16 @@ VPLTeacherTools.HTTPClient = function () {
 	@param {string} url
 	@param {Object=} opt
 	@param {string=} data
+	@param {string=} dataMimetype
+	@return {void}
 */
-VPLTeacherTools.HTTPClient.prototype.rest = function (url, opt, data) {
+VPLTeacherTools.HTTPClient.prototype.rest = function (url, opt, data, dataMimetype) {
+	if (opt && opt.asBeacon && navigator.sendBeacon) {
+		// should be used to send reliably data via post from a beforeunload event listener
+		navigator.sendBeacon(url, data || "");
+		return;
+	}
+
 	var xhr = new XMLHttpRequest();
 	if (opt && opt.onSuccess) {
 		xhr.addEventListener("load", function () {
@@ -40,6 +48,9 @@ VPLTeacherTools.HTTPClient.prototype.rest = function (url, opt, data) {
 		});
 	}
 	xhr.open(data ? "POST" : "GET", url);
+	if (dataMimetype) {
+		xhr.setRequestHeader("Content-Type", dataMimetype);
+	}
 	if (opt && opt.logURL) {
 		opt.logURL(url);
 	}
@@ -154,7 +165,8 @@ VPLTeacherTools.HTTPClient.prototype.listSessions = function (opt) {
 VPLTeacherTools.HTTPClient.prototype.addFile = function (filename, content, props, opt) {
 	this.rest("/api/addFile?filename=" + encodeURIComponent(filename) +
 		(props && props.metadata ? "&metadata=" + encodeURIComponent(props.metadata) : ""),
-		opt, content);
+		opt,
+		content, "text/plain");
 };
 
 VPLTeacherTools.HTTPClient.prototype.copyFile = function (id, filename, props, opt) {
@@ -168,7 +180,8 @@ VPLTeacherTools.HTTPClient.prototype.getFile = function (id, opt) {
 };
 
 VPLTeacherTools.HTTPClient.prototype.updateFile = function (id, content, opt) {
-	this.rest("/api/updateFile?id=" + id.toString(10), opt, content);
+	this.rest("/api/updateFile?id=" + id.toString(10), opt,
+		content, "text/plain");
 };
 
 VPLTeacherTools.HTTPClient.prototype.renameFiles = function (id, newFilename, opt) {
@@ -177,6 +190,14 @@ VPLTeacherTools.HTTPClient.prototype.renameFiles = function (id, newFilename, op
 
 VPLTeacherTools.HTTPClient.prototype.removeFiles = function (idArray, opt) {
 	this.rest("/api/removeFiles?id=" + idArray.map(function (id) { return id.toString(10); }).join("+"), opt);
+};
+
+VPLTeacherTools.HTTPClient.prototype.toggleFileMark = function (id, opt) {
+	this.rest("/api/markFile?id=" + id.toString(10) + "&action=toggle", opt);
+};
+
+VPLTeacherTools.HTTPClient.prototype.setDefaultFile = function (id, opt) {
+	this.rest("/api/setDefaultFile?id=" + id.toString(10), opt);
 };
 
 VPLTeacherTools.HTTPClient.prototype.listFiles = function (queryProps, opt) {

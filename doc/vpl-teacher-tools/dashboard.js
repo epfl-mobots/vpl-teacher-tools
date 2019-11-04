@@ -143,6 +143,9 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
     },
     {
 		onSuccess: function (files) {
+			files = files.filter(function (file) {
+				return file.mark && /\.vpl3$/.test(file.filename);
+			});
             self.files = files.map(function (file) {
                 var file1 = Object.create(file);    // prototype-based "copy"
                 file1.selected = false;

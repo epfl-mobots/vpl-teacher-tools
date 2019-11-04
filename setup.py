@@ -10,6 +10,15 @@ from setuptools import setup
 APPNAME = "VPL3Server"
 APP = ['launch.py']
 DATA_FILES = [
+    ("data",
+        [
+        	"data/basic-sensors.json",
+        	"data/basic-touch.json",
+        	"data/basic-track.json",
+        	"data/simple-sensors.json",
+        	"data/simple-touch.json",
+        	"data/simple-track.json",
+        ]),
     ("doc",
         [
             "doc/client.js",

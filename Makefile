@@ -78,7 +78,12 @@ QRFILES = \
 	doc/libs/qrcodejs/qrcode.min.js
 
 DATAFILES = \
-	data/basic.json
+	data/basic-sensors.json \
+	data/basic-touch.json \
+	data/basic-track.json \
+	data/simple-sensors.json \
+	data/simple-touch.json \
+	data/simple-track.json
 
 .PHONY: all
 all:

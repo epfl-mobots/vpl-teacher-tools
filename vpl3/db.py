@@ -23,6 +23,7 @@ class Db:
 
     def __init__(self, path=None):
         self.path = path if path is not None else self.DEFAULT_PATH
+        self.new_db = not os.path.exists(self.path)
         self._db = sqlite3.connect(self.path)
 
         # custom functions
@@ -43,11 +44,21 @@ class Db:
             """True if strings are equal, ignoring case"""
             return str1.casefold() == str2.casefold()
 
+        self.create_tables()
+
         self._db.create_function("list_doesinclude", 2, fun_list_doesinclude)
         self._db.create_function("list_aredisjoint", 2, fun_list_aredisjoint)
         self._db.create_function("equal_ic", 2, fun_equal_ic)
 
-        # create all tables if they don't exist yet
+        # "session id": groupid
+        self.session_cache = {}
+
+    def __del__(self):
+        self._db.close()
+
+    def create_tables(self):
+        """Create all tables if they don't exist yet"""
+
         sql = [
             """
             CREATE TABLE IF NOT EXISTS students (
@@ -77,6 +88,8 @@ class Db:
                 owner TEXT,
                 name TEXT,
                 time TEXT DEFAULT CURRENT_TIMESTAMP,
+                mark INTEGER DEFAULT 0,
+                defaul INTEGER DEFAULT 0,
                 metadata TEXT,
                 content TEXT
             );
@@ -101,12 +114,6 @@ class Db:
         c = self._db.cursor()
         for statement in sql:
             c.execute(statement)
-
-        # "session id": groupid
-        self.session_cache = {}
-
-    def __del__(self):
-        self._db.close()
 
     @staticmethod
     def remove(path=None):
@@ -432,7 +439,6 @@ class Db:
         c = self._db.cursor()
         if last_of_type:
             if group_id is None:
-                print("get_log group_id=None last_of_type=", last_of_type)
                 c.execute(f"""
                     SELECT type,
                            {"datetime(time,'localtime')"
@@ -445,7 +451,6 @@ class Db:
                     ORDER BY time DESC
                 """, (last_of_type,))
             else:
-                print("get_log group_id=", group_id, " last_of_type=", last_of_type, " student_id_list=", student_id_list)
                 c.execute(f"""
                     SELECT type,
                            {"datetime(time,'localtime')"
@@ -458,7 +463,6 @@ class Db:
                     ORDER BY time DESC
                 """, (student_id_list, last_of_type))
             row = c.fetchone()
-            print(row)
             return [
                 {
                     "type": row[0],
@@ -525,6 +529,13 @@ class Db:
                                         (rowid,))[0]
         return file_id
 
+    def add_local_files(self, path_array):
+        for path in path_array:
+            filename = os.path.split(path)[-1]
+            with open(path, encoding="utf-8") as f:
+                content = f.read()
+            self.add_file(filename, content)
+
     def copy_file(self, file_id, filename, metadata=None):
         """Copy a file"""
         r = self.get_first_result("content", "files", "fileid=?", (file_id,))
@@ -564,6 +575,35 @@ class Db:
         """, (new_filename, file_id))
         self._db.commit()
 
+    def mark_file(self, file_id, mark):
+        """Set or reset file mark"""
+        c = self._db.cursor()
+        c.execute("""
+            UPDATE files
+            SET mark=?
+            WHERE fileid=?
+        """, (1 if mark else 0, file_id))
+        self._db.commit()
+
+    def toggle_file_mark(self, file_id):
+        """Toggle file mark"""
+        c = self._db.cursor()
+        c.execute("""
+            UPDATE files
+            SET mark=NOT mark
+            WHERE fileid=?
+        """, (file_id,))
+        self._db.commit()
+
+    def set_default_file(self, file_id):
+        """Set the default file"""
+        c = self._db.cursor()
+        c.execute("""
+            UPDATE files
+            SET defaul=fileid=?
+        """, (file_id,))
+        self._db.commit()
+
     def remove_files(self, file_id_list):
         """Remove files"""
         c = self._db.cursor()
@@ -596,6 +636,28 @@ class Db:
             "metadata": r[5]
         }
 
+    def get_default_file(self):
+        """Get the default file"""
+        r = self.get_first_result(
+            f"""name,
+                {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
+                LENGTH(content),
+                owner,
+                content,
+                metadata
+            """,
+            "files",
+            "defaul")
+        return {
+            "id": file_id,
+            "filename": r[0],
+            "time": r[1],
+            "size": r[2],
+            "owner": self.str_to_list(r[3]),
+            "content": r[4],
+            "metadata": r[5]
+        } if r else None
+
     def list_files(self,
                    filename=None, student=None,
                    order=None,
@@ -617,6 +679,7 @@ class Db:
             SELECT fileid, name,
                    {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
                    LENGTH(content),
+                   mark, defaul,
                    metadata,
                    owner
             FROM files
@@ -637,8 +700,10 @@ class Db:
                     "filename": row[1],
                     "time": row[2],
                     "size": row[3],
-                    "metadata": row[4],
-                    "owner": row[5]
+                    "mark": row[4] != 0,
+                    "default": row[5] != 0,
+                    "metadata": row[6],
+                    "owner": row[7]
                 } for row in c.fetchall()),
                 key=lambda e: (e["filename"], e["owner"]))
         ] if last else [
@@ -647,8 +712,10 @@ class Db:
                 "filename": row[1],
                 "time": row[2],
                 "size": row[3],
-                "metadata": row[4],
-                "owner": row[5]
+                "mark": row[4] != 0,
+                "default": row[5] != 0,
+                "metadata": row[6],
+                "owner": row[7]
             }
             for row in c.fetchall()
         ]

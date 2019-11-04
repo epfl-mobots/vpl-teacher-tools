@@ -37,14 +37,20 @@ td {
 <script>
 
 function updateGUI(fileBrowser) {
-	document.getElementById("btn-edit-teacher").disabled = !fileBrowser.canEditTeacherFile();
-	document.getElementById("btn-rename-teacher").disabled = !fileBrowser.canRenameTeacherFile();
-	document.getElementById("btn-duplicate-teacher").disabled = !fileBrowser.canDuplicateTeacherFile();
-	document.getElementById("btn-export-teacher").disabled = !fileBrowser.canExportTeacherFile();
-	document.getElementById("btn-remove-teacher").disabled = !fileBrowser.canDeleteTeacherFiles();
-	document.getElementById("btn-view-st").disabled = !fileBrowser.canViewStudentFile();
-	document.getElementById("btn-export-st").disabled = !fileBrowser.canExportStudentFile();
-	document.getElementById("btn-remove-st").disabled = !fileBrowser.canDeleteStudentFiles();
+	function enable(id, enabled) {
+		document.getElementById(id).disabled = !enabled;
+		document.getElementById(id).style.display = enabled ? "inline" : "none";
+	}
+
+	enable("btn-new", fileBrowser.canCreateProgramFile());
+	enable("btn-edit-teacher", fileBrowser.canEditTeacherFile());
+	enable("btn-rename-teacher", fileBrowser.canRenameTeacherFile());
+	enable("btn-duplicate-teacher", fileBrowser.canDuplicateTeacherFile());
+	enable("btn-export-teacher", fileBrowser.canExportTeacherFile());
+	enable("btn-remove-teacher", fileBrowser.canDeleteTeacherFiles());
+	enable("btn-view-st", fileBrowser.canViewStudentFile());
+	enable("btn-export-st", fileBrowser.canExportStudentFile());
+	enable("btn-remove-st", fileBrowser.canDeleteStudentFiles());
 }
 
 function clearTable(id, labels) {
@@ -71,7 +77,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 		clearTable(tableId,
 			forStudents
 				? ["Filename", "Students", "Time", "Size"]
-				: ["Filename", "Time", "Size"]);
+				: ["Filename", "Time", "Size", "Marked", "Default"]);
 
 		fileArray.forEach(function (file) {
 			if (!file.renamed) {
@@ -138,12 +144,33 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 			td.className = fileBrowser.isFileSelected(forStudents, file.id) ? "selected" : "";
 			tr.appendChild(td);
 
+			if (!forStudents) {
+				var isVPL3 = /\.vpl3$/.test(file.filename);
+				td = document.createElement("td");
+				if (isVPL3) {
+					td.textContent = file.mark ? "\u2612" : "\u2610";
+					td.addEventListener("click", function () {
+						fileBrowser.toggleMark(file.id);
+					}, false);
+				}
+				tr.appendChild(td);
+				td = document.createElement("td");
+				if (isVPL3) {
+					td.textContent = file["default"] ? "\u2612" : "\u2610";
+					td.addEventListener("click", function () {
+						fileBrowser.setDefaultFile(file.id);
+					}, false);
+				}
+				tr.appendChild(td);
+			}
+
 			table.appendChild(tr);
 		});
 	} else {
 		clearTable(tableId);
 		var tr = document.createElement("tr");
 		var td = document.createElement("td");
+		td.setAttribute("class", "empty");
 		td.textContent = "(none)";
 		tr.appendChild(td);
 		table.appendChild(tr);
@@ -209,8 +236,9 @@ window.addEventListener("load", function () {
 
 	btn = document.getElementById("btn-new");
 	btn.addEventListener("click", function () {
-		fileBrowser.addFile("untitled.vpl3",
-			'{"disabledUI":["vpl:download","vpl:load"]}');
+		var filename = fileBrowser.selectedFile().filename
+			.replace(/vpl3ui$/, "vpl3");
+		fileBrowser.duplicateTeacherFile(filename);
 	}, false);
 
 	btn = document.getElementById("btn-new-conf");

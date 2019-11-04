@@ -28,7 +28,9 @@ class ApplicationBase:
                              ws_port=ws_port,
                              ws_link_url=ws_link_url,
                              logger=self.logger,
-                             update_connection=self.update_connection)
+                             update_connection=self.update_connection,
+                             initial_file_dir="data")
+        self.server.add_files(if_new_db=True)
         self.server.start()
         self.http_port = self.server.get_http_port()
         self.address = f"{URLUtil.get_local_IP()}:{self.http_port}"

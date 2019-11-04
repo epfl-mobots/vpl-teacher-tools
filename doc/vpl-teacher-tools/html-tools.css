@@ -151,6 +151,21 @@ td.selected {
 	border-width: 2px;
 	border-color: blue;
 }
+#files-teacher, #files-student {
+	border-spacing: 0 0;
+}
+#files-teacher th, #files-students th {
+	padding: 1ex;
+}
+#files-teacher td, #files-students td {
+	border-top: solid 1px red;
+	background: transparent;
+	padding: 1ex;
+	margin: 0;
+}
+#files-teacher td.empty, #files-students td.empty {
+	border-top: none;
+}
 #files-teacher td.selected, #files-students td.selected {
 	background: #acf;
 }

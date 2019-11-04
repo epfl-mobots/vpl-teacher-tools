@@ -53,12 +53,15 @@ window["vplStorageGetFunction"] = function (filename, fun) {
 	if (progJSON) {
 		// change toolbars
 		var prog = JSON.parse(progJSON);
+		// disable some buttons in addition to the ones specified in program
 		prog["disabledUI"] = [
 			"src:language",
 			"vpl:new",
 			"vpl:load",
 			"vpl:text"
-		];
+		].reduce(function (acc, val) {
+			return acc.indexOf(val) < 0 ? acc.concat(val) : acc;
+		}, prog["disabledUI"] || []);
 		progJSON = JSON.stringify(prog);
 
 		fun(progJSON,
@@ -82,7 +85,7 @@ window.addEventListener("beforeunload", function () {
 		var json = window["vplGetProgramAsJSON"](customizationMode);
 		console.info(json);
 		var client = new VPLTeacherTools.HTTPClient();
-		client.updateFile(fileId, json);
+		client.updateFile(fileId, json, {asBeacon: true});
 	}
 }, false);
 

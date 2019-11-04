@@ -139,6 +139,24 @@ VPLTeacherTools.FileBrowser.prototype.countSelectedNotRenamedFiles = function ()
 		.reduce(function (acc, val) { return val.selected && !val.renamed ? acc + 1 : acc; }, 0);
 };
 
+VPLTeacherTools.FileBrowser.prototype.toggleMark = function (fileId) {
+	var self = this;
+    this.client.toggleFileMark(fileId, {
+        onSuccess: function () {
+			self.updateFiles();
+        }
+    });
+};
+
+VPLTeacherTools.FileBrowser.prototype.setDefaultFile = function (fileId) {
+	var self = this;
+    this.client.setDefaultFile(fileId, {
+        onSuccess: function () {
+			self.updateFiles();
+        }
+    });
+};
+
 VPLTeacherTools.FileBrowser.prototype.addFile = function (filename, content) {
     var props = {};
     var self = this;
@@ -152,6 +170,13 @@ VPLTeacherTools.FileBrowser.prototype.addFile = function (filename, content) {
         });
 };
 
+VPLTeacherTools.FileBrowser.prototype.canCreateProgramFile = function () {
+	return this.countSelectedFiles(false) == 1 &&
+		/.vpl3ui$/.test(this.teacherFiles.find(function (val) {
+            return val.selected;
+        }).filename);
+};
+
 VPLTeacherTools.FileBrowser.prototype.canEditTeacherFile = function () {
     return this.countSelectedNotRenamedFiles() == 1;
 };
@@ -162,11 +187,7 @@ VPLTeacherTools.FileBrowser.prototype.canViewStudentFile = function () {
 
 VPLTeacherTools.FileBrowser.prototype.openFile = function (readOnly) {
     if (this.countSelectedFiles(false) + this.countSelectedFiles(true) === 1) {
-        var file = this.teacherFiles.find(function (val) {
-            return val.selected;
-        }) || this.studentFiles.find(function (val) {
-            return val.selected;
-        });
+        var file = this.selectedFile();
         var self = this;
         this.client.getFile(file.id, {
             onSuccess: function (file) {
@@ -213,13 +234,22 @@ VPLTeacherTools.FileBrowser.prototype.canDuplicateTeacherFile = function () {
     return this.countSelectedNotRenamedFiles() == 1;
 };
 
-VPLTeacherTools.FileBrowser.prototype.duplicateTeacherFile = function () {
+VPLTeacherTools.FileBrowser.prototype.selectedFile = function () {
+	return this.teacherFiles.find(function (val) {
+        return val.selected;
+    }) || this.studentFiles.find(function (val) {
+		return val.selected;
+	});
+};
+
+VPLTeacherTools.FileBrowser.prototype.duplicateTeacherFile = function (filename) {
 	if (this.canDuplicateTeacherFile()) {
 		var file = this.teacherFiles.find(function (val) {
             return val.selected;
         });
 	    var self = this;
-	    this.client.copyFile(file.id, "copy of " + file.filename,
+	    this.client.copyFile(file.id,
+			filename || "copy of " + file.filename,
 	        {},
 	        {
 	            onSuccess: function (r) {
@@ -299,13 +329,9 @@ VPLTeacherTools.FileBrowser.downloadText = (function () {
 	};
 })();
 
-VPLTeacherTools.FileBrowser.prototype.exportFiles = function () {
-    if (this.canExportFiles()) {
-        var file = this.teacherFiles.find(function (val) {
-            return val.selected;
-        }) || this.studentFiles.find(function (val) {
-            return val.selected;
-        });
+VPLTeacherTools.FileBrowser.prototype.exportFile = function () {
+    if (this.canExportTeacherFile() || this.canExportStudentFile()) {
+        var file = this.selectedFile();
         var self = this;
         this.client.getFile(file.id, {
             onSuccess: function (file) {

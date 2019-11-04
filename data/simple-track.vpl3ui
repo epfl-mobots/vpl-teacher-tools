@@ -2,15 +2,11 @@
 	"advanced": false,
 	"basicBlocks": [
 		"button 1",
-		"horiz prox",
-		"ground",
-		"tap",
-		"clap",
 		"init",
-		"motor",
 		"top color 8",
-		"bottom color 8",
-		"notes"
+		"move",
+		"horiz prox",
+		"ground"
 	],
 	"basicMultiEvent": false,
 	"advancedBlocks": [
@@ -36,13 +32,13 @@
 		"set timer",
 		"picture comment"
 	],
+	"advancedMultiEvent": true,
 	"disabledUI": [
 		"src:language",
-		"vpl:about",
-		"vpl:save",
+		"vpl:new",
 		"vpl:load",
+		"vpl:text",
 		"vpl:exportToHTML",
-		"vpl:advanced",
-		"vpl:text"
+		"vpl:advanced"
 	]
 }

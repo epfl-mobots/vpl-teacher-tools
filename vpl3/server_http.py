@@ -236,6 +236,7 @@ class VPLHTTPServer:
 
     @http_post("/api/updateFile")
     def http_post_api_updateFile(self, handler):
+        print("/api/updateFile")
         q = VPLHTTPServer.query_param(handler)
         if "id" not in q:
             return VPLHTTPServer.error("Missing id")
@@ -252,6 +253,29 @@ class VPLHTTPServer:
             return VPLHTTPServer.error("Missing name")
         return self.call_api(Db.rename_file,
                              int(q["id"][0]), q["name"][0])
+
+    @http_get("/api/markFile")
+    def http_get_api_markFile(self, handler):
+        q = VPLHTTPServer.query_param(handler)
+        if "id" not in q:
+            return VPLHTTPServer.error("Missing id")
+        if "action" not in q:
+            action = "set"
+        else:
+            action = q["action"][0]
+        if action == "set" or action == "clear":
+            return self.call_api(Db.mark_file,
+                                 int(q["id"][0]), action == "set")
+        elif action == "toggle":
+            return self.call_api(Db.toggle_file_mark,
+                                 int(q["id"][0]))
+
+    @http_get("/api/setDefaultFile")
+    def http_get_api_markFile(self, handler):
+        q = VPLHTTPServer.query_param(handler)
+        if "id" not in q:
+            return VPLHTTPServer.error("Missing id")
+        return self.call_api(Db.set_default_file, int(q["id"][0]))
 
     @http_get("/api/removeFiles")
     def http_get_api_removeFiles(self, handler):

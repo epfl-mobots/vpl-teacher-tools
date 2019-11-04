@@ -101,6 +101,7 @@ class VPLWebSocketServer:
                 # accept if a session id was provided
                 try:
                     session_group_id = db.get_session_group_id(msg["sender"]["sessionid"])
+                    print(1)
                     await self.ws.send(websocket, {
                         "sender": {
                             "type": "server"
@@ -108,7 +109,27 @@ class VPLWebSocketServer:
                         "type": "hello",
                         "data": None
                     })
+                    print(2)
                     await self.notify_dashboard()
+                    print(3)
+                    # send default vpl3 program if any
+                    default_file = db.get_default_file()
+                    print("default file:", default_file)
+                    if default_file:
+                        print("will send default file:", default_file)
+                        await self.ws.send(websocket, {
+                            "sender": {
+                                "type": "server"
+                            },
+                            "type": "file",
+                    		"data": {
+                    			"name": default_file["filename"],
+                    			"kind": "vpl",
+                                "metadata": {},
+                    			"content": default_file["content"]
+                    		}
+
+                        })
                 except:
                     await self.ws.send(websocket, {
                         "sender": {

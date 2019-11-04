@@ -7,6 +7,7 @@
 
 from vpl3.server_http import VPLHTTPServer
 from vpl3.server_ws import VPLWebSocketServer
+from vpl3.db import Db
 
 import threading
 import asyncio
@@ -23,8 +24,10 @@ class Server:
                  ws_port=DEFAULT_WS_PORT,
                  ws_link_url=None,
                  logger=None,
-                 update_connection=None):
+                 update_connection=None,
+                 initial_file_dir=None):
         self.db_path = db_path
+        self.initial_file_dir = initial_file_dir
         self.http_port = http_port
         self.http = None
         self.http_server = None
@@ -34,6 +37,21 @@ class Server:
         self.ws_server = None
         self.logger = logger
         self.update_con = update_connection
+
+    def add_files(self, if_new_db=False):
+        db = Db(self.db_path)
+        if db.new_db:
+            import os
+            import re
+            f = re.compile("^[^.]")
+            filenames = [
+                os.path.join(self.initial_file_dir, filename)
+                for filename in os.listdir(self.initial_file_dir)
+                if f.match(filename) and
+                   os.path.isfile(os.path.join(self.initial_file_dir, filename))
+            ]
+            if len(filenames) > 0:
+                db.add_local_files(filenames)
 
     def start(self):
 
