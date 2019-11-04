@@ -100,6 +100,7 @@ class VPLWebSocketServer:
             elif msg["sender"]["type"] == "vpl":
                 # accept if a session id was provided
                 try:
+                    error_msg = "bad sessionid"
                     session_group_id = db.get_session_group_id(msg["sender"]["sessionid"])
                     print(1)
                     await self.ws.send(websocket, {
@@ -113,6 +114,7 @@ class VPLWebSocketServer:
                     await self.notify_dashboard()
                     print(3)
                     # send default vpl3 program if any
+                    error_msg = "default file error"
                     default_file = db.get_default_file()
                     print("default file:", default_file)
                     if default_file:
@@ -122,21 +124,20 @@ class VPLWebSocketServer:
                                 "type": "server"
                             },
                             "type": "file",
-                    		"data": {
-                    			"name": default_file["filename"],
-                    			"kind": "vpl",
+                            "data": {
+                                "name": default_file["filename"],
+                                "kind": "vpl",
                                 "metadata": {},
-                    			"content": default_file["content"]
-                    		}
-
+                                "content": default_file["content"]
+                             }
                         })
-                except:
+                except Exception:
                     await self.ws.send(websocket, {
                         "sender": {
                             "type": "server"
                         },
                         "type": "err",
-                        "msg": "bad sessionid"
+                        "msg": error_msg
                     })
         elif msg["type"] == "bye":
             websocket.is_connected = False

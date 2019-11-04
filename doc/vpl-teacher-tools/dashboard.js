@@ -126,12 +126,14 @@ VPLTeacherTools.Dashboard.prototype.updateSessions = function (sessionIndex, msg
 			" " + s(d.getHours(), 2) + ":" + s(d.getMinutes(), 2) + ":" + s(d.getSeconds(), 2);
 	}
 
-	this.sessions[sessionIndex].lastVPLChangedLogEntry = {
-		"type": "log",
-		"time": datetimeStr(new Date()),
-		"data": JSON.stringify(msg["data"])
-	};
-	this.refreshSessions();
+	if (msg["type"] === "log" && msg["data"]["type"] === "vpl-changed") {
+		this.sessions[sessionIndex].lastVPLChangedLogEntry = {
+			"time": datetimeStr(new Date()),
+			"type": "vpl-changed",
+			"data": JSON.stringify(msg["data"]["data"])
+		};
+		this.refreshSessions();
+	}
 };
 
 VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
@@ -156,6 +158,15 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
             }
         }
 	});
+};
+
+VPLTeacherTools.Dashboard.prototype.setDefaultFile = function (fileId) {
+	var self = this;
+    this.client.setDefaultFile(fileId, {
+        onSuccess: function () {
+			self.updateFiles();
+        }
+    });
 };
 
 /** Get the index of a session specified by its id

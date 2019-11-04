@@ -639,7 +639,8 @@ class Db:
     def get_default_file(self):
         """Get the default file"""
         r = self.get_first_result(
-            f"""name,
+            f"""fileid,
+                name,
                 {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
                 LENGTH(content),
                 owner,
@@ -649,13 +650,13 @@ class Db:
             "files",
             "defaul")
         return {
-            "id": file_id,
-            "filename": r[0],
-            "time": r[1],
-            "size": r[2],
-            "owner": self.str_to_list(r[3]),
-            "content": r[4],
-            "metadata": r[5]
+            "id": r[0],
+            "filename": r[1],
+            "time": r[2],
+            "size": r[3],
+            "owner": self.str_to_list(r[4]),
+            "content": r[5],
+            "metadata": r[6]
         } if r else None
 
     def list_files(self,

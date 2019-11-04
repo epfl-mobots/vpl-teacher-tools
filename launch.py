@@ -5,8 +5,8 @@
 
 # server app launcher
 
-# from vpl3.tkapp import Application
-from vpl3.wxapp import Application
+from vpl3.tkapp import Application
+# from vpl3.wxapp import Application
 # from vpl3.objcapp import Application
 # from vpl3.noguiapp import Application
 from vpl3.db import Db

@@ -21,15 +21,24 @@
 
 var dashboard = null;
 
-function clearChildren(id) {
-	var el = document.getElementById(id);
-	while (el.firstElementChild) {
-		el.removeChild(el.firstElementChild);
+function clearTable(id, labels) {
+	var table = document.getElementById(id);
+	while (table.firstElementChild) {
+		table.removeChild(table.firstElementChild);
+	}
+	if (labels) {
+		var tr = document.createElement("tr");
+		labels.forEach(function (label) {
+			var th = document.createElement("th");
+			th.textContent = label;
+			tr.appendChild(th);
+		});
+		table.appendChild(tr);
 	}
 }
 
 function fillGroupTable(sessionArray, dashboard) {
-	clearChildren("groups");
+	clearTable("groups");
 	var table = document.getElementById("groups");
 
 	sessionArray.forEach(function (session) {
@@ -64,12 +73,14 @@ function fillGroupTable(sessionArray, dashboard) {
 					Math.floor(elapsedSec % 3600 / 60).toString(10) + " min"
 				: Math.floor(elapsedSec / 3600).toString(10) + " hr";
 			var lastVPLChangedData = JSON.parse(session.lastVPLChangedLogEntry["data"]);
-			var details = "";
-			details = [
-				elapsedStr,
-				lastVPLChangedData["nrules"].toString(10) + "\u25ad",
-				lastVPLChangedData["nblocks"].toString(10) + "\u25ab"
-			];
+			var details = [elapsedStr];
+			if (lastVPLChangedData && lastVPLChangedData["nrules"] != undefined) {
+				details = [
+					elapsedStr,
+					lastVPLChangedData["nrules"].toString(10) + "\u25ad",
+					lastVPLChangedData["nblocks"].toString(10) + "\u25ab"
+				];
+			}
 			if (lastVPLChangedData["error"]) {
 				details.push("error: " + lastVPLChangedData["error"]);
 			} else if (lastVPLChangedData["warning"]) {
@@ -87,7 +98,7 @@ function fillGroupTable(sessionArray, dashboard) {
 }
 
 function fillFileTable(fileArray, dashboard) {
-	clearChildren("files");
+	clearTable("files", ["Filename", "Default"]);
 	var table = document.getElementById("files");
 
 	if (fileArray.length === 0) {
@@ -104,6 +115,13 @@ function fillFileTable(fileArray, dashboard) {
 
 		var td = document.createElement("td");
 		td.textContent = file.filename;
+		tr.appendChild(td);
+
+		td = document.createElement("td");
+		td.textContent = file["default"] ? "\u2612" : "\u2610";
+		td.addEventListener("click", function () {
+			dashboard.setDefaultFile(file.id);
+		}, false);
 		tr.appendChild(td);
 
 		td = document.createElement("td");
@@ -176,9 +194,9 @@ window.addEventListener("load", function () {
 <ul>
 <li><a href="students.html">Pupils</a></li>
 <li><a href="filebrowser.html">Files</a></li>
+<li><a class="disabled" href="#">VPL</a></li>
 <li><a href="pairing.html">Classroom setup</a></li>
 <li><a class="current" href="dashboard.html">Dashboard</a></li>
-<li><a class="disabled" href="#">VPL</a></li>
 <li><a href="doc.html">Documentation</a></li>
 <li><span class="space"></span></li>
 <li><a href="initdb-dev.html">Test data</a></li>
