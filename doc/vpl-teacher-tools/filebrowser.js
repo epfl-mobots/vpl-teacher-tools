@@ -188,9 +188,13 @@ VPLTeacherTools.FileBrowser.prototype.canViewStudentFile = function () {
 VPLTeacherTools.FileBrowser.prototype.openFile = function (readOnly) {
     if (this.countSelectedFiles(false) + this.countSelectedFiles(true) === 1) {
         var file = this.selectedFile();
+        var students = file.students;
         var self = this;
         this.client.getFile(file.id, {
             onSuccess: function (file) {
+                if (students) {
+                    file.students = students;
+                }
                 self.options.onOpen && self.options.onOpen(file, readOnly);
             }
         });
