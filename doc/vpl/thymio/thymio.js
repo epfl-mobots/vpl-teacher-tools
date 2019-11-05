@@ -39081,7 +39081,21 @@ window.TDM = function (url, options) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              self.nodes = nodes.slice();
+              // merge with self.nodes
+              nodes.forEach(function (node) {
+                var nodeId = node.id.toString();
+                var index = self.nodes.findIndex(function (node1) {
+                  return node1.id.toString() === nodeId;
+                });
+
+                if (index < 0) {
+                  // unknown: add it
+                  self.nodes.push(node);
+                } else {
+                  // known: replace it
+                  self.nodes.splice(index, 1, node);
+                }
+              });
               _context.prev = 1;
 
               if (!options.uuid) {

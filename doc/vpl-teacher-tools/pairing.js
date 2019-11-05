@@ -195,7 +195,11 @@ VPLTeacherTools.Pairing.prototype.removeStudentFromGroup = function (studentName
 };
 
 VPLTeacherTools.Pairing.prototype.getRobotNodes = function () {
-    return this.tdm.nodes;
+    return this.tdm.nodes.filter(function (node) {
+        return node.status === window["TDM"].status.ready ||
+            node.status === window["TDM"].status.available ||
+            node.status === window["TDM"].status.busy;
+    });
 };
 
 VPLTeacherTools.Pairing.prototype.selectByStudentName = function (studentName) {
