@@ -51,6 +51,9 @@ VPLTeacherTools.Pairing = function (options) {
                 if (options && options.onRobots) {
 				    options.onRobots(a, self);
                 }
+                if (options && options.onGroups) {
+				    options.onGroups(self.groups, self);
+                }
 			}
 		});
 
@@ -342,6 +345,10 @@ VPLTeacherTools.Pairing.prototype.endAllSessions = function () {
                 }
             }
         });
+};
+
+VPLTeacherTools.Pairing.prototype.getRobot = function (robotName) {
+    return this.robots.find(function (r) { return r.name === robotName}, this);
 };
 
 VPLTeacherTools.Pairing.prototype.shortenURL = function (url, cb) {

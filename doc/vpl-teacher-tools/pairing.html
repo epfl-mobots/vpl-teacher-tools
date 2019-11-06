@@ -211,6 +211,18 @@ function fillGroupTable(groupArray, pairing) {
 				td.appendChild(rmBtn);
 				td.addEventListener("click", select);
 				tr.appendChild(td);
+
+				var robot = pairing.getRobot(group.pair.robot);
+				if (robot && robot.flash) {
+					td = document.createElement("td");
+					var btn = document.createElement("button");
+					btn.textContent = "flash";
+					btn.disabled = !robot.canFlash;
+					btn.addEventListener("mousedown", function () { robot.flash(true); }, false);
+					btn.addEventListener("mouseup", function () { robot.flash(false); }, false);
+					td.appendChild(btn);
+					tr.appendChild(td);
+				}
 			}
 
 			table.appendChild(tr);
