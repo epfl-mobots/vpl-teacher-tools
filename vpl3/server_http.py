@@ -31,6 +31,7 @@ class VPLHTTPRequestHandler(HTTPRequestHandler):
 class VPLHTTPServer:
 
     DEFAULT_PORT = HTTPServerWithContext.DEFAULT_PORT
+    SHORTENED_URL_PREFIX = "/vv"
 
     def __init__(self,
                  db_path=Db.DEFAULT_PATH,
@@ -39,7 +40,7 @@ class VPLHTTPServer:
         self.http_port = http_port
         self.db_path = db_path
         self.handler = VPLHTTPRequestHandler
-        self.url_shortcuts = URLShortcuts()
+        self.url_shortcuts = URLShortcuts(length=3)
         self.httpd = HTTPServerWithContext(context=self,
                                            port=http_port, logger=logger)
         self.httpd.add_filter(lambda s: s.replace(b"$LANGUAGE", b"fr"),
@@ -314,14 +315,14 @@ class VPLHTTPServer:
         if "u" in q:
             return {
                 "mime": "text/plain",
-                "data": f"http://{URLUtil.get_local_IP()}:{self.get_port()}/vv{self.url_shortcuts.add(q['u'][0])}\n"
+                "data": f"http://{URLUtil.get_local_IP()}:{self.get_port()}{VPLHTTPServer.SHORTENED_URL_PREFIX}{self.url_shortcuts.add(q['u'][0])}\n"
             }
         else:
             return VPLHTTPServer.error("missing url")
 
     @http_get_any
     def http_get_shortenedURL(path, self, handler):
-        if path.startswith("/xx"):
+        if path.startswith(VPLHTTPServer.SHORTENED_URL_PREFIX):
             key = path[3:]
             url = self.url_shortcuts.get(key)
             if url is not None:

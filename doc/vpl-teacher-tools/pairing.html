@@ -319,6 +319,7 @@ function fillGroupTable(groupArray, pairing) {
 				});
 			pairing.shortenURL(url, function (shortenedURL) {
 				a.textContent = shortenedURL;
+				a.setAttribute("href", shortenedURL);
 				while (qrdiv.firstElementChild) {
 					qrdiv.removeChild(qrdiv.firstElementChild);
 				}
