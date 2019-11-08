@@ -134,6 +134,9 @@ VPLTeacherTools.Pairing.prototype.updateGroups = function () {
                     if (self.options.onGroups) {
                         self.options.onGroups(self.groups, self);
                     }
+                    if (self.options.onRobots) {
+                        self.options.onRobots(self.robots, self);
+                    }
                 }
         	});
         }
@@ -215,12 +218,20 @@ VPLTeacherTools.Pairing.prototype.selectByStudentName = function (studentName) {
     return false;
 };
 
-VPLTeacherTools.Pairing.prototype.selectByRobotName = function (robotName) {
+VPLTeacherTools.Pairing.prototype.findGroupByRobotName = function (robotName) {
     for (var i = 0; i < this.groups.length; i++) {
         if (this.groups[i].pair && this.groups[i].pair.robot === robotName) {
-            this.selectedGroup = this.groups[i].group_id;
-            return true;
+			return this.groups[i];
         }
+    }
+    return null;
+};
+
+VPLTeacherTools.Pairing.prototype.selectByRobotName = function (robotName) {
+	var group = this.findGroupByRobotName(robotName);
+	if (group) {
+        this.selectedGroup = group.group_id;
+        return true;
     }
     return false;
 };
@@ -295,6 +306,9 @@ VPLTeacherTools.Pairing.prototype.beginSession = function (robotName, groupId) {
                 onSuccess: function (r) {
                     self.selectGroup(groupId);
                     self.updateGroups();
+	                if (self.options && self.options.onRobots) {
+					    self.options.onRobots(self.robots, self);
+	                }
                 }
             });
     }
@@ -323,6 +337,9 @@ VPLTeacherTools.Pairing.prototype.endSession = function (sessionId) {
             if (self.options.onGroups) {
                 self.options.onGroups(self.groups, self);
             }
+            if (self.options.onRobots) {
+                self.options.onRobots(self.robots, self);
+            }
         }
     });
 };
@@ -342,6 +359,9 @@ VPLTeacherTools.Pairing.prototype.endAllSessions = function () {
                 });
                 if (self.options.onGroups) {
                     self.options.onGroups(self.groups, self);
+                }
+                if (self.options.onRobots) {
+                    self.options.onRobots(self.robots, self);
                 }
             }
         });
