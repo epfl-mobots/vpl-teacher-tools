@@ -58,7 +58,11 @@ window["vplStorageGetFunction"] = function (filename, fun) {
 			"src:language",
 			"vpl:new",
 			"vpl:load",
-			"vpl:text"
+			"vpl:text",
+			"vpl:sim",
+			"sim:vpl",
+			"sim:text",
+			"sim:teacher"
 		].reduce(function (acc, val) {
 			return acc.indexOf(val) < 0 ? acc.concat(val) : acc;
 		}, prog["disabledUI"] || []);
@@ -73,6 +77,21 @@ window["vplStorageGetFunction"] = function (filename, fun) {
 		sessionStorage.setItem("initialUISettings", window["vplGetUIAsJSON"]());
 	}
 };
+
+window.addEventListener("load", function () {
+	var vplTab = document.getElementById("tab-vpl");
+	var simTab = document.getElementById("tab-sim");
+	vplTab.addEventListener("click", function () {
+		vplTab.setAttribute("class", "current");
+		simTab.setAttribute("class", "");
+		window["vplApp"].setView(["vpl"]);
+	}, false);
+	simTab.addEventListener("click", function () {
+		vplTab.setAttribute("class", "");
+		simTab.setAttribute("class", "current");
+		window["vplApp"].setView(["sim"]);
+	}, false);
+}, false);
 
 window.addEventListener("beforeunload", function () {
 	var options = JSON.parse(sessionStorage.getItem("options") || "{}");
@@ -99,7 +118,8 @@ window.addEventListener("beforeunload", function () {
 <ul>
 <li><a href="students.html">Pupils</a></li>
 <li><a href="filebrowser.html">Files</a></li>
-<li><a class="current" href="vpl.html">VPL</a></li>
+<li><a id="tab-vpl" class="current" href="#">VPL</a></li>
+<li><a id="tab-sim" href="#">Simulator</a></li>
 <li><a href="pairing.html">Classroom setup</a></li>
 <li><a href="dashboard.html">Dashboard</a></li>
 <li><span class="space"></span></li>

@@ -25,6 +25,7 @@ nav a {
 	padding: 16px;
 	padding-top: 8px;
 	padding-bottom: 8px;
+	outline: none;  /* for firefox */
 }
 
 nav span.space {
