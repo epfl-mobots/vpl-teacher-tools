@@ -9,10 +9,6 @@ import urllib
 import mimetypes
 import re
 
-dict_get = {}
-list_get_any = []
-dict_post = {}
-
 
 class DocFilterSet:
     """Filter text documents before serving them"""
@@ -63,8 +59,8 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     self.wfile.write(content["data"].encode())
 
         p = urllib.parse.urlparse(self.path)
-        if p.path in dict_get:
-            content = dict_get[p.path](self.server.context, self)
+        if p.path in self.server.dict_get:
+            content = self.server.dict_get[p.path](self.server.context, self)
             send_reply(content)
         else:
             if (re.compile(r"^(/[-_a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?)+")
@@ -87,7 +83,7 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 except OSError:
                     pass
 
-            for f in list_get_any:
+            for f in self.server.list_get_any:
                 content = f(p.path, self.server.context, self)
                 if content is not None:
                     send_reply(content)
@@ -110,8 +106,8 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         """Implementation of POST HTTP method"""
         p = urllib.parse.urlparse(self.path)
-        if p.path in dict_post:
-            content = dict_post[p.path](self.server.context, self)
+        if p.path in self.server.dict_post:
+            content = self.server.dict_post[p.path](self.server.context, self)
             if "location" in content:
                 self.send_response(http.server.HTTPStatus.MOVED_PERMANENTLY)
                 self.send_header("Location", content["location"])
@@ -131,23 +127,6 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.server.logger(format % args)
 
 
-def http_get(path):
-    def register(fun):
-        dict_get[path] = fun
-        return fun
-    return register
-
-def http_get_any(fun):
-    list_get_any.append(fun)
-    return fun
-
-def http_post(path):
-    def register(fun):
-        dict_post[path] = fun
-        return fun
-    return register
-
-
 class HTTPServerWithContext(http.server.HTTPServer):
 
     DEFAULT_PORT = 8000
@@ -164,6 +143,9 @@ class HTTPServerWithContext(http.server.HTTPServer):
             super(http.server.HTTPServer, self) \
                 .__init__(('', port), context.handler)
         self.context = context
+        self.dict_get = {}
+        self.list_get_any = []
+        self.dict_post = {}
         self.doc_filter_set = DocFilterSet()
         self.logger = logger
 
@@ -172,3 +154,21 @@ class HTTPServerWithContext(http.server.HTTPServer):
 
     def add_filter(self, fun, path_regex=None):
         self.doc_filter_set.add_filter(fun, path_regex)
+
+    def http_get(self, path):
+        def register(fun):
+            self.dict_get[path] = fun
+            return fun
+        return register
+
+    def http_get_any(self):
+        def register(fun):
+            self.list_get_any.append(fun)
+            return fun
+        return register
+
+    def http_post(self, path):
+        def register(fun):
+            self.dict_post[path] = fun
+            return fun
+        return register
