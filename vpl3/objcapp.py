@@ -40,4 +40,5 @@ class Application(ApplicationBase):
         self.app_objc.run()
 
     def show_connection_status(self, str):
-        self.status.setStringValue_(str)
+        if self.status:
+            self.status.setStringValue_(str)
