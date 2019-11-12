@@ -76,7 +76,7 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                         self.send_header("Content-type",
                                          mimetype[0]
                                          if mimetype[0]
-                                         else "text/plain")
+                                         else "text/plain; charset=utf-8")
                         self.end_headers()
                         if not head_only:
                             content = f.read()
@@ -94,7 +94,7 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     return
 
             self.send_response(http.server.HTTPStatus.NOT_FOUND)
-            self.send_header("Content-type", "text/plain")
+            self.send_header("Content-type", "text/plain; charset=utf-8")
             self.end_headers()
             if not head_only:
                 self.wfile.write(("404 Not Found\n" + p.path).encode())
@@ -122,7 +122,7 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(content["data"].encode())
         else:
             self.send_response(http.server.HTTPStatus.NOT_FOUND)
-            self.send_header("Content-type", "text/plain")
+            self.send_header("Content-type", "text/plain; charset=utf-8")
             self.end_headers()
             self.wfile.write(("404 Not Found\n" + p.path).encode())
 
