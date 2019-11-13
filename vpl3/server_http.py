@@ -38,6 +38,7 @@ class VPLHTTPServer:
                  logger=None):
         self.http_port = http_port
         self.db_path = db_path
+        self.db = Db(self.db_path)
         self.handler = VPLHTTPRequestHandler
         self.url_shortcuts = URLShortcuts(length=3)
         self.httpd = HTTPServerWithContext(context=self,
@@ -127,6 +128,16 @@ class VPLHTTPServer:
                 return VPLHTTPServer.error("Missing group id")
             return self.call_api(Db.list_group_students,
                                  q["groupid"][0])
+
+        @self.httpd.http_get("/api/setGroupVPLURL")
+        def http_get_api_set_group_vpl_url(self, handler):
+            q = VPLHTTPServer.query_param(handler)
+            print(q)
+            if "groupid" not in q:
+                return VPLHTTPServer.error("Missing group id")
+            vpl_url = q["url"][0] if "url" in q else None
+            return self.call_api(Db.set_group_vpl_url,
+                                 q["groupid"][0], vpl_url)
 
         @self.httpd.http_get("/api/beginSession")
         def http_get_api_beginSession(self, handler):
@@ -226,7 +237,7 @@ class VPLHTTPServer:
                                      int(q["id"][0]))
 
         @self.httpd.http_get("/api/setDefaultFile")
-        def http_get_api_markFile(self, handler):
+        def http_set_default_file(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "id" not in q:
                 return VPLHTTPServer.error("Missing id")
@@ -321,7 +332,7 @@ class VPLHTTPServer:
 
     def call_api(self, fun, *args, **kwargs):
         try:
-            result = fun(Db(self.db_path), *args, **kwargs)
+            result = fun(self.db, *args, **kwargs)
             return {
                 "mime": "application/json",
                 "data": json.dumps({

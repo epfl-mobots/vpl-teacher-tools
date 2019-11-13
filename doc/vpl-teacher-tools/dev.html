@@ -40,9 +40,9 @@ main {
 
 <main>
 
-<div class="border1">
+<div class="border">
 
-<h2>Overview</h2>
+<h1>Overview</h1>
 
 <p>Here is a brief overview of the communication between the different web applications, the http and websocket servers, and the Thymio Device Manager (tdm), in the typical order they are used. The http server and the web server have access to the same data, but they fill two very different purposes: the http server gives a reply to each request; and the websocket server handles real-time streams and pushes data without a request from the web app it pushes messages to. Static files (typically obtained by typing a URL in the browser location field) are served only by the http server.<p>
 
@@ -80,7 +80,7 @@ main {
 
 </dl>
 
-<h2>SQLite database</h2>
+<h1>SQLite database</h1>
 
 <h3>Tables</h3>
 
@@ -147,7 +147,7 @@ main {
 <tr><td>data</td><td>text</td><td>type-specific json data</td></tr>
 </table>
 
-<h2>REST API</h2>
+<h1>REST API</h1>
 
 <p>Common to all requests: GET method (or POST where specified), result: application/json unless specified otherwise</p>
 
@@ -233,6 +233,13 @@ GET /api/removeStudentFromGroup?student=studentName
 </pre>
 
 <p>Result: {"status":"ok"} or {"status":"err","msg":"student not found"} or {"status":"err","msg":"group not found"}</p>
+
+<h4>setGroupVPLURL</h4>
+
+<pre>
+GET /api/setGroupVPLURL?groupid=groupId
+GET /api/setGroupVPLURL?groupid=groupId&url=vplurl
+</pre>
 
 <h3>Sessions</h3>
 
@@ -363,7 +370,7 @@ GET /api/clearLog
 <p>Result: {"status":"ok"}</p>
 
 
-<h2>WebSocket API</h2>
+<h1>WebSocket API</h1>
 
 <ul>
 <li>Websocket on separate port because of Python library constraints.</li>

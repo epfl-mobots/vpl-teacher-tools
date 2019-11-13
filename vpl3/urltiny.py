@@ -1,11 +1,10 @@
-#!/usr/bin/python3
-
 # Author: Yves Piguet, EPFL
 # Please don't redistribute without author's permission.
 
 # URL shortcuts
 
 import os
+
 
 class URLShortcuts:
 

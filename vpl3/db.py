@@ -44,7 +44,10 @@ class Db:
             """True if strings are equal, ignoring case"""
             return str1.casefold() == str2.casefold()
 
-        self.create_tables()
+        if self.new_db:
+            self.create_tables()
+        else:
+            self.upgrade_tables()
 
         self._db.create_function("list_doesinclude", 2, fun_list_doesinclude)
         self._db.create_function("list_aredisjoint", 2, fun_list_aredisjoint)
@@ -62,7 +65,7 @@ class Db:
         sql = [
             """
             CREATE TABLE IF NOT EXISTS students (
-                studentid INTEGER PRIMARY KEY AUTOINCREMENT,
+                studentid INTEGER PRIMARY KEY,
                 name TEXT UNIQUE,
                 time TEXT DEFAULT CURRENT_TIMESTAMP,
                 groupid INTEGER
@@ -70,8 +73,9 @@ class Db:
             """,
             """
             CREATE TABLE IF NOT EXISTS groups (
-                groupid INTEGER PRIMARY KEY AUTOINCREMENT,
-                time TEXT DEFAULT CURRENT_TIMESTAMP
+                groupid INTEGER PRIMARY KEY,
+                time TEXT DEFAULT CURRENT_TIMESTAMP,
+                vplurl TEXT
             );
             """,
             """
@@ -84,7 +88,7 @@ class Db:
             """,
             """
             CREATE TABLE IF NOT EXISTS files (
-                fileid INTEGER PRIMARY KEY AUTOINCREMENT,
+                fileid INTEGER PRIMARY KEY,
                 owner TEXT,
                 name TEXT,
                 time TEXT DEFAULT CURRENT_TIMESTAMP,
@@ -114,6 +118,44 @@ class Db:
         c = self._db.cursor()
         for statement in sql:
             c.execute(statement)
+        self._db.commit()
+
+    def upgrade_tables(self):
+        """Upgrade tables"""
+
+        sql = [
+            """
+            CREATE TEMPORARY TABLE groups_backup(
+                groupid INTEGER PRIMARY KEY,
+                time TEXT DEFAULT CURRENT_TIMESTAMP
+            )
+            """,
+            """
+            INSERT INTO groups_backup (groupid, time)
+            SELECT groupid, time FROM groups
+            """,
+            """
+            DROP TABLE groups
+            """,
+            """
+            CREATE TABLE groups(
+                groupid INTEGER PRIMARY KEY,
+                time TEXT DEFAULT CURRENT_TIMESTAMP,
+                vplurl TEXT
+            )
+            """,
+            """
+            INSERT INTO groups (groupid, time)
+            SELECT groupid, time FROM groups_backup
+            """,
+            """
+            DROP TABLE groups_backup
+            """
+        ]
+        c = self._db.cursor()
+        for statement in sql:
+            c.execute(statement)
+        self._db.commit()
 
     @staticmethod
     def remove(path=None):
@@ -123,19 +165,25 @@ class Db:
     def get_first_result(self, select, from_table, where, *args, order=None):
         """Get the first result of an SQL query as a tupple"""
         c = self._db.cursor()
-        c.execute("SELECT " + select + " FROM " + from_table
-                  + " WHERE " + where
-                  + (" ORDER BY " + order if order else "")
-                  + " LIMIT 1",
-                  *args)
+        try:
+            c.execute("SELECT " + select + " FROM " + from_table
+                      + " WHERE " + where
+                      + (" ORDER BY " + order if order else "")
+                      + " LIMIT 1",
+                      *args)
+        finally:
+            self._db.commit()
         return c.fetchone()
 
     def select_has_result(self, from_table, where, *args):
         """Check if the result of an SQL query has at least one result"""
         c = self._db.cursor()
-        c.execute("SELECT 1 FROM " + from_table
-                  + " WHERE " + where + " LIMIT 1",
-                  *args)
+        try:
+            c.execute("SELECT 1 FROM " + from_table
+                      + " WHERE " + where + " LIMIT 1",
+                      *args)
+        finally:
+            self._db.commit()
         return c.fetchone() is not None
 
     def list_to_str(self, list_of_id):
@@ -159,32 +207,39 @@ class Db:
     def delete_all_students(self):
         """Delete all students and groups"""
         c = self._db.cursor()
-        c.execute("""
-            DELETE FROM students
-        """)
-        c.execute("""
-            DELETE FROM groups
-        """)
-        self._db.commit()
+        try:
+            c.execute("""
+                DELETE FROM students
+            """)
+            c.execute("""
+                DELETE FROM groups
+            """)
+        finally:
+            self._db.commit()
 
     def add_student(self, name):
         """Add a new student"""
         if self.select_has_result("students", "equal_ic(name,?)", (name,)):
             raise ValueError("duplicate student")
         c = self._db.cursor()
-        c.execute("INSERT INTO students (name) VALUES (?)", (name,))
-        self._db.commit()
+        try:
+            c.execute("INSERT INTO students (name) VALUES (?)", (name,))
+        finally:
+            self._db.commit()
 
     def list_students(self):
         """Get a list of all students"""
         c = self._db.cursor()
-        c.execute(f"""
-            SELECT name,
-                   studentid,
-                   {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
-                   groupid
-            FROM students
-        """)
+        try:
+            c.execute(f"""
+                SELECT name,
+                       studentid,
+                       {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
+                       groupid
+                FROM students
+            """)
+        finally:
+            self._db.commit()
         return [
             {
                 "name": row[0],
@@ -200,33 +255,46 @@ class Db:
         if not self.select_has_result("students", "equal_ic(name,?)", (name,)):
             raise ValueError("student not found")
         c = self._db.cursor()
-        c.execute("DELETE FROM students WHERE equal_ic(name,?)", (name,))
-        self._db.commit()
+        try:
+            c.execute("DELETE FROM students WHERE equal_ic(name,?)", (name,))
+        finally:
+            self._db.commit()
 
     def add_group(self, student_name=None):
         """Create a new group, optionally with a student, and return its id"""
         c = self._db.cursor()
-        c.execute("INSERT INTO groups DEFAULT VALUES")
-        group_id = c.lastrowid
-        self._db.commit()
-        if student_name is not None:
-            self.add_student_to_group(student_name, group_id)
+        try:
+            c.execute("INSERT INTO groups DEFAULT VALUES")
+            group_id = c.lastrowid
+            self._db.commit()
+            if student_name is not None:
+                self.add_student_to_group(student_name, group_id)
+        finally:
+            self._db.commit()
         return group_id
 
     def list_groups(self):
         """Get the list of all groups"""
         c = self._db.cursor()
-        c.execute(f"""
-            SELECT groupid,
-                   {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
-                   (SELECT count()
-                    FROM students
-                    WHERE students.groupid = groups.groupid)
-            FROM groups
-        """)
+        try:
+            c.execute(f"""
+                SELECT groupid,
+                       {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
+                       (SELECT count()
+                        FROM students
+                        WHERE students.groupid = groups.groupid),
+                       vplurl
+                FROM groups
+            """)
+        finally:
+            self._db.commit()
         return [
-            {"group_id": row[0], "time": row[1], "numStudents": row[2]}
-            for row in c.fetchall()
+            {
+                "group_id": row[0],
+                "time": row[1],
+                "numStudents": row[2],
+                "vplURL": row[3]
+            } for row in c.fetchall()
         ]
 
     def remove_group(self, group_id):
@@ -234,8 +302,10 @@ class Db:
         if not self.select_has_result("groups", "groupid=?", (group_id,)):
             raise ValueError("group id not found")
         c = self._db.cursor()
-        c.execute("DELETE FROM groups WHERE groupid=?", (group_id,))
-        self._db.commit()
+        try:
+            c.execute("DELETE FROM groups WHERE groupid=?", (group_id,))
+        finally:
+            self._db.commit()
 
     def end_membership(self, group_id, student_name):
         """Update membership table to end a membership now"""
@@ -248,12 +318,14 @@ class Db:
             raise ValueError("membership not found")
         row_id = r[0]
         c = self._db.cursor()
-        c.execute("""
-            UPDATE membership
-            SET endtime = datetime('now')
-            WHERE rowid=?
-        """, (row_id,))
-        self._db.commit()
+        try:
+            c.execute("""
+                UPDATE membership
+                SET endtime = datetime('now')
+                WHERE rowid=?
+            """, (row_id,))
+        finally:
+            self._db.commit()
 
     def add_student_to_group(self, student_name, group_id):
         """Add an existing student to a group (or change group)"""
@@ -265,32 +337,36 @@ class Db:
             if membership is not None:
                 self.end_membership(membership, student_name)
             c = self._db.cursor()
-            c.execute("""
-                INSERT INTO membership (studentid, groupid, begintime)
-                VALUES (
-                    (SELECT studentid FROM students WHERE equal_ic(name,?)),
-                    ?,
-                    datetime('now')
-                )
-            """, (student_name, group_id))
-            c.execute("""
-                UPDATE students
-                SET groupid = ?
-                WHERE name = ?
-            """, (group_id, student_name))
-            self._db.commit()
+            try:
+                c.execute("""
+                    INSERT INTO membership (studentid, groupid, begintime)
+                    VALUES (
+                        (SELECT studentid FROM students WHERE equal_ic(name,?)),
+                        ?,
+                        datetime('now')
+                    )
+                """, (student_name, group_id))
+                c.execute("""
+                    UPDATE students
+                    SET groupid = ?
+                    WHERE name = ?
+                """, (group_id, student_name))
+            finally:
+                self._db.commit()
 
             # remove previous group if empty
             if membership is not None:
-                c.execute("""
-                    SELECT count(*)
-                    FROM students
-                    WHERE groupid=?
-                          """, (membership,))
-                num_students_left = int(c.fetchone()[0])
-                if num_students_left == 0:
-                    c.execute("DELETE FROM groups WHERE groupid=?",
-                              (membership,))
+                try:
+                    c.execute("""
+                        SELECT count(*)
+                        FROM students
+                        WHERE groupid=?
+                              """, (membership,))
+                    num_students_left = int(c.fetchone()[0])
+                    if num_students_left == 0:
+                        c.execute("DELETE FROM groups WHERE groupid=?",
+                                  (membership,))
+                finally:
                     self._db.commit()
 
     def remove_student_from_group(self, student_name):
@@ -303,34 +379,58 @@ class Db:
         if group_id is not None:
             self.end_membership(group_id, student_name)
             c = self._db.cursor()
-            c.execute("""
-                UPDATE students
-                SET groupid = NULL
-                WHERE equal_ic(name,?)
-            """, (student_name,))
-            self._db.commit()
+            try:
+                c.execute("""
+                    UPDATE students
+                    SET groupid = NULL
+                    WHERE equal_ic(name,?)
+                """, (student_name,))
+            finally:
+                self._db.commit()
 
             # remove group if empty
-            c.execute("""
-                SELECT count(*)
-                FROM students
-                WHERE groupid=?
-                      """, (group_id,))
-            num_students_left = int(c.fetchone()[0])
-            if num_students_left == 0:
-                c.execute("DELETE FROM groups WHERE groupid=?", (group_id,))
+            try:
+                c.execute("""
+                    SELECT count(*)
+                    FROM students
+                    WHERE groupid=?
+                          """, (group_id,))
+                num_students_left = int(c.fetchone()[0])
+                if num_students_left == 0:
+                    c.execute("DELETE FROM groups WHERE groupid=?", (group_id,))
+            finally:
                 self._db.commit()
 
     def list_group_students(self, group_id):
         """Get a list of all students belonging to a group"""
         c = self._db.cursor()
-        c.execute("""
-                    SELECT name
-                    FROM students
-                    WHERE groupid = ?
-                  """,
-                  (group_id,))
+        try:
+            c.execute("""
+                        SELECT name
+                        FROM students
+                        WHERE groupid = ?
+                      """,
+                      (group_id,))
+        finally:
+            self._db.commit()
+
         return [row[0] for row in c.fetchall()]
+
+    def set_group_vpl_url(self, group_id, vpl_url=None):
+        """Set (or clear if None) the VPL URL of a group"""
+        c = self._db.cursor()
+        try:
+            print("set_group_vpl_url", group_id, vpl_url)
+            c.execute("""
+                UPDATE groups
+                SET vplurl=?
+                WHERE groupid=?
+                      """,
+                      (vpl_url, group_id))
+            print("done")
+        finally:
+            self._db.commit()
+            print("committed")
 
     def begin_session(self, group_id, robot, force):
         c = self._db.cursor()
@@ -349,15 +449,17 @@ class Db:
                               (robot,))
                 else:
                     raise ValueError("robot already used")
-        c.execute("""
-            INSERT INTO sessions (groupid,robot,sessionid)
-            VALUES (?,?,lower(hex(randomblob(16))))
-        """, (group_id, robot))
-        rowid = c.lastrowid
-        self._db.commit()
-        session_id = self.get_first_result("sessionid", "sessions", "rowid=?",
-                                           (rowid,))[0]
-        self.session_cache[session_id] = group_id
+        try:
+            c.execute("""
+                INSERT INTO sessions (groupid,robot,sessionid)
+                VALUES (?,?,lower(hex(randomblob(16))))
+            """, (group_id, robot))
+            rowid = c.lastrowid
+            session_id = self.get_first_result("sessionid", "sessions", "rowid=?",
+                                               (rowid,))[0]
+            self.session_cache[session_id] = group_id
+        finally:
+            self._db.commit()
         return session_id
 
     def end_session(self, session_id):
@@ -365,15 +467,19 @@ class Db:
                                       (session_id,)):
             raise ValueError("session id not found")
         c = self._db.cursor()
-        c.execute("DELETE FROM sessions WHERE sessionid=?", (session_id,))
-        self._db.commit()
+        try:
+            c.execute("DELETE FROM sessions WHERE sessionid=?", (session_id,))
+        finally:
+            self._db.commit()
         if session_id in self.session_cache:
             del self.session_cache[session_id]
 
     def end_all_sessions(self):
         c = self._db.cursor()
-        c.execute("DELETE FROM sessions")
-        self._db.commit()
+        try:
+            c.execute("DELETE FROM sessions")
+        finally:
+            self._db.commit()
         self.session_cache = {}
 
     def get_session_group_id(self, session_id):
@@ -390,46 +496,57 @@ class Db:
     def get_session_student_names(self, session_id):
         group_id = self.get_session_group_id(session_id)
         c = self._db.cursor()
-        c.execute("SELECT name FROM students WHERE groupid=?", (group_id,))
-        return [r[0] for r in c.fetchall()]
+        try:
+            c.execute("SELECT name FROM students WHERE groupid=?", (group_id,))
+            return [r[0] for r in c.fetchall()]
+        finally:
+            self._db.commit()
 
     def list_sessions(self):
         """Get a list of all sessions"""
         c = self._db.cursor()
-        c.execute("""
-            SELECT
-                sessionid,
-                groupid,
-                robot
-            FROM sessions
-        """)
+        try:
+            c.execute("""
+                SELECT
+                    sessionid,
+                    groupid,
+                    robot
+                FROM sessions
+            """)
 
-        return [
-            {
-                "session_id": row[0],
-                "group_id": row[1],
-                "robot": row[2]
-            } for row in c.fetchall()
-        ]
+            return [
+                {
+                    "session_id": row[0],
+                    "group_id": row[1],
+                    "robot": row[2]
+                } for row in c.fetchall()
+            ]
+        finally:
+            self._db.commit()
 
     def get_group_student_list(self, group_id):
         c = self._db.cursor()
-        c.execute("""
-            SELECT studentid
-            FROM students
-            WHERE groupid=?
-        """, (group_id,))
-        return [row[0] for row in c.fetchall()]
+        try:
+            c.execute("""
+                SELECT studentid
+                FROM students
+                WHERE groupid=?
+            """, (group_id,))
+            return [row[0] for row in c.fetchall()]
+        finally:
+            self._db.commit()
 
     def add_log(self, session_id, type, data=""):
         group_id = self.get_session_group_id(session_id)
         owner = self.list_to_str(self.get_group_student_list(group_id))
         c = self._db.cursor()
-        c.execute("""
-            INSERT INTO log (owner, type, data)
-            VALUES (?,?,?)
-        """, (owner, type, data))
-        self._db.commit()
+        try:
+            c.execute("""
+                INSERT INTO log (owner, type, data)
+                VALUES (?,?,?)
+            """, (owner, type, data))
+        finally:
+            self._db.commit()
 
     def get_log(self, session_id=None, last_of_type=None):
         group_id = None
@@ -437,93 +554,100 @@ class Db:
             group_id = self.get_session_group_id(session_id)
             student_id_list = self.list_to_str(self.get_group_student_list(group_id))
         c = self._db.cursor()
-        if last_of_type:
-            if group_id is None:
-                c.execute(f"""
-                    SELECT type,
-                           {"datetime(time,'localtime')"
-                            if Db.ORDER_TIME
-                            else "time"},
-                           owner,
-                           data
-                    FROM log
-                    WHERE type == ?
-                    ORDER BY time DESC
-                """, (last_of_type,))
+        try:
+            if last_of_type:
+                if group_id is None:
+                    c.execute(f"""
+                        SELECT type,
+                               {"datetime(time,'localtime')"
+                                if Db.ORDER_TIME
+                                else "time"},
+                               owner,
+                               data
+                        FROM log
+                        WHERE type == ?
+                        ORDER BY time DESC
+                    """, (last_of_type,))
+                else:
+                    c.execute(f"""
+                        SELECT type,
+                               {"datetime(time,'localtime')"
+                                if Db.ORDER_TIME
+                                else "time"},
+                               owner,
+                               data
+                        FROM log
+                        WHERE NOT list_aredisjoint(owner, ?) AND type == ?
+                        ORDER BY time DESC
+                    """, (student_id_list, last_of_type))
+                row = c.fetchone()
+                return [
+                    {
+                        "type": row[0],
+                        "time": row[1],
+                        "owner": row[2],
+                        "data": row[3]
+                    }
+                ] if row is not None else []
             else:
-                c.execute(f"""
-                    SELECT type,
-                           {"datetime(time,'localtime')"
-                            if Db.ORDER_TIME
-                            else "time"},
-                           owner,
-                           data
-                    FROM log
-                    WHERE NOT list_aredisjoint(owner, ?) AND type == ?
-                    ORDER BY time DESC
-                """, (student_id_list, last_of_type))
-            row = c.fetchone()
-            return [
-                {
-                    "type": row[0],
-                    "time": row[1],
-                    "owner": row[2],
-                    "data": row[3]
-                }
-            ] if row is not None else []
-        else:
-            if group_id is not None:
-                c.execute(f"""
-                    SELECT type,
-                           {"datetime(time,'localtime')"
-                            if Db.ORDER_TIME
-                            else "time"},
-                           owner,
-                           data
-                    FROM log
-                    WHERE groupid IS ?
-                    ORDER BY time DESC
-                """, (group_id,))
-            else:
-                c.execute(f"""
-                    SELECT type,
-                           {"datetime(time,'localtime')"
-                            if Db.ORDER_TIME
-                            else "time"},
-                           owner,
-                           data
-                    FROM log
-                    ORDER BY time DESC
-                """)
-            return [
-                {
-                    "type": row[0],
-                    "time": row[1],
-                    "owner": row[2],
-                    "data": row[3]
-                }
-                for row in c.fetchall()
-            ]
+                if group_id is not None:
+                    c.execute(f"""
+                        SELECT type,
+                               {"datetime(time,'localtime')"
+                                if Db.ORDER_TIME
+                                else "time"},
+                               owner,
+                               data
+                        FROM log
+                        WHERE groupid IS ?
+                        ORDER BY time DESC
+                    """, (group_id,))
+                else:
+                    c.execute(f"""
+                        SELECT type,
+                               {"datetime(time,'localtime')"
+                                if Db.ORDER_TIME
+                                else "time"},
+                               owner,
+                               data
+                        FROM log
+                        ORDER BY time DESC
+                    """)
+                return [
+                    {
+                        "type": row[0],
+                        "time": row[1],
+                        "owner": row[2],
+                        "data": row[3]
+                    }
+                    for row in c.fetchall()
+                ]
+        finally:
+            self._db.commit()
 
     def clear_log(self):
         """Delete all log entries"""
         c = self._db.cursor()
-        c.execute("""
-            DELETE FROM log
-        """)
-        self._db.commit()
+        try:
+            c.execute("""
+                DELETE FROM log
+            """)
+        finally:
+            self._db.commit()
 
     def add_file(self, filename, content,
                  group_id=None, metadata=None):
         """Add a file"""
         owner = self.list_to_str(self.get_group_student_list(group_id))
         c = self._db.cursor()
-        c.execute("""
-            INSERT
-            INTO files (name, content, owner, metadata)
-            VALUES (?,?,?,?)
-        """, (filename, content, owner, metadata))
-        self._db.commit()
+        try:
+            c.execute("""
+                INSERT
+                INTO files (name, content, owner, metadata)
+                VALUES (?,?,?,?)
+            """, (filename, content, owner, metadata))
+        finally:
+            self._db.commit()
         rowid = c.lastrowid
         file_id = self.get_first_result("fileid", "files", "rowid=?",
                                         (rowid,))[0]
@@ -544,12 +668,14 @@ class Db:
         content = r[0]
 
         c = self._db.cursor()
-        c.execute("""
-            INSERT
-            INTO files (name, content, owner, metadata)
-            VALUES (?,?,'',?)
-        """, (filename, content, metadata))
-        self._db.commit()
+        try:
+            c.execute("""
+                INSERT
+                INTO files (name, content, owner, metadata)
+                VALUES (?,?,'',?)
+            """, (filename, content, metadata))
+        finally:
+            self._db.commit()
         rowid = c.lastrowid
         file_id = self.get_first_result("fileid", "files", "rowid=?",
                                         (rowid,))[0]
@@ -558,60 +684,72 @@ class Db:
     def update_file(self, file_id, content):
         """Replace file content"""
         c = self._db.cursor()
-        c.execute("""
-            UPDATE files
-            SET time=CURRENT_TIMESTAMP, content=?
-            WHERE fileid=?
-        """, (content, file_id))
-        self._db.commit()
+        try:
+            c.execute("""
+                UPDATE files
+                SET time=CURRENT_TIMESTAMP, content=?
+                WHERE fileid=?
+            """, (content, file_id))
+        finally:
+            self._db.commit()
 
     def rename_file(self, file_id, new_filename):
         """Rename file"""
         c = self._db.cursor()
-        c.execute("""
-            UPDATE files
-            SET name=?
-            WHERE fileid=?
-        """, (new_filename, file_id))
-        self._db.commit()
+        try:
+            c.execute("""
+                UPDATE files
+                SET name=?
+                WHERE fileid=?
+            """, (new_filename, file_id))
+        finally:
+            self._db.commit()
 
     def mark_file(self, file_id, mark):
         """Set or reset file mark"""
         c = self._db.cursor()
-        c.execute("""
-            UPDATE files
-            SET mark=?
-            WHERE fileid=?
-        """, (1 if mark else 0, file_id))
-        self._db.commit()
+        try:
+            c.execute("""
+                UPDATE files
+                SET mark=?
+                WHERE fileid=?
+            """, (1 if mark else 0, file_id))
+        finally:
+            self._db.commit()
 
     def toggle_file_mark(self, file_id):
         """Toggle file mark"""
         c = self._db.cursor()
-        c.execute("""
-            UPDATE files
-            SET mark=NOT mark
-            WHERE fileid=?
-        """, (file_id,))
-        self._db.commit()
+        try:
+            c.execute("""
+                UPDATE files
+                SET mark=NOT mark
+                WHERE fileid=?
+            """, (file_id,))
+        finally:
+            self._db.commit()
 
     def set_default_file(self, file_id):
         """Set the default file"""
         c = self._db.cursor()
-        c.execute("""
-            UPDATE files
-            SET defaul=fileid=?
-        """, (file_id,))
-        self._db.commit()
+        try:
+            c.execute("""
+                UPDATE files
+                SET defaul=fileid=?
+            """, (file_id,))
+        finally:
+            self._db.commit()
 
     def remove_files(self, file_id_list):
         """Remove files"""
         c = self._db.cursor()
-        for file_id in file_id_list:
-            if not self.select_has_result("files", "fileid=?", (file_id,)):
-                raise ValueError("file id not found")
-            c.execute("DELETE FROM files WHERE fileid=?", (file_id,))
-        self._db.commit()
+        try:
+            for file_id in file_id_list:
+                if not self.select_has_result("files", "fileid=?", (file_id,)):
+                    raise ValueError("file id not found")
+                c.execute("DELETE FROM files WHERE fileid=?", (file_id,))
+        finally:
+            self._db.commit()
 
     def get_file(self, file_id):
         r = self.get_first_result(
@@ -667,36 +805,48 @@ class Db:
         student is None for teacher, "*" for any student, or student name"""
         order = order or (Db.ORDER_FILENAME if last else Db.ORDER_TIME)
         c = self._db.cursor()
-        student_id = None
-        group_id = None
-        if student is not None and student != "*":
-            r = self.get_first_result("studentid",
-                                      "students", "equal_ic(name,?)",
-                                      (student,))
-            if r is None:
-                raise ValueError("student not found")
-            student_id = r[0]
-        sql = f"""
-            SELECT fileid, name,
-                   {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
-                   LENGTH(content),
-                   mark, defaul,
-                   metadata,
-                   owner
-            FROM files
-            {
-                "WHERE files.owner = ''" if student is None else
-                "WHERE files.owner != ''" if student == "*" else
-                "WHERE list_doesinclude(files.owner, " + str(student_id) + ")"
-            }
-            ORDER BY {
-                "fileid DESC" if order is Db.ORDER_TIME
-                else "name ASC, fileid DESC"
-            }
-        """
-        c.execute(sql)
-        files = [
-            next(group) for key, group in itertools.groupby(({
+        try:
+            student_id = None
+            if student is not None and student != "*":
+                r = self.get_first_result("studentid",
+                                          "students", "equal_ic(name,?)",
+                                          (student,))
+                if r is None:
+                    raise ValueError("student not found")
+                student_id = r[0]
+            sql = f"""
+                SELECT fileid, name,
+                       {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
+                       LENGTH(content),
+                       mark, defaul,
+                       metadata,
+                       owner
+                FROM files
+                {
+                    "WHERE files.owner = ''" if student is None else
+                    "WHERE files.owner != ''" if student == "*" else
+                    "WHERE list_doesinclude(files.owner, " + str(student_id) + ")"
+                }
+                ORDER BY {
+                    "fileid DESC" if order is Db.ORDER_TIME
+                    else "name ASC, fileid DESC"
+                }
+            """
+            c.execute(sql)
+            files = [
+                next(group) for key, group in itertools.groupby(({
+                        "id": row[0],
+                        "filename": row[1],
+                        "time": row[2],
+                        "size": row[3],
+                        "mark": row[4] != 0,
+                        "default": row[5] != 0,
+                        "metadata": row[6],
+                        "owner": row[7]
+                    } for row in c.fetchall()),
+                    key=lambda e: (e["filename"], e["owner"]))
+            ] if last else [
+                {
                     "id": row[0],
                     "filename": row[1],
                     "time": row[2],
@@ -705,48 +855,40 @@ class Db:
                     "default": row[5] != 0,
                     "metadata": row[6],
                     "owner": row[7]
-                } for row in c.fetchall()),
-                key=lambda e: (e["filename"], e["owner"]))
-        ] if last else [
-            {
-                "id": row[0],
-                "filename": row[1],
-                "time": row[2],
-                "size": row[3],
-                "mark": row[4] != 0,
-                "default": row[5] != 0,
-                "metadata": row[6],
-                "owner": row[7]
+                }
+                for row in c.fetchall()
+            ]
+
+            # map student ids in owner to student names
+            # get all student id->name mappings which will be needed
+            student_id_set = set()
+            for file in files:
+                if file["owner"] is not None:
+                    student_id_set |= set(self.str_to_list(file["owner"]))
+            student_name_dict = {
+                student_id: self.get_student_name(student_id)
+                for student_id in student_id_set
             }
-            for row in c.fetchall()
-        ]
+            # for each file, convert owner (id list string) to students (name list)
+            for file in files:
+                file["students"] = (
+                    None if file["owner"] is None
+                    else [
+                        (student_name_dict[student_id] if student_id in student_name_dict else student_id)
+                        for student_id in self.str_to_list(file["owner"])
+                    ]
+                )
 
-        # map student ids in owner to student names
-        # get all student id->name mappings which will be needed
-        student_id_set = set()
-        for file in files:
-            if file["owner"] is not None:
-                student_id_set |= set(self.str_to_list(file["owner"]))
-        student_name_dict = {
-            student_id: self.get_student_name(student_id)
-            for student_id in student_id_set
-        }
-        # for each file, convert owner (id list string) to students (name list)
-        for file in files:
-            file["students"] = (
-                None if file["owner"] is None
-                else [
-                    (student_name_dict[student_id] if student_id in student_name_dict else student_id)
-                    for student_id in self.str_to_list(file["owner"])
-                ]
-            )
-
-        return files
+            return files
+        finally:
+            self._db.commit()
 
     def clear_files(self):
         """Delete all files"""
         c = self._db.cursor()
-        c.execute("""
-            DELETE FROM files
-        """)
-        self._db.commit()
+        try:
+            c.execute("""
+                DELETE FROM files
+            """)
+        finally:
+            self._db.commit()

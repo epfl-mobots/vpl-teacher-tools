@@ -39222,7 +39222,7 @@ window.TDM = function (url, options) {
               break;
 
             case 46:
-              options.change();
+              options.change && options.change();
 
             case 47:
               _context.next = 52;
@@ -39255,7 +39255,11 @@ window.TDM = function (url, options) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            options.change && options.change(false);
+            if (options.uuid) {
+              options.change && options.change(false);
+            } else {
+              options.change && options.change();
+            }
 
           case 1:
           case "end":

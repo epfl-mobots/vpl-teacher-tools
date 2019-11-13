@@ -46,7 +46,7 @@ class Application(ApplicationBase, wx.App):
         menubar.Append(file_menu, "File")
         self.frame.SetMenuBar(menubar)
         self.frame.Bind(wx.EVT_MENU,
-                        lambda event: self.start_browser(),
+                        lambda event: self.start_browser_tt(),
                         open_in_browser_item)
         self.frame.Bind(wx.EVT_MENU,
                         lambda event: self.quit(),

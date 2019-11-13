@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, height=device-height, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<link rel="stylesheet" href="vpl-teacher-tools/html-tools.css" />
+
+<title>VPL Tools</title>
+
+<style>
+td {
+	padding: 0.5ex;
+}
+
+div#info {
+	margin: 0;
+	padding: 0;
+}
+</style>
+
+<script src="vpl-teacher-tools/ns.js"></script>
+<script src="vpl-teacher-tools/util-url.js"></script>
+<script src="client.js"></script>
+<script src="vpl-teacher-tools/login.js"></script>
+
+<script>
+
+function clearChildren(id) {
+	var el = document.getElementById(id);
+	while (el.firstElementChild) {
+		el.removeChild(el.firstElementChild);
+	}
+}
+
+function fillGroupTable(groupArray, login) {
+
+	clearChildren("groups");
+	var table = document.getElementById("groups");
+
+	groupArray.forEach(function (group) {
+		if (group.students && group.students.length > 0) {
+			var tr = document.createElement("tr");
+
+			var td = document.createElement("td");
+			td.className = "rect";
+			group.students.forEach(function (studentName, i) {
+				var span = document.createElement("span");
+				span.className = "rect";
+				span.textContent = studentName;
+				td.appendChild(span);
+			});
+
+			tr.appendChild(td);
+
+			tr.addEventListener("click", function () {
+				login.launchVPL(group);
+			});
+
+			table.appendChild(tr);
+		}
+	});
+}
+
+window.addEventListener("load", function () {
+	var login = new VPLTeacherTools.Login({
+		onGroups: function (groupArray) {
+			fillGroupTable(groupArray, login);
+		}
+	});
+}, false);
+
+</script>
+
+</head>
+
+<body>
+
+<main>
+
+	<div class="border-student">
+
+		<h2>Groupes</h2>
+
+		<table id="groups">
+		</table>
+
+	</div>
+
+</div>
+
+</main>
+
+</body>
+
+</html>

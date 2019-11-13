@@ -88,7 +88,7 @@ class Server(http.server.HTTPServer):
 
 class Application:
 
-    DEFAULT_PORT = 8000;
+    DEFAULT_PORT = 8000
 
     def __init__(self, path):
 

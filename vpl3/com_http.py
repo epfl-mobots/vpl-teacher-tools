@@ -60,6 +60,7 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         p = urllib.parse.urlparse(self.path)
         if p.path in self.server.dict_get:
+            print(p.path)
             content = self.server.dict_get[p.path](self.server.context, self)
             send_reply(content)
         else:

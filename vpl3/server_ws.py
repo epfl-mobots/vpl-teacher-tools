@@ -67,7 +67,7 @@ class VPLWebSocketServer:
         for ws in self.log_recipients:
             await self.ws.send(ws, msg)
 
-    async def process_message(self, websocket, session_id, msg):
+    def log_message(self, msg):
         if self.logger:
             log_str = (msg["sender"]["sessionid"]
                        if msg["sender"]["type"] == "vpl"
@@ -84,6 +84,9 @@ class VPLWebSocketServer:
                     if "state" in msg["data"]["data"]:
                         log_str += " " + msg["data"]["data"]["state"]
             self.logger(log_str)
+
+    async def process_message(self, websocket, session_id, msg):
+        self.log_message(msg)
         db = Db(self.db_path)
         if msg["type"] == "hello":
             websocket.is_connected = True

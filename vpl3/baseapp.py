@@ -37,7 +37,7 @@ class ApplicationBase:
 
         # to implement in subclasses:
         # GUI initialization showing self.address w/ a way to call
-        # self.start_browser() and self.quit()
+        # self.start_browser_tt() and self.quit()
 
     def run(self):
         self.update_connection()
@@ -55,8 +55,10 @@ class ApplicationBase:
         }"""
         self.show_connection_status(str)
 
-    def start_browser(self, event=None):
-        URLUtil.start_browser(self.http_port, using=["firefox", "chrome"])
+    def start_browser_tt(self, event=None):
+        URLUtil.start_browser(port=self.http_port,
+                              path="/tt.html",
+                              using=["firefox", "chrome"])
 
     def quit(self):
         self.server.stop()

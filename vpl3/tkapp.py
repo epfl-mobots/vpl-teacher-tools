@@ -24,7 +24,7 @@ class Application(ApplicationBase, tk.Tk):
         tk.Grid.columnconfigure(self, 0, weight=1)
 
         # self.browser_button = tk.Button(self, text="Teacher Tools",
-        #                                 command=self.start_browser)
+        #                                 command=self.start_browser_tt)
         # self.browser_button.grid()
 
         self.ws_info_label = tk.Label(self)
@@ -38,9 +38,9 @@ class Application(ApplicationBase, tk.Tk):
         self.config(menu=menubar)
         file_menu = tk.Menu(menubar)
         file_menu.add_command(label="Open in Browser",
-                              command=self.start_browser,
+                              command=self.start_browser_tt,
                               accelerator="Control-B")
-        self.bind("<Control-b>", lambda event: self.start_browser())
+        self.bind("<Control-b>", lambda event: self.start_browser_tt())
         self.bind("<Control-q>", lambda event: self.quit())
         menubar.add_cascade(label="File", menu=file_menu)
 

@@ -19,7 +19,7 @@ class Application(ApplicationBase):
             (
                 "Open Tools in Browser",
                 "b",
-                lambda sender: self.start_browser()
+                lambda sender: self.start_browser_tt()
             )
         ])
         self.app_objc.start()
@@ -33,7 +33,7 @@ class Application(ApplicationBase):
                                                                       250, 10, 60)
         self.app_objc.addButtonToWindow_title_action_width_x_y_(window,
                                                                 "Open tools in browser",
-                                                                lambda sender: self.start_browser(),
+                                                                lambda sender: self.start_browser_tt(),
                                                                 180, 60, 20)
 
     def main_loop(self):

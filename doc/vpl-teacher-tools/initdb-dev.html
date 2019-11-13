@@ -68,6 +68,11 @@ window.addEventListener("load", function () {
 		});
 	});
 
+	btn = document.getElementById("set-vpl-url");
+	btn.addEventListener("click", function () {
+		client.setGroupVPLURL(1, "http://example.com/etc", opt);
+	});
+
 	btn = document.getElementById("list-students");
 	btn.addEventListener("click", function () {
 		client.listStudents(opt);
@@ -204,6 +209,7 @@ window.addEventListener("load", function () {
 	<p>
 		<button id="reset-students">reset</button>
 		<button id="init">init students</button>
+		<button id="set-vpl-url">set vpl url</button>
 		<button id="list-students">list students</button>
 		<button id="list-groups">list groups</button>
 		<button id="list-members-a">list members (a)</button>

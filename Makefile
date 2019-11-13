@@ -27,7 +27,9 @@ PKGFILES = \
 DOCFILES = \
 	doc/client.js \
 	doc/db.html \
-	doc/index.html
+	doc/index.html \
+	doc/login.fr.html \
+	doc/tt.html
 
 VPLFILES = \
 	doc/vpl/EPFL_Logo_SVG.svg \

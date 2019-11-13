@@ -101,6 +101,11 @@ VPLTeacherTools.HTTPClient.prototype.listGroupStudents = function (groupId, opt)
 	this.rest("/api/listGroupStudents?groupid=" + encodeURIComponent(groupId), opt);
 };
 
+VPLTeacherTools.HTTPClient.prototype.setGroupVPLURL = function (groupId, url, opt) {
+	this.rest("/api/setGroupVPLURL?groupid=" + encodeURIComponent(groupId) +
+		(url ? "&url=" + encodeURIComponent(url) : ""), opt);
+};
+
 VPLTeacherTools.HTTPClient.prototype.listGroupsWithStudents = function (opt) {
 	var self = this;
 	this.listGroups({

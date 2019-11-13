@@ -13,7 +13,7 @@ class Application(ApplicationBase):
 
     def __init__(self, **kwargs):
         super(ApplicationBase, self).__init__(**kwargs)
-        self.start_browser()
+        self.start_browser_tt()
         print("VPL Server - " + self.address)
 
     def main_loop(self):

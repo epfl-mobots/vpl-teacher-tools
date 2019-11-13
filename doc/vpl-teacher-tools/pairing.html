@@ -18,10 +18,16 @@ td {
 	padding: 0.5ex;
 }
 
-div#info {
+div#info, div#login {
 	margin: 0;
 	padding: 0;
 }
+
+a.url {
+	font-family: monospace;
+	font-size: 150%;
+}
+
 </style>
 
 <script src="../vpl/thymio/thymio.js"></script>
@@ -275,12 +281,8 @@ function fillGroupTable(groupArray, pairing) {
 
 	clearChildren("info");
 	var selectedGroup = pairing.getSelectedGroup();
-	if (selectedGroup && selectedGroup.pair) {
+	if (selectedGroup && selectedGroup.vplURL) {
 		var div = document.createElement("div");
-		div.setAttribute("class", "border");
-		var h2 = document.createElement("h2");
-		h2.textContent = "VPL launcher";
-		div.appendChild(h2);
 		var p = document.createElement("p");
 		var groupDescr = selectedGroup.students.length > 0
 			? selectedGroup.students.join(", ")
@@ -290,8 +292,8 @@ function fillGroupTable(groupArray, pairing) {
 		var p = document.createElement("p");
 		p.style.overflowWrap = "break-word";
 		var a = document.createElement("a");
-		a.style.fontFamily = "monospace";
-		var toolURL = pairing.getToolURL(selectedGroup);
+		a.setAttribute("class", "url");
+		var toolURL = selectedGroup.vplURL;
 		if (toolURL) {
 			var url = document.location.origin + toolURL;
 			a.textContent = url;
@@ -367,9 +369,9 @@ window.addEventListener("load", function () {
 				name: function () {
 					return "(simulator)";
 				},
-				url: function (group) {
+				url: function (group, sessionId) {
 					// set user to comma-separated users if they exist
-					return url0 + "&robot=sim&session=" + group.pair.session_id +
+					return url0 + "&robot=sim&session=" + sessionId +
 						(group.students ? "&user=" + encodeURIComponent(group.students.join(", ")) : "");
 				}
 			}
@@ -387,6 +389,12 @@ window.addEventListener("load", function () {
 			"(teacher)"
 		]
 	});
+
+	var urlLogin = document.location.href.replace(/^(.*\/\/[^\/]*)\/.*$/, "$1");
+	var aLogin = document.getElementById("login");
+	aLogin.textContent = urlLogin;
+	aLogin.href = urlLogin;
+
 }, false);
 
 </script>
@@ -451,7 +459,27 @@ window.addEventListener("load", function () {
 
 </div>
 
-<div id="info"></div>
+<div class="columncontainer">
+
+	<div class="border column2">
+
+		<h2>Group launch URL</h2>
+
+		<div id="info"></div>
+
+		<p>Select a group in the list above.</p>
+
+	</div>
+
+	<div class="border column2">
+
+		<h2>Single login URL</h2>
+
+		<p><a class="url" id="login" target="login"></a></p>
+
+		<p>This page lets the pupils pick their group from a list without any password. It's common to all the pupils.</p>
+
+	</div>
 
 </main>
 

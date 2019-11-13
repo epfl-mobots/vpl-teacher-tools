@@ -104,7 +104,7 @@ div.column4 {
 }
 
 
-div.border, div.border1, div.border-error {
+div.border, div.border1, div.border-error, div.border-student {
 	border-style: solid;
  	border-width: 1px;
  	border-color: silver;
@@ -126,6 +126,18 @@ div.border, div.border1 {
 div.border-error {
 	border-top-width: 4px;
 	border-top-color: red;
+}
+
+div.border-student {
+	border-top-width: 3px;
+	border-top-color: #090;
+}
+
+div.border h1 {
+	font-weight: bold;
+	font-size: 150%;
+	margin-top: 1ex;
+	margin-bottom: 1ex;
 }
 
 div.border h2 {
@@ -201,6 +213,7 @@ span.rect {
 	padding-top: 2px;
 	padding-bottom: 2px;
 	margin: 1ex;
+	white-space: nowrap;
 }
 
 table#students td:first-child, table#groups td:first-child, table#robots td:first-child {

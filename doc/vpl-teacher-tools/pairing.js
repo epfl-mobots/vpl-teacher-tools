@@ -304,11 +304,17 @@ VPLTeacherTools.Pairing.prototype.beginSession = function (robotName, groupId) {
             true,
             {
                 onSuccess: function (r) {
-                    self.selectGroup(groupId);
-                    self.updateGroups();
-	                if (self.options && self.options.onRobots) {
-					    self.options.onRobots(self.robots, self);
-	                }
+                    var group = self.getGroup(groupId);
+                    var url = group ? self.getToolURL(group, r, robotName) : null;
+                    self.client.setGroupVPLURL(groupId, url, {
+                        onSuccess: function () {
+                            self.selectGroup(groupId);
+                            self.updateGroups();
+        	                if (self.options && self.options.onRobots) {
+        					    self.options.onRobots(self.robots, self);
+        	                }
+                        }
+                    });
                 }
             });
     }
@@ -321,12 +327,12 @@ VPLTeacherTools.Pairing.prototype.getGroup = function (groupId) {
     return group;
 };
 
-VPLTeacherTools.Pairing.prototype.getToolURL = function (group) {
-    var robotAltName = this.nonRobotNameMapping[group.pair.robot];
+VPLTeacherTools.Pairing.prototype.getToolURL = function (group, sessionId, robotName) {
+    var robotAltName = this.nonRobotNameMapping[robotName];
 	var r = this.robots.find(function (robot) {
-        return robot.name === group.pair.robot || robot.name === robotAltName;
+        return robot.name === robotName || robot.name === robotAltName;
     });
-	return r ? r.url(group) : null;
+	return r ? r.url(group, sessionId) : null;
 };
 
 VPLTeacherTools.Pairing.prototype.endSession = function (sessionId) {
