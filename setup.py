@@ -8,7 +8,7 @@ Usage:
 from setuptools import setup
 
 APPNAME = "VPL3Server"
-APP = ['launch.py']
+APP = ['launch_objc.py']
 DATA_FILES = [
     ("data",
         [

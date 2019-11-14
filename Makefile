@@ -7,7 +7,9 @@ DIR = vpl-teacher-distrib
 
 ROOTFILES = \
 	Makefile \
-	launch.py \
+	launch_objc.py \
+	launch_tk.py \
+	launch_wx.py \
 	setup.py
 
 PKGFILES = \
@@ -16,6 +18,7 @@ PKGFILES = \
 	vpl3/com_http.py \
 	vpl3/com_ws.py \
 	vpl3/db.py \
+	vpl3/launch.py \
 	vpl3/server.py \
 	vpl3/server_http.py \
 	vpl3/server_ws.py \
@@ -107,7 +110,7 @@ all:
 	cp -p $(DATAFILES) $(DIR)/data
 	zip -r - $(DIR) >$(DIR).zip
 
-VPL3Server.app: setup.py launch.py $(PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UICLASSICFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES)
+VPL3Server.app: setup.py launch_objc.py $(PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UICLASSICFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES)
 	rm -rf build
 	python3 setup.py py2app
 
@@ -133,4 +136,4 @@ Serve\ File.app: setup_serve_via_http.py serve_via_http.py
 
 .PHONY: oh
 oh:
-	ohcount $(PKGFILES) launch.py setup.py $(DOCFILES) $(TOOLSFILES)
+	ohcount $(PKGFILES) $(ROOTFILES) $(DOCFILES) $(TOOLSFILES)
