@@ -660,7 +660,7 @@ class Db:
                 content = f.read()
             self.add_file(filename, content)
 
-    def copy_file(self, file_id, filename, metadata=None):
+    def copy_file(self, file_id, filename, mark=False, metadata=None):
         """Copy a file"""
         r = self.get_first_result("content", "files", "fileid=?", (file_id,))
         if r is None:
@@ -671,9 +671,9 @@ class Db:
         try:
             c.execute("""
                 INSERT
-                INTO files (name, content, owner, metadata)
-                VALUES (?,?,'',?)
-            """, (filename, content, metadata))
+                INTO files (name, content, owner, mark, metadata)
+                VALUES (?,?,'',?,?)
+            """, (filename, content, 1 if mark else 0, metadata))
         finally:
             self._db.commit()
         rowid = c.lastrowid

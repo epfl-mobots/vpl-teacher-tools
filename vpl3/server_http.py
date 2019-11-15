@@ -190,9 +190,12 @@ class VPLHTTPServer:
             return self.call_api(Db.copy_file,
                                  int(q["id"][0]),
                                  q["filename"][0],
-                                 q["metadata"][0]
-                                 if "metadata" in q
-                                 else None)
+                                 mark=q["mark"][0].lower() == "true"
+                                      if "mark" in q
+                                      else False,
+                                 metadata=q["metadata"][0]
+                                          if "metadata" in q
+                                          else None)
 
         @self.httpd.http_get("/api/getFile")
         def http_get_api_getFile(self, handler):

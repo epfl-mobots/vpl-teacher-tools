@@ -176,6 +176,7 @@ VPLTeacherTools.HTTPClient.prototype.addFile = function (filename, content, prop
 
 VPLTeacherTools.HTTPClient.prototype.copyFile = function (id, filename, props, opt) {
 	this.rest("/api/copyFile?id=" + id.toString(10) + "&filename=" + encodeURIComponent(filename) +
+		(props && props.mark ? "&mark=true" : "") +
 		(props && props.metadata ? "&metadata=" + encodeURIComponent(props.metadata) : ""),
 		opt);
 };

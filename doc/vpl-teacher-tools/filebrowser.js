@@ -254,7 +254,7 @@ VPLTeacherTools.FileBrowser.prototype.duplicateTeacherFile = function (filename)
 	    var self = this;
 	    this.client.copyFile(file.id,
 			filename || "copy of " + file.filename,
-	        {},
+	        {mark: true},
 	        {
 	            onSuccess: function (r) {
 					// rename immediately
