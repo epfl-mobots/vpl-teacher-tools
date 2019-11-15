@@ -84,8 +84,14 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 				function select(ev) {
 					fileBrowser.selectFile(forStudents, file.id,
 						ev.ctrlKey || ev.metaKey, ev.shiftKey);
+					if (renamedFilename) {
+						// rename + refresh
+						fileBrowser.renameTeacherFile(renamedFilename.value);
+					} else {
+						// just refresh
+						fileBrowser.refreshFiles();
+					}
 					ev.preventDefault();
-					fileBrowser.refreshFiles();
 				}
 				function doubleclick(ev) {
 					if (!(ev.ctrlKey || ev.metaKey || ev.shiftKey)) {
@@ -355,6 +361,10 @@ window.addEventListener("load", function () {
 	<button id="btn-duplicate-teacher" disabled="true">Duplicate</button>
 	<button id="btn-export-teacher" disabled="true">Export</button>
 	<button id="btn-remove-teacher" disabled="true">Delete</button>
+	</p>
+
+	<p>
+	Marked files are available in the dashboard. The default file is sent automatically to groups when they start VPL.
 	</p>
 
 </div>
