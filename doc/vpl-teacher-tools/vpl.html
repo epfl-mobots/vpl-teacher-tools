@@ -98,7 +98,7 @@ window.addEventListener("beforeunload", function () {
 	var readOnly = options ? options["readOnly"] === true : false;
 	var customizationMode = options ? options["customizationMode"] === true : false;
 	var fileId = options ? options["fileId"] : null;
-	if (!readOnly && fileId !== null &&
+	if (!readOnly && fileId != null &&
 		(window["vplIsProgramChanged"]() ||
 			window["vplGetUIAsJSON"]() !== sessionStorage.getItem("initialUISettings"))) {
 		var json = window["vplGetProgramAsJSON"](customizationMode);
