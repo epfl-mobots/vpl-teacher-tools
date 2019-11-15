@@ -110,6 +110,11 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 					if (ev.key === "Escape") {
 						file.renamed = false;
 						fillFileTable(fileArray, fileBrowser, forStudents);
+					} else if (ev.key === "Enter") {
+						// "change" listener not called if value hasn't changed
+						ev.stopPropagation();
+						ev.preventDefault();
+						fileBrowser.renameTeacherFile(renamedFilename.value);
 					}
 				}, false);
 				td.appendChild(renamedFilename);

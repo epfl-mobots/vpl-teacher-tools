@@ -212,16 +212,24 @@ VPLTeacherTools.FileBrowser.prototype.renameTeacherFile = function (newFilename)
             return val.renamed;
         });
 		newFilename = newFilename.trim();
-		file.filename = newFilename;
-		var self = this;
-        this.client.renameFiles(file.id, newFilename, {
-            onSuccess: function () {
-				file.renamed = false;
-		        if (self.options.onTeacherFiles) {
-		            self.options.onTeacherFiles(self.teacherFiles, self);
-		        }
-            }
-        });
+		if (newFilename !== file.filename) {
+			file.filename = newFilename;
+			var self = this;
+	        this.client.renameFiles(file.id, newFilename, {
+	            onSuccess: function () {
+					file.renamed = false;
+			        if (self.options.onTeacherFiles) {
+			            self.options.onTeacherFiles(self.teacherFiles, self);
+			        }
+	            }
+	        });
+		} else {
+			// same filename: redisplay teacher files to get rid of input field
+			file.renamed = false;
+	        if (this.options.onTeacherFiles) {
+	            this.options.onTeacherFiles(this.teacherFiles, this);
+	        }
+		}
 	} else {
 		// start renaming selected file
         var file = this.teacherFiles.find(function (val) {
