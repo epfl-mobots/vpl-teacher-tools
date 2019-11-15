@@ -8,6 +8,10 @@ Usage:
 from setuptools import setup
 
 APPNAME = "VPL3Server"
+VERSION = "0.1"
+URL = "http://mobots.epfl.ch"
+AUTHOR = "Yves Piguet"
+AUTHOR_EMAIL = "yves dot piguet a epfl dot CH"
 APP = ['launch_objc.py']
 DATA_FILES = [
     ("data",
@@ -104,6 +108,10 @@ OPTIONS = {
 
 setup(
     name=APPNAME,
+    version=VERSION,
+    url=URL,
+    author=AUTHOR,
+    author_email=AUTHOR_EMAIL,
     app=APP,
     data_files=DATA_FILES,
     options={"py2app": OPTIONS},
