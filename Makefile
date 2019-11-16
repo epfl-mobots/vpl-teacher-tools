@@ -49,10 +49,10 @@ UICLASSICFILES = \
 	doc/vpl/ui/classic/block-english.json \
 	doc/vpl/ui/classic/block-french.json \
 	doc/vpl/ui/classic/classic.css \
-	doc/vpl/ui/classic/cmd-sim-english.css \
-	doc/vpl/ui/classic/cmd-sim-french.css \
-	doc/vpl/ui/classic/cmd-vpl-english.css \
-	doc/vpl/ui/classic/cmd-vpl-french.css \
+	doc/vpl/ui/classic/cmd-sim-english.json \
+	doc/vpl/ui/classic/cmd-sim-french.json \
+	doc/vpl/ui/classic/cmd-vpl-english.json \
+	doc/vpl/ui/classic/cmd-vpl-french.json \
 	doc/vpl/ui/classic/french.json \
 	doc/vpl/ui/classic/ui.json
 
