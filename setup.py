@@ -77,7 +77,13 @@ DATA_FILES = [
         ]),
     ("doc/vpl/ui/classic",
         [
+            "doc/vpl/ui/classic/block-english.css",
+            "doc/vpl/ui/classic/block-french.css",
             "doc/vpl/ui/classic/classic.css",
+            "doc/vpl/ui/classic/cmd-sim-english.css",
+            "doc/vpl/ui/classic/cmd-sim-french.css",
+            "doc/vpl/ui/classic/cmd-vpl-english.css",
+            "doc/vpl/ui/classic/cmd-vpl-french.css",
             "doc/vpl/ui/classic/french.json",
             "doc/vpl/ui/classic/ui.json",
         ]),
