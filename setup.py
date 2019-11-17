@@ -60,6 +60,7 @@ DATA_FILES = [
             "doc/vpl-teacher-tools/vpl_stop.png",
             "doc/vpl-teacher-tools/vpl-about.html",
             "doc/vpl-teacher-tools/vpl.html",
+            "doc/vpl-teacher-tools/vplurl.js",
         ]),
     ("doc/vpl",
         [

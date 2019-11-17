@@ -77,6 +77,7 @@ TOOLSFILES = \
 	doc/vpl-teacher-tools/ui.json \
 	doc/vpl-teacher-tools/util-url.js \
 	doc/vpl-teacher-tools/vpl.html \
+	doc/vpl-teacher-tools/vplurl.js \
 	doc/vpl-teacher-tools/vpl-about.html \
     doc/vpl-teacher-tools/vpl_load.png \
     doc/vpl-teacher-tools/vpl_new.png \
