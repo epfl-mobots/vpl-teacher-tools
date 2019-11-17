@@ -16,7 +16,7 @@ VPLTeacherTools.Login.prototype.updateGroups = function () {
 	this.client.listGroupsWithStudents({
 		onSuccess: function (groups) {
             self.groups = groups.filter(function (group) {
-                return group.vplURL != null;
+                return group.session_id != null;
             });
             if (self.options.onGroups) {
                 self.options.onGroups(self.groups, self);
@@ -26,7 +26,6 @@ VPLTeacherTools.Login.prototype.updateGroups = function () {
 };
 
 VPLTeacherTools.Login.prototype.launchVPL = function (group) {
-    if (group.vplURL) {
-        document.location = group.vplURL;
-    }
+	var url = VPLTeacherTools.makeVPLURL(group);
+	document.location = url;
 };

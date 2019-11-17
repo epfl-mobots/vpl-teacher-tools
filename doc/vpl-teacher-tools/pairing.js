@@ -304,17 +304,11 @@ VPLTeacherTools.Pairing.prototype.beginSession = function (robotName, groupId) {
             true,
             {
                 onSuccess: function (r) {
-                    var group = self.getGroup(groupId);
-                    var url = group ? self.getToolURL(group, r, robotName) : null;
-                    self.client.setGroupVPLURL(groupId, url, {
-                        onSuccess: function () {
-                            self.selectGroup(groupId);
-                            self.updateGroups();
-        	                if (self.options && self.options.onRobots) {
-        					    self.options.onRobots(self.robots, self);
-        	                }
-                        }
-                    });
+                    self.selectGroup(groupId);
+                    self.updateGroups();
+	                if (self.options && self.options.onRobots) {
+					    self.options.onRobots(self.robots, self);
+	                }
                 }
             });
     }

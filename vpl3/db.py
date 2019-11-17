@@ -74,8 +74,7 @@ class Db:
             """
             CREATE TABLE IF NOT EXISTS groups (
                 groupid INTEGER PRIMARY KEY,
-                time TEXT DEFAULT CURRENT_TIMESTAMP,
-                vplurl TEXT
+                time TEXT DEFAULT CURRENT_TIMESTAMP
             );
             """,
             """
@@ -140,8 +139,7 @@ class Db:
             """
             CREATE TABLE groups(
                 groupid INTEGER PRIMARY KEY,
-                time TEXT DEFAULT CURRENT_TIMESTAMP,
-                vplurl TEXT
+                time TEXT DEFAULT CURRENT_TIMESTAMP
             )
             """,
             """
@@ -152,10 +150,10 @@ class Db:
             DROP TABLE groups_backup
             """
         ]
-        c = self._db.cursor()
-        for statement in sql:
-            c.execute(statement)
-        self._db.commit()
+        # c = self._db.cursor()
+        # for statement in sql:
+        #     c.execute(statement)
+        # self._db.commit()
 
     @staticmethod
     def remove(path=None):
@@ -283,7 +281,14 @@ class Db:
                        (SELECT count()
                         FROM students
                         WHERE students.groupid = groups.groupid),
-                       vplurl
+                       (SELECT sessionid
+                        FROM sessions
+                        WHERE sessions.groupid = groups.groupid
+                        LIMIT 1),
+                       (SELECT robot
+                        FROM sessions
+                        WHERE sessions.groupid = groups.groupid
+                        LIMIT 1)
                 FROM groups
             """)
         finally:
@@ -293,7 +298,8 @@ class Db:
                 "group_id": row[0],
                 "time": row[1],
                 "numStudents": row[2],
-                "vplURL": row[3]
+                "session_id": row[3],
+                "robot": row[4]
             } for row in c.fetchall()
         ]
 
@@ -415,22 +421,6 @@ class Db:
             self._db.commit()
 
         return [row[0] for row in c.fetchall()]
-
-    def set_group_vpl_url(self, group_id, vpl_url=None):
-        """Set (or clear if None) the VPL URL of a group"""
-        c = self._db.cursor()
-        try:
-            print("set_group_vpl_url", group_id, vpl_url)
-            c.execute("""
-                UPDATE groups
-                SET vplurl=?
-                WHERE groupid=?
-                      """,
-                      (vpl_url, group_id))
-            print("done")
-        finally:
-            self._db.commit()
-            print("committed")
 
     def begin_session(self, group_id, robot, force):
         c = self._db.cursor()

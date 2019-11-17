@@ -129,16 +129,6 @@ class VPLHTTPServer:
             return self.call_api(Db.list_group_students,
                                  q["groupid"][0])
 
-        @self.httpd.http_get("/api/setGroupVPLURL")
-        def http_get_api_set_group_vpl_url(self, handler):
-            q = VPLHTTPServer.query_param(handler)
-            print(q)
-            if "groupid" not in q:
-                return VPLHTTPServer.error("Missing group id")
-            vpl_url = q["url"][0] if "url" in q else None
-            return self.call_api(Db.set_group_vpl_url,
-                                 q["groupid"][0], vpl_url)
-
         @self.httpd.http_get("/api/beginSession")
         def http_get_api_beginSession(self, handler):
             q = VPLHTTPServer.query_param(handler)
@@ -302,7 +292,7 @@ class VPLHTTPServer:
                     return VPLHTTPServer.error("unknown shortcut")
 
         self.httpd.add_filter(lambda s: s.replace(b"$LANGUAGE", b"fr"),
-                              r"^/vpl-teacher-tools/.*\.(html|css|json)$")
+                              r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
         self.groups = []
 
     def run(self):

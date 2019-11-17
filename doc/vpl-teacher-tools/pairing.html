@@ -34,6 +34,7 @@ a.url {
 <script src="ns.js"></script>
 <script src="util-url.js"></script>
 <script src="../client.js"></script>
+<script src="vplurl.js"></script>
 <script src="../libs/qrcodejs/qrcode.min.js"></script>
 <script src="pairing.js"></script>
 
@@ -281,7 +282,7 @@ function fillGroupTable(groupArray, pairing) {
 
 	clearChildren("info");
 	var selectedGroup = pairing.getSelectedGroup();
-	if (selectedGroup && selectedGroup.vplURL) {
+	if (selectedGroup && selectedGroup.robot) {
 		var div = document.createElement("div");
 		var p = document.createElement("p");
 		var groupDescr = selectedGroup.students.length > 0
@@ -293,15 +294,13 @@ function fillGroupTable(groupArray, pairing) {
 		p.style.overflowWrap = "break-word";
 		var a = document.createElement("a");
 		a.setAttribute("class", "url");
-		var toolURL = selectedGroup.vplURL;
-		if (toolURL) {
-			var url = document.location.origin + toolURL;
-			a.textContent = url;
-			a.setAttribute("href", url);
-			a.setAttribute("target", "_blank");
-			a.setAttribute("rel", "noopener");
-			p.appendChild(a);
-		}
+		var toolURL = VPLTeacherTools.makeVPLURL(selectedGroup);
+		var url = document.location.origin + toolURL;
+		a.textContent = url;
+		a.setAttribute("href", url);
+		a.setAttribute("target", "_blank");
+		a.setAttribute("rel", "noopener");
+		p.appendChild(a);
 		div.appendChild(p);
 		if (toolURL && window.QRCode) {
 			var qrdiv = document.createElement("div");
