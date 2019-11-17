@@ -117,12 +117,12 @@ all:
 	cp -p $(DATAFILES) $(DIR)/data
 	zip -r - $(DIR) >$(DIR).zip
 
+.PHONY: VPL3Server.app
 VPL3Server.app: setup.py launch_objc.py $(PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UICLASSICFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES)
 	rm -rf build
 	python3 setup.py py2app
 
-.PHONY: VPL3Server.app
-VPLServer.dmg: VPL3Server.app
+VPLServer.dmg: VPL3Server.app readme-mac.txt
 	rm -Rf "VPL Server" $@
 	mkdir "VPL Server"
 	cp -R $^ "VPL Server"
