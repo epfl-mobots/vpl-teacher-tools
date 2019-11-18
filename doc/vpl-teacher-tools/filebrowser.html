@@ -157,8 +157,9 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 
 			if (!forStudents) {
 				var isVPL3 = /\.vpl3$/.test(file.filename);
+				var isMarkable = isVPL3 || /\.vpl3ui$/.test(file.filename);
 				td = document.createElement("td");
-				if (isVPL3) {
+				if (isMarkable) {
 					td.textContent = file.mark ? "\u2612" : "\u2610";
 					td.addEventListener("click", function () {
 						fileBrowser.toggleMark(file.id);

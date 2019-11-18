@@ -118,10 +118,12 @@ function fillFileTable(fileArray, dashboard) {
 		tr.appendChild(td);
 
 		td = document.createElement("td");
-		td.textContent = file["default"] ? "\u2612" : "\u2610";
-		td.addEventListener("click", function () {
-			dashboard.setDefaultFile(file.id);
-		}, false);
+		if (/\.vpl3$/.test(file.filename)) {
+			td.textContent = file["default"] ? "\u2612" : "\u2610";
+			td.addEventListener("click", function () {
+				dashboard.setDefaultFile(file.id);
+			}, false);
+		}
 		tr.appendChild(td);
 
 		td = document.createElement("td");
