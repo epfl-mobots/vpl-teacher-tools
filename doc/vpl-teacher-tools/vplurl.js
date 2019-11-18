@@ -9,7 +9,8 @@ VPLTeacherTools.makeVPLURL = function (group) {
 	var url = url0 +
 		"&session=" + group.session_id +
 		(group.students ? "&user=" + encodeURIComponent(group.students.join(", ")) : "") +
-		(group.robot[0] === "!" ? "&robot=sim"
+		(group.robot === "!sim" ? "&robot=sim"
+			: group.robot === "!thymio" ? "&robot=thymio"
 			: group.robot ? "&robot=thymio-tdm#w=" + tdmURL + "&uuid=" + group.robot
 			: "");
 	return url;

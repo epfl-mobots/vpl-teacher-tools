@@ -290,6 +290,20 @@ VPLTeacherTools.Pairing.prototype.deletePairBySessionId = function (sessionId) {
     }
 };
 
+/** Find short name from non-robot name, or return name as is
+	@param {string} robotName
+	@return {string}
+*/
+VPLTeacherTools.Pairing.prototype.shortRobotName = function (robotName) {
+	for (var key in this.nonRobotNameMapping) {
+		if (this.nonRobotNameMapping.hasOwnProperty(key) &&
+			this.nonRobotNameMapping[key] === robotName) {
+				return key;
+		}
+	}
+	return robotName;
+};
+
 /** Begin a session by associating a robot with a group
     @param {?string=} robotName robot name (default: selected robot)
     @param {?string=} groupId group id (default: selected group)
@@ -300,7 +314,7 @@ VPLTeacherTools.Pairing.prototype.beginSession = function (robotName, groupId) {
         var self = this;
         groupId = groupId || this.selectedGroup;
         this.client.beginSession(groupId,
-            this.isRobot(robotName || this.selectedRobot) ? robotName || this.selectedRobot : "!sim",
+            this.shortRobotName(robotName || this.selectedRobot),
             true,
             {
                 onSuccess: function (r) {

@@ -373,10 +373,21 @@ window.addEventListener("load", function () {
 					return url0 + "&robot=sim&session=" + sessionId +
 						(group.students ? "&user=" + encodeURIComponent(group.students.join(", ")) : "");
 				}
+			},
+			{
+				name: function () {
+					return "(local bridge)";
+				},
+				url: function (group, sessionId) {
+					// set user to comma-separated users if they exist
+					return url0 + "&robot=thymio&session=" + sessionId +
+						(group.students ? "&user=" + encodeURIComponent(group.students.join(", ")) : "");
+				}
 			}
 		],
 		nonRobotNameMapping: {
-			"!sim": "(simulator)"
+			"!sim": "(simulator)",
+			"!thymio": "(local bridge)"
 		},
 		onStudents: function (studentArray) {
     		fillStudentTable(studentArray, pairing);
