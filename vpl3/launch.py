@@ -19,6 +19,7 @@ def launch(App):
     ws_port = App.DEFAULT_WS_PORT
     ws_link_url = None
     db_path = Db.DEFAULT_PATH
+    language = "fr"
     try:
         arguments, values = getopt.getopt(sys.argv[1:],
                                           "",
@@ -28,6 +29,7 @@ def launch(App):
                                               "http-port=",
                                               "link=",
                                               "ws-port=",
+                                              "language="
                                           ])
     except getopt.error as err:
         print(str(err))
@@ -41,6 +43,7 @@ Options:
   --db path       path of sqlite database (default: {Db.DEFAULT_PATH})
   --help          display help message and exit
   --http-port num HTTP port, or auto (default: auto, trying first {App.DEFAULT_HTTP_PORT})
+  --language code language code such as "fr" (default: {language})
   --link uri      websocket uri for linked server (default: no linked server)
   --ws-port num   websocket server port, or auto (default: auto, trying first {App.DEFAULT_WS_PORT})
             """)
@@ -55,5 +58,6 @@ Options:
     app = App(db_path=db_path,
               http_port=http_port,
               ws_port=ws_port,
-              ws_link_url=ws_link_url)
+              ws_link_url=ws_link_url,
+              language=language)
     app.run()

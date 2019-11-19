@@ -21,7 +21,8 @@ class ApplicationBase:
                  db_path=Db.DEFAULT_PATH,
                  http_port=None,
                  ws_port=DEFAULT_WS_PORT,
-                 ws_link_url=None):
+                 ws_link_url=None,
+                 language=None):
         self.logger_lock = threading.Lock()
         self.server = Server(db_path=db_path,
                              http_port=http_port,
@@ -34,6 +35,7 @@ class ApplicationBase:
         self.server.start()
         self.http_port = self.server.get_http_port()
         self.address = f"{URLUtil.get_local_IP()}:{self.http_port}"
+        self.language = language
 
         # to implement in subclasses:
         # GUI initialization showing self.address w/ a way to call
@@ -55,9 +57,11 @@ class ApplicationBase:
         }"""
         self.show_connection_status(str)
 
-    def start_browser_tt(self, event=None):
+    def start_browser_tt(self):
+        print("start_browser_tt", self.language)
+        path = f"/tt{'.' + self.language if self.language else ''}.html"
         URLUtil.start_browser(port=self.http_port,
-                              path="/tt.html",
+                              path=path,
                               using=["firefox", "chrome"])
 
     def quit(self):

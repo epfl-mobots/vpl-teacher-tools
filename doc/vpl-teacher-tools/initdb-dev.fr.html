@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, height=device-height, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<link rel="stylesheet" href="html-tools.css" />
+
+<title>VPL Tools</title>
+
+<style>
+html {
+	height: 100%;
+}
+body {
+	height: 100%;
+}
+</style>
+
+<script src="ns.js"></script>
+<script src="../client.js"></script>
+<script src="initdb-dev-gui.js"></script>
+
+</head>
+
+<body>
+
+<nav>
+<ul>
+	<li><a href="students.fr.html">Élèves</a></li>
+	<li><a href="filebrowser.fr.html">Fichiers</a></li>
+	<li><a class="disabled" href="#">VPL</a></li>
+	<li><a class="disabled" href="#">Simulateur</a></li>
+	<li><a href="pairing.fr.html">Configuration</a></li>
+	<li><a href="dashboard.fr.html">Supervision</a></li>
+	<li><a href="doc.fr.html">Documentation</a></li>
+	<li><span class="space"></span></li>
+	<li><a class="current" href="initdb-dev.fr.html">Données de test</a></li>
+	<li><a href="dev.fr.html">Doc. technique</a></li>
+</ul>
+</nav>
+
+<main>
+
+<p>Cette application web initialise les tables des étudiants et des groupes avec des valeurs quelconques.</p>
+
+<div class="border">
+
+	<h2>Étudiants</h2>
+
+	<p>
+		<button id="reset-students">réinitialiser</button>
+		<button id="init">initialiser les étudiants</button>
+		<button id="list-students">afficher les étudiants</button>
+		<button id="list-groups">afficher les groupes</button>
+		<button id="list-members-a">afficher les membres (a)</button>
+		<button id="list-members-b">afficher les membres (b)</button>
+	</p>
+
+</div>
+
+<div class="border">
+
+	<h2>Sessions</h2>
+
+	<p>
+		<button id="reset-sessions">réinitialiser</button>
+		<button id="list-sessions">afficher</button>
+	</p>
+
+	<p>
+		<button id="log">journal</button>
+		<button id="last-log">dernière entrée</button>
+		<input id="log-file-sessionid"></input>
+	</p>
+
+	<p>
+		<button id="clear-log">effacer le journal</button>
+	</p>
+
+</div>
+
+<div class="border">
+
+	<h2>Fichiers</h2>
+
+	<p>
+		<button id="init-files-teacher">créer le fichier de l'enseignant.e</button>
+		<button id="init-files-students">créer les fichiers des étudiants</button>
+		<button id="remove-files">supprimer tous les fichiers</button>
+	</p>
+
+	<p>
+		<button id="list-files-teacher">afficher les fichiers de l'enseignant.e</button>
+		<button id="list-files-students">afficher les fichiers des étudiants</button>
+	</p>
+
+	<p>
+		<button id="clear-files">supprimer tous les fichiers</button>
+	</p>
+
+</div>
+
+<div class="border">
+
+	<h2>Console</h2>
+
+	<p>
+	<button id="clc">effacer</button>
+	</p>
+
+	<pre id="console">
+	</pre>
+
+</div>
+
+</main>
+
+</body>
+
+</html>

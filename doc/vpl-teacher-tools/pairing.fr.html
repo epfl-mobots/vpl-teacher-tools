@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
 
@@ -11,7 +11,7 @@
 
 <link rel="stylesheet" href="html-tools.css" />
 
-<title>VPL Tools</title>
+<title>Outils VPL</title>
 
 <style>
 td {
@@ -38,7 +38,7 @@ a.url {
 <script src="../libs/qrcodejs/qrcode.min.js"></script>
 <script src="pairing.js"></script>
 <script>
-var uiLanguage = "en";
+var uiLanguage = "fr";
 </script>
 <script src="translate.js"></script>
 <script src="pairing-gui.js"></script>
@@ -49,16 +49,16 @@ var uiLanguage = "en";
 
 <nav>
 <ul>
-<li><a href="students.html">Pupils</a></li>
-<li><a href="filebrowser.html">Files</a></li>
-<li><a class="disabled" href="#">VPL</a></li>
-<li><a class="disabled" href="#">Simulator</a></li>
-<li><a class="current" href="pairing.html">Classroom setup</a></li>
-<li><a href="dashboard.html">Dashboard</a></li>
-<li><a href="doc.html">Documentation</a></li>
-<li><span class="space"></span></li>
-<li><a href="initdb-dev.html">Test data</a></li>
-<li><a href="dev.html">Development doc</a></li>
+	<li><a href="students.fr.html">Élèves</a></li>
+	<li><a href="filebrowser.fr.html">Fichiers</a></li>
+	<li><a class="disabled" href="#">VPL</a></li>
+	<li><a class="disabled" href="#">Simulateur</a></li>
+	<li><a class="current" href="pairing.fr.html">Configuration</a></li>
+	<li><a href="dashboard.fr.html">Supervision</a></li>
+	<li><a href="doc.fr.html">Documentation</a></li>
+	<li><span class="space"></span></li>
+	<li><a href="initdb-dev.fr.html">Données de test</a></li>
+	<li><a href="dev.fr.html">Doc. technique</a></li>
 </ul>
 </nav>
 
@@ -68,25 +68,25 @@ var uiLanguage = "en";
 
 	<div class="border column4">
 
-		<h2>Pupils</h2>
+		<h2>Élèves</h2>
 
 		<table id="students">
 		</table>
 
-		<p id="student-help">Drag to a group to build groups of pupils.</p>
-		<p id="nostudent-help" style="display: none;">Pupils can be added in the <a href="students.html">Pupils</a> tab.</p>
+		<p id="student-help">Glissez-déposez dans un groupe pour constituer des groupes d'élèves.</p>
+		<p id="nostudent-help" style="display: none;">Les élèves peuvent être ajoutés dans l'onglet <a href="students.html">Élèves</a>.</p>
 
 	</div>
 
 	<div class="border column2">
 
-		<h2>Groups</h2>
+		<h2>Groupes</h2>
 
 		<table id="groups">
 		</table>
 
-		<p>Drag pupils between groups or out of group to reorganize.</p>
-		<p>Select a group with a robot to display the VPL launch code.</p>
+		<p>Glissez-déposez les élèves entre les groupes ou hors d'un groupe pour les réorganiser.</p>
+		<p>Sélectionnez un groupe avec un robot pour afficher le code de lancement de VPL avec les paramètres de connexion.</p>
 
 	</div>
 
@@ -97,7 +97,7 @@ var uiLanguage = "en";
 		<table id="robots">
 		</table>
 
-		<p>Drag to a group to make a group-robot association.</p>
+		<p>Glissez-déposez un robot sur un groupe pour l'associer au groupe.</p>
 
 	</div>
 
@@ -107,21 +107,21 @@ var uiLanguage = "en";
 
 	<div class="border column2">
 
-		<h2>Group launch URL</h2>
+		<h2>Lancement de VPL spécifique à un groupe</h2>
 
 		<div id="info"></div>
 
-		<p>Select the group in the Groups panel above.</p>
+		<p>Sélectionnez le groupe dans la vue «Groupes» ci-dessus.</p>
 
 	</div>
 
 	<div class="border column2">
 
-		<h2>Single login URL</h2>
+		<h2>Page de lancement unique</h2>
 
 		<p><a class="url" id="login" target="_blank"></a></p>
 
-		<p>This page lets the pupils pick their group from a list without a password. It's the same for all the pupils.</p>
+		<p>Cette page permet aux élèves de lancer VPL en cliquant sur leur groupe dans une liste. Elle est commune à tous les groupes.</p>
 
 	</div>
 

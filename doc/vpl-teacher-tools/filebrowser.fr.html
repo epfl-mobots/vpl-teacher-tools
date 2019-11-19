@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="viewport" content="width=device-width, height=device-height, maximum-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+
+<link rel="stylesheet" href="html-tools.css" />
+
+<title>Outils VPL</title>
+
+<style>
+td {
+	padding: 0.5ex;
+	user-select: none;
+}
+
+.content {
+	display: inline-block;
+	min-width: 20ex;
+	min-height: 2em;
+	border: dotted black 1px;
+	vertical-align: middle;
+}
+</style>
+
+<script src="../vpl/thymio/thymio.js"></script>
+<script src="ns.js"></script>
+<script src="util-url.js"></script>
+<script src="../client.js"></script>
+<script src="filebrowser.js"></script>
+<script>
+var uiLanguage = "fr";
+</script>
+<script src="translate.js"></script>
+<script src="filebrowser-gui.js"></script>
+
+</head>
+
+<body>
+
+<nav>
+<ul>
+<li><a href="students.fr.html">Élèves</a></li>
+<li><a class="current" href="filebrowser.fr.html">Fichiers</a></li>
+<li><a class="disabled" href="#">VPL</a></li>
+<li><a class="disabled" href="#">Simulateur</a></li>
+<li><a href="pairing.fr.html">Configuration</a></li>
+<li><a href="dashboard.fr.html">Supervision</a></li>
+<li><a href="doc.fr.html">Documentation</a></li>
+<li><span class="space"></span></li>
+<li><a href="initdb-dev.fr.html">Données de test</a></li>
+<li><a href="dev.fr.html">Doc. technique</a></li>
+</ul>
+</nav>
+
+<main>
+
+<div class="border">
+
+	<h2>Fichiers de l'enseignant.e</h2>
+
+	<p>
+	<label><input id="chk-filter-teacher-last" type="checkbox" checked> seulement la version la plus récente</label>
+	</p>
+
+	<table id="files-teacher">
+	</table>
+
+	<p>
+	<button id="btn-new">Nouveau programme</button>
+	<button id="btn-new-conf">Nouvelle config.</button>
+	<button id="btn-edit-teacher" disabled="true">Éditer</button>
+	<button id="btn-rename-teacher" disabled="true">Renommer</button>
+	<button id="btn-duplicate-teacher" disabled="true">Dupliquer</button>
+	<button id="btn-export-teacher" disabled="true">Exporter</button>
+	<button id="btn-remove-teacher" disabled="true">Effacer</button>
+	</p>
+
+	<p>
+	Les fichiers «marqués» sont visibles dans l'onglet «Supervision». Le fichier par défaut est envoyé automatiquements aux groupes quand ils lancent VPL.
+	</p>
+
+</div>
+
+<div class="border">
+
+	<h2>Fichiers des élèves</h2>
+
+	<p>
+	<label>Élève <input id="v-filter-student"></input></label>
+	&nbsp;&nbsp;
+	<label><input id="chk-filter-students-last" type="checkbox" checked> seulement la version la plus récente</label>
+	</p>
+
+	<table id="files-students">
+	</table>
+
+	<p>
+	<button id="btn-view-st" disabled="true">Voir</button>
+	<button id="btn-export-st" disabled="true">Exporter</button>
+	<button id="btn-remove-st" disabled="true">Effacer</button>
+	</p>
+
+</div>
+
+</main>
+
+</body>
+
+</html>

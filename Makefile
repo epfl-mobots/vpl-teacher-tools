@@ -32,7 +32,8 @@ DOCFILES = \
 	doc/db.html \
 	doc/index.html \
 	doc/login.fr.html \
-	doc/tt.html
+	doc/tt.html \
+	doc/tt.fr.html
 
 VPLFILES = \
 	doc/vpl/EPFL_Logo_SVG.svg \
@@ -58,25 +59,39 @@ UICLASSICFILES = \
 
 TOOLSFILES = \
 	doc/vpl-teacher-tools/dashboard.html \
+	doc/vpl-teacher-tools/dashboard.fr.html \
+	doc/vpl-teacher-tools/dashboard-gui.js \
 	doc/vpl-teacher-tools/dashboard.js \
 	doc/vpl-teacher-tools/dev.html \
+	doc/vpl-teacher-tools/dev.fr.html \
 	doc/vpl-teacher-tools/doc.html \
+	doc/vpl-teacher-tools/doc.fr.html \
 	doc/vpl-teacher-tools/filebrowser.html \
+	doc/vpl-teacher-tools/filebrowser.fr.html \
+	doc/vpl-teacher-tools/filebrowser-gui.js \
 	doc/vpl-teacher-tools/filebrowser.js \
 	doc/vpl-teacher-tools/html-tools.css \
 	doc/vpl-teacher-tools/initdb-dev.html \
+	doc/vpl-teacher-tools/initdb-dev.fr.html \
+	doc/vpl-teacher-tools/initdb-dev-gui.js \
 	doc/vpl-teacher-tools/Logo_vpl.svg \
 	doc/vpl-teacher-tools/ns.js \
 	doc/vpl-teacher-tools/pairing.html \
+	doc/vpl-teacher-tools/pairing.fr.html \
+	doc/vpl-teacher-tools/pairing-gui.js \
 	doc/vpl-teacher-tools/pairing.js \
 	doc/vpl-teacher-tools/README.md \
 	doc/vpl-teacher-tools/students.html \
+	doc/vpl-teacher-tools/students.fr.html \
+	doc/vpl-teacher-tools/students-gui.js \
 	doc/vpl-teacher-tools/students.js \
 	doc/vpl-teacher-tools/student-debug.html \
 	doc/vpl-teacher-tools/student-debug.js \
 	doc/vpl-teacher-tools/ui.json \
 	doc/vpl-teacher-tools/util-url.js \
 	doc/vpl-teacher-tools/vpl.html \
+	doc/vpl-teacher-tools/vpl.fr.html \
+	doc/vpl-teacher-tools/vpl-gui.js \
 	doc/vpl-teacher-tools/vplurl.js \
 	doc/vpl-teacher-tools/vpl-about.html \
     doc/vpl-teacher-tools/vpl_load.png \

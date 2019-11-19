@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
 <head>
 
@@ -11,13 +11,13 @@
 
 <link rel="stylesheet" href="html-tools.css" />
 
-<title>VPL Tools</title>
+<title>Outils VPL</title>
 
 <script src="ns.js"></script>
 <script src="../client.js"></script>
 <script src="dashboard.js"></script>
 <script>
-var uiLanguage = "en";
+var uiLanguage = "fr";
 </script>
 <script src="translate.js"></script>
 <script src="dashboard-gui.js"></script>
@@ -28,37 +28,37 @@ var uiLanguage = "en";
 
 <nav>
 <ul>
-<li><a href="students.html">Pupils</a></li>
-<li><a href="filebrowser.html">Files</a></li>
-<li><a class="disabled" href="#">VPL</a></li>
-<li><a class="disabled" href="#">Simulator</a></li>
-<li><a href="pairing.html">Classroom setup</a></li>
-<li><a class="current" href="dashboard.html">Dashboard</a></li>
-<li><a href="doc.html">Documentation</a></li>
-<li><span class="space"></span></li>
-<li><a href="initdb-dev.html">Test data</a></li>
-<li><a href="dev.html">Development doc</a></li>
+	<li><a href="students.fr.html">Élèves</a></li>
+	<li><a href="filebrowser.fr.html">Fichiers</a></li>
+	<li><a class="disabled" href="#">VPL</a></li>
+	<li><a class="disabled" href="#">Simulateur</a></li>
+	<li><a href="pairing.fr.html">Configuration</a></li>
+	<li><a class="current" href="dashboard.fr.html">Supervision</a></li>
+	<li><a href="doc.fr.html">Documentation</a></li>
+	<li><span class="space"></span></li>
+	<li><a href="initdb-dev.fr.html">Données de test</a></li>
+	<li><a href="dev.fr.html">Doc. technique</a></li>
 </ul>
 </nav>
 
 <main>
 
 <div id="disconnected-msg" class="border-error" style="display: none;">
-	<p>No connection with the VPL server.</p>
+	<p>La connexion avec le serveur VPL a été perdue.</p>
 </div>
 
 <div class="columncontainer">
 
 	<div class="border column2">
-		<h2>Groups</h2>
+		<h2>Groupes</h2>
 		<table id="groups">
 		</table>
 
-		<p>Groups and robots can be associated in the <a href="pairing.html">Classroom setup</a> tab.</p>
+		<p>Les groupes et les robots peuvent être associés dans l'onglet <a href="pairing.html">Configuration</a>.</p>
 	</div>
 
 	<div class="border column2">
-		<h2>Files</h2>
+		<h2>Fichiers</h2>
 		<table id="files-dashboard">
 		</table>
 	</div>
@@ -66,7 +66,7 @@ var uiLanguage = "en";
 </div>
 
 <div class="border">
-	<h2>Control</h2>
+	<h2>Commande</h2>
 	<p>
 	<span id="vpl:new"><img src="vpl_new.png" width="32" height="32" style=""></button>
 	<span id="vpl:run"><img src="vpl_run.png" width="32" height="32"></button>
@@ -74,15 +74,15 @@ var uiLanguage = "en";
 	</p>
 
 	<p>
-	<label><input id="suspended" type="checkbox">Suspended</label>
-	<input id="suspended-text" value="Suspended by the teacher">
+	<label><input id="suspended" type="checkbox">Suspendu</label>
+	<input id="suspended-text" value="Suspendu par l'enseignant.e">
 	</p>
 </div>
 
 <div class="border">
 	<h2>Log</h2>
 	<p>
-	<button id="clear-log">Clear</button>
+	<button id="clear-log">Effacer</button>
 	</p>
 	<pre id="log"></pre>
 </div>
