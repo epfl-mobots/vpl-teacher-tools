@@ -280,24 +280,28 @@ function fillGroupTable(groupArray, pairing) {
 					height: size,
 					correctLevel: QRCode.CorrectLevel.L
 				});
-			pairing.shortenURL(url, function (shortenedURL) {
-				a.textContent = shortenedURL;
-				a.setAttribute("href", shortenedURL);
-				while (qrdiv.firstElementChild) {
-					qrdiv.removeChild(qrdiv.firstElementChild);
-				}
-				qrcode = new window.QRCode(qrdiv,
-					{
-						text: shortenedURL,
-						width: size,
-						height: size,
-						correctLevel: QRCode.CorrectLevel.L
-					});
-			});
+            if ($SHORTENURL) {
+    			pairing.shortenURL(url, function (shortenedURL) {
+    				a.textContent = shortenedURL;
+    				a.setAttribute("href", shortenedURL);
+    				while (qrdiv.firstElementChild) {
+    					qrdiv.removeChild(qrdiv.firstElementChild);
+    				}
+    				qrcode = new window.QRCode(qrdiv,
+    					{
+    						text: shortenedURL,
+    						width: size,
+    						height: size,
+    						correctLevel: QRCode.CorrectLevel.L
+    					});
+    			});
+            }
 		} else {
-			pairing.shortenURL(url, function (shortenedURL) {
-				a.textContent = shortenedURL;
-			});
+            if ($SHORTENURL) {
+    			pairing.shortenURL(url, function (shortenedURL) {
+    				a.textContent = shortenedURL;
+    			});
+            }
 		}
 		document.getElementById("info").appendChild(div);
 	}

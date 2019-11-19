@@ -22,12 +22,15 @@ class ApplicationBase:
                  http_port=None,
                  ws_port=DEFAULT_WS_PORT,
                  ws_link_url=None,
-                 language=None):
+                 language=None,
+                 full_url=False):
         self.logger_lock = threading.Lock()
         self.server = Server(db_path=db_path,
                              http_port=http_port,
                              ws_port=ws_port,
                              ws_link_url=ws_link_url,
+                             language=language,
+                             full_url=full_url,
                              logger=self.logger,
                              update_connection=self.update_connection,
                              initial_file_dir="data")
@@ -36,6 +39,7 @@ class ApplicationBase:
         self.http_port = self.server.get_http_port()
         self.address = f"{URLUtil.get_local_IP()}:{self.http_port}"
         self.language = language
+        self.full_url = full_url
 
         # to implement in subclasses:
         # GUI initialization showing self.address w/ a way to call
@@ -59,7 +63,7 @@ class ApplicationBase:
 
     def start_browser_tt(self):
         print("start_browser_tt", self.language)
-        path = f"/tt{'.' + self.language if self.language else ''}.html"
+        path = f"/tt{'.' + self.language if self.language and self.language != 'en' else ''}.html"
         URLUtil.start_browser(port=self.http_port,
                               path=path,
                               using=["firefox", "chrome"])

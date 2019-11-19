@@ -35,8 +35,12 @@ class VPLHTTPServer:
     def __init__(self,
                  db_path=Db.DEFAULT_PATH,
                  http_port=None,
+                 language=None,
+                 full_url=False,
                  logger=None):
         self.http_port = http_port
+        self.language = language
+        self.full_url = full_url
         self.db_path = db_path
         self.db = Db(self.db_path)
         self.handler = VPLHTTPRequestHandler
@@ -291,7 +295,10 @@ class VPLHTTPServer:
                 else:
                     return VPLHTTPServer.error("unknown shortcut")
 
-        self.httpd.add_filter(lambda s: s.replace(b"$LANGUAGE", b"fr"),
+        self.httpd.add_filter(lambda s: s.replace(b"$LANGUAGE",
+                                                  bytes(self.language, "utf-8") if self.language else b"en"),
+                              r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
+        self.httpd.add_filter(lambda s: s.replace(b"$SHORTENURL", b"false" if self.full_url else b"true"),
                               r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
         self.groups = []
 

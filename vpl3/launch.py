@@ -20,6 +20,7 @@ def launch(App):
     ws_link_url = None
     db_path = Db.DEFAULT_PATH
     language = "fr"
+    full_url = False
     try:
         arguments, values = getopt.getopt(sys.argv[1:],
                                           "",
@@ -29,7 +30,8 @@ def launch(App):
                                               "http-port=",
                                               "link=",
                                               "ws-port=",
-                                              "language="
+                                              "language=",
+                                              "fullurl"
                                           ])
     except getopt.error as err:
         print(str(err))
@@ -41,6 +43,7 @@ VPL 3 teacher tools server
 
 Options:
   --db path       path of sqlite database (default: {Db.DEFAULT_PATH})
+  --fullurl       use full vpl3 URL instead of shortening it
   --help          display help message and exit
   --http-port num HTTP port, or auto (default: auto, trying first {App.DEFAULT_HTTP_PORT})
   --language code language code such as "fr" (default: {language})
@@ -54,10 +57,15 @@ Options:
             ws_port = int(val)
         elif arg == "--link":
             ws_link_url = val
+        elif arg == "--language":
+            language = val
+        elif arg == "--fullurl":
+            full_url = True
 
     app = App(db_path=db_path,
               http_port=http_port,
               ws_port=ws_port,
               ws_link_url=ws_link_url,
-              language=language)
+              language=language,
+              full_url=full_url)
     app.run()

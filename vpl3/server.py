@@ -23,6 +23,8 @@ class Server:
                  http_port=DEFAULT_HTTP_PORT,
                  ws_port=DEFAULT_WS_PORT,
                  ws_link_url=None,
+                 language=None,
+                 full_url=False,
                  logger=None,
                  update_connection=None,
                  initial_file_dir=None):
@@ -33,6 +35,8 @@ class Server:
         self.http_server = None
         self.ws_port = ws_port
         self.ws_link_url = ws_link_url
+        self.language = language
+        self.full_url = full_url
         self.ws = None
         self.ws_server = None
         self.logger = logger
@@ -63,6 +67,8 @@ class Server:
         def http_thread():
             self.http_server = VPLHTTPServer(db_path=self.db_path,
                                              http_port=self.http_port,
+                                             language=self.language,
+                                             full_url=self.full_url,
                                              logger=self.logger)
             self.http_port = self.http_server.get_port()
             nonlocal http_started
