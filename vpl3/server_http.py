@@ -298,6 +298,11 @@ class VPLHTTPServer:
         self.httpd.add_filter(lambda s: s.replace(b"$LANGUAGE",
                                                   bytes(self.language, "utf-8") if self.language else b"en"),
                               r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
+        self.httpd.add_filter(lambda s: s.replace(b"$LANGSUFFIX",
+                                                  bytes("." + self.language, "utf-8")
+                                                      if self.language and self.language != "en"
+                                                      else b""),
+                              r"^/.*\.html$")
         self.httpd.add_filter(lambda s: s.replace(b"$SHORTENURL", b"false" if self.full_url else b"true"),
                               r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
         self.groups = []
