@@ -31,6 +31,14 @@ class ApplicationObjCShell(NSApplication):
         self.menuNames.append(menuName)
         self.menuItems.append(menuItems)
 
+    def getMenuItemWithTitle_inMenu_(self, menuItemTitle, menuTitle):
+        for i in range(len(self.menuNames)):
+            if self.menuNames[i] == menuTitle:
+                for j in range(len(self.menuItems[i])):
+                    if (self.menuItems[i][j] and
+                        self.menuItems[i][j][0] == menuItemTitle):
+                        return self.menuItems[i][j][3]
+
     def start(self):
         NSApplication.sharedApplication()
         NSApp.setActivationPolicy_(NSApplicationActivationPolicyRegular)
@@ -46,25 +54,33 @@ class ApplicationObjCShell(NSApplication):
             menubar.addItem_(menu_hook)
             sel = objc.selector(self.forwardAction_, signature=b"v@:@")
             for i in range(len(items)):
-                menu_item = (NSMenuItem
-                             .alloc()
-                             .initWithTitle_action_keyEquivalent_(items[i][0],
-                                                                  sel,
-                                                                  items[i][1])
-                             .autorelease())
-                menu_item.setTarget_(self)
-                menu_item.setTag_(len(self.actionArray))
-                self.actionArray.append(items[i][2])
-                menu_item.setEnabled_(True)
-                menu.addItem_(menu_item)
+                if items[i]:
+                    shortcut = items[i][1] or ""
+                    menu_item = (NSMenuItem
+                                 .alloc()
+                                 .initWithTitle_action_keyEquivalent_(items[i][0],
+                                                                      sel,
+                                                                      shortcut)
+                                 .autorelease())
+                    menu_item.setTarget_(self)
+                    menu_item.setTag_(len(self.actionArray))
+                    self.actionArray.append(items[i][2])
+                    menu_item.setEnabled_(True)
+                    menu.addItem_(menu_item)
+                    if len(items[i]) >= 4:
+                        items[i][3] = menu_item
+                    else:
+                        items[i].append(menu_item)
+                else:
+                    menu.addItem_(NSMenuItem.separatorItem())
             menu_hook.setSubmenu_(menu)
 
         add_menu(None, [
-            (
+            [
                 "Quit " + str(NSProcessInfo.processInfo().processName()),
                 "q",
                 NSApp.terminate_
-            ),
+            ],
         ])
         for i in range(len(self.menuNames)):
             add_menu(self.menuNames[i], self.menuItems[i])
