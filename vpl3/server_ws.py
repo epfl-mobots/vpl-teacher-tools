@@ -85,6 +85,9 @@ class VPLWebSocketServer:
                         log_str += " " + msg["data"]["data"]["state"]
             self.logger(log_str)
 
+    def new_connection(self, websocket):
+        return True  # accept
+
     async def process_message(self, websocket, session_id, msg):
         self.log_message(msg)
         db = Db(self.db_path)

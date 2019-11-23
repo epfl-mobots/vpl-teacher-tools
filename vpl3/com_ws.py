@@ -18,24 +18,25 @@ class WSServer:
         async def ws_handler(websocket, path):
             websocket.session_id = None
             no_message_yet = True
-            self.instances.add(websocket)
-            try:
-                async for message in websocket:
-                    message_dec = json.loads(message)
-                    if websocket.session_id is None:
-                        id = context.get_session_id(message_dec)
-                        if id:
-                            websocket.session_id = id
-                    if no_message_yet:
-                        context.on_connect(websocket.session_id)
-                        no_message_yet = False
-                    await context.process_message(websocket,
-                                                  websocket.session_id,
-                                                  message_dec)
-            finally:
-                self.instances.remove(websocket)
-                if not no_message_yet:
-                    context.on_disconnect(websocket.session_id)
+            if context.new_connection(websocket):
+                self.instances.add(websocket)
+                try:
+                    async for message in websocket:
+                        message_dec = json.loads(message)
+                        if websocket.session_id is None:
+                            id = context.get_session_id(message_dec)
+                            if id:
+                                websocket.session_id = id
+                        if no_message_yet:
+                            context.on_connect(websocket.session_id)
+                            no_message_yet = False
+                        await context.process_message(websocket,
+                                                      websocket.session_id,
+                                                      message_dec)
+                finally:
+                    self.instances.remove(websocket)
+                    if not no_message_yet:
+                        context.on_disconnect(websocket.session_id)
 
         self.context = context
         if port is None:
