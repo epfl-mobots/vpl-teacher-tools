@@ -76,6 +76,4 @@ class Application(ApplicationBase):
         item.setState_(1 if language == "en" else 0)
         item = self.app_objc.getMenuItemWithTitle_inMenu_("French", "Options")
         item.setState_(1 if language == "fr" else 0)
-        self.language = language
-        self.server.language = language
-        self.server.http_server.language = language
+        self.set_language(language)

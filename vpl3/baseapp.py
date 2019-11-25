@@ -62,11 +62,15 @@ class ApplicationBase:
         self.show_connection_status(str)
 
     def start_browser_tt(self):
-        print("start_browser_tt", self.language)
         path = f"/tt{'.' + self.language if self.language and self.language != 'en' else ''}.html"
         URLUtil.start_browser(port=self.http_port,
                               path=path,
                               using=["firefox", "chrome"])
+
+    def set_language(self, language):
+        self.language = language
+        self.server.language = language
+        self.server.http_server.language = language
 
     def quit(self):
         self.server.stop()
