@@ -61,6 +61,7 @@ DATA_FILES = [
             "doc/vpl-teacher-tools/pairing.fr.html",
             "doc/vpl-teacher-tools/pairing-gui.js",
             "doc/vpl-teacher-tools/pairing.js",
+            "doc/vpl-teacher-tools/robots.js",
             "doc/vpl-teacher-tools/students.html",
             "doc/vpl-teacher-tools/students.fr.html",
             "doc/vpl-teacher-tools/students-gui.js",

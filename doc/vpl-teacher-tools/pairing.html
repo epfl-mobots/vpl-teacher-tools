@@ -31,11 +31,13 @@ a.url {
 </style>
 
 <script src="../vpl/thymio/thymio.js"></script>
+<script src="json-ws-bridge-api.js"></script>
 <script src="ns.js"></script>
 <script src="util-url.js"></script>
 <script src="../client.js"></script>
 <script src="vplurl.js"></script>
 <script src="../libs/qrcodejs/qrcode.min.js"></script>
+<script src="robots.js"></script>
 <script src="pairing.js"></script>
 <script>
 var uiLanguage = "en";
@@ -98,6 +100,9 @@ var uiLanguage = "en";
 		</table>
 
 		<p>Drag to a group to make a group-robot association.</p>
+
+		<p id="tdm-msg" style="display: none">Robot access is done with the Thymio Device Manager (Thymio Suite).</p>
+		<p id="jws-msg" style="display: none">Robot access is done with the VPL server, without additional software.</p>
 
 	</div>
 

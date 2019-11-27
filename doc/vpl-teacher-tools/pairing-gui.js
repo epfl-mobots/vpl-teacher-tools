@@ -13,52 +13,58 @@ Drag-and-drop data:
 */
 
 function fillRobotTable(robotArray, pairing) {
-	clearChildren("robots");
-	var table = document.getElementById("robots");
+	if (!pairing.noRedraw) {
+		clearChildren("robots");
+		var table = document.getElementById("robots");
 
-	function addRow(robotName, flashFunction, flashFunctionDisabled) {
-		var tr = document.createElement("tr");
+		robotArray.forEach(function (robot) {
+			var tr = document.createElement("tr");
 
-		var td = document.createElement("td");
-		td.textContent = flashFunction ? "Thymio II" : robotName;
-		td.addEventListener("click", function () {
-			if (pairing.selectByRobotName(robotName)) {
-				pairing.updateGroups();
+			var td = document.createElement("td");
+			td.textContent = robot.niceName;
+			td.addEventListener("click", function () {
+				if (pairing.selectByRobotName(robot.name)) {
+					pairing.updateGroups();
+				}
+			});
+			td.className = "rect";
+
+			// drag robot name
+			td.draggable = true;
+			td.addEventListener("dragstart", function (ev) {
+				ev.dataTransfer.setData("text/plain", "R/" + robot.name);
+				ev.dataTransfer.setDragImage(tr.getElementsByTagName("td")[0], 0, 0);
+				ev.dataTransfer.effectAllowed = "copy";
+			});
+
+			tr.appendChild(td);
+
+			td = document.createElement("td");
+			td.textContent = !robot.multiple && pairing.findGroupByRobotName(robot.name) ? "\u2713" : "";	// checkmark
+			tr.appendChild(td);
+
+			td = document.createElement("td");
+			if (robot.hasFlash()) {
+				var btn = document.createElement("button");
+				btn.textContent = "flash";
+				btn.disabled = !robot.canFlash();
+				btn.addEventListener("mousedown", function () {
+					pairing.noRedraw = true;
+					robot.flash(true);
+					pairing.noRedraw = false;
+				}, false);
+				btn.addEventListener("mouseup", function () {
+					pairing.noRedraw = true;
+					robot.flash(false);
+					pairing.noRedraw = false;
+				}, false);
+				td.appendChild(btn);
 			}
+			tr.appendChild(td);
+
+			table.appendChild(tr);
 		});
-		td.className = "rect";
-
-		// drag robot name
-		td.draggable = true;
-		td.addEventListener("dragstart", function (ev) {
-			ev.dataTransfer.setData("text/plain", "R/" + robotName);
-			ev.dataTransfer.setDragImage(tr.getElementsByTagName("td")[0], 0, 0);
-			ev.dataTransfer.effectAllowed = "copy";
-		});
-
-		tr.appendChild(td);
-
-		td = document.createElement("td");
-		td.textContent = flashFunction && pairing.findGroupByRobotName(robotName) ? "\u2713" : "";	// checkmark
-		tr.appendChild(td);
-
-		td = document.createElement("td");
-		if (flashFunction) {
-			var btn = document.createElement("button");
-			btn.textContent = "flash";
-			btn.disabled = flashFunctionDisabled;
-			btn.addEventListener("mousedown", function () { flashFunction(true); }, false);
-			btn.addEventListener("mouseup", function () { flashFunction(false); }, false);
-			td.appendChild(btn);
-		}
-		tr.appendChild(td);
-
-		table.appendChild(tr);
 	}
-
-	robotArray.forEach(function (robot) {
-		addRow(robot.name, robot.flash, !robot.canFlash);
-	});
 }
 
 function fillStudentTable(studentArray, pairing) {
@@ -182,13 +188,21 @@ function fillGroupTable(groupArray, pairing) {
 				tr.appendChild(td);
 
 				var robot = pairing.getRobot(group.pair.robot);
-				if (robot && robot.flash) {
+				if (robot && robot.hasFlash()) {
 					td = document.createElement("td");
 					var btn = document.createElement("button");
 					btn.textContent = "flash";
-					btn.disabled = !robot.canFlash;
-					btn.addEventListener("mousedown", function () { robot.flash(true); }, false);
-					btn.addEventListener("mouseup", function () { robot.flash(false); }, false);
+					btn.disabled = !robot.canFlash();
+					btn.addEventListener("mousedown", function () {
+						pairing.noRedraw = true;
+						robot.flash(true);
+						pairing.noRedraw = false;
+					}, false);
+					btn.addEventListener("mouseup", function () {
+						pairing.noRedraw = true;
+						robot.flash(false);
+						pairing.noRedraw = false;
+					}, false);
 					td.appendChild(btn);
 					tr.appendChild(td);
 				}
@@ -252,7 +266,7 @@ function fillGroupTable(groupArray, pairing) {
 		p.style.overflowWrap = "break-word";
 		var a = document.createElement("a");
 		a.setAttribute("class", "url");
-		var toolURL = VPLTeacherTools.makeVPLURL(selectedGroup);
+		var toolURL = VPLTeacherTools.makeVPLURL(selectedGroup, "$BRIDGE");
 		var url = document.location.origin + toolURL;
 		a.textContent = url;
 		a.setAttribute("href", url);
@@ -308,48 +322,49 @@ function fillGroupTable(groupArray, pairing) {
 }
 
 window.addEventListener("load", function () {
+	var useTDM = "$BRIDGE" === "tdm";
+	var useJWS = "$BRIDGE" === "jws";
 	var tdmURL = VPLTeacherTools.getHashOption("w") || "ws://" + document.location.hostname + ":8597/";
+	var jwsURL = VPLTeacherTools.getHashOption("w") || "ws://" + document.location.hostname + ":8002/";
 	var url0 = "/vpl/vpl.html?ui=ui/classic/ui.json&uilanguage=$LANGUAGE&server=ws://" + document.location.hostname + ":8001/";
 	var pairing = new VPLTeacherTools.Pairing({
-		tdmURL: tdmURL,
+		tdmURL: useTDM ? tdmURL : null,
+		jwsURL: useJWS ? jwsURL : null,
 		onRobots: function (robotArray, pairing) {
     		fillRobotTable(robotArray, pairing);
 		},
-		robot: {
-			name: function (nodeId) {
-				return nodeId;
-			},
-			url: function (group) {
-				return url0 + "&robot=thymio-tdm&session=" + group.pair.session_id +
-					(group.students ? "&user=" + encodeURIComponent(group.students.join(", ")) : "") +
-					"#w=" + tdmURL + "&uuid=" + group.pair.robot;
-			}
+		robotLaunchURL: function (group) {
+console.error("ooops");
+			return url0 +
+				"&robot=" + (useJWS ? "thymio-jws" : "thymio-tdm") +
+				"&session=" + group.pair.session_id +
+				(group.students ? "&user=" + encodeURIComponent(group.students.join(", ")) : "") +
+				"#w=" + (useJWS ? jwsURL : tdmURL) + "&uuid=" + group.pair.robot;
 		},
 		nonRobots: [
 			{
-				name: function () {
-					return VPLTeacherTools.translate("(simulator)");
-				},
-				url: function (group, sessionId) {
+				name: VPLTeacherTools.translate("(simulator)"),
+				niceName: VPLTeacherTools.translate("simulator"),
+				launchURL: function (group) {
+console.error("ooops");
 					// set user to comma-separated users if they exist
-					return url0 + "&robot=sim&session=" + sessionId +
+					return url0 + "&robot=sim&session=" + group.pair.session_id +
 						(group.students ? "&user=" + encodeURIComponent(group.students.join(", ")) : "");
 				}
 			},
 			{
-				name: function () {
-					return VPLTeacherTools.translate("(local bridge)");
-				},
-				url: function (group, sessionId) {
+				name: VPLTeacherTools.translate("(pupil local bridge)"),
+				niceName: VPLTeacherTools.translate("pupil local bridge"),
+				launchURL: function (group) {
 					// set user to comma-separated users if they exist
-					return url0 + "&robot=thymio&session=" + sessionId +
+					return url0 + "&robot=thymio&session=" + group.pair.session_id +
 						(group.students ? "&user=" + encodeURIComponent(group.students.join(", ")) : "");
 				}
 			}
 		],
 		nonRobotNameMapping: {
 			"!sim": VPLTeacherTools.translate("(simulator)"),
-			"!thymio": VPLTeacherTools.translate("(local bridge)")
+			"!thymio": VPLTeacherTools.translate("(pupil local bridge)")
 		},
 		onStudents: function (studentArray) {
     		fillStudentTable(studentArray, pairing);
@@ -366,5 +381,9 @@ window.addEventListener("load", function () {
 	var aLogin = document.getElementById("login");
 	aLogin.textContent = urlLogin;
 	aLogin.href = urlLogin;
+
+	// show which connection method is used
+	document.getElementById("tdm-msg").style.display = useTDM ? "block" : "none";
+	document.getElementById("jws-msg").style.display = useJWS ? "block" : "none";
 
 }, false);

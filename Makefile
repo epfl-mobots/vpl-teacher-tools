@@ -22,6 +22,7 @@ PKGFILES = \
 	vpl3/server.py \
 	vpl3/server_http.py \
 	vpl3/server_ws.py \
+	vpl3/thymio.py \
 	vpl3/tkapp.py \
 	vpl3/urltiny.py \
 	vpl3/urlutil.py \
@@ -79,6 +80,7 @@ TOOLSFILES = \
 	doc/vpl-teacher-tools/pairing.html \
 	doc/vpl-teacher-tools/pairing.fr.html \
 	doc/vpl-teacher-tools/pairing-gui.js \
+	doc/vpl-teacher-tools/robots.js \
 	doc/vpl-teacher-tools/pairing.js \
 	doc/vpl-teacher-tools/README.md \
 	doc/vpl-teacher-tools/students.html \

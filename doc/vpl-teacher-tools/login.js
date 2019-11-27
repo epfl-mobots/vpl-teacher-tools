@@ -26,6 +26,6 @@ VPLTeacherTools.Login.prototype.updateGroups = function () {
 };
 
 VPLTeacherTools.Login.prototype.launchVPL = function (group) {
-	var url = VPLTeacherTools.makeVPLURL(group);
+	var url = VPLTeacherTools.makeVPLURL(group, "$BRIDGE");
 	document.location = url;
 };

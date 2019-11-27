@@ -38,7 +38,9 @@ class ApplicationBase:
         self.server.start()
         self.http_port = self.server.get_http_port()
         self.address = f"{URLUtil.get_local_IP()}:{self.http_port}"
+        self.no_serial = False
         self.language = language
+        self.bridge = "tdm"  # "tdm" or "jws" or "none"
         self.full_url = full_url
 
         # to implement in subclasses:

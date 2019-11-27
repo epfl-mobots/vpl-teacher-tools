@@ -41,10 +41,27 @@ class Application(ApplicationBase):
                 None,
                 lambda sender: self.menu_item_language("fr")
             ],
+            None,
+            [
+                "Thymio Device Manager",
+                None,
+                lambda sender: self.menu_item_bridge("tdm")
+            ],
+            [
+                "JSON WebSocket",
+                None,
+                lambda sender: self.menu_item_bridge("jws")
+            ],
+            [
+                "No Robot",
+                None,
+                lambda sender: self.menu_item_bridge("none")
+            ],
         ])
         self.app_objc.start()
         self.menu_item_shorten_urls()
         self.menu_item_language("fr")
+        self.menu_item_bridge("tdm")
         window = self.app_objc.createWindowWithTitle_width_height_x_y_(
             "VPL Server - " + self.address,
             300, 100,
@@ -57,6 +74,11 @@ class Application(ApplicationBase):
                                                                 "Open tools in browser",
                                                                 lambda sender: self.start_browser_tt(),
                                                                 180, 60, 20)
+
+    def disable_serial(self):
+        self.no_serial = True
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("JSON WebSocket", "Options")
+        item.setEnabled_(0)
 
     def main_loop(self):
         self.app_objc.run()
@@ -77,3 +99,12 @@ class Application(ApplicationBase):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("French", "Options")
         item.setState_(1 if language == "fr" else 0)
         self.set_language(language)
+
+    def menu_item_bridge(self, bridge):
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Thymio Device Manager", "Options")
+        item.setState_(1 if bridge == "tdm" else 0)
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("JSON WebSocket", "Options")
+        item.setState_(1 if bridge == "jws" else 0)
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("No Robot", "Options")
+        item.setState_(1 if bridge == "none" else 0)
+        self.bridge = bridge

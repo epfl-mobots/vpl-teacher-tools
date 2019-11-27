@@ -11,57 +11,31 @@ VPLTeacherTools.Pairing = function (options) {
     this.selectedRobot = "";
     this.selectedGroup = "";
     this.groupOfSelectedPair = "";
+	this.noRedraw = false;
 
     var self = this;
-    this.nonRobots = options && options.nonRobots
-        ? options.nonRobots.map(function (nr) {
-            return {
-                name: nr.name(null),
-				url: nr.url,
-                flash: null
-            };
-        })
-        : [];
+    this.nonRobots = options && options.nonRobots || [];
     this.nonRobotNameMapping = options && options.nonRobotNameMapping || {};
-    if (options.onRobots) {
-        options.onRobots(this.nonRobots, this);
-    }
-    this.tdm = new window["TDM"](options && options.tdmURL || null,
-		{
-			"uuid": null,
-			"change": function () {
-                var nodes = options.robot ? self.getRobotNodes() : [];
-                var a = nodes
-                    .map(function (node) {
-                        return {
-                            name: options.robot.name(node.id.toString()),
-							url: options.robot.url,
-                            canFlash: node.status === window["TDM"].status.ready || node.status === window["TDM"].status.available,
-                            flash: function (on) {
-                				window["TDM"].runOnNode(node,
-                                    on
-                					   ? "call leds.circle(32,32,32,32,32,32,32,32)\n"
-                                       : "call leds.circle(0,0,0,0,0,0,0,0)\n"
-                				);
-                			}
-                        };
-                    })
-                    .concat(self.nonRobots);
-                self.robots = a;
-                if (options && options.onRobots) {
-				    options.onRobots(a, self);
-                }
-                if (options && options.onGroups) {
-				    options.onGroups(self.groups, self);
-                }
-			}
-		});
+	this.robotCon = new VPLTeacherTools.RobotConnection({
+		method: options.tdmURL ? "tdm" : options.jwsURL ? "jws" : "",
+		url: options && (options.tdmURL || options.jwsURL) || null,
+		otherRobots: this.nonRobots,
+		onChange: function (robotCon) {
+			var robots = robotCon.robots;
+			robots.forEach(function (r) {
+				r.url = options.robotLaunchURL;
+			});
+			self.robots = robots.slice();
+            if (options && options.onRobots) {
+			    options.onRobots(robots, self);
+            }
+            if (options && options.onGroups) {
+			    options.onGroups(self.groups, self);
+            }
+		}
+	});
 
     var nonGroups = options && options.nonGroups.map(function (name) { return {"name": name}}) || [];
-    if (options.onRobots) {
-        this.robots = this.nonRobots.slice();
-        options.onRobots(this.nonRobots, this);
-    }
 	this.client = new VPLTeacherTools.HTTPClient();
     this.updateStudents();
     this.updateGroups();
