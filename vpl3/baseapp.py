@@ -37,15 +37,20 @@ class ApplicationBase:
         self.server.add_files(if_new_db=True)
         self.server.start()
         self.http_port = self.server.get_http_port()
-        self.address = f"{URLUtil.get_local_IP()}:{self.http_port}"
         self.no_serial = False
         self.language = language
         self.bridge = "tdm"  # "tdm" or "jws" or "none"
         self.full_url = full_url
 
         # to implement in subclasses:
-        # GUI initialization showing self.address w/ a way to call
+        # GUI initialization showing self.tt_url() w/ a way to call
         # self.start_browser_tt() and self.quit()
+
+    def tt_abs_path(self):
+        return f"/tt{'.' + self.language if self.language and self.language != 'en' else ''}.html"
+
+    def tt_url(self, short=False):
+        return f"{'' if short else 'http://'}{URLUtil.get_local_IP()}:{self.http_port}{self.tt_abs_path()}"
 
     def run(self):
         self.update_connection()
@@ -64,7 +69,7 @@ class ApplicationBase:
         self.show_connection_status(str)
 
     def start_browser_tt(self):
-        path = f"/tt{'.' + self.language if self.language and self.language != 'en' else ''}.html"
+        path = self.tt_abs_path()
         URLUtil.start_browser(port=self.http_port,
                               path=path,
                               using=["firefox", "chrome"])

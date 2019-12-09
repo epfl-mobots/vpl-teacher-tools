@@ -14,7 +14,7 @@ class Application(ApplicationBase):
     def __init__(self, **kwargs):
         super(ApplicationBase, self).__init__(**kwargs)
         self.start_browser_tt()
-        print("VPL Server - " + self.address)
+        print("VPL Server - " + self.tt_url(True))
 
     def main_loop(self):
         while True:

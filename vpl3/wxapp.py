@@ -17,7 +17,7 @@ class Application(ApplicationBase, wx.App):
         wx.App.__init__(self)
 
         self.frame = wx.Frame(None,
-                              title="VPL Server - " + self.address,
+                              title="VPL Server - " + self.tt_url(True),
                               size=wx.Size(800, 500))
         self.frame.Bind(wx.EVT_CLOSE,
                         lambda event: self.quit())

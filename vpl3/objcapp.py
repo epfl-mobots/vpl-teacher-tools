@@ -63,8 +63,8 @@ class Application(ApplicationBase):
         self.menu_item_language("fr")
         self.menu_item_bridge("tdm")
         window = self.app_objc.createWindowWithTitle_width_height_x_y_(
-            "VPL Server - " + self.address,
-            300, 100,
+            "VPL Server - " + self.tt_url(True),
+            400, 100,
             20, 20
         )
         self.status = self.app_objc.addLabelToWindow_title_width_x_y_(window,
@@ -73,7 +73,7 @@ class Application(ApplicationBase):
         self.app_objc.addButtonToWindow_title_action_width_x_y_(window,
                                                                 "Open tools in browser",
                                                                 lambda sender: self.start_browser_tt(),
-                                                                180, 60, 20)
+                                                                180, 110, 20)
 
     def disable_serial(self):
         self.no_serial = True
@@ -108,3 +108,4 @@ class Application(ApplicationBase):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("No Robot", "Options")
         item.setState_(1 if bridge == "none" else 0)
         self.bridge = bridge
+        self.server.http_server.bridge = bridge

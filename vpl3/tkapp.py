@@ -19,7 +19,7 @@ class Application(ApplicationBase, tk.Tk):
 
         self.shorten_url = False
 
-        self.title("VPL Server - " + self.address)
+        self.title("VPL Server - " + self.tt_url(True))
         self.protocol("WM_DELETE_WINDOW", self.quit)  # close widget
         self.createcommand("exit", self.quit)  # Quit menu
         self.grid()
