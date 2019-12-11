@@ -64,12 +64,15 @@ class Application(ApplicationBase):
         self.menu_item_bridge("tdm")
         window = self.app_objc.createWindowWithTitle_width_height_x_y_(
             "VPL Server - " + self.tt_url(True),
-            400, 100,
+            400, 120,
             20, 20
         )
         self.status = self.app_objc.addLabelToWindow_title_width_x_y_(window,
                                                                       "",
-                                                                      250, 10, 60)
+                                                                      250, 10, 80)
+        self.robots_status = self.app_objc.addLabelToWindow_title_width_x_y_(window,
+                                                                             "",
+                                                                             250, 10, 60)
         self.app_objc.addButtonToWindow_title_action_width_x_y_(window,
                                                                 "Open tools in browser",
                                                                 lambda sender: self.start_browser_tt(),
@@ -86,6 +89,10 @@ class Application(ApplicationBase):
     def show_connection_status(self, str):
         if self.status:
             self.status.setStringValue_(str)
+
+    def show_robots_status(self, str):
+        if self.robots_status:
+            self.robots_status.setStringValue_(str)
 
     def menu_item_shorten_urls(self):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Shorten URLs", "Options")
@@ -108,4 +115,4 @@ class Application(ApplicationBase):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("No Robot", "Options")
         item.setState_(1 if bridge == "none" else 0)
         self.bridge = bridge
-        self.server.http_server.bridge = bridge
+        self.server.set_bridge(bridge)

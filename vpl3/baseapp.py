@@ -39,7 +39,7 @@ class ApplicationBase:
         self.http_port = self.server.get_http_port()
         self.no_serial = False
         self.language = language
-        self.bridge = "tdm"  # "tdm" or "jws" or "none"
+        self.bridge = "none"  # "tdm" or "jws" or "none"
         self.full_url = full_url
 
         # to implement in subclasses:
@@ -51,6 +51,10 @@ class ApplicationBase:
 
     def tt_url(self, short=False):
         return f"{'' if short else 'http://'}{URLUtil.get_local_IP()}:{self.http_port}{self.tt_abs_path()}"
+
+    def set_bridge(self, bridge):
+        self.bridge = bridge
+        self.server.set_bridge(bridge)
 
     def run(self):
         self.update_connection()
@@ -67,6 +71,17 @@ class ApplicationBase:
             else "-"
         }"""
         self.show_connection_status(str)
+
+    def update_robots(self, session_id=None):
+        if self.bridge == "jws":
+            str = f"""Number of robots: {
+                self.server.ws_server.connection_count
+                if self.server.ws_server
+                else "-"
+            }"""
+            self.show_robots_status(str)
+        else:
+            self.show_robots_status("")
 
     def start_browser_tt(self):
         path = self.tt_abs_path()
@@ -89,6 +104,10 @@ class ApplicationBase:
 
     def show_connection_status(self, str):
         # should be overriden: should display str as the connection status
+        pass
+
+    def show_robots_status(self, str):
+        # should be overriden: should display str as the robots status
         pass
 
     def writeln(self, str):

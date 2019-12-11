@@ -72,6 +72,12 @@ class ThymioWebSocketServer:
     def run(self):
 
         async def on_connection_changed(node_id, connected):
+            if connected:
+                if self.on_connect_cb:
+                    self.on_connect_cb(node_id)
+            else:
+                if self.on_disconnect_cb:
+                    self.on_disconnect_cb(node_id)
             print("Connection" if connected else "Disconnection", node_id)
             remote_node = self.thymio.remote_nodes[node_id]
             msg = {

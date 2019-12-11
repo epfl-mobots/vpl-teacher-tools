@@ -178,6 +178,9 @@ class Message:
             self.var_val = val
         elif self.id == Message.ID_LIST_NODES:
             self.version, offset = self.get_uint16(0)
+        elif self.id == Message.ID_GET_NODE_DESCRIPTION_FRAGMENT:
+            self.version, offset = self.get_uint16(0)
+            self.fragment, offset = self.get_uint16(offset)
 
     def serialize(self):
         """Serialize message to bytes.
@@ -472,7 +475,7 @@ class Connection:
                 "/dev/" + filename
                 for filename in os.listdir("/dev")
                 if filename.startswith("cu.usb")
-            ][0]
+            ]
         elif sys.platform == "win32":
             devices = ["COM8"]
         else:
@@ -678,6 +681,17 @@ class Connection:
             Message.PROTOCOL_VERSION
         ])
         msg = Message(Message.ID_GET_NODE_DESCRIPTION, self.host_node_id, payload)
+        self.send(msg)
+
+    def get_node_description_fragment(self, target_node_id, fragment):
+        """Send a ID_GET_NODE_DESCRIPTION_FRAGMENT message.
+        """
+        payload = Message.uint16array_to_bytes([
+            target_node_id,
+            Message.PROTOCOL_VERSION,
+            fragment
+        ])
+        msg = Message(Message.ID_GET_NODE_DESCRIPTION_FRAGMENT, self.host_node_id, payload)
         self.send(msg)
 
     def get_variables(self, target_node_id, chunk_offset=0, chunk_length=None):
