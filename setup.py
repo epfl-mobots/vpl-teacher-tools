@@ -95,6 +95,7 @@ DATA_FILES = [
         ]),
     ("doc/vpl/ui/classic",
         [
+            "doc/vpl/ui/classic/aseba.json",
             "doc/vpl/ui/classic/block-english.json",
             "doc/vpl/ui/classic/block-french.json",
             "doc/vpl/ui/classic/classic.css",
@@ -103,6 +104,9 @@ DATA_FILES = [
             "doc/vpl/ui/classic/cmd-vpl-english.json",
             "doc/vpl/ui/classic/cmd-vpl-french.json",
             "doc/vpl/ui/classic/french.json",
+            "doc/vpl/ui/classic/js.json",
+            "doc/vpl/ui/classic/l2.json",
+            "doc/vpl/ui/classic/python.json",
             "doc/vpl/ui/classic/ui.json",
         ]),
     ("doc/vpl/ui/svg",
