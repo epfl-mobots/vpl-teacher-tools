@@ -1,4 +1,5 @@
 {
+	"hardcoded-gui": true,
 	"blocks": null,
 	"buttons": null,
 	"widgets": null,
@@ -13,6 +14,11 @@
 	},
 
 	"overlays": [
+		"../vpl/ui/classic/aseba.json",
+		"../vpl/ui/classic/l2.json",
+		"../vpl/ui/classic/js.json",
+		"../vpl/ui/classic/python.json",
+
 		"../vpl/ui/classic/block-english.json",
 		"../vpl/ui/classic/cmd-vpl-english.json",
 		"../vpl/ui/classic/cmd-sim-english.json",
