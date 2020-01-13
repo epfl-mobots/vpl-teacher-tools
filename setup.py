@@ -130,7 +130,7 @@ OPTIONS = {
         "CFBundleIdentifier": "ch.epfl.mobots.vpl3server",
         "CFBundleVersion": "0.1",
         "NSHumanReadableCopyright":
-            "2019, École polytechnique fédérale de Lausanne (EPFL)",
+            "2019-2020, École polytechnique fédérale de Lausanne (EPFL)",
     }
 }
 
