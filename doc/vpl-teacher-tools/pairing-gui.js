@@ -112,6 +112,20 @@ function fillStudentTable(studentArray, pairing) {
     }
 }
 
+function qrCodeSize() {
+	var minViewportSize = window.visualViewport ?
+		Math.min(window.visualViewport.width,
+			window.visualViewport.height)
+		: document.documentElement.clientWidth ?
+		Math.min(document.documentElement.clientWidth,
+			document.documentElement.clientHeight)
+		: window.innerWidth ?
+		Math.min(window.innerWidth, window.innerHeight)
+		: 200;
+	var size = Math.min(Math.floor(minViewportSize * 0.8), 200);
+	return size;
+}
+
 function fillGroupTable(groupArray, pairing) {
 
 	function checkDragType(ev) {
@@ -277,16 +291,7 @@ function fillGroupTable(groupArray, pairing) {
 		if (toolURL && window.QRCode) {
 			var qrdiv = document.createElement("div");
 			div.appendChild(qrdiv);
-			var minViewportSize = window.visualViewport ?
-				Math.min(window.visualViewport.width,
-					window.visualViewport.height)
-				: document.documentElement.clientWidth ?
-				Math.min(document.documentElement.clientWidth,
-					document.documentElement.clientHeight)
-				: window.innerWidth ?
-				Math.min(window.innerWidth, window.innerHeight)
-				: 200;
-			var size = Math.min(Math.floor(minViewportSize * 0.8), 200);
+			var size = qrCodeSize();
 			var qrcode = new window.QRCode(qrdiv,
 				{
 					text: url,
@@ -334,7 +339,6 @@ window.addEventListener("load", function () {
     		fillRobotTable(robotArray, pairing);
 		},
 		robotLaunchURL: function (group) {
-console.error("ooops");
 			return url0 +
 				"&robot=" + (useJWS ? "thymio-jws" : "thymio-tdm") +
 				"&session=" + group.pair.session_id +
@@ -346,7 +350,6 @@ console.error("ooops");
 				name: VPLTeacherTools.translate("(simulator)"),
 				niceName: VPLTeacherTools.translate("simulator"),
 				launchURL: function (group) {
-console.error("ooops");
 					// set user to comma-separated users if they exist
 					return url0 + "&robot=sim&session=" + group.pair.session_id +
 						(group.students ? "&user=" + encodeURIComponent(group.students.join(", ")) : "");
@@ -381,6 +384,18 @@ console.error("ooops");
 	var aLogin = document.getElementById("login");
 	aLogin.textContent = urlLogin;
 	aLogin.href = urlLogin;
+	if (window.QRCode) {
+		var qrdiv = document.createElement("div");
+		document.getElementById("loginqrcode").appendChild(qrdiv);
+		var size = qrCodeSize();
+		var qrcode = new window.QRCode(qrdiv,
+			{
+				text: urlLogin,
+				width: size,
+				height: size,
+				correctLevel: QRCode.CorrectLevel.L
+			});
+	}
 
 	// show which connection method is used
 	document.getElementById("tdm-msg").style.display = useTDM ? "block" : "none";
