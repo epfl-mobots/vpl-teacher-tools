@@ -7,6 +7,8 @@
 
 from vpl3.baseapp import ApplicationBase
 from vpl3.cacaoapp import ApplicationObjCShell
+from vpl3.urlutil import URLUtil
+from Cocoa import *
 
 
 class Application(ApplicationBase):
@@ -22,6 +24,13 @@ class Application(ApplicationBase):
                 "Open Tools in Browser",
                 "b",
                 lambda sender: self.start_browser_tt()
+            ]
+        ])
+        self.app_objc.addMenu_withItems_("Edit", [
+            [
+                "Copy URL",
+                "c",
+                lambda sender: self.menu_item_copy_url()
             ]
         ])
         self.app_objc.addMenu_withItems_("Options", [
@@ -93,6 +102,14 @@ class Application(ApplicationBase):
     def show_robots_status(self, str):
         if self.robots_status:
             self.robots_status.setStringValue_(str)
+
+    def menu_item_copy_url(self):
+        path = self.tt_abs_path()
+        url = URLUtil.teacher_tools_URL(port=self.http_port,
+                                        path=path)
+        pasteboard = NSPasteboard.generalPasteboard()
+        pasteboard.clearContents()
+        pasteboard.setString_forType_(url, NSStringPboardType)
 
     def menu_item_shorten_urls(self):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Shorten URLs", "Options")
