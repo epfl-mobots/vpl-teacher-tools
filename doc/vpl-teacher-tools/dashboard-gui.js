@@ -77,7 +77,7 @@ function fillGroupTable(sessionArray, dashboard) {
 }
 
 function fillFileTable(fileArray, dashboard) {
-	clearTable("files-dashboard", VPLTeacherTools.translateArray(["Filename", "Default"]));
+	clearTable("files-dashboard", VPLTeacherTools.translateArray(["", "Filename", "Default"]));
 	var table = document.getElementById("files-dashboard");
 
 	if (fileArray.length === 0) {
@@ -91,6 +91,16 @@ function fillFileTable(fileArray, dashboard) {
 
 	fileArray.forEach(function (file) {
 		var tr = document.createElement("tr");
+
+		var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename);
+		var td = document.createElement("td");
+		var fileIconURL = {"vpl3": "icon-file-vpl3.svg", "vpl3ui": "icon-file-vpl3ui.svg"}[suffix];
+		if (fileIconURL) {
+			var img = document.createElement("img");
+			img.src = fileIconURL;
+			td.appendChild(img);
+		}
+		tr.appendChild(td);
 
 		var td = document.createElement("td");
 		td.textContent = file.filename;

@@ -39,8 +39,8 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 	if (fileArray.length > 0) {
 		clearTable(tableId,
 			VPLTeacherTools.translateArray(forStudents
-				? ["Filename", "Students", "Time", "Size"]
-				: ["Filename", "Time", "Size", "Dashboard", "Default"]));
+				? ["", "Filename", "Students", "Time", "Size"]
+				: ["", "Filename", "Time", "Size", "Dashboard", "Default"]));
 
 		fileArray.forEach(function (file) {
 			if (!file.renamed) {
@@ -66,9 +66,20 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 				}
 			}
 
+			var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename);
+
 			var tr = document.createElement("tr");
 
 			var td = document.createElement("td");
+			var fileIconURL = {"vpl3": "icon-file-vpl3.svg", "vpl3ui": "icon-file-vpl3ui.svg"}[suffix];
+			if (fileIconURL) {
+				var img = document.createElement("img");
+				img.src = fileIconURL;
+				td.appendChild(img);
+			}
+			tr.appendChild(td);
+
+			td = document.createElement("td");
 			if (file.renamed) {
 				renamedFilename = document.createElement("input");
 				renamedFilename.value = file.filename;
@@ -119,7 +130,6 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 			tr.appendChild(td);
 
 			if (!forStudents) {
-				var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename);
 				td = document.createElement("td");
 				if (suffix === "vpl3" || suffix === "vpl3ui") {
 					td.textContent = file.mark ? "\u2612" : "\u2610";

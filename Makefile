@@ -76,6 +76,8 @@ TOOLSFILES = \
 	doc/vpl-teacher-tools/filebrowser-gui.js \
 	doc/vpl-teacher-tools/filebrowser.js \
 	doc/vpl-teacher-tools/html-tools.css \
+	doc/vpl-teacher-tools/icon-file-vpl3.svg \
+	doc/vpl-teacher-tools/icon-file-vpl3ui.svg \
 	doc/vpl-teacher-tools/initdb-dev.html \
 	doc/vpl-teacher-tools/initdb-dev.fr.html \
 	doc/vpl-teacher-tools/initdb-dev-gui.js \
