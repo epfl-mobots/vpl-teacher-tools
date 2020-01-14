@@ -37,11 +37,13 @@ class VPLHTTPServer:
                  http_port=None,
                  language=None,
                  full_url=False,
+                 has_login_qr_code=False,
                  bridge="tdm",
                  logger=None):
         self.http_port = http_port
         self.language = language
         self.full_url = full_url
+        self.has_login_qr_code = has_login_qr_code
         self.bridge = bridge  # "tdm" or "jws" or "none"
         self.db_path = db_path
         self.db = Db(self.db_path)
@@ -327,6 +329,8 @@ class VPLHTTPServer:
                                                   bytes(self.bridge, "utf-8")),
                               r"^/.*\.(html|css|json|js)$")
         self.httpd.add_filter(lambda s: s.replace(b"$SHORTENURL", b"false" if self.full_url else b"true"),
+                              r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
+        self.httpd.add_filter(lambda s: s.replace(b"$LOGINQRCODE", b"true" if self.has_login_qr_code else b"false"),
                               r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
         self.groups = []
 

@@ -17,6 +17,7 @@ class Application(ApplicationBase):
         ApplicationBase.__init__(self, **kwargs)
 
         self.shorten_url = False
+        self.login_qr_code = False
 
         self.app_objc = ApplicationObjCShell.alloc().init()
         self.app_objc.addMenu_withItems_("File", [
@@ -38,6 +39,11 @@ class Application(ApplicationBase):
                 "Shorten URLs",
                 None,
                 lambda sender: self.menu_item_shorten_urls()
+            ],
+            [
+                "Login Screen QR Code",
+                None,
+                lambda sender: self.menu_item_login_QR_code()
             ],
             None,
             [
@@ -116,6 +122,12 @@ class Application(ApplicationBase):
         self.shorten_url = not self.shorten_url
         item.setState_(1 if self.shorten_url else 0)
         self.server.http_server.full_url = not self.shorten_url
+
+    def menu_item_login_QR_code(self):
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Login Screen QR Code", "Options")
+        self.login_qr_code = not self.login_qr_code
+        item.setState_(1 if self.login_qr_code else 0)
+        self.server.http_server.has_login_qr_code = self.login_qr_code
 
     def menu_item_language(self, language):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("English", "Options")

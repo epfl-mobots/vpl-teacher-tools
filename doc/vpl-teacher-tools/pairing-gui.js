@@ -384,7 +384,7 @@ window.addEventListener("load", function () {
 	var aLogin = document.getElementById("login");
 	aLogin.textContent = urlLogin;
 	aLogin.href = urlLogin;
-	if (window.QRCode) {
+	if (window.QRCode && $LOGINQRCODE) {
 		var qrdiv = document.createElement("div");
 		document.getElementById("loginqrcode").appendChild(qrdiv);
 		var size = qrCodeSize();
