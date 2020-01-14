@@ -5,32 +5,32 @@ window["vplStorageGetFunction"] = function (filename, fun) {
 	filename = options && options["initialFileName"] || filename;
 	var readOnly = options ? options["readOnly"] === true : false;
 	var customizationMode = options ? options["customizationMode"] === true : false;
-	if (progJSON) {
-		// change toolbars
-		var prog = JSON.parse(progJSON);
-		// disable some buttons in addition to the ones specified in program
-		prog["disabledUI"] = [
-			"src:language",
-			"vpl:new",
-			"vpl:load",
-			"vpl:text",
-			"vpl:sim",
-			"sim:vpl",
-			"sim:text",
-			"sim:teacher"
-		].reduce(function (acc, val) {
-			return acc.indexOf(val) < 0 ? acc.concat(val) : acc;
-		}, prog["disabledUI"] || []);
-		progJSON = JSON.stringify(prog);
+	// change toolbars
+	var prog = progJSON ? JSON.parse(progJSON) : {};
+	// disable some buttons in addition to the ones specified in program
+	prog["disabledUI"] = [
+		"src:language",
+		"vpl:new",
+		"vpl:load",
+		"vpl:text",
+		"vpl:sim",
+		"sim:vpl",
+		"sim:text",
+		"sim:teacher",
+		"sim:noise",
+		"sim:map-kind"
+	].reduce(function (acc, val) {
+		return acc.indexOf(val) < 0 ? acc.concat(val) : acc;
+	}, prog["disabledUI"] || []);
+	progJSON = JSON.stringify(prog);
 
-		fun(progJSON,
-			{
-				"filename": filename,
-				"readOnly": readOnly,
-				"customizationMode": customizationMode
-			});
-		sessionStorage.setItem("initialUISettings", window["vplGetUIAsJSON"]());
-	}
+	fun(progJSON,
+		{
+			"filename": filename,
+			"readOnly": readOnly,
+			"customizationMode": customizationMode
+		});
+	sessionStorage.setItem("initialUISettings", window["vplGetUIAsJSON"]());
 };
 
 window.addEventListener("load", function () {
