@@ -39,7 +39,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 		clearTable(tableId,
 			VPLTeacherTools.translateArray(forStudents
 				? ["Filename", "Students", "Time", "Size"]
-				: ["Filename", "Time", "Size", "Marked", "Default"]));
+				: ["Filename", "Time", "Size", "Dashboard", "Default"]));
 
 		fileArray.forEach(function (file) {
 			if (!file.renamed) {
@@ -119,9 +119,9 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 
 			if (!forStudents) {
 				var isVPL3 = /\.vpl3$/.test(file.filename);
-				var isMarkable = isVPL3 || /\.vpl3ui$/.test(file.filename);
+				var isVPL3UI = /\.vpl3ui$/.test(file.filename);
 				td = document.createElement("td");
-				if (isMarkable) {
+				if (isVPL3 || isVPL3UI) {
 					td.textContent = file.mark ? "\u2612" : "\u2610";
 					td.addEventListener("click", function () {
 						fileBrowser.toggleMark(file.id);
@@ -129,10 +129,10 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 				}
 				tr.appendChild(td);
 				td = document.createElement("td");
-				if (isVPL3) {
+				if (isVPL3 || isVPL3UI) {
 					td.textContent = file["default"] ? "\u2612" : "\u2610";
 					td.addEventListener("click", function () {
-						fileBrowser.setDefaultFile(file.id);
+						fileBrowser.setDefaultFile(file.id, isVPL3UI ? "vpl3ui" : "vpl3");
 					}, false);
 				}
 				tr.appendChild(td);
@@ -212,9 +212,9 @@ window.addEventListener("load", function () {
 
 	btn = document.getElementById("btn-new");
 	btn.addEventListener("click", function () {
-		var filename = fileBrowser.selectedFile().filename
-			.replace(/vpl3ui$/, "vpl3");
-		fileBrowser.duplicateTeacherFile(filename);
+		var file = fileBrowser.selectedOrDefaultUIFile();
+		var filename = file.filename.replace(/vpl3ui$/, "vpl3");
+		fileBrowser.duplicateFile(file, filename);
 	}, false);
 
 	btn = document.getElementById("btn-new-conf");

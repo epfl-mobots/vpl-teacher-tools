@@ -197,8 +197,8 @@ VPLTeacherTools.HTTPClient.prototype.toggleFileMark = function (id, opt) {
 	this.rest("/api/markFile?id=" + id.toString(10) + "&action=toggle", opt);
 };
 
-VPLTeacherTools.HTTPClient.prototype.setDefaultFile = function (id, opt) {
-	this.rest("/api/setDefaultFile?id=" + id.toString(10), opt);
+VPLTeacherTools.HTTPClient.prototype.setDefaultFile = function (id, suffix, opt) {
+	this.rest("/api/setDefaultFile?id=" + id.toString(10) + (suffix ? "&suffix=" + encodeURIComponent(suffix) : ""), opt);
 };
 
 VPLTeacherTools.HTTPClient.prototype.listFiles = function (queryProps, opt) {

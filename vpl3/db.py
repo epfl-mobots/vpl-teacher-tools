@@ -719,14 +719,23 @@ class Db:
         finally:
             self._db.commit()
 
-    def set_default_file(self, file_id):
-        """Set the default file"""
+    def set_default_file(self, file_id, suffix=None):
+        """Set the default file for the specified extension"""
         c = self._db.cursor()
         try:
-            c.execute("""
-                UPDATE files
-                SET defaul=fileid=?
-            """, (file_id,))
+            if suffix:
+                if suffix[0:1] != ".":
+                    suffix = "." + suffix
+                c.execute("""
+                    UPDATE files
+                    SET defaul=fileid=?
+                    WHERE substr(name,?)=?
+                """, (file_id, -len(suffix), suffix))
+            else:
+                c.execute("""
+                    UPDATE files
+                    SET defaul=fileid=?
+                """, (file_id,))
         finally:
             self._db.commit()
 

@@ -100,7 +100,7 @@ function fillFileTable(fileArray, dashboard) {
 		if (/\.vpl3$/.test(file.filename)) {
 			td.textContent = file["default"] ? "\u2612" : "\u2610";
 			td.addEventListener("click", function () {
-				dashboard.setDefaultFile(file.id);
+				dashboard.setDefaultProgram(file.id);
 			}, false);
 		}
 		tr.appendChild(td);

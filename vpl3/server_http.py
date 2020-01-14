@@ -240,7 +240,8 @@ class VPLHTTPServer:
             q = VPLHTTPServer.query_param(handler)
             if "id" not in q:
                 return VPLHTTPServer.error("Missing id")
-            return self.call_api(Db.set_default_file, int(q["id"][0]))
+            suffix = q["suffix"][0] if "suffix" in q else None
+            return self.call_api(Db.set_default_file, int(q["id"][0]), suffix)
 
         @self.httpd.http_get("/api/removeFiles")
         def http_get_api_removeFiles(self, handler):

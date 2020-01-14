@@ -160,9 +160,9 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
 	});
 };
 
-VPLTeacherTools.Dashboard.prototype.setDefaultFile = function (fileId) {
+VPLTeacherTools.Dashboard.prototype.setDefaultProgram = function (fileId) {
 	var self = this;
-    this.client.setDefaultFile(fileId, {
+    this.client.setDefaultFile(fileId, "vpl3", {
         onSuccess: function () {
 			self.updateFiles();
         }

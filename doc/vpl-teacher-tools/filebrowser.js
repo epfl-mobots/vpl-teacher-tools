@@ -148,9 +148,9 @@ VPLTeacherTools.FileBrowser.prototype.toggleMark = function (fileId) {
     });
 };
 
-VPLTeacherTools.FileBrowser.prototype.setDefaultFile = function (fileId) {
+VPLTeacherTools.FileBrowser.prototype.setDefaultFile = function (fileId, suffix) {
 	var self = this;
-    this.client.setDefaultFile(fileId, {
+    this.client.setDefaultFile(fileId, suffix, {
         onSuccess: function () {
 			self.updateFiles();
         }
@@ -171,10 +171,13 @@ VPLTeacherTools.FileBrowser.prototype.addFile = function (filename, content) {
 };
 
 VPLTeacherTools.FileBrowser.prototype.canCreateProgramFile = function () {
-	return this.countSelectedFiles(false) == 1 &&
-		/.vpl3ui$/.test(this.teacherFiles.find(function (val) {
+	return this.countSelectedFiles(false) == 1
+		? /.vpl3ui$/.test(this.teacherFiles.find(function (val) {
             return val.selected;
-        }).filename);
+        }).filename)
+        : this.teacherFiles.find(function (val) {
+            return val["default"];
+        }) != null;
 };
 
 VPLTeacherTools.FileBrowser.prototype.canEditTeacherFile = function () {
@@ -254,21 +257,34 @@ VPLTeacherTools.FileBrowser.prototype.selectedFile = function () {
 	});
 };
 
+VPLTeacherTools.FileBrowser.prototype.selectedOrDefaultUIFile = function () {
+    var file = this.selectedFile();
+    return file && /\.vpl3ui$/.test(file.filename)
+        ? file
+        : this.teacherFiles.find(function (val) {
+            return val["default"] && /\.vpl3ui$/.test(val.filename);
+        });
+};
+
+VPLTeacherTools.FileBrowser.prototype.duplicateFile = function (file, newFilename) {
+    var self = this;
+    this.client.copyFile(file.id,
+		newFilename || "copy of " + file.filename,
+        {mark: true},
+        {
+            onSuccess: function (r) {
+				// rename immediately
+                self.updateFiles(r);
+            }
+        });
+};
+
 VPLTeacherTools.FileBrowser.prototype.duplicateTeacherFile = function (filename) {
 	if (this.canDuplicateTeacherFile()) {
 		var file = this.teacherFiles.find(function (val) {
             return val.selected;
         });
-	    var self = this;
-	    this.client.copyFile(file.id,
-			filename || "copy of " + file.filename,
-	        {mark: true},
-	        {
-	            onSuccess: function (r) {
-					// rename immediately
-	                self.updateFiles(r);
-	            }
-	        });
+        this.duplicateFile(file, filename);
 	}
 };
 
