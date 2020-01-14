@@ -38,12 +38,14 @@ class VPLHTTPServer:
                  language=None,
                  full_url=False,
                  has_login_qr_code=False,
+                 dev_tools=False,
                  bridge="tdm",
                  logger=None):
         self.http_port = http_port
         self.language = language
         self.full_url = full_url
         self.has_login_qr_code = has_login_qr_code
+        self.dev_tools = dev_tools
         self.bridge = bridge  # "tdm" or "jws" or "none"
         self.db_path = db_path
         self.db = Db(self.db_path)
@@ -332,6 +334,8 @@ class VPLHTTPServer:
                               r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
         self.httpd.add_filter(lambda s: s.replace(b"$LOGINQRCODE", b"true" if self.has_login_qr_code else b"false"),
                               r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
+        self.httpd.add_filter(lambda s: s.replace(b"$DEVTOOLSTYLE", b"block" if self.dev_tools else b"none"),
+                              r"^/vpl-teacher-tools/.*\.(html|css)$")
         self.groups = []
 
     def run(self):

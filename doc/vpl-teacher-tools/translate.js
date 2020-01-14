@@ -3,6 +3,7 @@ VPLTeacherTools.translate = function(str, language) {
 	/** @const */
 	var fr = {
 		"add": "ajouter",
+		"Dashboard": "Tableau de bord",
 		"Default": "Défaut",
 		"Filename": "Nom de fichier",
 		"Group": "Groupe",

@@ -18,6 +18,7 @@ class Application(ApplicationBase):
 
         self.shorten_url = False
         self.login_qr_code = False
+        self.dev_tools = False
 
         self.app_objc = ApplicationObjCShell.alloc().init()
         self.app_objc.addMenu_withItems_("File", [
@@ -44,6 +45,11 @@ class Application(ApplicationBase):
                 "Login Screen QR Code",
                 None,
                 lambda sender: self.menu_item_login_QR_code()
+            ],
+            [
+                "Developer Tools",
+                None,
+                lambda sender: self.menu_item_dev_tools()
             ],
             None,
             [
@@ -128,6 +134,12 @@ class Application(ApplicationBase):
         self.login_qr_code = not self.login_qr_code
         item.setState_(1 if self.login_qr_code else 0)
         self.server.http_server.has_login_qr_code = self.login_qr_code
+
+    def menu_item_dev_tools(self):
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Developer Tools", "Options")
+        self.dev_tools = not self.dev_tools
+        item.setState_(1 if self.dev_tools else 0)
+        self.server.http_server.dev_tools = self.dev_tools
 
     def menu_item_language(self, language):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("English", "Options")
