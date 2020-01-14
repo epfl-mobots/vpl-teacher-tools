@@ -176,6 +176,13 @@ VPLTeacherTools.HTTPClient.prototype.copyFile = function (id, filename, props, o
 		opt);
 };
 
+VPLTeacherTools.HTTPClient.prototype.extractConfigFromVPL3 = function (id, filename, props, opt) {
+	this.rest("/api/extractConfigFromVPL3?id=" + id.toString(10) + "&filename=" + encodeURIComponent(filename) +
+		(props && props.mark ? "&mark=true" : "") +
+		(props && props.metadata ? "&metadata=" + encodeURIComponent(props.metadata) : ""),
+		opt);
+};
+
 VPLTeacherTools.HTTPClient.prototype.getFile = function (id, opt) {
 	this.rest("/api/getFile?id=" + id.toString(10), opt);
 };

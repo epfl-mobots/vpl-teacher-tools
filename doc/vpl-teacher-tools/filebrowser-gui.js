@@ -5,6 +5,7 @@ function updateGUI(fileBrowser) {
 	}
 
 	enable("btn-new", fileBrowser.canCreateProgramFile());
+	enable("btn-get-conf", fileBrowser.canGetConfigFile());
 	enable("btn-edit-teacher", fileBrowser.canEditTeacherFile());
 	enable("btn-rename-teacher", fileBrowser.canRenameTeacherFile());
 	enable("btn-duplicate-teacher", fileBrowser.canDuplicateTeacherFile());
@@ -118,10 +119,9 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 			tr.appendChild(td);
 
 			if (!forStudents) {
-				var isVPL3 = /\.vpl3$/.test(file.filename);
-				var isVPL3UI = /\.vpl3ui$/.test(file.filename);
+				var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename);
 				td = document.createElement("td");
-				if (isVPL3 || isVPL3UI) {
+				if (suffix === "vpl3" || suffix === "vpl3ui") {
 					td.textContent = file.mark ? "\u2612" : "\u2610";
 					td.addEventListener("click", function () {
 						fileBrowser.toggleMark(file.id);
@@ -129,10 +129,10 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 				}
 				tr.appendChild(td);
 				td = document.createElement("td");
-				if (isVPL3 || isVPL3UI) {
+				if (suffix === "vpl3" || suffix === "vpl3ui") {
 					td.textContent = file["default"] ? "\u2612" : "\u2610";
 					td.addEventListener("click", function () {
-						fileBrowser.setDefaultFile(file.id, isVPL3UI ? "vpl3ui" : "vpl3");
+						fileBrowser.setDefaultFile(file.id, suffix);
 					}, false);
 				}
 				tr.appendChild(td);
@@ -221,6 +221,11 @@ window.addEventListener("load", function () {
 	btn.addEventListener("click", function () {
 		fileBrowser.addFile("untitled.vpl3ui",
 			'{"disabledUI":["vpl:download","vpl:load"]}');
+	}, false);
+
+	btn = document.getElementById("btn-get-conf");
+	btn.addEventListener("click", function () {
+		fileBrowser.extractConfigFromVPL3();
 	}, false);
 
 	btn = document.getElementById("btn-edit-teacher");

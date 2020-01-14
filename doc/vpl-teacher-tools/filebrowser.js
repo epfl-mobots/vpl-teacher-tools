@@ -184,6 +184,13 @@ VPLTeacherTools.FileBrowser.prototype.canEditTeacherFile = function () {
     return this.countSelectedNotRenamedFiles() == 1;
 };
 
+VPLTeacherTools.FileBrowser.prototype.canGetConfigFile = function () {
+    return this.countSelectedFiles(false) == 1
+	   && VPLTeacherTools.FileBrowser.getFileSuffix(this.teacherFiles.find(function (val) {
+            return val.selected;
+        }).filename) === "vpl3";
+};
+
 VPLTeacherTools.FileBrowser.prototype.canViewStudentFile = function () {
     return this.countSelectedFiles(true) == 1;
 };
@@ -391,6 +398,23 @@ VPLTeacherTools.FileBrowser.prototype.deleteFiles = function () {
             }
         });
 
+    }
+};
+
+VPLTeacherTools.FileBrowser.prototype.extractConfigFromVPL3 = function () {
+    var file = this.selectedFile();
+    var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename);
+    if (suffix === "vpl3") {
+        var self = this;
+        this.client.extractConfigFromVPL3(file.id,
+            "config of " + file.filename + "ui",
+            {mark: true},
+            {
+                onSuccess: function (r) {
+    				// rename immediately
+                    self.updateFiles(r);
+                }
+            });
     }
 };
 

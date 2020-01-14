@@ -7,6 +7,7 @@ import sqlite3
 import os
 import re
 import itertools
+import json
 
 
 class Db:
@@ -656,6 +657,35 @@ class Db:
         if r is None:
             raise ValueError("file id not found")
         content = r[0]
+
+        c = self._db.cursor()
+        try:
+            c.execute("""
+                INSERT
+                INTO files (name, content, owner, mark, metadata)
+                VALUES (?,?,'',?,?)
+            """, (filename, content, 1 if mark else 0, metadata))
+        finally:
+            self._db.commit()
+        rowid = c.lastrowid
+        file_id = self.get_first_result("fileid", "files", "rowid=?",
+                                        (rowid,))[0]
+        return file_id
+
+    @staticmethod
+    def get_config_from_vpl3(vpl3):
+        obj = json.loads(vpl3)
+        for prop in ["program", "code"]:
+            if prop in obj:
+                del obj[prop]
+        return json.dumps(obj)
+
+    def extract_config_from_vpl3_file(self, file_id, filename, mark=False, metadata=None):
+        """Extract configuration from VPL3 file"""
+        r = self.get_first_result("content", "files", "fileid=?", (file_id,))
+        if r is None:
+            raise ValueError("file id not found")
+        content = self.get_config_from_vpl3(r[0])
 
         c = self._db.cursor()
         try:
