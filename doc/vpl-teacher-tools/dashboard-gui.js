@@ -144,8 +144,6 @@ window.addEventListener("load", function () {
 	dashboard.connect();
 
 	[
-		"vpl:new",
-		"vpl:run",
 		"vpl:stop"
 	].forEach(function (name) {
 		document.getElementById(name).addEventListener("click", function () {
