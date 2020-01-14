@@ -76,6 +76,8 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 				var img = document.createElement("img");
 				img.src = fileIconURL;
 				td.appendChild(img);
+				td.addEventListener("click", select, false);
+				td.addEventListener("dblclick", doubleclick, false);
 			}
 			tr.appendChild(td);
 
