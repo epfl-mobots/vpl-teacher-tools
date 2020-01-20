@@ -183,7 +183,7 @@ td.selected {
 	background: #acf;
 }
 
-table#students td, table#students input, table#groups td, table#robots td, table#sessions td {
+table#students td, table#students input, table#groups td:first-child, table#groups td:nth-child(2), table#robots td, table#sessions td {
 	text-align: center;
 }
 

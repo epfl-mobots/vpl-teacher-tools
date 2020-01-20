@@ -17,7 +17,7 @@ function clearTable(id, labels) {
 }
 
 function fillGroupTable(sessionArray, dashboard) {
-	clearTable("groups");
+	clearTable("groups", VPLTeacherTools.translateArray(["", "", "Time (d)", "Filename", "# rules", "# blocks", "Message"]));
 	var table = document.getElementById("groups");
 
 	sessionArray.forEach(function (session) {
@@ -39,25 +39,24 @@ function fillGroupTable(sessionArray, dashboard) {
 		tr.appendChild(td);
 
 		if (session.lastVPLChangedLogEntry != null) {
-			var time = session.lastVPLChangedLogEntry["time"].split(" ")[1];
-			var hms = time.split(":").map(function (str) { return parseInt(str, 10); });
+			var datetime = session.lastVPLChangedLogEntry["time"].split(" ");
+			var ymd = datetime[0].split("-").map(function (str) { return parseInt(str, 10); });;
+			var hms = datetime[1].split(":").map(function (str) { return parseInt(str, 10); });
+			var dateLogEntry = new Date(ymd[0], ymd[1] - 1, ymd[2], hms[0], hms[1], hms[2]);
 			var now = new Date();
-			var elapsedSec = ((((now.getHours() * 60) + now.getMinutes()) * 60 + now.getSeconds() + 86400 -
-				((hms[0] * 60) + hms[1]) * 60 + hms[2])) % 86400;
-			var elapsedStr = elapsedSec < 60 ? elapsedSec.toString(10) + " sec"
- 				: elapsedSec < 300 ? Math.floor(elapsedSec / 60).toString(10) + " min " +
-					(elapsedSec % 60).toString(10) + " sec"
-				: elapsedSec < 3600 ? Math.floor(elapsedSec / 60).toString(10) + " min"
-				: elapsedSec < 18000 ? Math.floor(elapsedSec / 3600).toString(10) + " hr " +
-					Math.floor(elapsedSec % 3600 / 60).toString(10) + " min"
-				: Math.floor(elapsedSec / 3600).toString(10) + " hr";
+			var elapsedSec = (now - dateLogEntry) / 1000;
+			var elapsedStr = elapsedSec < 120 ? elapsedSec.toString(10) + " sec"
+				: elapsedSec < 7200 ? Math.floor(elapsedSec / 60).toString(10) + " min"
+				: elapsedSec < 172800 ? Math.floor(elapsedSec / 3600).toString(10) + " hr"
+				: Math.floor(elapsedSec / 86400).toString(10) + " d";
 			var lastVPLChangedData = JSON.parse(session.lastVPLChangedLogEntry["data"]);
 			var details = [elapsedStr];
 			if (lastVPLChangedData && lastVPLChangedData["nrules"] != undefined) {
 				details = [
 					elapsedStr,
-					lastVPLChangedData["nrules"].toString(10) + "\u25ad",
-					lastVPLChangedData["nblocks"].toString(10) + "\u25ab"
+					lastVPLChangedData["filename"] || "",
+					lastVPLChangedData["nrules"].toString(10),
+					lastVPLChangedData["nblocks"].toString(10)
 				];
 			}
 			if (lastVPLChangedData["error"]) {
