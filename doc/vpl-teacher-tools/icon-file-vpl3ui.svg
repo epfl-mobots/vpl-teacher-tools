@@ -1,13 +1,10 @@
 <?xml version="1.0" standalone="yes"?>
-<svg width="32" height="24" xmlns="http://www.w3.org/2000/svg" version="1.1">
+<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" version="1.1">
 
-	<rect x="2" y="2" width="27" height="3" fill="silver" />
+	<polygon points="4,2 4,22 20,22 20,6 16,2" style="fill: white; stroke:#333; stroke-width: 1px; stroke-linejoin: miter;" />
 
-	<rect x="2" y="7" width="4" height="4" fill="darkorange" />
-	<rect x="2" y="13" width="4" height="4" fill="darkorange" />
-
-	<rect x="25" y="7" width="4" height="4" fill="dodgerblue" />
-	<rect x="25" y="13" width="4" height="4" fill="dodgerblue" />
-	<rect x="25" y="19" width="4" height="4" fill="dodgerblue" />
+	<rect x="5.5" y="3.5" width="13" height="3" fill="silver" />
+	<rect x="5.5" y="7" width="3" height="12" fill="darkorange" />
+	<rect x="15.5" y="7" width="3" height="12" fill="dodgerblue" />
 
 </svg>
