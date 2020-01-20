@@ -19,6 +19,7 @@ class ApplicationObjCShell(NSApplication):
         self.actionArray = []
         self.menuNames = []
         self.menuItems = []
+        self.aboutAppAction = None
         return self
 
     def setAction_forControl_(self, action, control):
@@ -75,13 +76,22 @@ class ApplicationObjCShell(NSApplication):
                     menu.addItem_(NSMenuItem.separatorItem())
             menu_hook.setSubmenu_(menu)
 
+        quit_menu_entry = [
+            "Quit " + str(NSProcessInfo.processInfo().processName()),
+            "q",
+            NSApp.terminate_
+        ]
         add_menu(None, [
-            [
-                "Quit " + str(NSProcessInfo.processInfo().processName()),
-                "q",
-                NSApp.terminate_
-            ],
-        ])
+                [
+                    "About " + str(NSProcessInfo.processInfo().processName()),
+                    None,
+                    self.aboutAppAction
+                ],
+                None,
+                quit_menu_entry
+            ] if self.aboutAppAction else [
+                quit_menu_entry,
+            ])
         for i in range(len(self.menuNames)):
             add_menu(self.menuNames[i], self.menuItems[i])
         NSApp.setMainMenu_(menubar)
