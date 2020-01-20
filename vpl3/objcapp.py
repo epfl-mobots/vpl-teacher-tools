@@ -18,6 +18,7 @@ class Application(ApplicationBase):
 
         self.shorten_url = False
         self.login_qr_code = False
+        self.log_display = False
         self.dev_tools = False
 
         self.app_objc = ApplicationObjCShell.alloc().init()
@@ -45,6 +46,11 @@ class Application(ApplicationBase):
                 "Login Screen QR Code",
                 None,
                 lambda sender: self.menu_item_login_QR_code()
+            ],
+            [
+                "Log Display in Dashboard",
+                None,
+                lambda sender: self.menu_item_log_display()
             ],
             [
                 "Developer Tools",
@@ -134,6 +140,12 @@ class Application(ApplicationBase):
         self.login_qr_code = not self.login_qr_code
         item.setState_(1 if self.login_qr_code else 0)
         self.server.http_server.has_login_qr_code = self.login_qr_code
+
+    def menu_item_log_display(self):
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Log Display in Dashboard", "Options")
+        self.log_display = not self.log_display
+        item.setState_(1 if self.log_display else 0)
+        self.server.http_server.log_display = self.log_display
 
     def menu_item_dev_tools(self):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Developer Tools", "Options")

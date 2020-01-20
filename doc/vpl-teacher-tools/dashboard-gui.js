@@ -130,10 +130,15 @@ function fillFileTable(fileArray, dashboard) {
 
 window.addEventListener("load", function () {
 	var sessions = null;
+	if (!$LOGDISPLAY) {
+		document.getElementById("divlog").style.display = "none";
+	}
 	dashboard = new VPLTeacherTools.Dashboard("ws://" + document.location.hostname + ":8001/", {
-		log: function (str) {
-			document.getElementById("log").textContent += str + "\n";
-		},
+		log: $LOGDISPLAY
+			? function (str) {
+				document.getElementById("log").textContent += str + "\n";
+			}
+			: function (str) {},
 		onGroups: function (newSessions) {
 			sessions = newSessions;
 			fillGroupTable(sessions, dashboard);

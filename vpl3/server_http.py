@@ -38,6 +38,7 @@ class VPLHTTPServer:
                  language=None,
                  full_url=False,
                  has_login_qr_code=False,
+                 log_display=False,
                  dev_tools=False,
                  bridge="tdm",
                  logger=None):
@@ -45,6 +46,7 @@ class VPLHTTPServer:
         self.language = language
         self.full_url = full_url
         self.has_login_qr_code = has_login_qr_code
+        self.log_display = log_display
         self.dev_tools = dev_tools
         self.bridge = bridge  # "tdm" or "jws" or "none"
         self.db_path = db_path
@@ -333,6 +335,8 @@ class VPLHTTPServer:
         self.httpd.add_filter(lambda s: s.replace(b"$SHORTENURL", b"false" if self.full_url else b"true"),
                               r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
         self.httpd.add_filter(lambda s: s.replace(b"$LOGINQRCODE", b"true" if self.has_login_qr_code else b"false"),
+                              r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
+        self.httpd.add_filter(lambda s: s.replace(b"$LOGDISPLAY", b"true"  if self.log_display else b"false"),
                               r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
         self.httpd.add_filter(lambda s: s.replace(b"$DEVTOOLSTYLE", b"block" if self.dev_tools else b"none"),
                               r"^/vpl-teacher-tools/.*\.(html|css)$")
