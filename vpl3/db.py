@@ -226,6 +226,19 @@ class Db:
         finally:
             self._db.commit()
 
+    def add_students(self, name_list):
+        """Add multiple students, ignoring existing ones"""
+        c = self._db.cursor()
+        try:
+            for name in name_list:
+                c.execute("""
+                    INSERT INTO students (name)
+                    SELECT ?
+                    WHERE NOT EXISTS(SELECT name FROM students WHERE name = ?)
+                """, (name, name))
+        finally:
+            self._db.commit()
+
     def list_students(self):
         """Get a list of all students"""
         c = self._db.cursor()

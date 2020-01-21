@@ -161,6 +161,14 @@ GET /api/addStudent?student=studentName
 
 <p>Result: {"status":"ok"} or {"status":"err","msg":"duplicate"}</p>
 
+<h4>addStudents</h4>
+
+<pre>
+GET /api/addStudents?students=name1%2Cname2%2C...
+</pre>
+
+<p>Result: {"status":"ok"} (duplicates are ignored)</p>
+
 <h4>listStudents</h4>
 
 <pre>
