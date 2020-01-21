@@ -16,12 +16,12 @@ window["vplStorageGetFunction"] = function (filename, fun) {
 		"vpl:sim",
 		"sim:vpl",
 		"sim:text",
-		"sim:teacher",
-		"sim:noise",
-		"sim:map-kind"
-	].reduce(function (acc, val) {
-		return acc.indexOf(val) < 0 ? acc.concat(val) : acc;
-	}, prog["disabledUI"] || []);
+		"sim:teacher"
+	]
+		.concat($ADVANCEDSIMFEATURES ? [] : ["sim:noise", "sim:map-kind"])
+		.reduce(function (acc, val) {
+			return acc.indexOf(val) < 0 ? acc.concat(val) : acc;
+		}, prog["disabledUI"] || []);
 	progJSON = JSON.stringify(prog);
 
 	fun(progJSON,

@@ -39,6 +39,7 @@ class VPLHTTPServer:
                  full_url=False,
                  has_login_qr_code=False,
                  log_display=False,
+                 advanced_sim_features=False,
                  dev_tools=False,
                  bridge="tdm",
                  logger=None):
@@ -47,6 +48,7 @@ class VPLHTTPServer:
         self.full_url = full_url
         self.has_login_qr_code = has_login_qr_code
         self.log_display = log_display
+        self.advanced_sim_features = advanced_sim_features
         self.dev_tools = dev_tools
         self.bridge = bridge  # "tdm" or "jws" or "none"
         self.db_path = db_path
@@ -345,6 +347,8 @@ class VPLHTTPServer:
         self.httpd.add_filter(lambda s: s.replace(b"$LOGINQRCODE", b"true" if self.has_login_qr_code else b"false"),
                               r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
         self.httpd.add_filter(lambda s: s.replace(b"$LOGDISPLAY", b"true"  if self.log_display else b"false"),
+                              r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
+        self.httpd.add_filter(lambda s: s.replace(b"$ADVANCEDSIMFEATURES", b"true"  if self.advanced_sim_features else b"false"),
                               r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
         self.httpd.add_filter(lambda s: s.replace(b"$DEVTOOLSTYLE", b"block" if self.dev_tools else b"none"),
                               r"^/vpl-teacher-tools/.*\.(html|css)$")

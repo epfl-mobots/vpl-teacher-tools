@@ -19,6 +19,7 @@ class Application(ApplicationBase):
         self.shorten_url = False
         self.login_qr_code = False
         self.log_display = False
+        self.advanced_sim_features = False
         self.dev_tools = False
 
         self.app_objc = ApplicationObjCShell.alloc().init()
@@ -51,6 +52,11 @@ class Application(ApplicationBase):
                 "Log Display in Dashboard",
                 None,
                 lambda sender: self.menu_item_log_display()
+            ],
+            [
+                "Advanced Simulator Features",
+                None,
+                lambda sender: self.menu_item_advanced_sim_features()
             ],
             [
                 "Developer Tools",
@@ -146,6 +152,12 @@ class Application(ApplicationBase):
         self.log_display = not self.log_display
         item.setState_(1 if self.log_display else 0)
         self.server.http_server.log_display = self.log_display
+
+    def menu_item_advanced_sim_features(self):
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Advanced Simulator Features", "Options")
+        self.advanced_sim_features = not self.advanced_sim_features
+        item.setState_(1 if self.advanced_sim_features else 0)
+        self.server.http_server.advanced_sim_features = self.advanced_sim_features
 
     def menu_item_dev_tools(self):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Developer Tools", "Options")
