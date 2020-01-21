@@ -18,6 +18,7 @@ class Application(ApplicationBase, tk.Tk):
         tk.Tk.__init__(self)
 
         self.shorten_url = False
+        self.login_qr_code = False
 
         self.title("VPL Server - " + self.tt_url(True))
         self.protocol("WM_DELETE_WINDOW", self.quit)  # close widget
@@ -40,8 +41,8 @@ class Application(ApplicationBase, tk.Tk):
         self.config(menu=menubar)
         self.file_menu = tk.Menu(menubar, tearoff=False)
         self.file_menu.add_command(label="Open in Browser",
-                              command=self.start_browser_tt,
-                              accelerator="Control-B")
+                                   command=self.start_browser_tt,
+                                   accelerator="Control-B")
         self.bind("<Control-b>", lambda event: self.start_browser_tt())
         self.bind("<Control-q>", lambda event: self.quit())
         menubar.add_cascade(label="File", menu=self.file_menu)
@@ -50,10 +51,16 @@ class Application(ApplicationBase, tk.Tk):
         self.v_shorten_url.trace("w",
                                  lambda name, i, op:
                                  self.menu_item_shorten_urls(self.v_shorten_url.get()))
+        self.v_login_qr_code = tk.BooleanVar(value=False)
+        self.v_login_qr_code.trace("w",
+                                   lambda name, i, op:
+                                   self.menu_item_login_qr_code(self.v_login_qr_code.get()))
         self.v_language = tk.StringVar(value="fr")
         self.v_bridge = tk.StringVar(value=self.bridge)
         self.options_menu.add_checkbutton(label="Shorten URLs",
                                           variable=self.v_shorten_url)
+        self.options_menu.add_checkbutton(label="Login Screen QR Code",
+                                          variable=self.v_login_qr_code)
         self.options_menu.add_separator()
         self.options_menu.add_radiobutton(label="English",
                                           variable=self.v_language,
@@ -92,6 +99,10 @@ class Application(ApplicationBase, tk.Tk):
     def menu_item_shorten_urls(self, b):
         self.shorten_url = b
         self.server.http_server.full_url = not self.shorten_url
+
+    def menu_item_login_qr_code(self, b):
+        self.login_qr_code = b
+        self.server.http_server.has_login_qr_code = self.login_qr_code
 
     def menu_item_bridge(self, bridge):
         self.bridge = bridge
