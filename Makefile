@@ -96,6 +96,7 @@ TOOLSFILES = \
 	doc/vpl-teacher-tools/student-debug.html \
 	doc/vpl-teacher-tools/student-debug.js \
 	doc/vpl-teacher-tools/ui.json \
+	doc/vpl-teacher-tools/util-files.js \
 	doc/vpl-teacher-tools/util-url.js \
 	doc/vpl-teacher-tools/vpl.html \
 	doc/vpl-teacher-tools/vpl.fr.html \

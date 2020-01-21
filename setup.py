@@ -70,6 +70,7 @@ DATA_FILES = [
             "doc/vpl-teacher-tools/students.js",
             "doc/vpl-teacher-tools/translate.js",
             "doc/vpl-teacher-tools/ui.json",
+            "doc/vpl-teacher-tools/util-files.js",
             "doc/vpl-teacher-tools/util-url.js",
             "doc/vpl-teacher-tools/vpl_load.png",
             "doc/vpl-teacher-tools/vpl_new.png",
