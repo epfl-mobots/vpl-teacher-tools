@@ -95,4 +95,26 @@ window.addEventListener("load", function () {
 		},
 	});
 
+	var btn;
+
+	btn = document.getElementById("btn-import");
+	btn.addEventListener("click", function () {
+		var loadBox = new VPLTeacherTools.Load(function (file) {
+			var names = VPLTeacherTools.convertFromCSV(file)
+				.map(function (row) {
+					return row[0];
+				});
+			students.addStudents(names);
+		}, VPLTeacherTools.translate("Import Pupil Names"), ".txt,.csv");
+	}, false);
+
+	btn = document.getElementById("btn-export");
+	btn.addEventListener("click", function () {
+		// make list of students, one name per line
+		var csv = students.students.map(function (student) {
+			return student.name + "\n";
+		}).join("");
+		VPLTeacherTools.downloadText(csv, "pupils.csv", "text/csv");
+	}, false);
+
 }, false);

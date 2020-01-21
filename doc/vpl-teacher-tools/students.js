@@ -117,6 +117,15 @@ VPLTeacherTools.StudentManagement.prototype.addStudent = function (name) {
     });
 };
 
+VPLTeacherTools.StudentManagement.prototype.addStudents = function (names) {
+    var self = this;
+    this.client.addStudents(names, {
+        onSuccess: function (r) {
+            self.updateStudents();
+        }
+    });
+};
+
 VPLTeacherTools.StudentManagement.prototype.removeStudent = function (name) {
     name = name.trim();
     var self = this;

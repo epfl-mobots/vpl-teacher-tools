@@ -12,6 +12,7 @@ VPLTeacherTools.translate = function(str, language) {
 		"Default": "Défaut",
 		"Filename": "Fichier",
 		"Group": "Groupe",
+		"Import Pupil Names": "Importer les noms des élèves",
 		"pupil local bridge": "passerelle locale",
 		"(pupil local bridge)": "(passerelle locale)",
 		"Marked": "Marque",

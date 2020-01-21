@@ -65,6 +65,10 @@ VPLTeacherTools.HTTPClient.prototype.addStudent = function (name, opt) {
 	this.rest("/api/addStudent?student=" + encodeURIComponent(name), opt);
 };
 
+VPLTeacherTools.HTTPClient.prototype.addStudents = function (names, opt) {
+	this.rest("/api/addStudents?students=" + encodeURIComponent(names.join(",")), opt);
+};
+
 VPLTeacherTools.HTTPClient.prototype.removeStudent = function (name, opt) {
 	this.rest("/api/removeStudent?student=" + encodeURIComponent(name), opt);
 };
