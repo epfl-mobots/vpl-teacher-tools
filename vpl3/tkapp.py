@@ -19,6 +19,7 @@ class Application(ApplicationBase, tk.Tk):
 
         self.shorten_url = False
         self.login_qr_code = False
+        self.log_in_dashboard = False
 
         self.title("VPL Server - " + self.tt_url(True))
         self.protocol("WM_DELETE_WINDOW", self.quit)  # close widget
@@ -55,12 +56,18 @@ class Application(ApplicationBase, tk.Tk):
         self.v_login_qr_code.trace("w",
                                    lambda name, i, op:
                                    self.menu_item_login_qr_code(self.v_login_qr_code.get()))
+        self.v_log_in_dashboard = tk.BooleanVar(value=False)
+        self.v_log_in_dashboard.trace("w",
+                                      lambda name, i, op:
+                                      self.menu_item_log_in_dashboard(self.v_log_in_dashboard.get()))
         self.v_language = tk.StringVar(value="fr")
         self.v_bridge = tk.StringVar(value=self.bridge)
         self.options_menu.add_checkbutton(label="Shorten URLs",
                                           variable=self.v_shorten_url)
         self.options_menu.add_checkbutton(label="Login Screen QR Code",
                                           variable=self.v_login_qr_code)
+        self.options_menu.add_checkbutton(label="Log Display in Dashboard",
+                                          variable=self.v_log_in_dashboard)
         self.options_menu.add_separator()
         self.options_menu.add_radiobutton(label="English",
                                           variable=self.v_language,
@@ -103,6 +110,10 @@ class Application(ApplicationBase, tk.Tk):
     def menu_item_login_qr_code(self, b):
         self.login_qr_code = b
         self.server.http_server.has_login_qr_code = self.login_qr_code
+
+    def menu_item_log_in_dashboard(self, b):
+        self.log_in_dashboard = b
+        self.server.http_server.log_display = self.log_in_dashboard
 
     def menu_item_bridge(self, bridge):
         self.bridge = bridge
