@@ -22,6 +22,7 @@ VPLTeacherTools.translate = function(str, language) {
 		"(simulator)": "(simulateur)",
 		"Size": "Taille",
 		"Students": "Élèves",
+		"T": "E",	// Teacher: Enseignant.e (column header for connection in dashboard)
 		"Time": "Heure",
 		"Time (d)": "Temps",
 		"# blocks": "# blocs",

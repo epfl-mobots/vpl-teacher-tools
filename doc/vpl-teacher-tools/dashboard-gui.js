@@ -17,7 +17,7 @@ function clearTable(id, labels) {
 }
 
 function fillGroupTable(sessionArray, dashboard) {
-	clearTable("groups", VPLTeacherTools.translateArray(["", "", "Time (d)", "Filename", "# rules", "# blocks", "Message"]));
+	clearTable("groups", VPLTeacherTools.translateArray(["", "T", "R", "Time (d)", "Filename", "#R", "#B", "Message"]));
 	var table = document.getElementById("groups");
 
 	sessionArray.forEach(function (session) {
@@ -39,6 +39,13 @@ function fillGroupTable(sessionArray, dashboard) {
 		tr.appendChild(td);
 
 		if (session.lastVPLChangedLogEntry != null) {
+			var lastVPLChangedData = JSON.parse(session.lastVPLChangedLogEntry["data"]);
+
+			// connection to robot
+			td = document.createElement("td");
+			td.textContent = lastVPLChangedData["robot"] ? "r" : "";
+			tr.appendChild(td);
+
 			var datetime = session.lastVPLChangedLogEntry["time"].split(" ");
 			var ymd = datetime[0].split("-").map(function (str) { return parseInt(str, 10); });;
 			var hms = datetime[1].split(":").map(function (str) { return parseInt(str, 10); });
@@ -49,7 +56,6 @@ function fillGroupTable(sessionArray, dashboard) {
 				: elapsedSec < 7200 ? Math.floor(elapsedSec / 60).toString(10) + " min"
 				: elapsedSec < 172800 ? Math.floor(elapsedSec / 3600).toString(10) + " hr"
 				: Math.floor(elapsedSec / 86400).toString(10) + " d";
-			var lastVPLChangedData = JSON.parse(session.lastVPLChangedLogEntry["data"]);
 			var details = [elapsedStr];
 			if (lastVPLChangedData && lastVPLChangedData["nrules"] != undefined) {
 				details = [
