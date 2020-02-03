@@ -338,7 +338,7 @@ class VPLHTTPServer:
                                                   bytes("." + self.language, "utf-8")
                                                       if self.language and self.language != "en"
                                                       else b""),
-                              r"^/.*\.html$")
+                              r"^/.*\.(html|js)$")
         self.httpd.add_filter(lambda s: s.replace(b"$BRIDGE",
                                                   bytes(self.bridge, "utf-8")),
                               r"^/.*\.(html|css|json|js)$")
