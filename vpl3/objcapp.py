@@ -22,6 +22,8 @@ class Application(ApplicationBase):
         self.advanced_sim_features = False
         self.dev_tools = False
         
+        self.window = None
+        self.qr = None
         self.robots_status = None
 
         self.app_objc = ApplicationObjCShell.alloc().init()
@@ -97,21 +99,44 @@ class Application(ApplicationBase):
         self.menu_item_shorten_urls()
         self.menu_item_language("fr")
         self.menu_item_bridge("tdm")
-        window = self.app_objc.createWindowWithTitle_width_height_x_y_(
-            "VPL Server - " + self.tt_url(True),
-            400, 120,
+        self.window = self.app_objc.createWindowWithTitle_width_height_x_y_(
+            self.title(),
+            400, 260,
             20, 20
         )
-        self.status = self.app_objc.addLabelToWindow_title_width_x_y_(window,
+        self.status = self.app_objc.addLabelToWindow_title_width_x_y_(self.window,
                                                                       "",
-                                                                      250, 10, 80)
-        self.robots_status = self.app_objc.addLabelToWindow_title_width_x_y_(window,
+                                                                      250, 10, 220)
+        self.robots_status = self.app_objc.addLabelToWindow_title_width_x_y_(self.window,
                                                                              "",
-                                                                             250, 10, 60)
-        self.app_objc.addButtonToWindow_title_action_width_x_y_(window,
+                                                                             250, 10, 200)
+        self.app_objc.addButtonToWindow_title_action_width_x_y_(self.window,
                                                                 "Open tools in browser",
                                                                 lambda sender: self.start_browser_tt(),
-                                                                180, 110, 20)
+                                                                180, 110, 160)
+        
+        def drawQRCode(rect):
+            import qrcode
+            qr = qrcode.QRCode()
+            path = self.tt_abs_path()
+            url = URLUtil.teacher_tools_URL(port=self.http_port,
+                                            path=path)
+            qr.add_data(url)
+            qr.make()
+            n = qr.modules_count
+            s = 160 // (n + 8)  # margin = at least 4 modules
+            margin = (160 - n * s) / 2
+            NSColor.blackColor().set()
+            for i in range(n):
+                for j in range(n):
+                    if qr.modules[i][j]:
+                        NSRectFill(NSMakeRect(margin + s * j, 160 - margin - s * i - s, s, s))
+        self.qr = self.app_objc.addDrawingToWindow_draw_x_y_width_height_(self.window,
+                                                                          drawQRCode,
+                                                                          120, 5, 160, 160)
+
+    def title(self):
+        return "VPL Server - " + self.tt_url(True)
 
     def disable_serial(self):
         self.no_serial = True
@@ -173,6 +198,11 @@ class Application(ApplicationBase):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("French", "Options")
         item.setState_(1 if language == "fr" else 0)
         self.set_language(language)
+        if self.window:
+            self.window.setTitle_(self.title())
+        if self.qr:
+            self.qr.needsDisplay = True
+            self.qr.display()
 
     def menu_item_bridge(self, bridge):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Thymio Device Manager", "Options")

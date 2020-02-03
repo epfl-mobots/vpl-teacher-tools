@@ -130,6 +130,32 @@ class ApplicationObjCShell(NSApplication):
         window.contentView().addSubview_(button)
         return button
 
+    def addDrawingToWindow_draw_x_y_width_height_(self, window, draw, x, y, w, h):
+
+        class Drawing(NSView):
+            def initWithFrame_draw_(self, frame, draw):
+                self = NSView.initWithFrame_(self, frame)
+                if self is not None:
+                    self.draw = draw
+                return self
+            def initWithFrame_(self, frame):
+                self = super(NSView, self).initWithFrame_(frame)
+                if self is not None:
+                    self.draw = None
+                return self
+            def drawRect_(self, rect):
+                if self.draw is None:
+                    NSColor.yellowColor().set()
+                    NSRectFill(rect)
+                else:
+                    self.draw(rect)
+
+        drawing = (Drawing.alloc()
+                   .initWithFrame_draw_(NSMakeRect(x, y, w, h), draw)
+                   .autorelease())
+        window.contentView().addSubview_(drawing)
+        return drawing
+
     @objc.IBAction
     def forwardAction_(self, sender):
         tag = sender.tag()
