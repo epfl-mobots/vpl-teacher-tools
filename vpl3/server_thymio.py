@@ -45,16 +45,22 @@ class ThymioWebSocketServer:
             finally:
                 self.websockets.remove(websocket)
 
-        print("ThymioWebSocketServer __init__", "port", ws_port)
         self.loop = asyncio.get_event_loop()
+        self.ws_port = ws_port
         self.ws_server = websockets.serve(ws_handler, port=ws_port)
         self.websockets = set()
         self.nodes = {}
         self.thymio = None
-        self.connection_count = 0
+        self.robot_count = 0
 
         self.on_connect_cb = on_connect
         self.on_disconnect_cb = on_disconnect
+
+    def __str__(self):
+        return f"ThymioWebSocketServer port={self.ws_port} #con={self.robot_count}"
+
+    def __repr__(self):
+        return str(self)
 
     async def send(self, websocket, msg):
         try:
@@ -72,12 +78,6 @@ class ThymioWebSocketServer:
     def run(self):
 
         async def on_connection_changed(node_id, connected):
-            if connected:
-                if self.on_connect_cb:
-                    self.on_connect_cb(node_id)
-            else:
-                if self.on_disconnect_cb:
-                    self.on_disconnect_cb(node_id)
             print("Connection" if connected else "Disconnection", node_id)
             remote_node = self.thymio.remote_nodes[node_id]
             msg = {
@@ -112,6 +112,10 @@ class ThymioWebSocketServer:
             else:
                 # discard node
                 del self.nodes[node_id]
+            if connected:
+                self.on_connect(node_id)
+            else:
+                self.on_disconnect(node_id)
             await self.send_to_all(msg)
 
         async def on_variables_received(node_id):
@@ -135,8 +139,18 @@ class ThymioWebSocketServer:
         self.loop.run_until_complete(self.ws_server)
         self.loop.run_forever()
 
+    def stop_ws_server(self):
+        """Stop websocket server in a thread-safe way"""
+        def s():
+            for websocket in self.websockets:
+                websocket.close()
+                # bug: should await I don't know how
+                # will produce errors on exit which look harmless
+            self.loop.stop()
+        self.loop.call_soon_threadsafe(s)
+
     def stop(self):
-        self.ws_server.stop()
+        self.stop_ws_server()
         self.thymio.shutdown()
 
     async def process_message(self, websocket, msg):
@@ -178,13 +192,13 @@ class ThymioWebSocketServer:
         except Exception:
             pass
 
-    def on_connect(self):
-        self.connection_count += 1
+    def on_connect(self, session_id):
+        self.robot_count = len(self.nodes)
         if self.on_connect_cb:
             self.on_connect_cb(session_id)
 
-    def on_disconnect(self):
-        self.connection_count -= 1
+    def on_disconnect(self, session_id):
+        self.robot_count = len(self.nodes)
         if self.on_disconnect_cb:
             self.on_disconnect_cb(session_id)
 

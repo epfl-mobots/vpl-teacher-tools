@@ -33,6 +33,7 @@ class ApplicationBase:
                              full_url=full_url,
                              logger=self.logger,
                              update_connection=self.update_connection,
+                             update_robots=self.update_robots,
                              initial_file_dir="data")
         self.server.add_files(if_new_db=True)
         self.server.start()
@@ -75,8 +76,8 @@ class ApplicationBase:
     def update_robots(self, session_id=None):
         if self.bridge == "jws":
             str = f"""Number of robots: {
-                self.server.ws_server.connection_count
-                if self.server.ws_server
+                self.server.thymio_server.robot_count
+                if self.server.thymio_server
                 else "-"
             }"""
             self.show_robots_status(str)

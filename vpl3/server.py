@@ -63,8 +63,10 @@ class Server:
             if len(filenames) > 0:
                 db.add_local_files(filenames)
 
-    def set_bridge(self, bridge):
+    def set_bridge(self, bridge, app=None):
         if self.bridge != bridge:
+            if app:
+                app.show_robots_status("")
             if self.bridge == "jws" and self.thymio_server:
                 self.thymio_server.stop()
                 self.ws_thymio.wait()
@@ -83,8 +85,13 @@ class Server:
                     Connection.serial_default_port()
                     self.ws_thymio = threading.Thread(target=thymio_thread)
                     self.ws_thymio.start()
-                except Exception:
-                    self.disable_serial()
+                except Connection.ThymioConnectionError as e:
+                    if app:
+                        app.disable_serial()
+                        app.show_robots_status(str(e))
+                except Exception as e:
+                    if app:
+                        app.disable_serial()
 
     def start(self):
 

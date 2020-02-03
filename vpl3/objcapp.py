@@ -21,6 +21,8 @@ class Application(ApplicationBase):
         self.log_display = False
         self.advanced_sim_features = False
         self.dev_tools = False
+        
+        self.robots_status = None
 
         self.app_objc = ApplicationObjCShell.alloc().init()
         self.app_objc.addMenu_withItems_("File", [
@@ -180,4 +182,4 @@ class Application(ApplicationBase):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("No Robot", "Options")
         item.setState_(1 if bridge == "none" else 0)
         self.bridge = bridge
-        self.server.set_bridge(bridge)
+        self.server.set_bridge(bridge, app=self)
