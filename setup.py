@@ -27,7 +27,9 @@ DATA_FILES = [
         [
             "doc/client.js",
             "doc/index.html",
+            "doc/login.html",
             "doc/login.fr.html",
+            "doc/login-gui.js",
             "doc/tt.html",
             "doc/tt.fr.html",
         ]),
@@ -58,6 +60,7 @@ DATA_FILES = [
             "doc/vpl-teacher-tools/initdb-dev.fr.html",
             "doc/vpl-teacher-tools/initdb-dev-gui.js",
             "doc/vpl-teacher-tools/json-ws-bridge-api.js",
+            "doc/vpl-teacher-tools/login.js",
             "doc/vpl-teacher-tools/Logo_vpl.svg",
             "doc/vpl-teacher-tools/ns.js",
             "doc/vpl-teacher-tools/pairing.html",
