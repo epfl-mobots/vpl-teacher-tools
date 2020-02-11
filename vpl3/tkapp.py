@@ -6,6 +6,7 @@
 # server gui with tkinter
 
 from vpl3.baseapp import ApplicationBase
+from vpl3.urlutil import URLUtil
 
 import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
@@ -47,6 +48,12 @@ class Application(ApplicationBase, tk.Tk):
         self.bind("<Control-b>", lambda event: self.start_browser_tt())
         self.bind("<Control-q>", lambda event: self.quit())
         menubar.add_cascade(label="File", menu=self.file_menu)
+        self.edit_menu = tk.Menu(menubar, tearoff=False)
+        self.edit_menu.add_command(label="Copy URL",
+                                   command=self.menu_item_copy_url,
+                                   accelerator="Control-C")
+        self.bind("<Control-c>", lambda event: self.menu_item_copy_url())
+        menubar.add_cascade(label="Edit", menu=self.edit_menu)
         self.options_menu = tk.Menu(menubar, tearoff=False)
         self.v_shorten_url = tk.BooleanVar(value=True)
         self.v_shorten_url.trace("w",
@@ -102,6 +109,13 @@ class Application(ApplicationBase, tk.Tk):
 
     def show_connection_status(self, str):
         self.ws_info_label["text"] = str
+
+    def menu_item_copy_url(self):
+        path = self.tt_abs_path()
+        url = URLUtil.teacher_tools_URL(port=self.http_port,
+                                        path=path)
+        self.clipboard_clear()
+        self.clipboard_append(url)
 
     def menu_item_shorten_urls(self, b):
         self.shorten_url = b
