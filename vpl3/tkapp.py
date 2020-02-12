@@ -67,6 +67,14 @@ class Application(ApplicationBase, tk.Tk):
         self.v_log_in_dashboard.trace("w",
                                       lambda name, i, op:
                                       self.menu_item_log_in_dashboard(self.v_log_in_dashboard.get()))
+        self.v_advanced_sim_features = tk.BooleanVar(value=False)
+        self.v_advanced_sim_features.trace("w",
+                                           lambda name, i, op:
+                                           self.menu_item_advanced_sim_features(self.v_advanced_sim_features.get()))
+        self.v_dev_tools = tk.BooleanVar(value=False)
+        self.v_dev_tools.trace("w",
+                               lambda name, i, op:
+                               self.menu_item_dev_tools(self.v_dev_tools.get()))
         self.v_language = tk.StringVar(value="fr")
         self.v_bridge = tk.StringVar(value=self.bridge)
         self.options_menu.add_checkbutton(label="Shorten URLs",
@@ -75,6 +83,10 @@ class Application(ApplicationBase, tk.Tk):
                                           variable=self.v_login_qr_code)
         self.options_menu.add_checkbutton(label="Log Display in Dashboard",
                                           variable=self.v_log_in_dashboard)
+        self.options_menu.add_checkbutton(label="Advanced Simulator Features",
+                                          variable=self.v_advanced_sim_features)
+        self.options_menu.add_checkbutton(label="Developer Tools",
+                                          variable=self.v_dev_tools)
         self.options_menu.add_separator()
         self.options_menu.add_radiobutton(label="English",
                                           variable=self.v_language,
@@ -128,6 +140,14 @@ class Application(ApplicationBase, tk.Tk):
     def menu_item_log_in_dashboard(self, b):
         self.log_in_dashboard = b
         self.server.http_server.log_display = self.log_in_dashboard
+
+    def menu_item_advanced_sim_features(self, b):
+        self.advanced_sim_features = b
+        self.server.http_server.advanced_sim_features = self.advanced_sim_features
+
+    def menu_item_dev_tools(self, b):
+        self.dev_tools = b
+        self.server.http_server.dev_tools = self.dev_tools
 
     def menu_item_bridge(self, bridge):
         self.bridge = bridge
