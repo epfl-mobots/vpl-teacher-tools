@@ -5,7 +5,7 @@
 		"scrollbarWidth": 2,
 		"errorColor": "#ff1744",
 		"warningColor": "#ff7777",
-		"minInteractiveBlockSize":"84",
+		"minInteractiveBlockSize": 72,
 		"eventRightAlign": true
 	},
 
@@ -25,6 +25,7 @@
 
 	"fragments": {
 		"about.html": "<iframe src=\"vpl-about.html\" style=\"width:100%;height:100%;border:none;\"></iframe>",
+		"help.html": "<iframe src=\"UIROOT/help/vpl_help.html\" style=\"width:100%;height:100%;border:none;\"></iframe>",
 		"vpl-export-html.css": "td.events, td.then, td.actions {\n\tborder: solid 2px silver;\n\tborder-style: solid none;\n}\ntd.block {\n\tpadding: 15px;\n}\ntd.events {\n    min-width: 20px;\n    border-left-style: solid;\n    border-top-left-radius: 20px; \n    border-bottom-left-radius: 20px;\n}\ntd.event-aux {    transform: scale(0.8) translate(0,10px);\n}\ntd.actions {\n    min-width: 20px;\n    border-right-style: solid;\n    border-bottom-right-radius: 20px; \n    border-top-right-radius: 20px; \n}\ntable.program {\n\tborder-collapse: separate;\n\tborder-spacing: 0 10px;\n\tmargin-left: auto;\n\tmargin-right: auto;\n}\n"
 	},
 
@@ -257,7 +258,7 @@
 				{
 					"id": "btn2_ProxGd_detection",
 					"val": [true, false],
-					"st": ["fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:4 6;stroke-dashoffset:.8;stroke-linecap:round"]
+					"st": ["fill:#ffffff;stroke:#263238", "stroke:#263238;fill:#000000"]
 				}
 			]
 		},
@@ -1977,3 +1978,4 @@
 		"cmd-vpl-french.json"
 	]
 }
+
