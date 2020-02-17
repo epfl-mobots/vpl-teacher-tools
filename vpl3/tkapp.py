@@ -25,18 +25,26 @@ class Application(ApplicationBase, tk.Tk):
         self.title("VPL Server - " + self.tt_url(True))
         self.protocol("WM_DELETE_WINDOW", self.quit)  # close widget
         self.createcommand("exit", self.quit)  # Quit menu
-        self.grid()
-        tk.Grid.columnconfigure(self, 0, weight=1)
 
-        # self.browser_button = tk.Button(self, text="Teacher Tools",
-        #                                 command=self.start_browser_tt)
-        # self.browser_button.grid()
+        padding = 10
 
-        self.ws_info_label = tk.Label(self)
-        self.ws_info_label.grid(sticky=tk.W)
+        self.status = tk.Label(self, anchor=tk.W, width=30)
+        self.status.pack(padx=padding, pady=padding)
 
-        self.log = ScrolledText(self)
-        self.log.grid(sticky=tk.N+tk.W+tk.E+tk.S)
+        self.robot_status = tk.Label(self, anchor=tk.W, width=30)
+        self.robot_status.pack(padx=padding, pady=padding)
+
+        self.browser_button = tk.Button(self, text="Teacher Tools",
+                                        command=self.start_browser_tt)
+        self.browser_button.pack(padx=padding, pady=padding)
+
+        self.qr_canvas = tk.Canvas(width=160, height=160)
+        self.qr_canvas.pack(padx=padding, pady=padding)
+        self.draw_qr_code()
+
+        #self.log = ScrolledText(self)
+        #self.log.grid(sticky=tk.N+tk.W+tk.E+tk.S)
+        self.log = None
 
         # menus
         menubar = tk.Menu(self)
@@ -88,14 +96,19 @@ class Application(ApplicationBase, tk.Tk):
         self.options_menu.add_checkbutton(label="Developer Tools",
                                           variable=self.v_dev_tools)
         self.options_menu.add_separator()
+        
+        def change_language(language):
+            self.set_language(language)
+            self.draw_qr_code()
+
         self.options_menu.add_radiobutton(label="English",
                                           variable=self.v_language,
                                           value="en",
-                                          command=lambda: self.set_language("en"))
+                                          command=lambda: change_language("en"))
         self.options_menu.add_radiobutton(label="French",
                                           variable=self.v_language,
                                           value="fr",
-                                          command=lambda: self.set_language("fr"))
+                                          command=lambda: change_language("fr"))
         self.options_menu.add_separator()
         self.options_menu.add_radiobutton(label="Thymio Device Manager",
                                           variable=self.v_bridge,
@@ -116,11 +129,35 @@ class Application(ApplicationBase, tk.Tk):
         self.options_menu.entryconfig("JSON WebSocket", state="disabled")
 
     def writeln(self, str):
-        self.log.insert("end", str + "\n")
-        self.log.see(tk.END)
+        if self.log:
+            self.log.insert("end", str + "\n")
+            self.log.see(tk.END)
 
     def show_connection_status(self, str):
-        self.ws_info_label["text"] = str
+        if str:
+            self.status["text"] = str
+
+    def show_robot_status(self, str):
+        if str:
+            self.robot_status["text"] = str
+
+    def draw_qr_code(self):
+        import qrcode
+        qr = qrcode.QRCode()
+        path = self.tt_abs_path()
+        url = URLUtil.teacher_tools_URL(port=self.http_port,
+                                        path=path)
+        qr.add_data(url)
+        qr.make()
+        n = qr.modules_count
+        qr_size = int(self.qr_canvas["width"])
+        s = qr_size // (n + 8)  # margin = at least 4 modules
+        margin = (qr_size - n * s) / 2
+        self.qr_canvas.delete("all")
+        for i in range(n):
+            for j in range(n):
+                if qr.modules[i][j]:
+                    self.qr_canvas.create_rectangle(margin + s * j, margin + s * i, margin + s * j + s, margin + s * i + s, fill="#000")
 
     def menu_item_copy_url(self):
         path = self.tt_abs_path()
