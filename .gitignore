@@ -1,3 +1,11 @@
 *.pyc
 *.swp
+*.app
+*.dmg
+.DS_Store
+build
+__pycache__
+thymio-device-manager
+vpl-min.js
+.vscode/launch.json
 
