@@ -170,13 +170,15 @@ VPLTeacherTools.Load.prototype.close = function () {
 */
 VPLTeacherTools.convertFromCSV = function (csv) {
 	var a = csv
-		.replace(/\r/g, "")
+		.replace(/\r\n/g, "\n")
+		.replace(/\r/g, "\n")
 		.split("\n")
 		.map(function (line) {
 			var a1 = [];
 			for (var i = 0; i < line.length; ) {
 				if (line[i] == "," || line[i] == "\t") {
 					a1.push("");
+					i++;
 				} else if (line[i] == "\"") {
 					i++;
 					var len;

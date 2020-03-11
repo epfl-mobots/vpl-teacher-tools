@@ -100,10 +100,22 @@ window.addEventListener("load", function () {
 	btn = document.getElementById("btn-import");
 	btn.addEventListener("click", function () {
 		var loadBox = new VPLTeacherTools.Load(function (file) {
-			var names = VPLTeacherTools.convertFromCSV(file)
-				.map(function (row) {
-					return row[0];
-				});
+			var table = VPLTeacherTools.convertFromCSV(file);
+			// check if 1st col is completely empty
+			var col = 1;
+			for (var i = 0; i < table.length; i++) {
+				if (table[i].length > 0 && table[i][0]) {
+					col = 0;
+					break;
+				}
+			}
+			// pick non-empty names
+			var names = [];
+			for (var i = 0; i < table.length; i++) {
+				if (table[i][col]) {
+					names.push(table[i][col]);
+				}
+			}
 			students.addStudents(names);
 		}, VPLTeacherTools.translate("Import Pupil Names"), ".txt,.csv");
 	}, false);
