@@ -62,6 +62,7 @@ UICLASSICFILES = \
 	doc/vpl/ui/classic/js.json \
 	doc/vpl/ui/classic/l2.json \
 	doc/vpl/ui/classic/python.json \
+	doc/vpl/ui/classic/typical-param-set.json \
 	doc/vpl/ui/classic/ui.json
 
 TOOLSFILES = \
