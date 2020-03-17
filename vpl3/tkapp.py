@@ -22,19 +22,24 @@ class Application(ApplicationBase, tk.Tk):
         self.login_qr_code = False
         self.log_in_dashboard = False
 
-        self.title("VPL Server - " + self.tt_url(True))
+        self.title(f"{self.tr('VPL Server')} - " + self.tt_url(True))
         self.protocol("WM_DELETE_WINDOW", self.quit)  # close widget
         self.createcommand("exit", self.quit)  # Quit menu
 
+        self.geometry("500x300")
+        self.resizable(width=False, height=False)
+
         padding = 10
 
-        self.status = tk.Label(self, anchor=tk.W, width=30)
+        self.status = tk.Label(self, anchor=tk.W, width=40)
         self.status.pack(padx=padding, pady=padding)
 
-        self.robot_status = tk.Label(self, anchor=tk.W, width=30)
+        self.robot_status = tk.Label(self, anchor=tk.W, width=40)
         self.robot_status.pack(padx=padding, pady=padding)
 
-        self.browser_button = tk.Button(self, text="Teacher Tools",
+        self.browser_button = tk.Button(self,
+                                        text=self.tr("Open tools in browser"),
+                                        padx=10,
                                         command=self.start_browser_tt)
         self.browser_button.pack(padx=padding, pady=padding)
 
@@ -46,22 +51,29 @@ class Application(ApplicationBase, tk.Tk):
         #self.log.grid(sticky=tk.N+tk.W+tk.E+tk.S)
         self.log = None
 
+        menu_items = {}
+
         # menus
         menubar = tk.Menu(self)
         self.config(menu=menubar)
         self.file_menu = tk.Menu(menubar, tearoff=False)
-        self.file_menu.add_command(label="Open in Browser",
-                                   command=self.start_browser_tt,
-                                   accelerator="Control-B")
+        self.file_menu.add_command(
+            command=self.start_browser_tt,
+            accelerator="Control-B")
+        menu_items["Open Tools in Browser"] = (self.file_menu, self.file_menu.index("end"))
         self.bind("<Control-b>", lambda event: self.start_browser_tt())
         self.bind("<Control-q>", lambda event: self.quit())
-        menubar.add_cascade(label="File", menu=self.file_menu)
+        menubar.add_cascade(menu=self.file_menu)
+        menu_items["File"] = (menubar, menubar.index("end"))
+
         self.edit_menu = tk.Menu(menubar, tearoff=False)
-        self.edit_menu.add_command(label="Copy URL",
-                                   command=self.menu_item_copy_url,
-                                   accelerator="Control-C")
+        self.edit_menu.add_command(
+            command=self.menu_item_copy_url,
+            accelerator="Control-C")
+        menu_items["Copy URL"] = (self.edit_menu, self.edit_menu.index("end"))
         self.bind("<Control-c>", lambda event: self.menu_item_copy_url())
-        menubar.add_cascade(label="Edit", menu=self.edit_menu)
+        menubar.add_cascade(menu=self.edit_menu)
+        menu_items["Edit"] = (menubar, menubar.index("end"))
         self.options_menu = tk.Menu(menubar, tearoff=False)
         self.v_shorten_url = tk.BooleanVar(value=True)
         self.v_shorten_url.trace("w",
@@ -85,44 +97,56 @@ class Application(ApplicationBase, tk.Tk):
                                self.menu_item_dev_tools(self.v_dev_tools.get()))
         self.v_language = tk.StringVar(value="fr")
         self.v_bridge = tk.StringVar(value=self.bridge)
-        self.options_menu.add_checkbutton(label="Shorten URLs",
-                                          variable=self.v_shorten_url)
-        self.options_menu.add_checkbutton(label="Login Screen QR Code",
-                                          variable=self.v_login_qr_code)
-        self.options_menu.add_checkbutton(label="Log Display in Dashboard",
-                                          variable=self.v_log_in_dashboard)
-        self.options_menu.add_checkbutton(label="Advanced Simulator Features",
-                                          variable=self.v_advanced_sim_features)
-        self.options_menu.add_checkbutton(label="Developer Tools",
-                                          variable=self.v_dev_tools)
+        self.options_menu.add_checkbutton(variable=self.v_shorten_url)
+        menu_items["Shortened URLs"] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_checkbutton(variable=self.v_login_qr_code)
+        menu_items["Login Screen QR Code"] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_checkbutton(variable=self.v_log_in_dashboard)
+        menu_items["Log Display in Dashboard"] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_checkbutton(variable=self.v_advanced_sim_features)
+        menu_items["Advanced Simulator Features"] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_checkbutton(variable=self.v_dev_tools)
+        menu_items["Developer Tools"] = (self.options_menu, self.options_menu.index("end"))
         self.options_menu.add_separator()
         
         def change_language(language):
             self.set_language(language)
+
+            for key in menu_items:
+                menu, index = menu_items[key]
+                menu.entryconfigure(index, label=self.tr(key))
+            
+            self.title(f"{self.tr('VPL Server')} - " + self.tt_url(True))
+            self.update_connection()
+            self.update_robots()
+            self.browser_button.config(text=self.tr("Open tools in browser"))
             self.draw_qr_code()
 
-        self.options_menu.add_radiobutton(label="English",
-                                          variable=self.v_language,
+        self.options_menu.add_radiobutton(variable=self.v_language,
                                           value="en",
                                           command=lambda: change_language("en"))
-        self.options_menu.add_radiobutton(label="French",
-                                          variable=self.v_language,
+        menu_items["English"] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_radiobutton(variable=self.v_language,
                                           value="fr",
                                           command=lambda: change_language("fr"))
+        menu_items["French"] = (self.options_menu, self.options_menu.index("end"))
         self.options_menu.add_separator()
-        self.options_menu.add_radiobutton(label="Thymio Device Manager",
-                                          variable=self.v_bridge,
+        self.options_menu.add_radiobutton(variable=self.v_bridge,
                                           value="tdm",
                                           command=lambda: self.menu_item_bridge("tdm"))
-        self.options_menu.add_radiobutton(label="JSON WebSocket",
-                                          variable=self.v_bridge,
+        menu_items["Thymio Device Manager"] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_radiobutton(variable=self.v_bridge,
                                           value="jws",
                                           command=lambda: self.menu_item_bridge("jws"))
-        self.options_menu.add_radiobutton(label="No Robot",
-                                          variable=self.v_bridge,
+        menu_items["JSON WebSocket"] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_radiobutton(variable=self.v_bridge,
                                           value="none",
                                           command=lambda: self.menu_item_bridge("none"))
-        menubar.add_cascade(label="Options", menu=self.options_menu)
+        menu_items["No Robot"] = (self.options_menu, self.options_menu.index("end"))
+        menubar.add_cascade(menu=self.options_menu)
+        menu_items["Options"] = (menubar, menubar.index("end"))
+
+        change_language("fr")
 
     def disable_serial(self):
         self.no_serial = True
@@ -157,7 +181,7 @@ class Application(ApplicationBase, tk.Tk):
         for i in range(n):
             for j in range(n):
                 if qr.modules[i][j]:
-                    self.qr_canvas.create_rectangle(margin + s * j, margin + s * i, margin + s * j + s, margin + s * i + s, fill="#000")
+                    self.qr_canvas.create_rectangle(margin + s * j, margin + s * i, margin + s * j + s, margin + s * i + s, fill="#000", outline="")
 
     def menu_item_copy_url(self):
         path = self.tt_abs_path()

@@ -21,7 +21,7 @@ class Application(ApplicationBase):
         self.log_display = False
         self.advanced_sim_features = False
         self.dev_tools = False
-        
+
         self.window = None
         self.qr = None
         self.robots_status = None
@@ -43,7 +43,7 @@ class Application(ApplicationBase):
         ])
         self.app_objc.addMenu_withItems_("Options", [
             [
-                "Shorten URLs",
+                "Shortened URLs",
                 None,
                 lambda sender: self.menu_item_shorten_urls()
             ],
@@ -104,17 +104,20 @@ class Application(ApplicationBase):
             400, 260,
             20, 20
         )
-        self.status = self.app_objc.addLabelToWindow_title_width_x_y_(self.window,
-                                                                      "",
-                                                                      250, 10, 220)
-        self.robots_status = self.app_objc.addLabelToWindow_title_width_x_y_(self.window,
-                                                                             "",
-                                                                             250, 10, 200)
-        self.app_objc.addButtonToWindow_title_action_width_x_y_(self.window,
-                                                                "Open tools in browser",
-                                                                lambda sender: self.start_browser_tt(),
-                                                                180, 110, 160)
-        
+        self.status = self.app_objc.addLabelToWindow_title_width_x_y_(
+            self.window,
+            "",
+            250, 10, 220)
+        self.robots_status = self.app_objc.addLabelToWindow_title_width_x_y_(
+            self.window,
+            "",
+            250, 10, 200)
+        self.open_button = self.app_objc.addButtonToWindow_title_action_width_x_y_(
+            self.window,
+            self.tr("Open tools in browser"),
+            lambda sender: self.start_browser_tt(),
+            240, 80, 160)
+
         def drawQRCode(rect):
             import qrcode
             qr = qrcode.QRCode()
@@ -136,7 +139,7 @@ class Application(ApplicationBase):
                                                                           120, 5, 160, 160)
 
     def title(self):
-        return "VPL Server - " + self.tt_url(True)
+        return f"{self.tr('VPL Server')} - " + self.tt_url(True)
 
     def disable_serial(self):
         self.no_serial = True
@@ -147,12 +150,21 @@ class Application(ApplicationBase):
         self.app_objc.run()
 
     def show_connection_status(self, str):
-        if self.status:
+        if hasattr(self, "status") and self.status:
             self.status.setStringValue_(str)
 
     def show_robots_status(self, str):
         if self.robots_status:
             self.robots_status.setStringValue_(str)
+
+    def translate_menus(self):
+        for i, menuName in enumerate(self.app_objc.menuNames):
+            menu = self.app_objc.getMenuWithTitle_(menuName)
+            menu.setTitle_(self.tr(menuName))
+            for item in self.app_objc.menuItems[i]:
+                if item:
+                    menuItem = self.app_objc.getMenuItemWithTitle_inMenu_(item[0], menuName)
+                    menuItem.setTitle_(self.tr(item[0]))
 
     def menu_item_copy_url(self):
         path = self.tt_abs_path()
@@ -163,7 +175,7 @@ class Application(ApplicationBase):
         pasteboard.setString_forType_(url, NSStringPboardType)
 
     def menu_item_shorten_urls(self):
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("Shorten URLs", "Options")
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Shortened URLs", "Options")
         self.shorten_url = not self.shorten_url
         item.setState_(1 if self.shorten_url else 0)
         self.server.http_server.full_url = not self.shorten_url
@@ -198,8 +210,12 @@ class Application(ApplicationBase):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("French", "Options")
         item.setState_(1 if language == "fr" else 0)
         self.set_language(language)
+        self.translate_menus()
         if self.window:
             self.window.setTitle_(self.title())
+            self.update_connection()
+            self.update_robots()
+            self.open_button.setTitle_(self.tr("Open tools in browser"))
         if self.qr:
             self.qr.needsDisplay = True
             self.qr.display()

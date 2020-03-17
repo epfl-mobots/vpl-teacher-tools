@@ -10,8 +10,7 @@ from vpl3.urlutil import URLUtil
 
 import wx
 # Ubuntu: sudo apt install python3-wxgtk4.0
-# macOS: download last release from https://wxpython.org/ then
-# python3 -m wheel unpack ~/Downloads/...; sudo python3 -m pip install wxPython
+# macOS: pip3 install -U wxPython
 
 class QRControl(wx.Control):
     # see implementation of GenStaticText in wx/lib/stattext.py
@@ -74,7 +73,7 @@ class Application(ApplicationBase, wx.App):
 
         size = wx.Size(600, 280)
         self.frame = wx.Frame(None,
-                              title="VPL Server - " + self.tt_url(True),
+                              title=f"{self.tr('VPL Server')} - " + self.tt_url(True),
                               size=size,
                               style=wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER)
         self.frame.SetMaxSize(size)

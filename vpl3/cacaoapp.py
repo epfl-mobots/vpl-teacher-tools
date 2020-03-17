@@ -18,6 +18,7 @@ class ApplicationObjCShell(NSApplication):
             return self
         self.actionArray = []
         self.menuNames = []
+        self.menus = []
         self.menuItems = []
         self.aboutAppAction = None
         return self
@@ -31,6 +32,11 @@ class ApplicationObjCShell(NSApplication):
     def addMenu_withItems_(self, menuName, menuItems):
         self.menuNames.append(menuName)
         self.menuItems.append(menuItems)
+
+    def getMenuWithTitle_(self, menuTitle):
+        for i in range(len(self.menuNames)):
+            if self.menuNames[i] == menuTitle:
+                return self.menus[i]
 
     def getMenuItemWithTitle_inMenu_(self, menuItemTitle, menuTitle):
         for i in range(len(self.menuNames)):
@@ -49,6 +55,7 @@ class ApplicationObjCShell(NSApplication):
             menu_hook = NSMenuItem.new().autorelease()
             if name is not None:
                 menu = NSMenu.alloc().initWithTitle_(name).autorelease()
+                self.menus.append(menu)
             else:
                 menu = NSMenu.new().autorelease()
             menu.setAutoenablesItems_(False)

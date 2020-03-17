@@ -24,6 +24,8 @@ PKGFILES = \
 	vpl3/server_ws.py \
 	vpl3/thymio.py \
 	vpl3/tkapp.py \
+	vpl3/translate.py \
+	vpl3/translate_fr.py \
 	vpl3/urltiny.py \
 	vpl3/urlutil.py \
 	vpl3/wxapp.py

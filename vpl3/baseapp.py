@@ -7,6 +7,8 @@
 
 from vpl3.server import Server
 from vpl3.urlutil import URLUtil
+from vpl3.translate import Translate
+import vpl3.translate_fr
 from vpl3.db import Db
 
 import threading
@@ -24,6 +26,8 @@ class ApplicationBase:
                  ws_link_url=None,
                  language=None,
                  full_url=False):
+        self.translate = Translate()
+        vpl3.translate_fr.add_translations_fr(self.translate)
         self.logger_lock = threading.Lock()
         self.server = Server(db_path=db_path,
                              http_port=http_port,
@@ -66,7 +70,7 @@ class ApplicationBase:
             self.writeln(str)
 
     def update_connection(self, session_id=None):
-        str = f"""Number of connections: {
+        str = f"""{self.tr('Number of connections:')} {
             self.server.ws_server.connection_count
             if self.server.ws_server
             else "-"
@@ -75,7 +79,7 @@ class ApplicationBase:
 
     def update_robots(self, session_id=None):
         if self.bridge == "jws":
-            str = f"""Number of robots: {
+            str = f"""{self.tr('Number of robots:')} {
                 self.server.thymio_server.robot_count
                 if self.server.thymio_server
                 else "-"
@@ -92,8 +96,12 @@ class ApplicationBase:
 
     def set_language(self, language):
         self.language = language
+        self.translate.set_language(language)
         self.server.language = language
         self.server.http_server.language = language
+
+    def tr(self, key):
+        return self.translate.tr(key)
 
     def quit(self):
         self.server.stop()
