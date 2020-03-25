@@ -110,6 +110,10 @@ class Application(ApplicationBase, wx.App):
 
         menubar = wx.MenuBar()
         menubar.Append(file_menu, "File")
+        edit_menu = wx.Menu()
+        copy_url_item = edit_menu.Append(-1, "Copy URL\tCtrl-C",
+                                         "Copy the teacher tool URL to the clipboard")
+        menubar.Append(edit_menu, "Edit")
         self.frame.SetMenuBar(menubar)
         self.frame.Bind(wx.EVT_MENU,
                         lambda event: self.start_browser_tt(),
@@ -117,6 +121,9 @@ class Application(ApplicationBase, wx.App):
         self.frame.Bind(wx.EVT_MENU,
                         lambda event: self.quit(),
                         exit_item)
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.menu_item_copy_url(),
+                        copy_url_item)
 
         self.update_qr_code()
 
@@ -139,3 +146,11 @@ class Application(ApplicationBase, wx.App):
 
     def exit_app(self):
         self.frame.Destroy()
+
+    def menu_item_copy_url(self):
+        if wx.TheClipboard.Open():
+            path = self.tt_abs_path()
+            url = URLUtil.teacher_tools_URL(port=self.http_port,
+                                            path=path)
+            wx.TheClipboard.SetData(wx.TextDataObject(url))
+            wx.TheClipboard.Close()
