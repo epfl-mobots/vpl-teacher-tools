@@ -191,6 +191,10 @@ VPLTeacherTools.HTTPClient.prototype.getFile = function (id, opt) {
 	this.rest("/api/getFile?id=" + id.toString(10), opt);
 };
 
+VPLTeacherTools.HTTPClient.prototype.getLastFileForGroup = function (groupId, opt) {
+	this.rest("/api/getLastFileForGroup?groupid=" + encodeURIComponent(groupId), opt);
+};
+
 VPLTeacherTools.HTTPClient.prototype.updateFile = function (id, content, opt) {
 	this.rest("/api/updateFile?id=" + id.toString(10), opt,
 		content, "text/plain");

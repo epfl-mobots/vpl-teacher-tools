@@ -233,6 +233,13 @@ class VPLHTTPServer:
                 return VPLHTTPServer.error("Missing id")
             return self.call_api(Db.get_file, int(q["id"][0]))
 
+        @self.httpd.http_get("/api/getLastFileForGroup")
+        def http_get_api_getLastFileForGroup(self, handler):
+            q = VPLHTTPServer.query_param(handler)
+            if "groupid" not in q:
+                return VPLHTTPServer.error("Missing group id")
+            return self.call_api(Db.get_last_file_for_group, q["groupid"][0])
+
         @self.httpd.http_post("/api/updateFile")
         def http_post_api_updateFile(self, handler):
             q = VPLHTTPServer.query_param(handler)

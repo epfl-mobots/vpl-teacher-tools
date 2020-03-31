@@ -28,12 +28,14 @@ function fillGroupTable(sessionArray, dashboard) {
 
 		var tr = document.createElement("tr");
 
+		// group
 		var td = document.createElement("td");
 		td.textContent = session.students ? session.students.join(", ") : session.group;
 		td.addEventListener("click", select);
 		td.className = dashboard.isGroupSelected(session) ? "rect selected" : "rect";
 		tr.appendChild(td);
 
+		// connection to teacher (VPL server)
 		td = document.createElement("td");
 		td.textContent = session.isConnected ? "\u260d" : "";
 		tr.appendChild(td);
@@ -46,6 +48,8 @@ function fillGroupTable(sessionArray, dashboard) {
 			td.textContent = lastVPLChangedData["robot"] ? "r" : "";
 			tr.appendChild(td);
 
+			// elapsed time
+			td = document.createElement("td");
 			var datetime = session.lastVPLChangedLogEntry["time"].split(" ");
 			var ymd = datetime[0].split("-").map(function (str) { return parseInt(str, 10); });;
 			var hms = datetime[1].split(":").map(function (str) { return parseInt(str, 10); });
@@ -56,15 +60,32 @@ function fillGroupTable(sessionArray, dashboard) {
 				: elapsedSec < 7200 ? Math.floor(elapsedSec / 60).toString(10) + " min"
 				: elapsedSec < 172800 ? Math.floor(elapsedSec / 3600).toString(10) + " hr"
 				: Math.floor(elapsedSec / 86400).toString(10) + " d";
-			var details = [elapsedStr];
+			td.textContent = elapsedStr;
+			tr.appendChild(td);
+
+			// program
 			if (lastVPLChangedData && lastVPLChangedData["nrules"] != undefined) {
+				// filename
+				td = document.createElement("td");
+				if (lastVPLChangedData["filename"]) {
+					var btn = document.createElement("button");
+					btn.textContent = lastVPLChangedData["filename"];
+					btn.addEventListener("click", function () {
+						dashboard.openLastFile(session.group_id,
+                            session.students ? session.students.join(", ") : session.group);
+					}, false);
+				    td.appendChild(btn);
+				}
+				tr.appendChild(td);
+
 				details = [
-					elapsedStr,
 					lastVPLChangedData["filename"] || "",
 					lastVPLChangedData["nrules"].toString(10),
 					lastVPLChangedData["nblocks"].toString(10)
 				];
 			}
+
+			var details = [];
 			if (lastVPLChangedData["error"]) {
 				details.push("error: " + lastVPLChangedData["error"]);
 			} else if (lastVPLChangedData["warning"]) {
@@ -151,6 +172,20 @@ window.addEventListener("load", function () {
 		},
 		onFiles: function (fileArray) {
 			fillFileTable(fileArray, dashboard);
+		},
+		onOpen: function (file, readOnly) {
+			var teacherFile = !file.owner || file.owner.length == 0;
+			var options = {
+				"initialFileName": file.filename,
+				"fileId": teacherFile ? file.id : null,
+				"readOnly": readOnly,
+				"customizationMode": /\.vpl3ui/.test(file.filename)
+			};
+            sessionStorage.setItem("options", JSON.stringify(options));
+            sessionStorage.setItem("initialFileContent", file.content);
+			document.location = "vpl$LANGSUFFIX.html?robot=sim&uilanguage=$LANGUAGE" +
+				(teacherFile ? "&role=teacher" : "") +
+				(file.students ? "&user=" + encodeURIComponent(file.students.join(", ")) : "");
 		}
 	});
 	setInterval(function () {

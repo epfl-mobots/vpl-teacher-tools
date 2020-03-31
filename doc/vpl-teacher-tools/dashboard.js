@@ -5,7 +5,8 @@
 	@param {{
 		log: (function(string):void | undefined),
 		onGroups: (function(Array.<Objects>):void | undefined),
-		onFiles: (function(Array.<Object>):void | undefined)
+		onFiles: (function(Array.<Object>):void | undefined),
+		onOpen: (function(Object,boolean):void | undefined)
 	}} options
 */
 VPLTeacherTools.Dashboard = function (wsURL, options) {
@@ -158,6 +159,24 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
             }
         }
 	});
+};
+
+VPLTeacherTools.Dashboard.prototype.openLastFile = function (group_id, group) {
+    console.info(group_id);
+	this.client.getLastFileForGroup(group_id, {
+        onSuccess: function (file) {
+			var options = {
+				"initialFileName": file.filename,
+				"fileId": null,
+				"readOnly": true,
+				"customizationMode": false
+			};
+            sessionStorage.setItem("options", JSON.stringify(options));
+            sessionStorage.setItem("initialFileContent", file.content);
+			document.location = "vpl$LANGSUFFIX.html?robot=sim&uilanguage=$LANGUAGE" +
+				(group ? "&user=" + encodeURIComponent(group) : "");
+        }
+    });
 };
 
 VPLTeacherTools.Dashboard.prototype.setDefaultProgram = function (fileId) {

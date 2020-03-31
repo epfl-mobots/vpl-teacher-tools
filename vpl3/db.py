@@ -816,6 +816,32 @@ class Db:
             "metadata": r[5]
         }
 
+    def get_last_file_for_group(self, group_id):
+        """Get the most recent file saved by the specified group"""
+        student_id_list = self.list_to_str(self.get_group_student_list(group_id))
+        r = self.get_first_result(
+            f"""fileid,
+                name,
+                {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
+                LENGTH(content),
+                owner,
+                content,
+                metadata
+            """,
+            "files",
+            "NOT list_aredisjoint(owner, ?)", (student_id_list,))
+        if r is None:
+            raise ValueError("no file for group id")
+        return {
+            "id": r[0],
+            "filename": r[1],
+            "time": r[2],
+            "size": r[3],
+            "owner": self.str_to_list(r[4]),
+            "content": r[5],
+            "metadata": r[6]
+        }
+
     def get_default_file(self):
         """Get the default file"""
         r = self.get_first_result(
