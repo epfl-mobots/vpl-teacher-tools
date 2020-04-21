@@ -167,3 +167,14 @@ class ApplicationObjCShell(NSApplication):
     def forwardAction_(self, sender):
         tag = sender.tag()
         self.actionArray[tag](sender)
+
+    @staticmethod
+    def modalAlert(messageText, informativeText=None, buttons=None):
+        a = NSAlert.new().autorelease()
+        a.setMessageText_(messageText)
+        if informativeText:
+            a.setInformativeText_(informativeText)
+        if buttons:
+            for button in buttons:
+                a.addButtonWithTitle_(button)
+        return a.runModal()
