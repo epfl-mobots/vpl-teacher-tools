@@ -93,7 +93,7 @@ class Server:
                     if app:
                         app.disable_serial()
 
-    def start(self):
+    def start(self, timeout=2):
 
         # let know the main thread that both servers have been started
         http_started = False
@@ -134,7 +134,8 @@ class Server:
 
         # wait until both servers have been started before returning,
         # so that self.http_port and self.ws_port are known
-        servers_started.wait(timeout=2)
+        if not servers_started.wait(timeout=timeout):
+            raise Exception("Server launch timeout")
 
     def stop(self):
         self.http_server.stop()

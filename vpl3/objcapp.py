@@ -95,7 +95,11 @@ class Application(ApplicationBase):
                 lambda sender: self.menu_item_bridge("none")
             ],
         ])
-        self.app_objc.start()
+        try:
+            self.app_objc.start()
+        except Exception as e:
+            ApplicationObjCShell.modalAlert(e.message, buttons=["Quit"])
+            NSApp.terminate_(None)
         self.menu_item_shorten_urls()
         self.menu_item_language("fr")
         self.menu_item_bridge("tdm")
