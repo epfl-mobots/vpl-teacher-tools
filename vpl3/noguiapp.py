@@ -12,7 +12,7 @@ import time
 class Application(ApplicationBase):
 
     def __init__(self, **kwargs):
-        super(ApplicationBase, self).__init__(**kwargs)
+        ApplicationBase.__init__(self, **kwargs)
         self.start_browser_tt()
         print(f"{self.tr('VPL Server')} - " + self.tt_url(True))
 
