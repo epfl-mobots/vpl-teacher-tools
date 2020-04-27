@@ -14,91 +14,91 @@ from Cocoa import *
 class Application(ApplicationBase):
 
     def __init__(self, **kwargs):
-        ApplicationBase.__init__(self, **kwargs)
-
-        self.shorten_url = False
-        self.login_qr_code = False
-        self.log_display = False
-        self.advanced_sim_features = False
-        self.dev_tools = False
-
-        self.window = None
-        self.qr = None
-        self.robots_status = None
-
-        self.app_objc = ApplicationObjCShell.alloc().init()
-        self.app_objc.addMenu_withItems_("File", [
-            [
-                "Open Tools in Browser",
-                "b",
-                lambda sender: self.start_browser_tt()
-            ]
-        ])
-        self.app_objc.addMenu_withItems_("Edit", [
-            [
-                "Copy URL",
-                "c",
-                lambda sender: self.menu_item_copy_url()
-            ]
-        ])
-        self.app_objc.addMenu_withItems_("Options", [
-            [
-                "Shortened URLs",
-                None,
-                lambda sender: self.menu_item_shorten_urls()
-            ],
-            [
-                "Login Screen QR Code",
-                None,
-                lambda sender: self.menu_item_login_QR_code()
-            ],
-            [
-                "Log Display in Dashboard",
-                None,
-                lambda sender: self.menu_item_log_display()
-            ],
-            [
-                "Advanced Simulator Features",
-                None,
-                lambda sender: self.menu_item_advanced_sim_features()
-            ],
-            [
-                "Developer Tools",
-                None,
-                lambda sender: self.menu_item_dev_tools()
-            ],
-            None,
-            [
-                "English",
-                None,
-                lambda sender: self.menu_item_language("en")
-            ],
-            [
-                "French",
-                None,
-                lambda sender: self.menu_item_language("fr")
-            ],
-            None,
-            [
-                "Thymio Device Manager",
-                None,
-                lambda sender: self.menu_item_bridge("tdm")
-            ],
-            [
-                "JSON WebSocket",
-                None,
-                lambda sender: self.menu_item_bridge("jws")
-            ],
-            [
-                "No Robot",
-                None,
-                lambda sender: self.menu_item_bridge("none")
-            ],
-        ])
         try:
+            ApplicationBase.__init__(self, **kwargs)
+
+            self.shorten_url = False
+            self.login_qr_code = False
+            self.log_display = False
+            self.advanced_sim_features = False
+            self.dev_tools = False
+
+            self.window = None
+            self.qr = None
+            self.robots_status = None
+
+            self.app_objc = ApplicationObjCShell.alloc().init()
+            self.app_objc.addMenu_withItems_("File", [
+                [
+                    "Open Tools in Browser",
+                    "b",
+                    lambda sender: self.start_browser_tt()
+                ]
+            ])
+            self.app_objc.addMenu_withItems_("Edit", [
+                [
+                    "Copy URL",
+                    "c",
+                    lambda sender: self.menu_item_copy_url()
+                ]
+            ])
+            self.app_objc.addMenu_withItems_("Options", [
+                [
+                    "Shortened URLs",
+                    None,
+                    lambda sender: self.menu_item_shorten_urls()
+                ],
+                [
+                    "Login Screen QR Code",
+                    None,
+                    lambda sender: self.menu_item_login_QR_code()
+                ],
+                [
+                    "Log Display in Dashboard",
+                    None,
+                    lambda sender: self.menu_item_log_display()
+                ],
+                [
+                    "Advanced Simulator Features",
+                    None,
+                    lambda sender: self.menu_item_advanced_sim_features()
+                ],
+                [
+                    "Developer Tools",
+                    None,
+                    lambda sender: self.menu_item_dev_tools()
+                ],
+                None,
+                [
+                    "English",
+                    None,
+                    lambda sender: self.menu_item_language("en")
+                ],
+                [
+                    "French",
+                    None,
+                    lambda sender: self.menu_item_language("fr")
+                ],
+                None,
+                [
+                    "Thymio Device Manager",
+                    None,
+                    lambda sender: self.menu_item_bridge("tdm")
+                ],
+                [
+                    "JSON WebSocket",
+                    None,
+                    lambda sender: self.menu_item_bridge("jws")
+                ],
+                [
+                    "No Robot",
+                    None,
+                    lambda sender: self.menu_item_bridge("none")
+                ],
+            ])
             self.app_objc.start()
         except Exception as e:
-            ApplicationObjCShell.modalAlert(e.message, buttons=["Quit"])
+            ApplicationObjCShell.modalAlert(str(e), buttons=["Quit"])
             NSApp.terminate_(None)
         self.menu_item_shorten_urls()
         self.menu_item_language("fr")

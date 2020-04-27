@@ -40,7 +40,7 @@ class ApplicationBase:
                              update_robots=self.update_robots,
                              initial_file_dir="data")
         self.server.add_files(if_new_db=True)
-        self.server.start()
+        self.server.start(timeout=5)
         self.http_port = self.server.get_http_port()
         self.no_serial = False
         self.language = language
