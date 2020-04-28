@@ -135,8 +135,8 @@ class Server:
         # wait until both servers have been started before returning,
         # so that self.http_port and self.ws_port are known
         if not servers_started.wait(timeout=timeout):
-            raise Exception(("HTTP Server" if not http_server
-                             else "WebSocket Server" if not ws_server
+            raise Exception(("HTTP Server" if not http_started
+                             else "WebSocket Server" if not ws_started
                              else "Server") + " launch timeout")
 
     def stop(self):
