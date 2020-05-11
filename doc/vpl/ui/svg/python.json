@@ -40,10 +40,7 @@
 			"name": "ground 1"
 		},
 		{
-			"name": "horiz prox front"
-		},
-		{
-			"name": "horiz prox back"
+			"name": "horiz prox"
 		},
 		{
 			"name": "horiz prox front adv"
@@ -94,10 +91,19 @@
 			"name": "bottom color"
 		},
 		{
+			"name": "set timer"
+		},
+		{
 			"name": "notes"
 		},
 		{
 			"name": "notes with speed"
+		},
+		{
+			"name": "play"
+		},
+		{
+			"name": "play stop"
 		},
 		{
 			"name": "set state 256"
@@ -106,10 +112,16 @@
 			"name": "set state 256 with mask"
 		},
 		{
-			"name": "set timer"
+			"name": "arithmetic"
 		},
 		{
-			"name": "arithmetic"
+			"name": "button"
+		},
+		{
+			"name": "horiz prox adv"
+		},
+		{
+			"name": "ground adv"
 		}
 	]
 }

@@ -40,9 +40,6 @@
 			"modes": ["basic", "advanced"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
-				},
-				{
 					"uri": "Blocks.svg#Ev_Start"
 				}
 			],
@@ -53,9 +50,6 @@
 			"type": "event",
 			"modes": ["basic", "advanced"],
 			"draw": [
-				{
-					"uri": "Blocks.svg#Events_bg"
-				},
 				{
 					"uri": "Blocks.svg#Bg_Thymio"
 				},
@@ -68,27 +62,27 @@
 				{
 					"id": "Btn2_Center",
 					"val": 0,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Forward",
 					"val": 1,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Backward",
 					"val": 2,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Right",
 					"val": 3,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Left",
 					"val": 4,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				}
 			]
 		},
@@ -97,9 +91,6 @@
 			"type": "event",
 			"modes": ["advanced"],
 			"draw": [
-				{
-					"uri": "Blocks.svg#Events_bg"
-				},
 				{
 					"uri": "Blocks.svg#Rot360Rail"
 				},
@@ -123,10 +114,7 @@
 			"modes": ["basic"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
-				},
-				{
-					"uri": "Blocks.svg#Ground_accel_1"
+					"uri": "Blocks.svg#Ground_accel"
 				},
 				{
 					"uri": "Blocks.svg#ThymioSideDown"
@@ -139,10 +127,7 @@
 			"modes": ["basic"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
-				},
-				{
-					"uri": "Blocks.svg#Ground_accel_0"
+					"uri": "Blocks.svg#Ground_accel"
 				},
 				{
 					"uri": "Blocks.svg#ThymioUpsideDown"
@@ -154,9 +139,6 @@
 			"type": "event",
 			"modes": ["advanced"],
 			"draw": [
-				{
-					"uri": "Blocks.svg#Events_bg"
-				},
 				{
 					"uri": "Blocks.svg#Rot360Rail"
 				},
@@ -180,9 +162,6 @@
 			"modes": ["advanced"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
-				},
-				{
 					"uri": "Blocks.svg#Rot360Rail"
 				},
 				{
@@ -205,9 +184,6 @@
 			"modes": ["basic", "advanced"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
-				},
-				{
 					"uri": "Blocks.svg#Ev_Acc_Hit"
 				}
 			],
@@ -218,9 +194,6 @@
 			"type": "event",
 			"modes": [],
 			"draw": [
-				{
-					"uri": "Blocks.svg#Events_bg"
-				},
 				{
 					"uri": "Blocks.svg#Ev_Acc_Fall"
 				}
@@ -233,9 +206,6 @@
 			"modes": ["advanced"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
-				},
-				{
 					"uri": "Blocks.svg#Ev_Clap"
 				}
 			],
@@ -247,9 +217,6 @@
 			"modes": ["basic"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
-				},
-				{
 					"uri": "Blocks.svg#Ev_ProxGr_bas"
 				}
 			],
@@ -258,7 +225,7 @@
 				{
 					"id": "btn2_ProxGd_detection",
 					"val": [true, false],
-					"st": ["fill:#ffffff;stroke:#263238", "stroke:#263238;fill:#000000"]
+					"st": ["fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:black"]
 				}
 			]
 		},
@@ -267,9 +234,6 @@
 			"type": "event",
 			"modes": ["basic"],
 			"draw": [
-				{
-					"uri": "Blocks.svg#Events_bg"
-				},
 				{
 					"uri": "Blocks.svg#Ev_ProxGr_med"
 				}
@@ -290,12 +254,12 @@
 				{
 					"id": "Btn3_ProxGd0",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:#000000"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:#000000"]
 				},
 				{
 					"id": "Btn3_ProxGd1",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:#000000"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:#000000"]
 				}
 			],
 			"validation": [
@@ -311,10 +275,7 @@
 			"modes": ["advanced"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
-				},
-				{
-					"js": "var gth = Math.floor($[2] * 255.99).toString(10); var g = 'rgb(' + [gth,gth,gth].join(',') + ')'; $.slice(0, 2).forEach(function (b, i) { if (b) { var lg = ctx.createLinearGradient(0, 40, 0, 460); lg.addColorStop(0, b > 0 ? 'white' : g); lg.addColorStop(1, b > 0 ? g : 'black'); ctx.fillStyle = lg; ctx.fillRect(40 + i * 325, 40, 325, 460); } });"
+					"js": "var gth = Math.floor($[2] * 255.99).toString(10); var g = 'rgb(' + [gth,gth,gth].join(',') + ')'; $.slice(0, 2).forEach(function (b, i) { if (b) { var lg = ctx.createLinearGradient(0, 40, 0, 460); lg.addColorStop(0, b > 0 ? 'white' : g); lg.addColorStop(1, b > 0 ? g : 'black'); ctx.fillStyle = lg; ctx.fillRect(40 + i * 335, 40, 335, 460); } });"
 				},
 				{
 					"uri": "Blocks.svg#Ev_ProxGround_adv"
@@ -359,12 +320,12 @@
 				{
 					"id": "Btn3_ProxGd0_adv",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:black;stroke-linecap:round"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:#000000"]
 				},
 				{
 					"id": "Btn3_ProxGd1_adv",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:black;stroke-linecap:round"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:#000000"]
 				}
 			],
 			"validation": [
@@ -375,151 +336,81 @@
 			]
 		},
 		{
-			"name": "horiz prox front",
+			"name": "horiz prox",
 			"type": "event",
 			"modes": ["basic"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
-				},
-				{
-					"uri": "Blocks.svg#Ev_ProxH_Front_med"
-				},
-				{
-					"js": "ctx.lineWidth = 20; ctx.strokeStyle = '#6200ea'; ctx.lineCap = 'round'; var rg = ctx.createRadialGradient(0, 0, 300, 0, 0, 750); rg.addColorStop(0, 'red'); rg.addColorStop(1, 'rgba(255,0,0,0)'); ctx.fillStyle = rg; var r = 620; var w = 70; var sl = 0.2; $.forEach(function (b, i) { if (b) { var phi = 0.33 * (i - 2); ctx.save(); ctx.translate(500, 750); ctx.rotate(phi); var rgr = b > 0 ? 320 : 450; ctx.beginPath(); ctx.moveTo(-sl * 200, -300-200); ctx.lineTo(-sl * rgr, -300 - rgr); ctx.lineTo(sl * rgr, -300 - rgr); ctx.lineTo(sl * 200, -300-200); ctx.fill(); ctx.beginPath(); ctx.moveTo(-w, -r); ctx.lineTo(w, -r); ctx.setLineDash(b > 0 ? [] : [15, 30]); ctx.strokeStyle = b < 0 ? '#607d8b' : '#6200ea'; ctx.stroke(); ctx.restore(); } });"
+					"uri": "Blocks.svg#Ev_ProxH_med"
 				}
 			],
 			"styles": [
 				{
-					"id": "Obstacles",
-					"st": "visibility:hidden"
-				},
-				{
-					"id": "IR_gradients_obst",
-					"st": "visibility:hidden"
-				},
-				{
-					"id": "IR_gradients_empty",
-					"st": "visibility:hidden"
-				},
-				{
-					"id": "Led_0",
+					"id": "Obst_prox2",
 					"st": "visibility:`$[0]>0?'visible':'hidden'`"
 				},
 				{
-					"id": "Led_1",
+					"id": "Obst_prox1",
 					"st": "visibility:`$[1]>0?'visible':'hidden'`"
 				},
 				{
-					"id": "Led_2",
+					"id": "Obst_prox3",
 					"st": "visibility:`$[2]>0?'visible':'hidden'`"
 				},
 				{
-					"id": "Led_2_",
-					"st": "visibility:`$[2]>0?'visible':'hidden'`"
-				},
-				{
-					"id": "Led_3",
+					"id": "Obst_prox0",
 					"st": "visibility:`$[3]>0?'visible':'hidden'`"
 				},
 				{
-					"id": "Led_4",
+					"id": "Obst_prox4",
 					"st": "visibility:`$[4]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Obst_prox5",
+					"st": "visibility:`$[5]>0?'visible':'hidden'`"
+				},
+				{
+					"id": "Obst_prox6",
+					"st": "visibility:`$[6]>0?'visible':'hidden'`"
 				}
 			],
-			"defaultParameters": [0, 0, 0, 0, 0],
-			"typicalParameters": [0, 0, 1, 0, 0],
+			"defaultParameters": [0, 0, 0, 0, 0, 0, 0],
+			"typicalParameters": [1, 1, 1, 0, 0, -1, -1],
 			"buttons": [
 				{
-					"id": "Btn3_Prox0",
+					"id": "Btn3_Prox2",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:#000000"]
 				},
 				{
 					"id": "Btn3_Prox1",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
-				},
-				{
-					"id": "Btn3_Prox2",
-					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:#000000"]
 				},
 				{
 					"id": "Btn3_Prox3",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:#000000"]
+				},
+				{
+					"id": "Btn3_Prox0",
+					"val": [0, 1, -1],
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:#000000"]
 				},
 				{
 					"id": "Btn3_Prox4",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
-				}
-			],
-			"validation": [
-				{
-					"assert": "`$.reduce(function (acc, p) { return acc || p != 0; }, false)`",
-					"warning": "No proximity sensor specified"
-				}
-			]
-		},
-		{
-			"name": "horiz prox back",
-			"type": "event",
-			"modes": ["basic"],
-			"draw": [
-				{
-					"uri": "Blocks.svg#Events_bg"
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:#000000"]
 				},
-				{
-					"uri": "Blocks.svg#Ev_ProxH_Back_med"
-				},
-				{
-					"js": "ctx.lineWidth = 20; ctx.strokeStyle = '#6200ea'; ctx.lineCap = 'round'; var rg = ctx.createRadialGradient(0, 0, 300, 0, 0, 750); rg.addColorStop(0, 'red'); rg.addColorStop(1, 'rgba(255,0,0,0)'); ctx.fillStyle = rg; var r = 620; var w = 70; var sl = 0.2; $.forEach(function (b, i) { if (b) { ctx.save(); ctx.translate(335 + 330 * i, 250); ctx.rotate(Math.PI); var rgr = b > 0 ? 320 : 450; ctx.beginPath(); ctx.moveTo(-sl * 200, -300-200); ctx.lineTo(-sl * rgr, -300 - rgr); ctx.lineTo(sl * rgr, -300 - rgr); ctx.lineTo(sl * 200, -300-200); ctx.fill(); ctx.beginPath(); ctx.moveTo(-w, -r); ctx.lineTo(w, -r); ctx.setLineDash(b > 0 ? [] : [15, 30]); ctx.strokeStyle = b < 0 ? '#607d8b' : '#6200ea'; ctx.stroke(); ctx.restore(); } });"
-				}
-			],
-			"styles": [
-				{
-					"id": "IR_gradients_back_obst",
-					"st": "visibility:hidden"
-				},
-				{
-					"id": "IR_gradients_back_empty",
-					"st": "visibility:hidden"
-				},
-				{
-					"id": "Obstacles-2",
-					"st": "visibility:hidden"
-				},
-				{
-					"id": "Led_5",
-					"st": "visibility:`$[0]>0?'visible':'hidden'`"
-				},
-				{
-					"id": "Led_5_",
-					"st": "visibility:`$[0]>0?'visible':'hidden'`"
-				},
-				{
-					"id": "Led_6",
-					"st": "visibility:`$[1]>0?'visible':'hidden'`"
-				},
-				{
-					"id": "Led_6_",
-					"st": "visibility:`$[1]>0?'visible':'hidden'`"
-				}
-			],
-			"defaultParameters": [0, 0],
-			"typicalParameters": [1, 1],
-			"buttons": [
 				{
 					"id": "Btn3_Prox5",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:#000000"]
 				},
 				{
 					"id": "Btn3_Prox6",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:#000000"]
 				}
 			],
 			"validation": [
@@ -534,9 +425,6 @@
 			"type": "event",
 			"modes": ["advanced"],
 			"draw": [
-				{
-					"uri": "Blocks.svg#Events_bg"
-				},
 				{
 					"uri": "Blocks.svg#Ev_ProxH_Front_adv"
 				},
@@ -599,27 +487,27 @@
 				{
 					"id": "Btn3_Prox0_adv",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:black"]
 				},
 				{
 					"id": "Btn3_Prox1_adv",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:black"]
 				},
 				{
 					"id": "Btn3_Prox2_adv",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:black"]
 				},
 				{
 					"id": "Btn3_Prox3_adv",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:black"]
 				},
 				{
 					"id": "Btn3_Prox4_adv",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:black"]
 				}
 			],
 			"validation": [
@@ -635,13 +523,10 @@
 			"modes": ["advanced"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
-				},
-				{
 					"uri": "Blocks.svg#Ev_ProxH_Back_adv"
 				},
 				{
-					"js": "ctx.lineWidth = 20; ctx.strokeStyle = '#6200ea'; ctx.lineCap = 'round'; var rg = ctx.createRadialGradient(0, 0, 300, 0, 0, 1000); rg.addColorStop(0, 'red'); rg.addColorStop(1, 'rgba(255,0,0,0)'); ctx.fillStyle = rg; var r = 950 - 300 * $[2]; var sl = 0.2; var w = sl * (r - 300); $.slice(0, -1).forEach(function (b, i) { if (b) { var x = 335 + 330 * i; ctx.save(); ctx.translate(x, -250); ctx.rotate(Math.PI); var rgr = b > 0 ? r - 300 : 950; ctx.beginPath(); ctx.moveTo(-sl * 300, -300-300); ctx.lineTo(-sl * rgr, -300 - rgr); ctx.lineTo(sl * rgr, -300 - rgr); ctx.lineTo(sl * 300, -300-300); ctx.fill(); ctx.beginPath(); ctx.moveTo(-w, -r); ctx.lineTo(w, -r); ctx.setLineDash(b > 0 ? [] : [15, 30]); ctx.stroke(); ctx.restore(); } });"
+					"js": "ctx.lineWidth = 20; ctx.strokeStyle = '#6200ea'; ctx.lineCap = 'round'; var rg = ctx.createRadialGradient(0, 0, 300, 0, 0, 1000); rg.addColorStop(0, 'red'); rg.addColorStop(1, 'rgba(255,0,0,0)'); ctx.fillStyle = rg; var r = 950 - 300 * $[2]; var sl = 0.2; var w = sl * (r - 300); $.slice(0, -1).forEach(function (b, i) { if (b) { var x = 335 + 330 * i; ctx.save(); ctx.translate(x, -250); ctx.rotate(Math.PI); var rgr = b > 0 ? r - 300 : 950; ctx.beginPath(); ctx.moveTo(-sl * 300, -300-300); ctx.lineTo(-sl * rgr, -300 - rgr); ctx.lineTo(sl * rgr, -300 - rgr); ctx.lineTo(sl * 300, -300-300); ctx.fill(); ctx.beginPath(); ctx.moveTo(-w, -r); ctx.lineTo(w, -r); ctx.setLineDash(b > 0 ? [] : [15, 30]); ctx.strokeStyle = b < 0 ? '#607d8b' : '#6200ea';ctx.stroke(); ctx.restore(); } });"
 				}
 			],
 			"styles": [
@@ -694,12 +579,12 @@
 				{
 					"id": "Btn3_Prox5_adv",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:black"]
 				},
 				{
 					"id": "Btn3_Prox6_adv",
 					"val": [0, 1, -1],
-					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#263238", "stroke:#263238;fill:none;stroke-dasharray:1 4;stroke-dashoffset:.4;stroke-linecap:round"]
+					"st": ["fill:#90a4ae", "fill:#ffffff;stroke:#ff3d00", "stroke:#263238;fill:black"]
 				}
 			],
 			"validation": [
@@ -715,9 +600,6 @@
 			"modes": ["advanced"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
-				},
-				{
 					"uri": "Blocks.svg#Ev_Remote1"
 				}
 			],
@@ -726,27 +608,27 @@
 				{
 					"id": "Btn2_Remote1_85",
 					"val": 0,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote1_80",
 					"val": 1,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote1_81",
 					"val": 2,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote1_86",
 					"val": 3,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote1_87",
 					"val": 4,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				}
 			]
 		},
@@ -756,9 +638,6 @@
 			"modes": ["advanced"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
-				},
-				{
 					"uri": "Blocks.svg#Ev_Remote2"
 				}
 			],
@@ -767,62 +646,62 @@
 				{
 					"id": "Btn2_Remote2_0",
 					"val": 0,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote2_1",
 					"val": 1,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote2_2",
 					"val": 2,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote2_3",
 					"val": 3,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote2_4",
 					"val": 4,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote2_5",
 					"val": 5,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote2_6",
 					"val": 6,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote2_7",
 					"val": 7,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote2_8",
 					"val": 8,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote2_9",
 					"val": 9,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote2_16",
 					"val": 16,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_Remote2_17",
 					"val": 17,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#ff6040;stroke:#263238"]
 				}
 			]
 		},
@@ -831,9 +710,6 @@
 			"type": "event",
 			"modes": ["advanced"],
 			"draw": [
-				{
-					"uri": "Blocks.svg#Events_bg"
-				},
 				{
 					"uri": "Blocks.svg#Ev_TimersUp"
 				}
@@ -844,9 +720,6 @@
 			"type": "state",
 			"modes": ["advanced"],
 			"draw": [
-				{
-					"uri": "Blocks.svg#Events_bg"
-				},
 				{
 					"uri": "Blocks.svg#EvCounter"
 				},
@@ -896,36 +769,36 @@
 					"st": "visibility:`$[0]===2?'visible':'hidden'`"
 				},
 				{
-					"id": "Btn2_State0-2",
-					"st": "fill:`$[1]&1?'#a6f7d8':'transparent'`"
+					"id": "State0",
+					"st": "fill:`$[1]&1?'#ff6040':'#ffbfb2'`"
 				},
 				{
-					"id": "Btn2_State1-2",
-					"st": "fill:`$[1]&2?'#a6f7d8':'transparent'`"
+					"id": "State1",
+					"st": "fill:`$[1]&2?'#ff6040':'#ffbfb2'`"
 				},
 				{
-					"id": "Btn2_State2-2",
-					"st": "fill:`$[1]&4?'#a6f7d8':'transparent'`"
+					"id": "State2",
+					"st": "fill:`$[1]&4?'#ff6040':'#ffbfb2'`"
 				},
 				{
-					"id": "Btn2_State3-2",
-					"st": "fill:`$[1]&8?'#a6f7d8':'transparent'`"
+					"id": "State3",
+					"st": "fill:`$[1]&8?'#ff6040':'#ffbfb2'`"
 				},
 				{
-					"id": "Btn2_State4-2",
-					"st": "fill:`$[1]&16?'#a6f7d8':'transparent'`"
+					"id": "State4",
+					"st": "fill:`$[1]&16?'#ff6040':'#ffbfb2'`"
 				},
 				{
-					"id": "Btn2_State5-2",
-					"st": "fill:`$[1]&32?'#a6f7d8':'transparent'`"
+					"id": "State5",
+					"st": "fill:`$[1]&32?'#ff6040':'#ffbfb2'`"
 				},
 				{
-					"id": "Btn2_State6-2",
-					"st": "fill:`$[1]&64?'#a6f7d8':'transparent'`"
+					"id": "State6",
+					"st": "fill:`$[1]&64?'#ff6040':'#ffbfb2'`"
 				},
 				{
-					"id": "Btn2_State7-2",
-					"st": "fill:`$[1]&128?'#a6f7d8':'transparent'`"
+					"id": "State7",
+					"st": "fill:`$[1]&128?'#ff6040':'#ffbfb2'`"
 				}
 			]
 		},
@@ -935,13 +808,10 @@
 			"modes": ["basic"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
+					"uri": "Blocks.svg#statesEv_Bg"
 				},
 				{
-					"uri": "Blocks.svg#event_Bg-2"
-				},
-				{
-					"uri": "Blocks.svg#StatesOff"
+					"uri": "Blocks.svg#StatesOff_bas"
 				}
 			],
 			"defaultParameters": [false, false, false, false, false, false, false, false],
@@ -950,42 +820,42 @@
 				{
 					"id": "Btn2_State0",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_State1",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_State2",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_State3",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_State4",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_State5",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_State6",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_State7",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				}
 			]
 		},
@@ -995,11 +865,12 @@
 			"modes": ["advanced"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
+					"uri": "Blocks.svg#statesEv_Bg_adv"
 				},
 				{
-					"uri": "Blocks.svg#CircleLeds_adv"
+					"uri": "Blocks.svg#StatesOff_adv"
 				}
+
 
 			],
 			"defaultParameters": [0, 0, 0, 0, 0, 0, 0, 0],
@@ -1008,42 +879,42 @@
 				{
 					"id": "Btn3_State0_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				},
 				{
 					"id": "Btn3_State1_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				},
 				{
 					"id": "Btn3_State2_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				},
 				{
 					"id": "Btn3_State3_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				},
 				{
 					"id": "Btn3_State4_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				},
 				{
 					"id": "Btn3_State5_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				},
 				{
 					"id": "Btn3_State6_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				},
 				{
 					"id": "Btn3_State7_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				}
 			],
 			"styles": [
@@ -1086,9 +957,6 @@
 			"type": "state",
 			"modes": ["basic", "advanced"],
 			"draw": [
-				{
-					"uri": "Blocks.svg#Events_bg"
-				},
 				{
 					"uri": "Blocks.svg#ColorPalette"
 				},
@@ -1158,9 +1026,6 @@
 			"modes": ["basic", "advanced"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Events_bg"
-				},
-				{
 					"uri": "Blocks.svg#ColorPalette-2"
 				},
 				{
@@ -1229,9 +1094,6 @@
 			"modes": ["advanced"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Actions_bg"
-				},
-				{
 					"uri": "Blocks.svg#Ac_Wheels"
 				}
 			],
@@ -1285,9 +1147,6 @@
 			"modes": ["basic"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Actions_bg"
-				},
-				{
 					"uri": "Blocks.svg#Ac_Directions"
 				}
 			],
@@ -1296,47 +1155,47 @@
 				{
 					"id": "Btn2_StopDir",
 					"val": 0,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#338bff;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_FwdDir",
 					"val": 1,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#338bff;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_FwdRightDir",
 					"val": 2,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#338bff;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_RightDir",
 					"val": 3,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#338bff;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_BwdRightDir",
 					"val": 4,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#338bff;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_BwdDir",
 					"val": 5,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#338bff;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_BwdLeftDir",
 					"val": 6,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#338bff;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_LeftDir",
 					"val": 7,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#338bff;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_FwdLeftDir",
 					"val": 8,
-					"st": ["fill:#90a4ae", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#90a4ae", "fill:#338bff;stroke:#263238"]
 				}
 			]
 		},
@@ -1345,9 +1204,6 @@
 			"type": "action",
 			"modes": ["basic"],
 			"draw": [
-				{
-					"uri": "Blocks.svg#Actions_bg"
-				},
 				{
 					"uri": "Blocks.svg#ColorPalette"
 				},
@@ -1417,9 +1273,6 @@
 			"modes": ["basic"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Actions_bg"
-				},
-				{
 					"uri": "Blocks.svg#ColorPalette-2"
 				},
 				{
@@ -1488,9 +1341,6 @@
 			"modes": ["advanced"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Actions_bg"
-				},
-				{
 					"uri": "Blocks.svg#Color_top_adv"
 				}
 			],
@@ -1530,9 +1380,6 @@
 			"type": "action",
 			"modes": ["advanced"],
 			"draw": [
-				{
-					"uri": "Blocks.svg#Actions_bg"
-				},
 				{
 					"uri": "Blocks.svg#Color_bot_adv"
 				}
@@ -1574,9 +1421,6 @@
 			"modes": ["basic"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Actions_bg"
-				},
-				{
 					"uri": "Blocks.svg#zones_Bg"
 				},
 				{
@@ -1595,9 +1439,6 @@
 			"type": "action",
 			"modes": ["advanced"],
 			"draw": [
-				{
-					"uri": "Blocks.svg#Actions_bg"
-				},
 				{
 					"uri": "Blocks.svg#zones_Bg"
 				},
@@ -1624,18 +1465,52 @@
 			}
 		},
 		{
+			"name": "play",
+			"type": "action",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Ac_SD_play"
+				},
+				{
+					"js": "ctx.font = 'bold 170px sans-serif'; ctx.fillStyle = 'black'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText($[0].toString(10), 770, 520);"
+				}
+			],
+			"defaultParameters": [0],
+			"otherParameters": 1,
+			"pushbuttons": [
+				{
+					"id": "ClipDown",
+					"newParameters": "`[($[0]+255)%256]`"
+				},
+				{
+					"id": "ClipUp",
+					"newParameters": "`[($[0]+1)%256]`"
+				}
+			]
+		},
+		{
+			"name": "play stop",
+			"type": "action",
+			"modes": ["advanced"],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Ac_SD_stop"
+				}
+			],
+			"defaultParameters": []
+
+		},
+		{
 			"name": "set state 256",
 			"type": "action",
 			"modes": ["basic"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Actions_bg"
+					"uri": "Blocks.svg#statesAct_Bg"
 				},
 				{
-					"uri": "Blocks.svg#act_Bg-2"
-				},
-				{
-					"uri": "Blocks.svg#StatesOff"
+					"uri": "Blocks.svg#StatesOff_bas"
 				}
 			],
 			"defaultParameters": [false, false, false, false, false, false, false, false],
@@ -1644,42 +1519,42 @@
 				{
 					"id": "Btn2_State0",
 					"val": [false, true],
-					"st": ["fill:#455a64","fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64","fill:#ffee58;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_State1",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_State2",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_State3",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_State4",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_State5",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_State6",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				},
 				{
 					"id": "Btn2_State7",
 					"val": [false, true],
-					"st": ["fill:#455a64", "fill:#a6f7d8;stroke:#263238"]
+					"st": ["fill:#455a64", "fill:#ffee58;stroke:#263238"]
 				}
 			]
 		},
@@ -1689,16 +1564,10 @@
 			"modes": ["advanced"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Actions_bg"
-				},
-				{
-					"uri": "Blocks.svg#act_Bg_Thymio"
+					"uri": "Blocks.svg#statesAct_Bg_adv"
 				},
 				{
 					"uri": "Blocks.svg#StatesOff_adv"
-				},
-				{
-					"uri": "Blocks.svg#SelectedBits"
 				}
 
 			],
@@ -1708,42 +1577,42 @@
 				{
 					"id": "Btn3_State0_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				},
 				{
 					"id": "Btn3_State1_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				},
 				{
 					"id": "Btn3_State2_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				},
 				{
 					"id": "Btn3_State3_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				},
 				{
 					"id": "Btn3_State4_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				},
 				{
 					"id": "Btn3_State5_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				},
 				{
 					"id": "Btn3_State6_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				},
 				{
 					"id": "Btn3_State7_adv",
 					"val": [0, 1, -1],
-					"st": ["stroke:#607d8b", "fill:#a6f7d8;stroke:#263238", "fill:#455a64;stroke:#263238"]
+					"st": ["stroke:#607d8b", "fill:#ffee58;stroke:#263238", "fill:#455a64;stroke:#263238"]
 				}
 			],
 			"styles": [
@@ -1787,29 +1656,36 @@
 			"modes": ["advanced"],
 			"draw": [
 				{
-					"uri": "Blocks.svg#Actions_bg"
+					"uri": "Blocks.svg#Ac_Timer"
 				},
 				{
-					"uri": "Blocks.svg#timer10Secods_bg"
-				},
-				{
-					"uri": "Blocks.svg#text_TimeDisplay"
-				},
-				{
-					"uri": "Blocks.svg#Slider_timer"
-				},
-				{
-					"js":
-						"ctx.moveTo(500, 470); ctx.lineTo(650, 400); ctx.lineTo(650, 380 - 50 * $[0]); ctx.lineTo(350, 380 - 50 * $[0]); ctx.lineTo(350, 400); ctx.closePath(); ctx.fillStyle = 'white'; ctx.strokeStyle = 'black'; ctx.lineWidth = 15; ctx.fill(); ctx.stroke(); ctx.font = '150px sans-serif'; ctx.fillStyle = 'black'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText($[0].toFixed(1)+'s', 22, 500);"
+					"js": "ctx.font = 'bold 170px sans-serif'; ctx.fillStyle = 'black'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(Math.floor($[0]).toString(10),330,550); ctx.fillText((10*$[0]%10).toString(10),690,550); ctx.font = '170px sans-serif'; ctx.fillText('s',450,550);"
 				}
 			],
 			"defaultParameters": [1],
-			"sliders": [
+			"otherParameters": 1,
+			"pushbuttons": [
 				{
-					"id": "Slider_timer",
-					"thumbId": "Cursor_units",
-					"min": 0,
-					"max": 4
+					"id": "SecUp",
+					"newParameters": "`[Math.round((10*$[0]+10)%100)/10]`"
+				},
+				{
+					"id": "SecDown",
+					"newParameters": "`[Math.round((10*$[0]+90)%100)/10]`"
+				},
+				{
+					"id": "TSecUp",
+					"newParameters": "`[Math.round((10*$[0]+1)%100)/10]`"
+				},
+				{
+					"id": "TSecDown",
+					"newParameters": "`[Math.round((10*$[0]+99)%100)/10]`"
+				}
+			],
+			"styles": [
+				{
+					"id": "S_Unit",
+					"st": "visibility:hidden"
 				}
 			]
 		},
@@ -1818,9 +1694,6 @@
 			"type": "action",
 			"modes": ["advanced"],
 			"draw": [
-				{
-					"uri": "Blocks.svg#Actions_bg"
-				},
 				{
 					"uri": "Blocks.svg#AcCounter"
 				},
@@ -1878,36 +1751,36 @@
 					"st": "visibility:hidden"
 				},
 				{
-					"id": "Btn2_State0-3",
-					"st": "fill:`$[1]&1?'#a6f7d8':'transparent'`"
+					"id": "Led0",
+					"st": "fill:`$[1]&1?'#338bff':'#99ccff'`"
 				},
 				{
-					"id": "Btn2_State1-3",
-					"st": "fill:`$[1]&2?'#a6f7d8':'transparent'`"
+					"id": "Led1",
+					"st": "fill:`$[1]&2?'#338bff':'#99ccff'`"
 				},
 				{
-					"id": "Btn2_State2-3",
-					"st": "fill:`$[1]&4?'#a6f7d8':'transparent'`"
+					"id": "Led2",
+					"st": "fill:`$[1]&4?'#338bff':'#99ccff'`"
 				},
 				{
-					"id": "Btn2_State3-3",
-					"st": "fill:`$[1]&8?'#a6f7d8':'transparent'`"
+					"id": "Led3",
+					"st": "fill:`$[1]&8?'#338bff':'#99ccff'`"
 				},
 				{
-					"id": "Btn2_State4-3",
-					"st": "fill:`$[1]&16?'#a6f7d8':'transparent'`"
+					"id": "Led4",
+					"st": "fill:`$[1]&16?'#338bff':'#99ccff'`"
 				},
 				{
-					"id": "Btn2_State5-3",
-					"st": "fill:`$[1]&32?'#a6f7d8':'transparent'`"
+					"id": "Led5",
+					"st": "fill:`$[1]&32?'#338bff':'#99ccff'`"
 				},
 				{
-					"id": "Btn2_State6-3",
-					"st": "fill:`$[1]&64?'#a6f7d8':'transparent'`"
+					"id": "Led6",
+					"st": "fill:`$[1]&64?'#338bff':'#99ccff'`"
 				},
 				{
-					"id": "Btn2_State7-3",
-					"st": "fill:`$[1]&128?'#a6f7d8':'transparent'`"
+					"id": "Led7",
+					"st": "fill:`$[1]&128?'#338bff':'#99ccff'`"
 				},
 				{
 					"id": "Btn_Saturate_On",
@@ -1916,6 +1789,231 @@
 				{
 					"id": "Btn_Saturate_Off",
 					"st": "visibility:`$[2]?'hidden':'visible'`"
+				}
+			]
+		},
+		{
+			"name": "button",
+			"type": "event",
+			"modes": [],
+			"draw": [
+				{
+					"uri": "Blocks16.svg#Event_bg_1_6"
+				},
+				{
+					"uri": "Blocks16.svg#button"
+				}
+			],
+			"defaultParameters": [false, false, false, false, false],
+			"typicalParameters": [false, false, false, true, true],
+			"buttons": [
+				{
+					"id": "Btn2_center",
+					"val": [false, true],
+					"st": ["", "fill:red;stroke:black"]
+				},
+				{
+					"id": "Btn2_Fwd",
+					"val": [false, true],
+					"st": ["", "fill:red;stroke:black"]
+				},
+				{
+					"id": "Btn2_Bwd",
+					"val": [false, true],
+					"st": ["", "fill:red;stroke:black"]
+				},
+				{
+					"id": "Btn2_right",
+					"val": [false, true],
+					"st": ["", "fill:red;stroke:black"]
+				},
+				{
+					"id": "Btn2_Left",
+					"val": [false, true],
+					"st": ["", "fill:red;stroke:black"]
+				}
+			],
+			"validation": [
+				{
+					"assert": "`$.reduce(function (acc, p) { return acc || p; }, false)`",
+					"warning": "No button specified"
+				}
+			]
+		},
+		{
+			"name": "horiz prox adv",
+			"type": "event",
+			"modes": [],
+			"draw": [
+				{
+					"uri": "Blocks16.svg#Event_bg_1_6"
+				},
+				{
+					"uri": "Blocks16.svg#horiz_prox_adv"
+				},
+				{
+					"js": "if ($[7] < $[8]) { var x1 = 120 + 760 * $[7], x2 = 120 + 760 * $[8], y0 = 575, d = 100; ctx.fillStyle = 'silver'; ctx.strokeStyle = 'black'; ctx.lineWidth = 20; ctx.lineJoin = 'round'; ctx.beginPath(); if ($[7] + d / 760 < $[8]) { ctx.moveTo(x1, y0); ctx.lineTo(x1+d, y0+d); ctx.lineTo(x2, y0+d); ctx.lineTo(x2, y0); ctx.lineTo(x2-d, y0-d); ctx.lineTo(x1, y0-d); } else { ctx.moveTo(x1, y0); ctx.lineTo(x2, y0+x2-x1); ctx.lineTo(x2, y0); ctx.lineTo(x1, y0-x2+x1); } ctx.closePath(); ctx.fill(); ctx.stroke(); }"
+				}
+			],
+			"styles": [
+				{
+					"id": "Led_prox2",
+					"st": "visibility:`$[0]===1?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_prox2-2",
+					"st": "visibility:`$[0]===1?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_prox1",
+					"st": "visibility:`$[1]===1?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_prox3",
+					"st": "visibility:`$[2]===1?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_prox0",
+					"st": "visibility:`$[3]===1?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_prox4",
+					"st": "visibility:`$[4]===1?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_prox5",
+					"st": "visibility:`$[5]===1?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_prox6",
+					"st": "visibility:`$[6]===1?'visible':'hidden'`"
+				},
+				{
+					"id": "Grey_threshold",
+					"st": "visibility:hidden"
+				}
+			],
+			"defaultParameters": [0, 0, 0, 0, 0, 0, 0, 0.1, 0.4],
+			"typicalParameters": [1, 1, 1, 0, 0, 2, 2, 0.1, 0.4],
+			"buttons": [
+				{
+					"id": "Btn3_prox2",
+					"val": [0, 1, 2, 3],
+					"st": ["", "fill:white;stroke:red", "fill:black;stroke:black", "fill:#666;stroke:black"]
+				},
+				{
+					"id": "Btn3_prox1",
+					"val": [0, 1, 2, 3],
+					"st": ["", "fill:white;stroke:red", "fill:black;stroke:black", "fill:#666;stroke:black"]
+				},
+				{
+					"id": "Btn3_prox3",
+					"val": [0, 1, 2, 3],
+					"st": ["", "fill:white;stroke:red", "fill:black;stroke:black", "fill:#666;stroke:black"]
+				},
+				{
+					"id": "Btn3_prox0",
+					"val": [0, 1, 2, 3],
+					"st": ["", "fill:white;stroke:red", "fill:black;stroke:black", "fill:#666;stroke:black"]
+				},
+				{
+					"id": "Btn3_prox4",
+					"val": [0, 1, 2, 3],
+					"st": ["", "fill:white;stroke:red", "fill:black;stroke:black", "fill:#666;stroke:black"]
+				},
+				{
+					"id": "Btn3_prox5",
+					"val": [0, 1, 2, 3],
+					"st": ["", "fill:white;stroke:red", "fill:black;stroke:black", "fill:#666;stroke:black"]
+				},
+				{
+					"id": "Btn3_prox6",
+					"val": [0, 1, 2, 3],
+					"st": ["", "fill:white;stroke:red", "fill:black;stroke:black", "fill:#999;stroke:black"]
+				}
+			],
+			"sliders": [
+				{
+					"id": "Black_threshold",
+					"thumbId": "Black_cursor_front",
+					"min": 0,
+					"max": 1
+				},
+				{
+					"id": "White_threshold",
+					"thumbId": "White_cursor_front",
+					"min": 0,
+					"max": 1
+				}
+			],
+			"validation": [
+				{
+					"assert": "`$.slice(0, 7).reduce(function (acc, p) { return acc || p != 0; }, false)`",
+					"warning": "No proximity sensor specified"
+				}
+			]
+		},
+		{
+			"name": "ground adv",
+			"type": "event",
+			"modes": [],
+			"draw": [
+				{
+					"uri": "Blocks16.svg#Event_bg_1_6"
+				},
+				{
+					"uri": "Blocks16.svg#gd_prox_adv"
+				},
+				{
+					"js": "if ($[2] < $[3]) { var x1 = 120 + 760 * $[2], x2 = 120 + 760 * $[3], y0 = 575, d = 100; ctx.fillStyle = 'silver'; ctx.strokeStyle = 'black'; ctx.lineWidth = 20; ctx.lineJoin = 'round'; ctx.beginPath(); if ($[2] + d / 760 < $[3]) { ctx.moveTo(x1, y0); ctx.lineTo(x1+d, y0+d); ctx.lineTo(x2, y0+d); ctx.lineTo(x2, y0); ctx.lineTo(x2-d, y0-d); ctx.lineTo(x1, y0-d); } else { ctx.moveTo(x1, y0); ctx.lineTo(x2, y0+x2-x1); ctx.lineTo(x2, y0); ctx.lineTo(x1, y0-x2+x1); } ctx.closePath(); ctx.fill(); ctx.stroke(); }"
+				}
+			],
+			"styles": [
+				{
+					"id": "Led_Gd_prpx0",
+					"st": "visibility:`$[0]===1?'visible':'hidden'`"
+				},
+				{
+					"id": "Led_Gd_prox1",
+					"st": "visibility:`$[1]===1?'visible':'hidden'`"
+				},
+				{
+					"id": "Grey_threshold-2",
+					"st": "visibility:hidden"
+				}
+			],
+			"defaultParameters": [0, 0, 0.4, 0.6],
+			"typicalParameters": [1, 1, 0.4, 0.6],
+			"buttons": [
+				{
+					"id": "Btn3_Gd_prox0",
+					"val": [0, 1, 2, 3],
+					"st": ["", "fill:white;stroke:red", "fill:black;stroke:black", "fill:#666;stroke:black"]
+				},
+				{
+					"id": "Btn3_Gd_prox1",
+					"val": [0, 1, 2, 3],
+					"st": ["", "fill:white;stroke:red", "fill:black;stroke:black", "fill:#666;stroke:black"]
+				}
+			],
+			"sliders": [
+				{
+					"id": "Black_threshold-2",
+					"thumbId": "Black_cursor",
+					"min": 0,
+					"max": 1
+				},
+				{
+					"id": "White_threshold-2",
+					"thumbId": "White_cursor",
+					"min": 0,
+					"max": 1
+				}
+			],
+			"validation": [
+				{
+					"assert": "`$.slice(0, 2).reduce(function (acc, p) { return acc || p != 0; }, false)`",
+					"warning": "No ground sensor specified"
 				}
 			]
 		}
@@ -1964,18 +2062,24 @@
 	],
 	"svgFilenames": [
 		"Icons.svg",
-		"Blocks.svg"
+		"Blocks.svg",
+		"Blocks16.svg"
 	],
 	"overlays": [
+		"aesl.json",
+
 		"aseba.json",
 		"l2.json",
 		"js.json",
 		"python.json",
+
 		"toolbars.json",
 		"buttons.json",
 		"cmd-vpl-english.json",
 		"french.json",
-		"cmd-vpl-french.json"
+		"cmd-vpl-french.json",
+
+		"block-english.json",
+		"block-french.json"
 	]
 }
-

@@ -28,26 +28,26 @@
 			"name": "state 256",
 			"l2": {
 				"initVarDecl": [
-					"int state256;\n"
+					"int state;\n"
 				],
 				"initCodeExec": [
-					"state256 = 0;\n"
+					"state = 0;\n"
 				],
 				"clause":
-					"state256 == `$.reduce(function (a, b, i) { return b ? a | (1 << i) : a; }, 0)`"
+					"state == `$.reduce(function (a, b, i) { return b ? a | (1 << i) : a; }, 0)`"
 			}
 		},
 		{
 			"name": "state 256 with mask",
 			"l2": {
 				"initVarDecl": [
-					"int state256;\n"
+					"int state;\n"
 				],
 				"initCodeExec": [
-					"state256 = 0;\n"
+					"state = 0;\n"
 				],
 				"clause":
-					"(state256 & `$.reduce(function (a, b, i) { return b !== 0 ? a | (1 << i) : a; }, 0)`) == `$.reduce(function (a, b, i) { return b === 1 ? a | (1 << i) : a; }, 0)`"
+					"(state & `$.reduce(function (a, b, i) { return b !== 0 ? a | (1 << i) : a; }, 0)`) == `$.reduce(function (a, b, i) { return b === 1 ? a | (1 << i) : a; }, 0)`"
 			}
 		},
 		{
@@ -133,7 +133,7 @@
 				"sectionBegin": "onevent tap {\n",
 				"sectionEnd": "}\n",
 				"sectionPreamble": "tapped = true;\n",
-				"clause": "tapped"
+				"clauseAsCondition": "tapped"
 			}
 		},
 		{
@@ -165,19 +165,11 @@
 			}
 		},
 		{
-			"name": "horiz prox front",
+			"name": "horiz prox",
 			"l2": {
 				"sectionBegin": "onevent prox {\n",
 				"sectionEnd": "}\n",
-				"clauseAnd": "`$[i] ? 'prox.horizontal[' + i + '] ' + ($[i] > 0 ? '>= 2' : '<= 1') + '000' : ''`"
-			}
-		},
-		{
-			"name": "horiz prox back",
-			"l2": {
-				"sectionBegin": "onevent prox {\n",
-				"sectionEnd": "}\n",
-				"clauseAnd": "`$[i] ? 'prox.horizontal[' + (i + 5) + '] ' + ($[i] > 0 ? '>= 2' : '<= 1') + '000' : ''`"
+				"clause": "`[2, 1, 3, 0, 4, 5, 6].map(function (ix, i) { return $[i] ? 'prox.horizontal[' + ix + '] ' + ($[i] > 0 ? '>= 2000' : '<= 1000') : ''; }).filter(function (s) { return s; }).join(' && ') || [2, 1, 3, 0, 4, 5, 6].map(function (ix) { return 'prox.horizontal[' + ix + '] >= 2000'; }).join(' || ')`"
 			}
 		},
 		{
@@ -255,20 +247,20 @@
 					"timerElapsed = true;\n",
 					"timer.period[0] = 0;\n"
 				],
-				"clause": "timerElapsed"
+				"clauseAsCondition": "timerElapsed"
 			}
 		},
 		{
 			"name": "counter comparison",
 			"l2": {
 				"initVarDecl": [
-					"int state256;\n"
+					"int state;\n"
 				],
 				"initCodeExec": [
-					"state256 = 0;\n"
+					"state = 0;\n"
 				],
 				"clause":
-					"state256 `['<=','<','==','>','>='][$[0] + 2]` `$[1]`"
+					"state `['<=','<','==','>','>='][$[0] + 2]` `$[1]`"
 			}
 		},
 		{
@@ -276,7 +268,7 @@
 			"l2": {
 				"initCodeExec": [
 					[
-						"// reset outputs\nsound.system(-1);\n",
+						"// reset outputs\n",
 						"leds.top(0, 0, 0);\n",
 						"leds.bottom.left(0, 0, 0);\n",
 						"leds.bottom.right(0, 0, 0);\n",
@@ -292,7 +284,7 @@
 			"l2": {
 				"initCodeExec": [
 					[
-						"// reset outputs\nsound.system(-1);\n",
+						"// reset outputs\n",
 						"leds.top(0, 0, 0);\n",
 						"leds.bottom.left(0, 0, 0);\n",
 						"leds.bottom.right(0, 0, 0);\n",
@@ -312,7 +304,7 @@
 				"initCodeExec": [
 					"topColor = [0, 0, 0];\n",
 					[
-						"// reset outputs\nsound.system(-1);\n",
+						"// reset outputs\n",
 						"leds.top(0, 0, 0);\n",
 						"leds.bottom.left(0, 0, 0);\n",
 						"leds.bottom.right(0, 0, 0);\n",
@@ -332,7 +324,7 @@
 				"initCodeExec": [
 					"bottomColor = [0, 0, 0];\n",
 					[
-						"// reset outputs\nsound.system(-1);\n",
+						"// reset outputs\n",
 						"leds.top(0, 0, 0);\n",
 						"leds.bottom.left(0, 0, 0);\n",
 						"leds.bottom.right(0, 0, 0);\n",
@@ -352,7 +344,7 @@
 				"initCodeExec": [
 					"topColor = [0, 0, 0];\n",
 					[
-						"// reset outputs\nsound.system(-1);\n",
+						"// reset outputs\n",
 						"leds.top(0, 0, 0);\n",
 						"leds.bottom.left(0, 0, 0);\n",
 						"leds.bottom.right(0, 0, 0);\n",
@@ -374,62 +366,73 @@
 				"initCodeExec": [
 					"bottomColor = [0, 0, 0];\n",
 					[
-						"// reset outputs\nsound.system(-1);\n",
+						"// reset outputs\n",
 						"leds.top(0, 0, 0);\n",
 						"leds.bottom.left(0, 0, 0);\n",
 						"leds.bottom.right(0, 0, 0);\n",
 						"leds.circle(0, 0, 0, 0, 0, 0, 0, 0);\n"
 					]
 				],
-				"statement": [
-					"leds.bottom.left(`$.map(function (x) { return Math.round(32 * x); }).join(', ')`);\n",
-					"leds.bottom.right(`$.map(function (x) { return Math.round(32 * x); }).join(', ')`);\n",
-					"bottomColor = [`$.map(function (x) { return Math.round(32 * x); }).join(', ')`];\n"
-				],
-				"statementWithoutInit": [
-					"leds.bottom.left(`$.map(function (x) { return Math.round(32 * x); }).join(', ')`);\n",
-					"leds.bottom.right(`$.map(function (x) { return Math.round(32 * x); }).join(', ')`);\n"
-				]
+				"statement":
+					"leds.bottom.left(`$.map(function (x) { return Math.round(32 * x); }).join(', ')`);\nleds.bottom.right(`$.map(function (x) { return Math.round(32 * x); }).join(', ')`);\nbottomColor = [`$.map(function (x) { return Math.round(32 * x); }).join(', ')`];\n",
+				"statementWithoutInit":
+					"leds.top(`$.map(function (x) { return Math.round(32 * x); }).join(', ')`);\n"
 			}
 		},
 		{
 			"name": "set state 256",
 			"l2": {
 				"initVarDecl": [
-					"int state256;\n"
+					"int state;\n"
 				],
 				"initCodeExec": [
-					"state256 = 0;\n"
+					"state = 0;\n"
 				],
 				"initCodeDecl": [
 					[
-						"void display_state256() {\n",
-						"leds.circle((state256&1)*32,(state256&2)*16,(state256&4)*8,(state256&8)*4,(state256&16)*2,state256&32,(state256&64)/2,(state256&128)/4);\n",
+						"void display_state() {\n",
+						"leds.circle((state&1)*32,(state&2)*16,(state&4)*8,(state&8)*4,(state&16)*2,state&32,(state&64)/2,(state&128)/4);\n",
 						"}\n"
 					]
 				],
 				"statement":
-					"state256 = `$.reduce(function (a, b, i) { return b ? a | (1 << i) : a; }, 0)`;\ndisplay_state256();\n"
+					"state = `$.reduce(function (a, b, i) { return b ? a | (1 << i) : a; }, 0)`;\ndisplay_state();\n"
 			}
 		},
 		{
 			"name": "set state 256 with mask",
 			"l2": {
 				"initVarDecl": [
-					"int state256;\n"
+					"int state;\n"
 				],
 				"initCodeExec": [
-					"state256 = 0;\n"
+					"state = 0;\n"
 				],
 				"initCodeDecl": [
 					[
-						"void display_state256() {\n",
-						"leds.circle((state256&1)*32,(state256&2)*16,(state256&4)*8,(state256&8)*4,(state256&16)*2,state256&32,(state256&64)/2,(state256&128)/4);\n",
+						"void display_state() {\n",
+						"leds.circle((state&1)*32,(state&2)*16,(state&4)*8,(state&8)*4,(state&16)*2,state&32,(state&64)/2,(state&128)/4);\n",
 						"}\n"
 					]
 				],
 				"statement":
-					"state256 = state256 & `$.reduce(function (a, b, i) { return b === 0 ? a | (1 << i) : a; }, 0)` | `$.reduce(function (a, b, i) { return b === 1 ? a | (1 << i) : a; }, 0)`;\ndisplay_state256();\n"
+					"state = state & `$.reduce(function (a, b, i) { return b === 0 ? a | (1 << i) : a; }, 0)` | `$.reduce(function (a, b, i) { return b === 1 ? a | (1 << i) : a; }, 0)`;\ndisplay_state();\n"
+			}
+		},
+		{
+			"name": "set timer",
+			"l2": {
+				"initVarDecl": [
+					"bool timerElapsed;\n"
+				],
+				"initCodeExec": [
+					[
+						"// stop timer 0\n",
+						"timer.period[0] = 0;\n"
+					],
+					"timerElapsed = false;\n"
+				],
+				"statement": "timer.period[0] = `Math.round(1000 * $[0])`;\n"
 			}
 		},
 		{
@@ -455,11 +458,7 @@
 						"note_index = 6;\n"
 					],
 					[
-						"// reset outputs\nsound.system(-1);\n",
-						"leds.top(0, 0, 0);\n",
-						"leds.bottom.left(0, 0, 0);\n",
-						"leds.bottom.right(0, 0, 0);\n",
-						"leds.circle(0, 0, 0, 0, 0, 0, 0, 0);\n"
+						"sound.system(-1);\n"
 					]
 				],
 				"initCodeDecl": [
@@ -500,11 +499,7 @@
 						"note_index = 6;\n"
 					],
 					[
-						"// reset outputs\nsound.system(-1);\n",
-						"leds.top(0, 0, 0);\n",
-						"leds.bottom.left(0, 0, 0);\n",
-						"leds.bottom.right(0, 0, 0);\n",
-						"leds.circle(0, 0, 0, 0, 0, 0, 0, 0);\n"
+						"sound.system(-1);\n"
 					]
 				],
 				"initCodeDecl": [
@@ -523,33 +518,65 @@
 			}
 		},
 		{
-			"name": "set timer",
+			"name": "play",
 			"l2": {
 				"initCodeExec": [
-					"// stop timer 0\ntimer.period[0] = 0;\n"
+					"sound.system(-1);\n"
 				],
-				"statement":
-					"timer.period[0] = `Math.round(1000 * $[0])`;\n"
+				"statement": "sound.play(`$[0].toString(10)`);\n"
+			}
+		},
+		{
+			"name": "play stop",
+			"l2": {
+				"initCodeExec": [
+					"sound.system(-1);\n"
+				],
+				"statement": "sound.play(-1);\n"
 			}
 		},
 		{
 			"name": "arithmetic",
 			"l2": {
 				"initVarDecl": [
-					"int state256;\n"
+					"int state;\n"
 				],
 				"initCodeExec": [
-					"state256 = 0;\n"
+					"state = 0;\n"
 				],
 				"initCodeDecl": [
 					[
-						"void display_state256() {\n",
-						"leds.circle((state256&1)*32,(state256&2)*16,(state256&4)*8,(state256&8)*4,(state256&16)*2,state256&32,(state256&64)/2,(state256&128)/4);\n",
+						"void display_state() {\n",
+						"leds.circle((state&1)*32,(state&2)*16,(state&4)*8,(state&8)*4,(state&16)*2,state&32,(state&64)/2,(state&128)/4);\n",
 						"}\n"
 					]
 				],
 				"statement":
-					"`$[2] && $[0] != 0 && $[0] != 4 && $[1] != 0 ? 'if (state256 ' + ($[0] == 2 ? '< ' + $[1] + ') {\\nstate256 = 0\\n' : '> ' + [null,255-$[1],null,Math.floor(255/$[1])][$[0]] + ') {\\nstate256 = 255\\n') + '} else {\\nstate256 ' + ['','+','-','*','/'][$[0]] + '= ' + $[1] + '\\n}\\n' : 'state256 ' + ['','+','-','*','/'][$[0]] + '= ' + $[1] + ';\\n'`display_state256();\n"
+					"`$[2] && $[0] != 0 && $[0] != 4 && $[1] != 0 ? 'if (state ' + ($[0] == 2 ? '< ' + $[1] + ') {\\nstate = 0\\n' : '> ' + [null,255-$[1],null,Math.floor(255/$[1])][$[0]] + ') {\\nstate = 255\\n') + '} else {\\nstate ' + ['','+','-','*','/'][$[0]] + '= ' + $[1] + '\\n}\\n' : 'state ' + ['','+','-','*','/'][$[0]] + '= ' + $[1] + ';\\n'`display_state();\n"
+			}
+		},
+		{
+			"name": "button",
+			"l2": {
+				"sectionBegin": "onevent buttons {\n",
+				"sectionEnd": "}\n",
+				"clause": "`['center', 'forward', 'backward', 'right', 'left'].map(function (s, i) { return $[i] ? 'button.' + s : ''; }).filter(function (s) { return s; }).join(' && ') || ['center', 'forward', 'backward', 'right', 'left'].map(function (s) { return 'button.' + s; }).join(' || ')`"
+			}
+		},
+		{
+			"name": "horiz prox adv",
+			"l2": {
+				"sectionBegin": "onevent prox {\n",
+				"sectionEnd": "}\n",
+				"clause": "`[2, 1, 3, 0, 4, 5, 6].map(function (ix, i) { var p = 'prox.horizontal[' + ix + '] ', g = '>= ' + Math.round(17 + 33 * $[8]) + '00', l = '<= ' + Math.round(17 + 33 * $[7]) + '00'; return $[i] === 1 ? p + g : $[i] === 2 ? p + l : $[i] === 3 ? p + g + ' && ' + p + l : ''; }).filter(function (s) { return s; }).join(' && ') || [2, 1, 3, 0, 4, 5, 6].map(function (ix) { return 'prox.horizontal[' + ix + '] >= 2000'; }).join(' || ')`"
+			}
+		},
+		{
+			"name": "ground adv",
+			"l2": {
+				"sectionBegin": "onevent prox {\n",
+				"sectionEnd": "}\n",
+				"clause": "`[0, 1].map(function (ix, i) { var p = 'prox.ground.delta[' + ix + '] ', g = '>= ' + Math.round(25 + 40 * $[2]) + '0', l = '<= ' + Math.round(25 + 40 * $[3]) + '0'; return $[i] === 1 ? p + g : $[i] === 2 ? p + l : $[i] === 3 ? p + g + ' && ' + p + l : ''; }).filter(function (s) { return s; }).join(' && ') || [2, 1, 3, 0, 4, 5, 6].map(function (ix) { return 'prox.ground.delta[' + ix + '] >= 450'; }).join(' || ')`"
 			}
 		}
 	]
