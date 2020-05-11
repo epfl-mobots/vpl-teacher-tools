@@ -12,6 +12,7 @@ from vpl3.db import Db
 
 import threading
 import asyncio
+import logging
 
 
 class Server:
@@ -101,19 +102,23 @@ class Server:
         servers_started = threading.Event()
 
         def http_thread():
+            logging.debug("http thread: beginning")
             self.http_server = VPLHTTPServer(db_path=self.db_path,
                                              http_port=self.http_port,
                                              language=self.language,
                                              full_url=self.full_url,
                                              logger=self.logger)
             self.http_port = self.http_server.get_port()
+            logging.debug(f"http thread: http server created, port={self.http_port}")
             nonlocal http_started
             http_started = True
             if ws_started:
                 servers_started.set()
             self.http_server.run()
+            logging.debug(f"http thread: http server started")
 
         def ws_thread():
+            logging.debug("websocket thread: beginning")
             asyncio.set_event_loop(asyncio.new_event_loop())
             self.ws_server = VPLWebSocketServer(db_path=self.db_path,
                                                 logger=self.logger,
@@ -121,20 +126,24 @@ class Server:
                                                 ws_link_url=self.ws_link_url,
                                                 on_connect=self.update_con,
                                                 on_disconnect=self.update_con)
+            logging.debug("websocket thread: websocket server created")
             nonlocal ws_started
             ws_started = True
             if http_started:
                 servers_started.set()
             self.ws_server.run()
+            logging.debug(f"websocket thread: websocket server started")
 
         self.http = threading.Thread(target=http_thread)
         self.ws = threading.Thread(target=ws_thread)
         self.http.start()
         self.ws.start()
+        logging.debug(f"http and websocket server threads started")
 
         # wait until both servers have been started before returning,
         # so that self.http_port and self.ws_port are known
         if not servers_started.wait(timeout=timeout):
+            logging.debug(f"server event timeout ({timeout}s)")
             raise Exception(("HTTP Server" if not http_started
                              else "WebSocket Server" if not ws_started
                              else "Server") + " launch timeout")

@@ -12,6 +12,7 @@ from vpl3.db import Db
 
 import getopt
 import sys
+import logging
 
 
 def launch(App):
@@ -29,7 +30,8 @@ def launch(App):
                                               "http-port=",
                                               "link=",
                                               "ws-port=",
-                                              "language="
+                                              "language=",
+                                              "log="
                                           ])
     except getopt.error as err:
         print(str(err))
@@ -44,8 +46,11 @@ Options:
   --help          display help message and exit
   --http-port num HTTP port, or auto (default: auto, trying first {App.DEFAULT_HTTP_PORT})
   --language code language code such as "fr" (default: {language})
+  --log level     set log level
+                  (debug, info, warning (default), error, critical)
   --link uri      websocket uri for linked server (default: no linked server)
-  --ws-port num   websocket server port, or auto (default: auto, trying first {App.DEFAULT_WS_PORT})
+  --ws-port num   websocket server port, or auto
+                  (default: auto, trying first {App.DEFAULT_WS_PORT})
             """)
             sys.exit(0)
         elif arg == "--http-port":
@@ -54,6 +59,12 @@ Options:
             ws_port = int(val)
         elif arg == "--link":
             ws_link_url = val
+        elif arg == "--log":
+            log_level = getattr(logging, val.upper(), None)
+            if not isinstance(log_level, int):
+                raise ValueError(f"Invalid log level: {val}")
+            logging.basicConfig(level=log_level)
+
 
     app = App(db_path=db_path,
               http_port=http_port,
