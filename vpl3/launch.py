@@ -65,6 +65,8 @@ Options:
                 raise ValueError(f"Invalid log level: {val}")
             logging.basicConfig(level=log_level)
 
+    logging.info(f"sys.version: {sys.version}")
+    logging.info(f"sys.platform: {sys.platform}")
 
     app = App(db_path=db_path,
               http_port=http_port,

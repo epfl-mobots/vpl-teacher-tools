@@ -113,7 +113,10 @@ class Server:
             nonlocal http_started
             http_started = True
             if ws_started:
+                logging.debug("http thread: websocket already started")
                 servers_started.set()
+            else:
+                logging.debug("http thread: websocket not started yet")
             self.http_server.run()
             logging.debug(f"http thread: http server started")
 
@@ -130,7 +133,10 @@ class Server:
             nonlocal ws_started
             ws_started = True
             if http_started:
+                logging.debug("websocket thread: http already started")
                 servers_started.set()
+            else:
+                logging.debug("websocket thread: http not started yet")
             self.ws_server.run()
             logging.debug(f"websocket thread: websocket server started")
 
@@ -143,10 +149,13 @@ class Server:
         # wait until both servers have been started before returning,
         # so that self.http_port and self.ws_port are known
         if not servers_started.wait(timeout=timeout):
-            logging.debug(f"server event timeout ({timeout}s)")
-            raise Exception(("HTTP Server" if not http_started
-                             else "WebSocket Server" if not ws_started
-                             else "Server") + " launch timeout")
+            logging.warning(f"server event timeout ({timeout}s)")
+            if http_started and ws_started:
+                logging.warning(f"but http and websocket have started nevertheless; go on")
+            else:
+                raise Exception(("HTTP Server" if not http_started
+                                 else "WebSocket Server" if not ws_started
+                                 else "Server") + " launch timeout")
 
     def stop(self):
         self.http_server.stop()
