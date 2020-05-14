@@ -14,6 +14,7 @@
 	],
 
 	"miscSettings": {
+		"advancedModeEnabled": false,
 		"basicMultiEvent": true,
 		"advancedMultiEvent": true,
 		"viewRelativeSizes": {
@@ -2076,8 +2077,10 @@
 		"toolbars.json",
 		"buttons.json",
 		"cmd-vpl-english.json",
+		"cmd-sim-english.json",
 		"french.json",
 		"cmd-vpl-french.json",
+		"cmd-sim-french.json",
 
 		"block-english.json",
 		"block-french.json"

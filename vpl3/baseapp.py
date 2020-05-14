@@ -23,6 +23,7 @@ class ApplicationBase:
                  db_path=Db.DEFAULT_PATH,
                  http_port=None,
                  ws_port=DEFAULT_WS_PORT,
+                 timeout=5,
                  ws_link_url=None,
                  language=None,
                  full_url=False):
@@ -32,6 +33,7 @@ class ApplicationBase:
         self.server = Server(db_path=db_path,
                              http_port=http_port,
                              ws_port=ws_port,
+                             timeout=timeout,
                              ws_link_url=ws_link_url,
                              language=language,
                              full_url=full_url,
@@ -40,7 +42,7 @@ class ApplicationBase:
                              update_robots=self.update_robots,
                              initial_file_dir="data")
         self.server.add_files(if_new_db=True)
-        self.server.start(timeout=5)
+        self.server.start()
         self.http_port = self.server.get_http_port()
         self.no_serial = False
         self.language = language

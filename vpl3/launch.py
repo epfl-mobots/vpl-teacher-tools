@@ -9,6 +9,7 @@
 # (or replace tkapp with wxapp or objcapp)
 
 from vpl3.db import Db
+from vpl3.server import Server
 
 import getopt
 import sys
@@ -18,6 +19,7 @@ import logging
 def launch(App):
     http_port = None
     ws_port = App.DEFAULT_WS_PORT
+    timeout = Server.DEFAULT_START_TIMEOUT
     ws_link_url = None
     db_path = Db.DEFAULT_PATH
     language = "fr"
@@ -28,10 +30,11 @@ def launch(App):
                                               "db=",
                                               "help",
                                               "http-port=",
-                                              "link=",
-                                              "ws-port=",
                                               "language=",
-                                              "log="
+                                              "link=",
+                                              "log=",
+                                              "timeout=",
+                                              "ws-port=",
                                           ])
     except getopt.error as err:
         print(str(err))
@@ -49,6 +52,7 @@ Options:
   --log level     set log level
                   (debug, info, warning (default), error, critical)
   --link uri      websocket uri for linked server (default: no linked server)
+  --timeout t     timeout in seconds to launch servers (default: {Server.DEFAULT_START_TIMEOUT})
   --ws-port num   websocket server port, or auto
                   (default: auto, trying first {App.DEFAULT_WS_PORT})
             """)
@@ -57,6 +61,8 @@ Options:
             http_port = int(val)
         elif arg == "--ws-port":
             ws_port = int(val)
+        elif arg == "--timeout":
+            timeout = float(val)
         elif arg == "--link":
             ws_link_url = val
         elif arg == "--log":
@@ -71,6 +77,7 @@ Options:
     app = App(db_path=db_path,
               http_port=http_port,
               ws_port=ws_port,
+              timeout=timeout,
               ws_link_url=ws_link_url,
               language=language if language is not "en" else None)
     app.run()

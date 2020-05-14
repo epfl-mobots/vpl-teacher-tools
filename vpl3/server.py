@@ -19,11 +19,13 @@ class Server:
 
     DEFAULT_HTTP_PORT = VPLHTTPServer.DEFAULT_PORT
     DEFAULT_WS_PORT = VPLWebSocketServer.DEFAULT_PORT
+    DEFAULT_START_TIMEOUT = 30
 
     def __init__(self,
                  db_path=None,
                  http_port=DEFAULT_HTTP_PORT,
                  ws_port=DEFAULT_WS_PORT,
+                 timeout=DEFAULT_START_TIMEOUT,
                  ws_link_url=None,
                  language=None,
                  full_url=False,
@@ -37,6 +39,7 @@ class Server:
         self.http = None
         self.http_server = None
         self.ws_port = ws_port
+        self.timeout = timeout
         self.ws_link_url = ws_link_url
         self.bridge = "none"
         self.language = language
@@ -94,7 +97,7 @@ class Server:
                     if app:
                         app.disable_serial()
 
-    def start(self, timeout=2):
+    def start(self):
 
         # let know the main thread that both servers have been started
         http_started = False
@@ -148,8 +151,8 @@ class Server:
 
         # wait until both servers have been started before returning,
         # so that self.http_port and self.ws_port are known
-        if not servers_started.wait(timeout=timeout):
-            logging.warning(f"server event timeout ({timeout}s)")
+        if not servers_started.wait(timeout=self.timeout):
+            logging.warning(f"server event timeout ({self.timeout}s)")
             if http_started and ws_started:
                 logging.warning(f"but http and websocket have started nevertheless; go on")
             else:
