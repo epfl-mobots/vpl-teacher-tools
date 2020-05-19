@@ -15,7 +15,7 @@ class Db:
     Interface to VPL database
     """
 
-    DEFAULT_PATH = os.path.expanduser("~/vpl.sqlite")
+    DEFAULT_PATH = os.path.expanduser("~/vplserver-db.sqlite")
 
     LOCAL_TIME = True
 

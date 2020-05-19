@@ -18,10 +18,6 @@ class Application(ApplicationBase, tk.Tk):
         ApplicationBase.__init__(self, **kwargs)
         tk.Tk.__init__(self)
 
-        self.shorten_url = False
-        self.login_qr_code = False
-        self.log_in_dashboard = False
-
         self.title(f"{self.tr('VPL Server')} - " + self.tt_url(True))
         self.protocol("WM_DELETE_WINDOW", self.quit)  # close widget
         self.createcommand("exit", self.quit)  # Quit menu
@@ -108,19 +104,23 @@ class Application(ApplicationBase, tk.Tk):
         self.options_menu.add_checkbutton(variable=self.v_dev_tools)
         menu_items["Developer Tools"] = (self.options_menu, self.options_menu.index("end"))
         self.options_menu.add_separator()
-        
-        def change_language(language):
-            self.set_language(language)
 
+        def set_text():
             for key in menu_items:
                 menu, index = menu_items[key]
                 menu.entryconfigure(index, label=self.tr(key))
-            
+            self.v_language.set(self.language)
             self.title(f"{self.tr('VPL Server')} - " + self.tt_url(True))
             self.update_connection()
             self.update_robots()
             self.browser_button.config(text=self.tr("Open tools in browser"))
             self.draw_qr_code()
+
+        def change_language(language):
+            self.set_language(language)
+            self.save_prefs()
+
+            set_text()
 
         self.options_menu.add_radiobutton(variable=self.v_language,
                                           value="en",
@@ -146,7 +146,15 @@ class Application(ApplicationBase, tk.Tk):
         menubar.add_cascade(menu=self.options_menu)
         menu_items["Options"] = (menubar, menubar.index("end"))
 
-        change_language("fr")
+        self.load_prefs()
+        set_text()
+        self.v_shorten_url.set(not self.full_url)
+        self.v_login_qr_code.set(self.has_login_qr_code)
+        self.v_log_in_dashboard.set(self.log_display)
+        self.v_advanced_sim_features.set(self.advanced_sim_features)
+        self.v_dev_tools.set(self.dev_tools)
+        self.v_language.set(self.language)
+        self.v_bridge.set(self.bridge)
 
     def disable_serial(self):
         self.no_serial = True
@@ -191,28 +199,30 @@ class Application(ApplicationBase, tk.Tk):
         self.clipboard_append(url)
 
     def menu_item_shorten_urls(self, b):
-        self.shorten_url = b
-        self.server.http_server.full_url = not self.shorten_url
+        self.set_full_url(not b)
+        self.save_prefs()
 
     def menu_item_login_qr_code(self, b):
-        self.login_qr_code = b
-        self.server.http_server.has_login_qr_code = self.login_qr_code
+        self.set_login_qr_code(b)
+        self.save_prefs()
 
     def menu_item_log_in_dashboard(self, b):
-        self.log_in_dashboard = b
-        self.server.http_server.log_display = self.log_in_dashboard
+        self.set_log_display(b)
+        self.save_prefs()
 
     def menu_item_advanced_sim_features(self, b):
         self.advanced_sim_features = b
         self.server.http_server.advanced_sim_features = self.advanced_sim_features
+        self.save_prefs()
 
     def menu_item_dev_tools(self, b):
-        self.dev_tools = b
-        self.server.http_server.dev_tools = self.dev_tools
+        self.set_dev_tools(b)
+        self.save_prefs()
 
     def menu_item_bridge(self, bridge):
-        self.bridge = bridge
-        self.server.http_server.bridge = bridge
+        bridge = self.set_bridge(bridge)
+        self.v_bridge.set(bridge)
+        self.save_prefs()
 
     def main_loop(self):
         self.mainloop()

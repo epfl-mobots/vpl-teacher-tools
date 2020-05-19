@@ -31,6 +31,8 @@ class QRControl(wx.Control):
         self.size = size
         self.text = text
 
+        self.load_prefs()
+
     def SetText(self, text):
         self.text = text
         self.Refresh()

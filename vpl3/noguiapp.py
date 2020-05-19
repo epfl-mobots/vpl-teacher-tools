@@ -13,6 +13,7 @@ class Application(ApplicationBase):
 
     def __init__(self, **kwargs):
         ApplicationBase.__init__(self, **kwargs)
+        self.load_prefs()
         self.start_browser_tt()
         print(f"{self.tr('VPL Server')} - " + self.tt_url(True))
 

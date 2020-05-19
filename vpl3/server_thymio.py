@@ -5,7 +5,7 @@
 
 # websocket-Thymios bridge with json packets
 
-from vpl3.thymio import Connection
+from thymio import Connection
 import asyncio
 import websockets
 import json

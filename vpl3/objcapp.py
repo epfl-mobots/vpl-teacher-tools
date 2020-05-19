@@ -142,6 +142,8 @@ class Application(ApplicationBase):
                                                                           drawQRCode,
                                                                           120, 5, 160, 160)
 
+        self.load_prefs()
+
     def title(self):
         return f"{self.tr('VPL Server')} - " + self.tt_url(True)
 

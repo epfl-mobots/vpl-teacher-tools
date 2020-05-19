@@ -12,12 +12,17 @@ import vpl3.translate_fr
 from vpl3.db import Db
 
 import threading
+import os
+import json
 
 
 class ApplicationBase:
 
     DEFAULT_HTTP_PORT = Server.DEFAULT_HTTP_PORT
     DEFAULT_WS_PORT = Server.DEFAULT_WS_PORT
+    DEFAULT_PREFS_PATH = os.path.expanduser("~/vplserver-prefs.json")
+    LANGUAGES = {"en", "fr"}
+    BRIDGES = {"none", "tdm", "jws"}
 
     def __init__(self,
                  db_path=Db.DEFAULT_PATH,
@@ -48,6 +53,10 @@ class ApplicationBase:
         self.language = language
         self.bridge = "none"  # "tdm" or "jws" or "none"
         self.full_url = full_url
+        self.log_display = False
+        self.advanced_sim_features = False
+        self.has_login_qr_code = False
+        self.dev_tools = False
 
         # to implement in subclasses:
         # GUI initialization showing self.tt_url() w/ a way to call
@@ -60,8 +69,13 @@ class ApplicationBase:
         return f"{'' if short else 'http://'}{URLUtil.get_local_IP()}:{self.http_port}{self.tt_abs_path()}"
 
     def set_bridge(self, bridge):
-        self.bridge = bridge
-        self.server.set_bridge(bridge)
+        try:
+            self.bridge = bridge
+            self.server.set_bridge(bridge)
+        except Exception:
+            self.bridge = "none"
+            self.server.set_bridge("none")
+        return self.bridge
 
     def run(self):
         self.update_connection()
@@ -102,6 +116,26 @@ class ApplicationBase:
         self.server.language = language
         self.server.http_server.language = language
 
+    def set_full_url(self, b):
+        self.full_url = b
+        self.server.http_server.full_url = b
+
+    def set_login_qr_code(self, b):
+        self.has_login_qr_code = b
+        self.server.http_server.has_login_qr_code = b
+
+    def set_dev_tools(self, b):
+        self.dev_tools = b
+        self.server.http_server.dev_tools = b
+
+    def set_log_display(self, b):
+        self.log_display = b
+        self.server.http_server.log_display = b
+
+    def set_advanced_sim_features(self, b):
+        self.advanced_sim_features = b
+        self.server.http_server.advanced_sim_features = b
+
     def tr(self, key):
         return self.translate.tr(key)
 
@@ -128,3 +162,38 @@ class ApplicationBase:
     def exit_app(self):
         # should be overriden: should run event loop or sleep until quit
         pass
+
+    def save_prefs(self):
+        prefs = {
+            "language": self.language,
+            "bridge": self.bridge,
+            "full_url": self.server.http_server.full_url,
+            "login_qr_code": self.server.http_server.has_login_qr_code,
+            "log_display": self.log_display,
+            "advanced_sim_features": self.advanced_sim_features,
+            "dev_tools": self.dev_tools,
+        }
+        with open(self.DEFAULT_PREFS_PATH, "w") as file:
+            json.dump(prefs, file, indent=4, sort_keys=True)
+
+    def load_prefs(self):
+        with open(self.DEFAULT_PREFS_PATH) as file:
+            prefs = json.load(file)
+            if "language" in prefs:
+                language = prefs["language"]
+                if language in self.LANGUAGES:
+                    self.set_language(language)
+            if "bridge" in prefs:
+                bridge = prefs["bridge"]
+                if bridge in self.BRIDGES:
+                    self.set_bridge(bridge)
+            if "full_url" in prefs:
+                self.set_full_url(prefs["full_url"])
+            if "login_qr_code" in prefs:
+                self.set_login_qr_code(prefs["login_qr_code"])
+            if "log_display" in prefs:
+                self.set_log_display(prefs["log_display"])
+            if "advanced_sim_features" in prefs:
+                self.set_advanced_sim_features(prefs["advanced_sim_features"])
+            if "dev_tools" in prefs:
+                self.set_dev_tools(prefs["dev_tools"])

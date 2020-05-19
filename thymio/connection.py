@@ -4,256 +4,8 @@
 import asyncio
 import threading
 import time
-import uuid
 
-class Message:
-    """Aseba message data.
-    """
-
-    # v5
-    ID_BOOTLOADER_RESET = 0x8000
-    ID_BOOTLOADER_READ_PAGE = 0x8001
-    ID_BOOTLOADER_WRITE_PAGE = 0x8002
-    ID_BOOTLOADER_PAGE_DATA_WRITE = 0x8003
-    ID_BOOTLOADER_DESCRIPTION = 0x8004
-    ID_BOOTLOADER_PAGE_DATA_READ = 0x8005
-    ID_BOOTLOADER_ACK = 0x8006
-    ID_DESCRIPTION = 0x9000
-    ID_NAMED_VARIABLE_DESCRIPTION = 0x9001
-    ID_LOCAL_EVENT_DESCRIPTION = 0x9002
-    ID_NATIVE_FUNCTION_DESCRIPTION = 0x9003
-    ID_VARIABLES = 0x9005
-    ID_EXECUTION_STATE_CHANGED = 0x900a
-    ID_NODE_PRESENT = 0x900c
-    ID_DEVICE_INFO = 0x900d
-    ID_CHANGED_VARIABLES = 0x900e
-    ID_GET_DESCRIPTION = 0xa000
-    ID_SET_BYTECODE = 0xa001
-    ID_RESET = 0xa002
-    ID_RUN = 0xa003
-    ID_PAUSE = 0xa004
-    ID_STEP = 0xa005
-    ID_STOP = 0xa006
-    ID_GET_EXECUTION_STATE = 0xa007
-    ID_BREAKPOINT_SET = 0xa008
-    ID_BREAKPOINT_CLEAR = 0xa009
-    ID_BREAKPOINT_CLEAR_ALL = 0xa00a
-    ID_GET_VARIABLES = 0xa00b
-    ID_SET_VARIABLES =  0xa00c
-    ID_GET_NODE_DESCRIPTION = 0xa010
-    ID_LIST_NODES = 0xa011
-    # v6
-    ID_GET_DEVICE_INFO = 0xa012
-    ID_SET_DEVICE_INFO = 0xa013
-    # v7
-    ID_GET_CHANGED_VARIABLES = 0xa014
-    # v8
-    ID_GET_NODE_DESCRIPTION_FRAGMENT = 0xa015
-
-    PROTOCOL_VERSION = 5
-
-    DEVICE_INFO_UUID = 1
-    DEVICE_INFO_NAME = 2
-    DEVICE_INFO_THYMIO2_RF_SETTINGS = 3
-
-    def __init__(self, id, source_node, payload):
-        self.id = id
-        self.source_node = source_node
-        self.payload = payload
-
-    def get_uint8(self, offset):
-        """Get an unsigned 8-bit integer in the payload.
-        """
-        return self.payload[offset], offset + 1
-
-    def get_uint16(self, offset):
-        """Get an unsigned 16-bit integer in the payload.
-        """
-        return self.payload[offset] + 256 * self.payload[offset + 1], offset + 2
-
-    def get_string(self, offset):
-        """Get a string in the payload.
-        """
-        len = self.payload[offset]
-        str = self.payload[offset + 1 : offset + 1 + len]
-        return str.decode('utf-8'), offset + 1 + len
-
-    @staticmethod
-    def uint16_to_bytes(word):
-        """Convert an unsigned 16-bit integer to bytes.
-        """
-        return bytes([word % 256, word // 256])
-
-    @staticmethod
-    def uint16array_to_bytes(a):
-        """Convert an array of unsigned 16-bit integer to bytes.
-        """
-        bytes = b"";
-        for word in a:
-            bytes += Message.uint16_to_bytes(word)
-        return bytes
-
-    def decode(self):
-        """Decode message properties from its payload.
-        """
-        if self.id == Message.ID_DESCRIPTION:
-            self.node_name, offset = self.get_string(0)
-            self.protocol_version, offset = self.get_uint16(offset)
-            self.bytecode_size, offset = self.get_uint16(offset)
-            self.stack_size, offset = self.get_uint16(offset)
-            self.max_var_size, offset = self.get_uint16(offset)
-            self.num_named_var, offset = self.get_uint16(offset)
-            self.num_local_events, offset = self.get_uint16(offset)
-            self.num_native_fun, offset = self.get_uint16(offset)
-        elif self.id == Message.ID_NAMED_VARIABLE_DESCRIPTION:
-            self.var_size, offset = self.get_uint16(0)
-            self.var_name, offset = self.get_string(offset)
-        elif self.id == Message.ID_LOCAL_EVENT_DESCRIPTION:
-            self.event_name, offset = self.get_string(0)
-            self.description, offset = self.get_string(offset)
-        elif self.id == Message.ID_NATIVE_FUNCTION_DESCRIPTION:
-            self.fun_name, offset = self.get_string(0)
-            self.description, offset = self.get_string(offset)
-            num_params, offset = self.get_uint16(offset)
-            self.param_names = []
-            self.param_sizes = []
-            for i in range(num_params):
-                size, offset = self.get_uint16(offset)
-                name, offset = self.get_string(offset)
-                self.param_names.append(name)
-                self.param_sizes.append(size)
-        elif self.id == Message.ID_VARIABLES:
-            self.var_offset, offset = self.get_uint16(0)
-            self.var_data = []
-            for i in range(len(self.payload) // 2 - 1):
-                word, offset = self.get_uint16(offset)
-                self.var_data.append(word)
-        elif self.id == Message.ID_NODE_PRESENT:
-            self.version, offset = self.get_uint16(0)
-        elif self.id == Message.ID_DEVICE_INFO:
-            self.device_info, offset = self.get_uint8(0)
-            if self.device_info == Message.DEVICE_INFO_NAME:
-                self.device_name, offset = self.get_string(offset)
-            elif self.device_info == Message.DEVICE_INFO_UUID:
-                data_len, offset = self.get_uint8(offset)
-                data = self.payload[offset : offset + data_len]
-                self.device_uuid = str(uuid.UUID(bytes=data))
-            elif self.device_info == Message.DEVICE_INFO_THYMIO2_RF_SETTINGS:
-                data_len, offset = self.get_uint8(offset)
-                if data_len == 6:
-                    self.network_id, offset = self.get_uint16(offset)
-                    self.node_id, offset = self.get_uint16(offset)
-                    self.channel, offset = self.get_uint16(offset)
-        elif self.id == Message.ID_SET_BYTECODE:
-            self.target_node_id, offset = self.get_uint16(0)
-            self.bc_offset, offset = self.get_uint16(offset)
-            val = []
-            for i in range(4, len(self.payload), 2):
-                instr, offset = get_uint16(offset)
-                val.append(instr)
-            self.bc = val
-        elif (self.id == Message.ID_BREAKPOINT_CLEAR_ALL or
-              self.id == Message.ID_RESET or
-              self.id == Message.ID_RUN or
-              self.id == Message.ID_PAUSE or
-              self.id == Message.ID_STEP or
-              self.id == Message.ID_STOP or
-              self.id == Message.ID_GET_EXECUTION_STATE):
-            self.target_node_id, offset = self.get_uint16(0)
-        elif (self.id == Message.ID_BREAKPOINT_SET or
-              self.id == Message.ID_BREAKPOINT_CLEAR):
-            self.target_node_id, offset = self.get_uint16(0)
-            self.pc, offset = self.get_uint16(offset)
-        elif self.id == Message.ID_GET_VARIABLES:
-            self.target_node_id, offset = self.get_uint16(0)
-            self.var_offset, offset = self.get_uint16(offset)
-            self.var_count, offset = self.get_uint16(offset)
-        elif self.id == Message.ID_SET_VARIABLES:
-            self.target_node_id, offset = self.get_uint16(0)
-            self.var_offset, offset = self.get_uint16(offset)
-            val = []
-            for i in range(4, len(self.payload), 2):
-                v, offset = get_uint16(offset)
-                val.append(v)
-            self.var_val = val
-        elif self.id == Message.ID_LIST_NODES:
-            self.version, offset = self.get_uint16(0)
-        elif self.id == Message.ID_GET_NODE_DESCRIPTION_FRAGMENT:
-            self.version, offset = self.get_uint16(0)
-            self.fragment, offset = self.get_uint16(offset)
-
-    def serialize(self):
-        """Serialize message to bytes.
-        """
-        return (self.uint16_to_bytes(len(self.payload)) +
-                self.uint16_to_bytes(self.source_node) +
-                self.uint16_to_bytes(self.id) +
-                self.payload)
-
-    @staticmethod
-    def id_to_str(id):
-        """Convert message id to its name string.
-        """
-        try:
-            return {
-                Message.ID_DESCRIPTION: "DESCRIPTION",
-                Message.ID_NAMED_VARIABLE_DESCRIPTION: "ID_NAMED_VARIABLE_DESCRIPTION",
-                Message.ID_LOCAL_EVENT_DESCRIPTION: "ID_LOCAL_EVENT_DESCRIPTION",
-                Message.ID_NATIVE_FUNCTION_DESCRIPTION: "ID_NATIVE_FUNCTION_DESCRIPTION",
-                Message.ID_VARIABLES: "ID_VARIABLES",
-                Message.ID_EXECUTION_STATE_CHANGED: "ID_EXECUTION_STATE_CHANGED",
-                Message.ID_NODE_PRESENT: "ID_NODE_PRESENT",
-                Message.ID_GET_DESCRIPTION: "ID_GET_DESCRIPTION",
-                Message.ID_SET_BYTECODE: "ID_SET_BYTECODE",
-                Message.ID_RESET: "ID_RESET",
-                Message.ID_RUN: "ID_RUN",
-                Message.ID_PAUSE: "ID_PAUSE",
-                Message.ID_STEP: "ID_STEP",
-                Message.ID_STOP: "ID_STOP",
-                Message.ID_GET_EXECUTION_STATE: "ID_GET_EXECUTION_STATE",
-                Message.ID_BREAKPOINT_SET: "ID_BREAKPOINT_SET",
-                Message.ID_BREAKPOINT_CLEAR: "ID_BREAKPOINT_CLEAR",
-                Message.ID_BREAKPOINT_CLEAR_ALL: "ID_BREAKPOINT_CLEAR_ALL",
-                Message.ID_GET_VARIABLES: "ID_GET_VARIABLES",
-                Message.ID_SET_VARIABLES: "ID_SET_VARIABLES",
-                Message.ID_GET_NODE_DESCRIPTION: "ID_GET_NODE_DESCRIPTION",
-                Message.ID_LIST_NODES: "ID_LIST_NODES",
-                Message.ID_GET_DEVICE_INFO: "ID_GET_DEVICE_INFO",
-                Message.ID_SET_DEVICE_INFO: "ID_SET_DEVICE_INFO",
-                Message.ID_GET_CHANGED_VARIABLES: "ID_GET_CHANGED_VARIABLES",
-                Message.ID_GET_NODE_DESCRIPTION_FRAGMENT: "ID_GET_NODE_DESCRIPTION_FRAGMENT",
-            }[id]
-        except KeyError as error:
-            return f"ID {id}"
-
-    def __str__(self):
-        str = f"Message id={self.id_to_str(self.id)} src={self.source_node}"
-        if self.id == Message.ID_DESCRIPTION:
-            str += f" name={self.node_name}"
-            str += f" vers={self.protocol_version}"
-            str += f" bc_size={self.bytecode_size}"
-            str += f" stack_size={self.stack_size}"
-            str += f" var_size={self.var_size}"
-            str += f" #var={self.num_named_var}"
-            str += f" #ev={self.num_local_events}"
-            str += f" #nat={self.num_native_fun}"
-        elif self.id == Message.ID_NAMED_VARIABLE_DESCRIPTION:
-            str += f" name={self.var_name} size={self.var_size}"
-        elif self.id == Message.ID_LOCAL_EVENT_DESCRIPTION:
-            str += f" name={self.event_name} descr={self.description}"
-        elif self.id == Message.ID_NATIVE_FUNCTION_DESCRIPTION:
-            str += f" name={self.fun_name} descr={self.description} p=("
-            for i in range(len(self.param_names)):
-                str += f"{self.param_names[i]}[{self.param_sizes[i] if self.param_sizes[i] != 65535 else '?'}],"
-            str += ")"
-        elif self.id == Message.ID_VARIABLES:
-            str += f" offset={self.var_offset} data=("
-            for word in self.var_data:
-                str += f"{word},"
-            str += ")"
-        elif self.id == Message.ID_NODE_PRESENT:
-            str += f" version={self.version}"
-        return str
+from thymio.message import Message
 
 
 class InputThread(threading.Thread):
@@ -367,7 +119,7 @@ class RemoteNode:
         if name not in self.var_offset:
             raise KeyError(name)
         offset = self.var_offset[name]
-        return self.var_data[offset : offset + self.var_size[name]]
+        return self.var_data[offset:offset + self.var_size[name]]
 
     def set_var(self, name, val, index=0):
         """Set the value of a scalar variable or an item in an array variable.
@@ -378,12 +130,12 @@ class RemoteNode:
         """Set the value of an array variable.
         """
         offset = self.var_offset[name]
-        self.var_data[offset : offset + len(val)] = val
+        self.var_data[offset:offset + len(val)] = val
 
     def set_var_data(self, offset, data):
         """Set values in the variable data array.
         """
-        self.var_data[offset : offset + len(data)] = data
+        self.var_data[offset:offset + len(data)] = data
         self.var_received = offset + len(data) >= self.expected_var_end
 
 
@@ -397,10 +149,12 @@ class Connection:
     def __init__(self,
                  io,
                  host_node_id=1, refreshing_rate=None, discover_rate=None,
+                 debug=False,
                  loop=None):
         self.loop = loop or asyncio.new_event_loop()
         self.terminating = False
         self.io = io
+        self.debug = debug
         self.timeout = 3
         self.host_node_id = host_node_id
         self.auto_handshake = False
@@ -425,6 +179,9 @@ class Connection:
         # callback for notification that variables have been received
         # async fun(node_id)
         self.on_variables_received = None
+
+        # callback for notification about execution state
+        self.on_execution_state_changed = None
 
         # discover coroutine
         if discover_rate is not None:
@@ -462,8 +219,8 @@ class Connection:
         self.close()
 
     @staticmethod
-    def serial_default_port():
-        """Get the name of the default Thymio serial port for the current platform.
+    def serial_ports():
+        """Get the list of serial ports for the current platform.
         """
         import sys
         import os
@@ -480,12 +237,30 @@ class Connection:
                 if filename.startswith("cu.usb")
             ]
         elif sys.platform == "win32":
-            devices = ["COM8"]
+            import subprocess, re
+            mode_output = subprocess.check_output("mode", shell=True).decode()
+            devices = [
+                re.search(r"(COM\d+):", line).groups()[0]
+                for line in mode_output.split("\n")
+                if re.search(r"(COM\d+):", line)
+            ]
         else:
             raise Connection.ThymioConnectionError("Unsupported platform")
+        return devices
+
+    @staticmethod
+    def serial_default_port():
+        """Get the name of the default Thymio serial port for the current
+        platform.
+        """
+        import sys
+        devices = Connection.serial_ports()
         if len(devices) < 1:
             raise Connection.ThymioConnectionError("No serial device for Thymio found")
-        return devices[0]
+        if sys.platform == "win32":
+            return devices[len(devices) - 1]
+        else:
+            return devices[0]
 
     @staticmethod
     def serial(port=None, **kwargs):
@@ -498,12 +273,24 @@ class Connection:
         return th
 
     @staticmethod
-    def tcp(host="127.0.0.1", port=3000, **kwargs):
+    def tcp(host="127.0.0.1", port=33333, **kwargs):
         """Create Thymio object with a TCP connection.
         """
-        import socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((host, port))
+        import socket, io
+
+        class TCPClientIO(io.RawIOBase):
+
+            def __init__(self, host, port):
+                self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.socket.connect((host, port))
+
+            def read(self, n):
+                return self.socket.recv(n)
+
+            def write(self, b):
+                self.socket.sendall(b)
+
+        s = TCPClientIO(host, port)
         th = Connection(s, **kwargs)
         return th
 
@@ -512,12 +299,16 @@ class Connection:
         """Create Thymio object without connection.
         """
         import io
+
         class NullIO(io.RawIOBase):
+
             def read(self, n):
                 return None
+
             def write(self, b):
                 pass
-        return Thymio(NullIO(), host_node_id)
+
+        return Connection(NullIO(), host_node_id)
 
     def handshake(self):
         self.auto_handshake = True
@@ -552,6 +343,8 @@ class Connection:
     async def handle_message(self, msg):
         """Handle an input message.
         """
+        if self.debug:
+            print("<", msg)
         source_node = msg.source_node
         if msg.id == Message.ID_NODE_PRESENT:
             will_do_handshake = False
@@ -577,15 +370,13 @@ class Connection:
                         remote_node.device_uuid = msg.device_uuid
                         change = True
                 elif msg.device_info == Message.DEVICE_INFO_THYMIO2_RF_SETTINGS:
-                    if (remote_node.rf_network_id != msg.network_id or
-                        remote_node.rf_node_id != msg.node_id or
-                        remote_node.rf_channel != msg.channel):
+                    if (remote_node.rf_network_id != msg.network_id
+                        or remote_node.rf_node_id != msg.node_id
+                        or remote_node.rf_channel != msg.channel):
                         remote_node.rf_network_id = msg.network_id
                         remote_node.rf_node_id = msg.node_id
                         remote_node.rf_channel = msg.channel
                         change = True
-            if change and self.on_connection_changed:
-                await self.on_connection_changed(source_node, True)
         elif msg.id == Message.ID_DESCRIPTION:
             with self.input_lock:
                 self.remote_nodes[source_node].name = msg.node_name
@@ -646,9 +437,8 @@ class Connection:
                 remote_node = self.remote_nodes[source_node]
                 remote_node.local_events.append(msg.event_name)
         elif msg.id == Message.ID_EXECUTION_STATE_CHANGED:
-            pass  # ignore
-        else:
-            print(msg)
+            if self.on_execution_state_changed:
+                await self.on_execution_state_changed(source_node, msg.pc, msg.flags)
         self.remote_nodes[source_node].last_msg_time = time.time()
 
     def uuid_to_node_id(self, uuid):
@@ -662,6 +452,8 @@ class Connection:
         """Send a message.
         """
         with self.output_lock:
+            if self.debug:
+                print(">", msg)
             self.io.write(msg.serialize())
 
     def get_target_node_var_total_size(self, target_node_id):
@@ -703,8 +495,8 @@ class Connection:
         """
         if target_node_id is not None:
             if chunk_length is None:
-                chunk_length = (self.get_target_node_var_total_size(target_node_id) -
-                    chunk_offset)
+                chunk_length = (self.get_target_node_var_total_size(target_node_id)
+                                - chunk_offset)
             payload = Message.uint16array_to_bytes([
                 target_node_id,
                 chunk_offset,
@@ -725,7 +517,8 @@ class Connection:
         self.send(msg)
 
     def variable_description(self, target_node_id):
-        """Get an array with the description of all variables, with fields "name", "offset" and "size".
+        """Get an array with the description of all variables, with fields
+        "name", "offset" and "size".
         """
         node = self.remote_nodes[target_node_id]
         return [
@@ -772,15 +565,18 @@ class Connection:
 
     def __getitem__(self, key):
         class Node:
+
             def __init__(self_node, connection, node_id):
                 self_node.connection = connection
                 self_node.node_id = node_id
+
             def __getitem__(self_node, name):
                 try:
                     val = self_node.connection.get_var_array(self_node.node_id, name)
                     return val if len(val) != 1 else val[0]
                 except KeyError:
                     raise KeyError(name)
+
             def __setitem__(self_node, name, val):
                 try:
                     if isinstance(val, list):
@@ -802,7 +598,7 @@ class Connection:
             payload = Message.uint16array_to_bytes([
                 target_node_id,
                 address + i
-            ] + bytecode[i : i + size_chunk])
+            ] + bytecode[i:i + size_chunk])
             msg = Message(Message.ID_SET_BYTECODE, self.host_node_id, payload)
             self.send(msg)
             i += size_chunk
@@ -842,51 +638,3 @@ class Connection:
             ])
             msg = Message(Message.ID_GET_DEVICE_INFO, self.host_node_id, payload)
             self.send(msg)
-
-if __name__ == "__main__":
-
-    async def on_connection_changed(node_id, connected):
-        print("Connection" if connected else "Disconnection", node_id)
-        if connected:
-            # display node information
-            remote_node = th.remote_nodes[node_id]
-            if remote_node.name:
-                print(f"Node name: {remote_node.name}")
-            if remote_node.device_name:
-                print(f"Device name: {remote_node.device_name}")
-            if remote_node.device_uuid:
-                print(f"Device uuid: {remote_node.device_uuid}")
-
-            # send bytecode for "call leds.top(32, 32, 0)" and run it
-            th.set_bytecode(node_id, [
-                3,          # vector table size
-                0xffff, 3,  # address of event 0xffff (init)
-                0x1000,     # push.s 0
-                0x426b,     # store 0x26b
-                0x126b,     # push.s 0x26b
-                0x1020,     # push.s 32
-                0x426a,     # store 0x26a
-                0x126a,     # push.s 0x26a
-                0x1020,     # push.s 32
-                0x4269,     # store 0x269
-                0x1269,     # push.s 0x269
-                0xc028,     # callnat 0x28
-                0x0000      # stop
-            ])
-            th.run(node_id)
-
-    async def on_variables_received(node_id):
-        try:
-            print(f"Node {node_id}: prox.horizontal = {th[node_id]['prox.horizontal']}")
-        except KeyError:
-            print("on_variables_received", th.remote_nodes[node_id])
-
-    with Connection.serial(discover_rate=2, refreshing_rate=0.5) as th:
-        th.on_connection_changed = on_connection_changed
-        th.on_variables_received = on_variables_received
-        try:
-            th.run_forever()
-        except KeyboardInterrupt:
-            th.shutdown()
-            th.run_forever()
-            th.close()
