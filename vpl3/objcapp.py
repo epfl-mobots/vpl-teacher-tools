@@ -17,12 +17,6 @@ class Application(ApplicationBase):
         try:
             ApplicationBase.__init__(self, **kwargs)
 
-            self.shorten_url = False
-            self.login_qr_code = False
-            self.log_display = False
-            self.advanced_sim_features = False
-            self.dev_tools = False
-
             self.window = None
             self.qr = None
             self.robots_status = None
@@ -100,9 +94,7 @@ class Application(ApplicationBase):
         except Exception as e:
             ApplicationObjCShell.modalAlert(str(e), buttons=["Quit"])
             NSApp.terminate_(None)
-        self.menu_item_shorten_urls()
-        self.menu_item_language("fr")
-        self.menu_item_bridge("tdm")
+
         self.window = self.app_objc.createWindowWithTitle_width_height_x_y_(
             self.title(),
             400, 260,
@@ -143,14 +135,15 @@ class Application(ApplicationBase):
                                                                           120, 5, 160, 160)
 
         self.load_prefs()
+        self.update_menu_state()
+        self.translate_menus()
 
     def title(self):
         return f"{self.tr('VPL Server')} - " + self.tt_url(True)
 
     def disable_serial(self):
         self.no_serial = True
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("JSON WebSocket", "Options")
-        item.setEnabled_(0)
+        self.update_menu_state()
 
     def main_loop(self):
         self.app_objc.run()
@@ -172,6 +165,35 @@ class Application(ApplicationBase):
                     menuItem = self.app_objc.getMenuItemWithTitle_inMenu_(item[0], menuName)
                     menuItem.setTitle_(self.tr(item[0]))
 
+    def update_menu_state(self):
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Shortened URLs", "Options")
+        item.setState_(0 if self.full_url else 1)
+
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Login Screen QR Code", "Options")
+        item.setState_(1 if self.has_login_qr_code else 0)
+
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Log Display in Dashboard", "Options")
+        item.setState_(1 if self.log_display else 0)
+
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Advanced Simulator Features", "Options")
+        item.setState_(1 if self.advanced_sim_features else 0)
+
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Developer Tools", "Options")
+        item.setState_(1 if self.dev_tools else 0)
+
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("English", "Options")
+        item.setState_(1 if self.language == "en" else 0)
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("French", "Options")
+        item.setState_(1 if self.language == "fr" else 0)
+
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Thymio Device Manager", "Options")
+        item.setState_(1 if self.bridge == "tdm" else 0)
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("JSON WebSocket", "Options")
+        item.setEnabled_(0 if self.no_serial else 1)
+        item.setState_(1 if self.bridge == "jws" else 0)
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("No Robot", "Options")
+        item.setState_(1 if self.bridge == "none" else 0)
+
     def menu_item_copy_url(self):
         path = self.tt_abs_path()
         url = URLUtil.teacher_tools_URL(port=self.http_port,
@@ -181,41 +203,35 @@ class Application(ApplicationBase):
         pasteboard.setString_forType_(url, NSStringPboardType)
 
     def menu_item_shorten_urls(self):
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("Shortened URLs", "Options")
-        self.shorten_url = not self.shorten_url
-        item.setState_(1 if self.shorten_url else 0)
-        self.server.http_server.full_url = not self.shorten_url
+        self.set_full_url(not self.full_url)
+        self.update_menu_state()
+        self.save_prefs()
 
     def menu_item_login_QR_code(self):
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("Login Screen QR Code", "Options")
-        self.login_qr_code = not self.login_qr_code
-        item.setState_(1 if self.login_qr_code else 0)
-        self.server.http_server.has_login_qr_code = self.login_qr_code
+        self.set_login_qr_code(not self.has_login_qr_code)
+        self.update_menu_state()
+        self.save_prefs()
 
     def menu_item_log_display(self):
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("Log Display in Dashboard", "Options")
-        self.log_display = not self.log_display
-        item.setState_(1 if self.log_display else 0)
-        self.server.http_server.log_display = self.log_display
+        self.set_log_display(not self.log_display)
+        self.update_menu_state()
+        self.save_prefs()
 
     def menu_item_advanced_sim_features(self):
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("Advanced Simulator Features", "Options")
-        self.advanced_sim_features = not self.advanced_sim_features
-        item.setState_(1 if self.advanced_sim_features else 0)
-        self.server.http_server.advanced_sim_features = self.advanced_sim_features
+        self.set_advanced_sim_features(not self.advanced_sim_features)
+        self.update_menu_state()
+        self.save_prefs()
 
     def menu_item_dev_tools(self):
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("Developer Tools", "Options")
-        self.dev_tools = not self.dev_tools
-        item.setState_(1 if self.dev_tools else 0)
-        self.server.http_server.dev_tools = self.dev_tools
+        self.set_dev_tools(not self.dev_tools)
+        self.update_menu_state()
+        self.save_prefs()
 
     def menu_item_language(self, language):
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("English", "Options")
-        item.setState_(1 if language == "en" else 0)
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("French", "Options")
-        item.setState_(1 if language == "fr" else 0)
         self.set_language(language)
+        self.update_menu_state()
+        self.save_prefs()
+
         self.translate_menus()
         if self.window:
             self.window.setTitle_(self.title())
@@ -227,11 +243,6 @@ class Application(ApplicationBase):
             self.qr.display()
 
     def menu_item_bridge(self, bridge):
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("Thymio Device Manager", "Options")
-        item.setState_(1 if bridge == "tdm" else 0)
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("JSON WebSocket", "Options")
-        item.setState_(1 if bridge == "jws" else 0)
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("No Robot", "Options")
-        item.setState_(1 if bridge == "none" else 0)
-        self.bridge = bridge
-        self.server.set_bridge(bridge, app=self)
+        bridge = self.set_bridge(bridge)
+        self.update_menu_state()
+        self.save_prefs()

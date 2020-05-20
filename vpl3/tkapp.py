@@ -211,8 +211,7 @@ class Application(ApplicationBase, tk.Tk):
         self.save_prefs()
 
     def menu_item_advanced_sim_features(self, b):
-        self.advanced_sim_features = b
-        self.server.http_server.advanced_sim_features = self.advanced_sim_features
+        self.set_advanced_sim_features(b)
         self.save_prefs()
 
     def menu_item_dev_tools(self, b):

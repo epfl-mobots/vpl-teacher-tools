@@ -51,12 +51,15 @@ class ApplicationBase:
         self.http_port = self.server.get_http_port()
         self.no_serial = False
         self.language = language
+        self.translate.set_language(language)
         self.bridge = "none"  # "tdm" or "jws" or "none"
         self.full_url = full_url
         self.log_display = False
         self.advanced_sim_features = False
         self.has_login_qr_code = False
         self.dev_tools = False
+
+        self.set_bridge("tdm")
 
         # to implement in subclasses:
         # GUI initialization showing self.tt_url() w/ a way to call
@@ -177,23 +180,26 @@ class ApplicationBase:
             json.dump(prefs, file, indent=4, sort_keys=True)
 
     def load_prefs(self):
-        with open(self.DEFAULT_PREFS_PATH) as file:
-            prefs = json.load(file)
-            if "language" in prefs:
-                language = prefs["language"]
-                if language in self.LANGUAGES:
-                    self.set_language(language)
-            if "bridge" in prefs:
-                bridge = prefs["bridge"]
-                if bridge in self.BRIDGES:
-                    self.set_bridge(bridge)
-            if "full_url" in prefs:
-                self.set_full_url(prefs["full_url"])
-            if "login_qr_code" in prefs:
-                self.set_login_qr_code(prefs["login_qr_code"])
-            if "log_display" in prefs:
-                self.set_log_display(prefs["log_display"])
-            if "advanced_sim_features" in prefs:
-                self.set_advanced_sim_features(prefs["advanced_sim_features"])
-            if "dev_tools" in prefs:
-                self.set_dev_tools(prefs["dev_tools"])
+        try:
+            with open(self.DEFAULT_PREFS_PATH) as file:
+                prefs = json.load(file)
+                if "language" in prefs:
+                    language = prefs["language"]
+                    if language in self.LANGUAGES:
+                        self.set_language(language)
+                if "bridge" in prefs:
+                    bridge = prefs["bridge"]
+                    if bridge in self.BRIDGES:
+                        self.set_bridge(bridge)
+                if "full_url" in prefs:
+                    self.set_full_url(prefs["full_url"])
+                if "login_qr_code" in prefs:
+                    self.set_login_qr_code(prefs["login_qr_code"])
+                if "log_display" in prefs:
+                    self.set_log_display(prefs["log_display"])
+                if "advanced_sim_features" in prefs:
+                    self.set_advanced_sim_features(prefs["advanced_sim_features"])
+                if "dev_tools" in prefs:
+                    self.set_dev_tools(prefs["dev_tools"])
+        except Exception:
+            pass
