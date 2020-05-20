@@ -13,6 +13,11 @@ ROOTFILES = \
 	setup.py
 
 PKGFILES = \
+	thymio/__init__.py \
+	thymio/assembler.py \
+	thymio/message.py \
+	thymio/connection.py \
+	thymio/thymio.py \
 	vpl3/__init__.py \
 	vpl3/cacaoapp.py \
 	vpl3/com_http.py \
@@ -22,7 +27,6 @@ PKGFILES = \
 	vpl3/server.py \
 	vpl3/server_http.py \
 	vpl3/server_ws.py \
-	vpl3/thymio.py \
 	vpl3/tkapp.py \
 	vpl3/translate.py \
 	vpl3/translate_fr.py \
