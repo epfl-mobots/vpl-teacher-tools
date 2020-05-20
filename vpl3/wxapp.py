@@ -72,15 +72,12 @@ class Application(ApplicationBase, wx.App):
         wx.App.__init__(self)
         self.load_prefs()
 
-        size = wx.Size(600, 280)
         self.frame = wx.Frame(None,
                               title=f"{self.tr('VPL Server')} - " + self.tt_url(True),
-                              size=size,
                               style=wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER)
-        self.frame.SetMaxSize(size)
-        self.frame.SetMinSize(size)
         self.frame.Bind(wx.EVT_CLOSE,
                         lambda event: self.quit())
+        self.frame.SetMinSize(wx.Size(600, 280))
 
         self.panel = wx.Panel(self.frame)
         self.vbox = wx.BoxSizer(wx.VERTICAL)
@@ -93,13 +90,14 @@ class Application(ApplicationBase, wx.App):
 
         launch_button = wx.Button(self.panel, -1, "Teacher Tools")
         launch_button.Bind(wx.EVT_BUTTON, lambda event: self.start_browser_tt())
-        self.vbox.Add(launch_button, 0, wx.CENTER, 10)
+        self.vbox.Add(launch_button, 0, wx.CENTER)
 
         self.qr_code = QRControl(self.panel, size=(160, 160), text="?")
-        self.vbox.Add(self.qr_code, 0, wx.CENTER, 10)
+        self.vbox.Add(self.qr_code, 0, wx.ALL | wx.CENTER, 10)
 
         self.vbox.SetSizeHints(self.panel)
-        self.panel.SetSizer(self.vbox)
+        self.panel.SetSizerAndFit(self.vbox)
+        self.frame.Fit()
 
         self.update_connection()
 
@@ -114,7 +112,8 @@ class Application(ApplicationBase, wx.App):
         self.frame.Bind(wx.EVT_MENU,
                         lambda event: self.start_browser_tt(),
                         self.menu_item_open_tool)
-        menu_item = file_menu.Append(wx.ID_EXIT)
+        menu_item = file_menu.Append(wx.ID_EXIT,
+                                     "Quit\tCtrl-Q")
         self.frame.Bind(wx.EVT_MENU,
                         lambda event: self.quit(),
                         menu_item)
