@@ -31,8 +31,6 @@ class QRControl(wx.Control):
         self.size = size
         self.text = text
 
-        self.load_prefs()
-
     def SetText(self, text):
         self.text = text
         self.Refresh()
@@ -72,6 +70,7 @@ class Application(ApplicationBase, wx.App):
     def __init__(self, **kwargs):
         ApplicationBase.__init__(self, **kwargs)
         wx.App.__init__(self)
+        self.load_prefs()
 
         size = wx.Size(600, 280)
         self.frame = wx.Frame(None,
@@ -105,30 +104,66 @@ class Application(ApplicationBase, wx.App):
         self.update_connection()
 
         # menu
-        file_menu = wx.Menu()
-        open_in_browser_item = file_menu.Append(-1, "Open in Browser\tCtrl-B",
-                                                "Open VPL3 teacher tools in browser")
-        exit_item = file_menu.Append(wx.ID_EXIT)
-
         menubar = wx.MenuBar()
+
+        file_menu = wx.Menu()
         menubar.Append(file_menu, "File")
-        edit_menu = wx.Menu()
-        copy_url_item = edit_menu.Append(-1, "Copy URL\tCtrl-C",
-                                         "Copy the teacher tool URL to the clipboard")
-        menubar.Append(edit_menu, "Edit")
-        self.frame.SetMenuBar(menubar)
+        self.menu_item_open_tool = file_menu.Append(-1,
+                                                    "Open in Browser\tCtrl-B",
+                                                    "Open VPL3 teacher tools in browser")
         self.frame.Bind(wx.EVT_MENU,
                         lambda event: self.start_browser_tt(),
-                        open_in_browser_item)
+                        self.menu_item_open_tool)
+        menu_item = file_menu.Append(wx.ID_EXIT)
         self.frame.Bind(wx.EVT_MENU,
                         lambda event: self.quit(),
-                        exit_item)
+                        menu_item)
+
+        edit_menu = wx.Menu()
+        menubar.Append(edit_menu, "Edit")
+        self.menu_item_copy_url = edit_menu.Append(-1,
+                                                   "Copy URL\tCtrl-C",
+                                                   "Copy the teacher tool URL to the clipboard")
         self.frame.Bind(wx.EVT_MENU,
-                        lambda event: self.menu_item_copy_url(),
-                        copy_url_item)
+                        lambda event: self.do_menu_item_copy_url(),
+                        self.menu_item_copy_url)
+
+        options_menu = wx.Menu()
+        menubar.Append(options_menu, "Options")
+        self.menu_item_shortened_urls = options_menu.AppendCheckItem(-1,
+                                                                     "Shortened URLs")
+        self.menu_item_shortened_urls.Check(not self.full_url)
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.do_menu_item_shortened_urls(),
+                        self.menu_item_shortened_urls)
+        self.menu_item_login_screen_qr_code = options_menu.AppendCheckItem(-1,
+                                                                           "Login Screen QR Code")
+        self.menu_item_login_screen_qr_code.Check(self.has_login_qr_code)
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.do_menu_item_login_screen_qr_code(),
+                        self.menu_item_login_screen_qr_code)
+        self.menu_item_log_display = options_menu.AppendCheckItem(-1,
+                                                                  "Log Display in Dashboard")
+        self.menu_item_log_display.Check(self.log_display)
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.do_menu_item_log_display(),
+                        self.menu_item_log_display)
+        self.menu_item_advanced_sim_features = options_menu.AppendCheckItem(-1,
+                                                                           "Advanced Simulator Features")
+        self.menu_item_advanced_sim_features.Check(self.advanced_sim_features)
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.do_menu_item_advanced_sim_features(),
+                        self.menu_item_advanced_sim_features)
+        self.menu_item_dev_tools = options_menu.AppendCheckItem(-1,
+                                                                "Developer Tools")
+        self.menu_item_dev_tools.Check(self.dev_tools)
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.do_menu_item_dev_tools(),
+                        self.menu_item_dev_tools)
+
+        self.frame.SetMenuBar(menubar)
 
         self.update_qr_code()
-
         self.frame.Show()
 
     def main_loop(self):
@@ -149,10 +184,30 @@ class Application(ApplicationBase, wx.App):
     def exit_app(self):
         self.frame.Destroy()
 
-    def menu_item_copy_url(self):
+    def do_menu_item_copy_url(self):
         if wx.TheClipboard.Open():
             path = self.tt_abs_path()
             url = URLUtil.teacher_tools_URL(port=self.http_port,
                                             path=path)
             wx.TheClipboard.SetData(wx.TextDataObject(url))
             wx.TheClipboard.Close()
+
+    def do_menu_item_shortened_urls(self):
+        self.set_full_url(not self.menu_item_shortened_urls.IsChecked())
+        self.save_prefs()
+
+    def do_menu_item_login_screen_qr_code(self):
+        self.set_login_qr_code(self.menu_item_login_screen_qr_code.IsChecked())
+        self.save_prefs()
+
+    def do_menu_item_log_display(self):
+        self.set_log_display(self.menu_item_log_display.IsChecked())
+        self.save_prefs()
+
+    def do_menu_item_advanced_sim_features(self):
+        self.set_advanced_sim_features(self.menu_item_advanced_sim_features.IsChecked())
+        self.save_prefs()
+
+    def do_menu_item_dev_tools(self):
+        self.set_dev_tools(self.menu_item_dev_tools.IsChecked())
+        self.save_prefs()
