@@ -235,6 +235,7 @@ class ApplicationBase:
             	}
             ]
         self.vpl_ui_set = {ui["id"] for ui in self.ui_toc}
+        self.vpl_ui = self.ui_toc[0]["id"]
         for ui in self.ui_toc:
             for language in ui["name"]:
                 if language != "en":
