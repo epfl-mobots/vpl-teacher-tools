@@ -86,7 +86,6 @@ class Application(ApplicationBase, tk.Tk):
         def change_language(language):
             self.set_language(language)
             self.save_prefs()
-
             set_text()
 
         self.v_shorten_url = tk.BooleanVar(value=True)
