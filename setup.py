@@ -184,7 +184,7 @@ DATA_FILES = [
             "doc/vpl/ui/svg/help/images/image34.png",
             "doc/vpl/ui/svg/help/images/image35.png",
             "doc/vpl/ui/svg/help/images/image36.png",
-            "doc/vpl/ui/svg/help/images/image37.png",
+            "doc/vpl/ui/svg/help/images/image37.jpg",
             "doc/vpl/ui/svg/help/images/image38.png",
             "doc/vpl/ui/svg/help/images/image39.png",
             "doc/vpl/ui/svg/help/images/image3.png",

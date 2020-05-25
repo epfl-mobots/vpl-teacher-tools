@@ -136,7 +136,7 @@ class Application(ApplicationBase):
 
         self.load_prefs()
         self.update_menu_state()
-        self.translate_menus()
+        self.translate_ui()
 
     def title(self):
         return f"{self.tr('VPL Server')} - " + self.tt_url(True)
@@ -164,6 +164,17 @@ class Application(ApplicationBase):
                 if item:
                     menuItem = self.app_objc.getMenuItemWithTitle_inMenu_(item[0], menuName)
                     menuItem.setTitle_(self.tr(item[0]))
+
+    def translate_ui(self):
+        self.translate_menus()
+        if self.window:
+            self.window.setTitle_(self.title())
+            self.update_connection()
+            self.update_robots()
+            self.open_button.setTitle_(self.tr("Open tools in browser"))
+        if self.qr:
+            self.qr.needsDisplay = True
+            self.qr.display()
 
     def update_menu_state(self):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Shortened URLs", "Options")
@@ -231,16 +242,7 @@ class Application(ApplicationBase):
         self.set_language(language)
         self.update_menu_state()
         self.save_prefs()
-
-        self.translate_menus()
-        if self.window:
-            self.window.setTitle_(self.title())
-            self.update_connection()
-            self.update_robots()
-            self.open_button.setTitle_(self.tr("Open tools in browser"))
-        if self.qr:
-            self.qr.needsDisplay = True
-            self.qr.display()
+        self.translate_ui()
 
     def menu_item_bridge(self, bridge):
         bridge = self.set_bridge(bridge)
