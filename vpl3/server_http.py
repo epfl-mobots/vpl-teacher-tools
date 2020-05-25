@@ -3,10 +3,6 @@
 # Author: Yves Piguet, EPFL
 # Please don't redistribute without author's permission.
 
-# server poc
-
-# Websockets: see https://websockets.readthedocs.io/en/stable/intro.html
-
 import urllib
 from vpl3.com_http \
     import (
@@ -51,6 +47,7 @@ class VPLHTTPServer:
         self.advanced_sim_features = advanced_sim_features
         self.dev_tools = dev_tools
         self.bridge = bridge  # "tdm" or "jws" or "none"
+        self.vpl_ui_uri = "ui/classic/ui.json"
         self.db_path = db_path
         self.db = Db(self.db_path)
         self.handler = VPLHTTPRequestHandler
@@ -359,6 +356,7 @@ class VPLHTTPServer:
                               r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
         self.httpd.add_filter(lambda s: s.replace(b"$DEVTOOLSTYLE", b"block" if self.dev_tools else b"none"),
                               r"^/vpl-teacher-tools/.*\.(html|css)$")
+        self.httpd.add_filter(lambda s: s.replace(b"$VPLUIURI", bytes(self.vpl_ui_uri, "utf-8")))
         self.groups = []
 
     def run(self):

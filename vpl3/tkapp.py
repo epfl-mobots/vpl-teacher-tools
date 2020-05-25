@@ -70,7 +70,25 @@ class Application(ApplicationBase, tk.Tk):
         self.bind("<Control-c>", lambda event: self.menu_item_copy_url())
         menubar.add_cascade(menu=self.edit_menu)
         menu_items["Edit"] = (menubar, menubar.index("end"))
-        self.options_menu = tk.Menu(menubar, tearoff=False)
+
+
+        def set_text():
+            for key in menu_items:
+                menu, index = menu_items[key]
+                menu.entryconfigure(index, label=self.tr(key))
+            self.v_language.set(self.language)
+            self.title(f"{self.tr('VPL Server')} - " + self.tt_url(True))
+            self.update_connection()
+            self.update_robots()
+            self.browser_button.config(text=self.tr("Open tools in browser"))
+            self.draw_qr_code()
+
+        def change_language(language):
+            self.set_language(language)
+            self.save_prefs()
+
+            set_text()
+
         self.v_shorten_url = tk.BooleanVar(value=True)
         self.v_shorten_url.trace("w",
                                  lambda name, i, op:
@@ -93,35 +111,9 @@ class Application(ApplicationBase, tk.Tk):
                                self.menu_item_dev_tools(self.v_dev_tools.get()))
         self.v_language = tk.StringVar(value="fr")
         self.v_bridge = tk.StringVar(value=self.bridge)
-        self.options_menu.add_checkbutton(variable=self.v_shorten_url)
-        menu_items["Shortened URLs"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_checkbutton(variable=self.v_login_qr_code)
-        menu_items["Login Screen QR Code"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_checkbutton(variable=self.v_log_in_dashboard)
-        menu_items["Log Display in Dashboard"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_checkbutton(variable=self.v_advanced_sim_features)
-        menu_items["Advanced Simulator Features"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_checkbutton(variable=self.v_dev_tools)
-        menu_items["Developer Tools"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_separator()
+        self.v_vpl_ui = tk.StringVar(value="A")
 
-        def set_text():
-            for key in menu_items:
-                menu, index = menu_items[key]
-                menu.entryconfigure(index, label=self.tr(key))
-            self.v_language.set(self.language)
-            self.title(f"{self.tr('VPL Server')} - " + self.tt_url(True))
-            self.update_connection()
-            self.update_robots()
-            self.browser_button.config(text=self.tr("Open tools in browser"))
-            self.draw_qr_code()
-
-        def change_language(language):
-            self.set_language(language)
-            self.save_prefs()
-
-            set_text()
-
+        self.options_menu = tk.Menu(menubar, tearoff=False)
         self.options_menu.add_radiobutton(variable=self.v_language,
                                           value="en",
                                           command=lambda: change_language("en"))
@@ -144,17 +136,36 @@ class Application(ApplicationBase, tk.Tk):
                                           command=lambda: self.menu_item_bridge("none"))
         menu_items["No Robot"] = (self.options_menu, self.options_menu.index("end"))
         menubar.add_cascade(menu=self.options_menu)
+        if len(self.ui_toc) > 1:
+            self.options_menu.add_separator()
+            for ui in self.ui_toc:
+                self.options_menu.add_radiobutton(variable=self.v_vpl_ui,
+                                                  value=ui["id"],
+                                                  command=lambda: self.menu_item_ui(self.v_vpl_ui.get()))
+                menu_items[ui["name"]["en"]] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_separator()
+        self.options_menu.add_checkbutton(variable=self.v_shorten_url)
+        menu_items["Shortened URLs"] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_checkbutton(variable=self.v_login_qr_code)
+        menu_items["Login Screen QR Code"] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_checkbutton(variable=self.v_log_in_dashboard)
+        menu_items["Log Display in Dashboard"] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_checkbutton(variable=self.v_advanced_sim_features)
+        menu_items["Advanced Simulator Features"] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_checkbutton(variable=self.v_dev_tools)
+        menu_items["Developer Tools"] = (self.options_menu, self.options_menu.index("end"))
         menu_items["Options"] = (menubar, menubar.index("end"))
 
         self.load_prefs()
         set_text()
+        self.v_language.set(self.language)
+        self.v_bridge.set(self.bridge)
+        self.v_vpl_ui.set(self.vpl_ui)
         self.v_shorten_url.set(not self.full_url)
         self.v_login_qr_code.set(self.has_login_qr_code)
         self.v_log_in_dashboard.set(self.log_display)
         self.v_advanced_sim_features.set(self.advanced_sim_features)
         self.v_dev_tools.set(self.dev_tools)
-        self.v_language.set(self.language)
-        self.v_bridge.set(self.bridge)
 
     def disable_serial(self):
         self.no_serial = True
@@ -221,6 +232,10 @@ class Application(ApplicationBase, tk.Tk):
     def menu_item_bridge(self, bridge):
         bridge = self.set_bridge(bridge)
         self.v_bridge.set(bridge)
+        self.save_prefs()
+
+    def menu_item_ui(self, ui):
+        self.set_vpl_ui(ui)
         self.save_prefs()
 
     def main_loop(self):

@@ -173,7 +173,6 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 }
 
 window.addEventListener("load", function () {
-	var url0 = "/vpl/vpl.html?ui=ui/classic/ui.json&uilanguage=$LANGUAGE&server=ws://" + document.location.hostname + ":8001/";
 	var fileBrowser = new VPLTeacherTools.FileBrowser({
 		onTeacherFiles: function (fileArray, fileBrowser) {
     		fillFileTable(fileArray, fileBrowser, false);
@@ -193,7 +192,7 @@ window.addEventListener("load", function () {
 			};
             sessionStorage.setItem("options", JSON.stringify(options));
             sessionStorage.setItem("initialFileContent", file.content);
-			document.location = "vpl$LANGSUFFIX.html?robot=sim&uilanguage=$LANGUAGE" +
+			document.location = "vpl$LANGSUFFIX.html?ui=$VPLUIURI&robot=sim&uilanguage=$LANGUAGE" +
 				(teacherFile ? "&role=teacher" : "") +
 				(file.students ? "&user=" + encodeURIComponent(file.students.join(", ")) : "");
 		}

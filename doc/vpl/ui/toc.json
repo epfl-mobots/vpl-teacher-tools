@@ -1,0 +1,18 @@
+[
+	{
+		"id": "svg",
+		"name": {
+			"en": "Appearance A",
+			"fr": "Apparence A"
+		},
+		"uri": "/vpl/ui/svg/ui.json"
+	},
+	{
+		"id": "classic",
+		"name": {
+			"en": "Appearance B",
+			"fr": "Apparence B"
+		},
+		"uri": "/vpl/ui/classic/ui.json"
+	}
+]

@@ -21,6 +21,7 @@ class ApplicationBase:
     DEFAULT_HTTP_PORT = Server.DEFAULT_HTTP_PORT
     DEFAULT_WS_PORT = Server.DEFAULT_WS_PORT
     DEFAULT_PREFS_PATH = os.path.expanduser("~/vplserver-prefs.json")
+    UI_TOC_PATH = "doc/vpl/ui/toc.json"
     LANGUAGES = {"en", "fr"}
     BRIDGES = {"none", "tdm", "jws"}
 
@@ -53,12 +54,14 @@ class ApplicationBase:
         self.language = language
         self.translate.set_language(language)
         self.bridge = "none"  # "tdm" or "jws" or "none"
+        self.vpl_ui_set = {"classic"}
+        self.vpl_ui = "classic"
         self.full_url = full_url
         self.log_display = False
         self.advanced_sim_features = False
         self.has_login_qr_code = False
         self.dev_tools = False
-
+        self.load_ui_list()
         self.set_bridge("tdm")
 
         # to implement in subclasses:
@@ -79,6 +82,13 @@ class ApplicationBase:
             self.bridge = "none"
             self.server.set_bridge("none")
         return self.bridge
+
+    def set_vpl_ui(self, ui):
+        self.vpl_ui = ui
+        for ui_entry in self.ui_toc:
+            if ui_entry["id"] == ui:
+                self.server.http_server.vpl_ui_uri = ui_entry["uri"]
+                break
 
     def run(self):
         self.update_connection()
@@ -170,6 +180,7 @@ class ApplicationBase:
         prefs = {
             "language": self.language,
             "bridge": self.bridge,
+            "vpl_ui": self.vpl_ui,
             "full_url": self.server.http_server.full_url,
             "login_qr_code": self.server.http_server.has_login_qr_code,
             "log_display": self.log_display,
@@ -191,6 +202,10 @@ class ApplicationBase:
                     bridge = prefs["bridge"]
                     if bridge in self.BRIDGES:
                         self.set_bridge(bridge)
+                if "vpl_ui" in prefs:
+                    vpl_ui = prefs["vpl_ui"]
+                    if vpl_ui in self.vpl_ui_set:
+                        self.set_vpl_ui(prefs["vpl_ui"])
                 if "full_url" in prefs:
                     self.set_full_url(prefs["full_url"])
                 if "login_qr_code" in prefs:
@@ -203,3 +218,26 @@ class ApplicationBase:
                     self.set_dev_tools(prefs["dev_tools"])
         except Exception:
             pass
+
+    def load_ui_list(self):
+        try:
+            with open(self.UI_TOC_PATH) as file:
+                self.ui_toc = json.load(file)
+        except Exception:
+            self.ui_toc = [
+            	{
+            		"id": "classic",
+            		"name": {
+            			"en": "Appearance \"Classic\"",
+            			"fr": "Apparence \"classique\""
+            		},
+            		"uri": "ui/classic/ui.json"
+            	}
+            ]
+        self.vpl_ui_set = {ui["id"] for ui in self.ui_toc}
+        for ui in self.ui_toc:
+            for language in ui["name"]:
+                if language != "en":
+                    self.translate.set_translation(language,
+                                                   ui["name"]["en"],
+                                                   ui["name"][language])
