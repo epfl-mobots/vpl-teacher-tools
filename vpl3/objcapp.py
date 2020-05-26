@@ -36,33 +36,7 @@ class Application(ApplicationBase):
                     lambda sender: self.menu_item_copy_url()
                 ]
             ])
-            self.app_objc.addMenu_withItems_("Options", [
-                [
-                    "Shortened URLs",
-                    None,
-                    lambda sender: self.menu_item_shorten_urls()
-                ],
-                [
-                    "Login Screen QR Code",
-                    None,
-                    lambda sender: self.menu_item_login_QR_code()
-                ],
-                [
-                    "Log Display in Dashboard",
-                    None,
-                    lambda sender: self.menu_item_log_display()
-                ],
-                [
-                    "Advanced Simulator Features",
-                    None,
-                    lambda sender: self.menu_item_advanced_sim_features()
-                ],
-                [
-                    "Developer Tools",
-                    None,
-                    lambda sender: self.menu_item_dev_tools()
-                ],
-                None,
+            options_menu_items = [
                 [
                     "English",
                     None,
@@ -89,7 +63,49 @@ class Application(ApplicationBase):
                     None,
                     lambda sender: self.menu_item_bridge("none")
                 ],
-            ])
+            ]
+            if len(self.ui_toc) > 1:
+                def ui_cmd(id):
+                    # keep id in closure
+                    return lambda sender: self.menu_item_ui(id)
+                options_menu_items += [
+                    None
+                ] + [
+                    [
+                        ui["name"]["en"],
+                        None,
+                        ui_cmd(ui["id"])
+                    ] for ui in self.ui_toc
+                ]
+            options_menu_items += [
+                None,
+                [
+                    "Shortened URLs",
+                    None,
+                    lambda sender: self.menu_item_shorten_urls()
+                ],
+                [
+                    "Login Screen QR Code",
+                    None,
+                    lambda sender: self.menu_item_login_QR_code()
+                ],
+                [
+                    "Log Display in Dashboard",
+                    None,
+                    lambda sender: self.menu_item_log_display()
+                ],
+                [
+                    "Advanced Simulator Features",
+                    None,
+                    lambda sender: self.menu_item_advanced_sim_features()
+                ],
+                [
+                    "Developer Tools",
+                    None,
+                    lambda sender: self.menu_item_dev_tools()
+                ],
+            ]
+            self.app_objc.addMenu_withItems_("Options", options_menu_items)
             self.app_objc.start()
         except Exception as e:
             ApplicationObjCShell.modalAlert(str(e), buttons=["Quit"])
@@ -136,7 +152,7 @@ class Application(ApplicationBase):
 
         self.load_prefs()
         self.update_menu_state()
-        self.translate_menus()
+        self.translate_ui()
 
     def title(self):
         return f"{self.tr('VPL Server')} - " + self.tt_url(True)
@@ -165,7 +181,36 @@ class Application(ApplicationBase):
                     menuItem = self.app_objc.getMenuItemWithTitle_inMenu_(item[0], menuName)
                     menuItem.setTitle_(self.tr(item[0]))
 
+    def translate_ui(self):
+        self.translate_menus()
+        if self.window:
+            self.window.setTitle_(self.title())
+            self.update_connection()
+            self.update_robots()
+            self.open_button.setTitle_(self.tr("Open tools in browser"))
+        if self.qr:
+            self.qr.needsDisplay = True
+            self.qr.display()
+
     def update_menu_state(self):
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("English", "Options")
+        item.setState_(1 if self.language == "en" else 0)
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("French", "Options")
+        item.setState_(1 if self.language == "fr" else 0)
+
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Thymio Device Manager", "Options")
+        item.setState_(1 if self.bridge == "tdm" else 0)
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("JSON WebSocket", "Options")
+        item.setEnabled_(0 if self.no_serial else 1)
+        item.setState_(1 if self.bridge == "jws" else 0)
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("No Robot", "Options")
+        item.setState_(1 if self.bridge == "none" else 0)
+
+        if len(self.ui_toc) > 1:
+            for ui in self.ui_toc:
+                item = self.app_objc.getMenuItemWithTitle_inMenu_(ui["name"]["en"], "Options")
+                item.setState_(1 if self.vpl_ui == ui["id"] else 0)
+
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Shortened URLs", "Options")
         item.setState_(0 if self.full_url else 1)
 
@@ -180,19 +225,6 @@ class Application(ApplicationBase):
 
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Developer Tools", "Options")
         item.setState_(1 if self.dev_tools else 0)
-
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("English", "Options")
-        item.setState_(1 if self.language == "en" else 0)
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("French", "Options")
-        item.setState_(1 if self.language == "fr" else 0)
-
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("Thymio Device Manager", "Options")
-        item.setState_(1 if self.bridge == "tdm" else 0)
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("JSON WebSocket", "Options")
-        item.setEnabled_(0 if self.no_serial else 1)
-        item.setState_(1 if self.bridge == "jws" else 0)
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("No Robot", "Options")
-        item.setState_(1 if self.bridge == "none" else 0)
 
     def menu_item_copy_url(self):
         path = self.tt_abs_path()
@@ -231,18 +263,14 @@ class Application(ApplicationBase):
         self.set_language(language)
         self.update_menu_state()
         self.save_prefs()
-
-        self.translate_menus()
-        if self.window:
-            self.window.setTitle_(self.title())
-            self.update_connection()
-            self.update_robots()
-            self.open_button.setTitle_(self.tr("Open tools in browser"))
-        if self.qr:
-            self.qr.needsDisplay = True
-            self.qr.display()
+        self.translate_ui()
 
     def menu_item_bridge(self, bridge):
         bridge = self.set_bridge(bridge)
+        self.update_menu_state()
+        self.save_prefs()
+
+    def menu_item_ui(self, ui):
+        self.set_vpl_ui(ui)
         self.update_menu_state()
         self.save_prefs()
