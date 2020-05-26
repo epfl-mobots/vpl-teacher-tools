@@ -166,12 +166,14 @@ class Application(ApplicationBase, tk.Tk):
         self.v_advanced_sim_features.set(self.advanced_sim_features)
         self.v_dev_tools.set(self.dev_tools)
 
+        self.initialized = True
+
     def disable_serial(self):
         self.no_serial = True
         self.options_menu.entryconfig("JSON WebSocket", state="disabled")
 
     def writeln(self, str):
-        if self.log:
+        if hasattr(self, "initialized") and self.initialized:
             self.log.insert("end", str + "\n")
             self.log.see(tk.END)
 

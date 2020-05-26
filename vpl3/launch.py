@@ -79,5 +79,5 @@ Options:
               ws_port=ws_port,
               timeout=timeout,
               ws_link_url=ws_link_url,
-              language=language if language is not "en" else None)
+              language=language if language != "en" else None)
     app.run()
