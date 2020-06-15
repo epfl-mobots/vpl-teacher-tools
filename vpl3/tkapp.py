@@ -173,7 +173,7 @@ class Application(ApplicationBase, tk.Tk):
         self.options_menu.entryconfig("JSON WebSocket", state="disabled")
 
     def writeln(self, str):
-        if hasattr(self, "initialized") and self.initialized:
+        if hasattr(self, "initialized") and self.initialized and self.log:
             self.log.insert("end", str + "\n")
             self.log.see(tk.END)
 
