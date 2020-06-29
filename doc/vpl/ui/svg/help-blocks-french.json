@@ -1,251 +1,257 @@
 {
 	"help": {
-		"en": {
+		"fr": {
 			"blocks": {
 				"init": [
-					"# Initialization",
+					"# Initialisation",
 					"![init](vpl:block:init)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"button 1": [
-					"# Single button",
+					"# Bouton simple",
 					"![button 1](vpl:block:button-1)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"roll": [
-					"# Roll angle",
+					"# Angle de roulis",
 					"![roll](vpl:block:roll)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"acc side": [
-					"# Lying on its side",
+					"# Sur le côté",
 					"![acc side](vpl:block:acc-side)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"acc upside down": [
-					"# Lying upside down",
+					"# Sur le dos",
 					"![acc upside down](vpl:block:acc-upside-down)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"yaw": [
-					"# Yaw angle",
+					"# Angle de lacet",
 					"![yaw](vpl:block:yaw)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"pitch": [
-					"# Pitch angle",
+					"# Angle de tangage",
 					"![pitch](vpl:block:pitch)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"tap": [
-					"# Impact detection",
+					"# Détection de choc",
 					"![tap](vpl:block:tap)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"fall": [
-					"# Fall",
+					"# Chute",
 					"![fall](vpl:block:fall)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"clap": [
-					"# Sound detection",
+					"# Détection de son",
 					"![clap](vpl:block:clap)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"ground mean": [
-					"# Average ground reflexion sensor",
+					"# Moyenne des capteurs de réflexion sur le sol",
 					"![ground mean](vpl:block:ground-mean)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"ground": [
-					"# Ground reflection sensors",
+					"# Capteurs de réflexion sur le sol",
 					"![ground](vpl:block:ground)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"ground 1": [
-					"# Ground reflection sensors with threshold",
+					"# Capteurs de réflexion sur le sol avec seuil",
 					"![ground 1](vpl:block:ground-1)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"horiz prox": [
-					"# Proximity sensors",
+					"# Capteurs de proximité",
 					"![horiz prox](vpl:block:horiz-prox)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"horiz prox front adv": [
-					"# Front proximity sensors with threshold",
+					"# Capteurs de proximité avant avec seuils bas et haut",
 					"![horiz prox front adv](vpl:block:horiz-prox-front-adv)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"horiz prox back adv": [
-					"# Back proximity sensors with threshold",
+					"# Capteurs de proximité arrière avec seuils bas et haut",
 					"![horiz prox back adv](vpl:block:horiz-prox-back-adv)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"remote control arrows": [
-					"# Remote control arrow keys",
+					"# Touches de direction de la télécommande",
 					"![remote control arrows](vpl:block:remote-control-arrows)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"remote control keypad": [
-					"# Remote control keypad keys",
+					"# Pavé numérique de la télécommande",
 					"![remote control keypad](vpl:block:remote-control-keypad)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"timer": [
-					"# Timer elapsed",
+					"# Minuterie",
 					"![timer](vpl:block:timer)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
+					"..."
+				],
+				"clock": [
+					"# Horloge à 10 ou 20 Hz",
+					"![clock](vpl:block:clock)",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"counter comparison": [
-					"# State arithmetic comparison",
+					"# Comparaison arithmétique de l'état",
 					"![counter comparison](vpl:block:counter-comparison)",
-					"Type: condition block",
+					"Type: bloc de condition",
 					"..."
 				],
 				"state 256": [
-					"# State bit comparison",
+					"# Comparaison des bits de l'état",
 					"![state 256](vpl:block:state-256)",
-					"Type: condition block",
+					"Type: bloc de condition",
 					"..."
 				],
 				"state 256 with mask": [
-					"# State bit partial comparison",
+					"# Comparaison partielle des bits de l'état",
 					"![state 256 with mask](vpl:block:state-256-with-mask)",
-					"Type: condition block",
+					"Type: bloc de condition",
 					"..."
 				],
 				"color 8 state": [
-					"# Color state",
+					"# État (couleur)",
 					"![color 8 state](vpl:block:color-8-state)",
-					"Type: condition block",
+					"Type: bloc de condition",
 					"..."
 				],
 				"bottom color 8 state": [
-					"# Bottom color state",
+					"# État (couleur du bas)",
 					"![bottom color 8 state](vpl:block:bottom-color-8-state)",
-					"Type: condition block",
+					"Type: bloc de condition",
 					"..."
 				],
 				"motor": [
-					"# Set motor speeds",
+					"# Change les vitesses des moteurs",
 					"![motor](vpl:block:motor)",
-					"Type: action block",
+					"Type: bloc d'action",
 					"..."
 				],
 				"move": [
-					"# Set motion",
+					"# Change le type de déplacement",
 					"![move](vpl:block:move)",
-					"Type: action block",
+					"Type: bloc d'action",
 					"..."
 				],
 				"top color 8": [
-					"# Set top color",
+					"# Change la couleur du dessus",
 					"![top color 8](vpl:block:top-color-8)",
-					"Type: action block",
+					"Type: bloc d'action",
 					"..."
 				],
 				"bottom color 8": [
-					"# Set bottom color",
+					"# Change la couleur du dessous",
 					"![bottom color 8](vpl:block:bottom-color-8)",
-					"Type: action block",
+					"Type: bloc d'action",
 					"..."
 				],
 				"top color": [
-					"# Set top color (RGB components)",
+					"# Change la couleur du dessus (composantes RVB)",
 					"![top color](vpl:block:top-color)",
-					"Type: action block",
+					"Type: bloc d'action",
 					"..."
 				],
 				"bottom color": [
-					"# Set bottom color (RGB components)",
+					"# Change la couleur du dessous (composantes RVB)",
 					"![bottom color](vpl:block:bottom-color)",
-					"Type: action block",
+					"Type: bloc d'action",
 					"..."
 				],
 				"notes": [
-					"# Play melody",
+					"# Joue une mélodie",
 					"![notes](vpl:block:notes)",
-					"Type: action block",
+					"Type: bloc d'action",
 					"..."
 				],
 				"notes with speed": [
-					"# Play melody with tempo",
+					"# Joue une mélodie avec le tempo",
 					"![notes with speed](vpl:block:notes-with-speed)",
-					"Type: action block",
+					"Type: bloc d'action",
 					"..."
 				],
 				"play": [
-					"# Play a .wav file",
+					"# Joue un fichier .wav",
 					"![play](vpl:block:play)",
-					"Type: action block",
+					"Type: bloc d'action",
 					"..."
 				],
 				"play stop": [
-					"# Stop playing a .wav file",
+					"# Arrête de jouer un fichier .wav",
 					"![play stop](vpl:block:play-stop)",
-					"Type: action block",
+					"Type: bloc d'action",
 					"..."
 				],
 				"set state 256": [
-					"# Set state bits",
+					"# Change les bits de l'état",
 					"![set state 256](vpl:block:set-state-256)",
-					"Type: action block",
+					"Type: bloc d'action",
 					"..."
 				],
 				"set state 256 with mask": [
-					"# Set some state bits",
+					"# Change certains bits de l'état",
 					"![set state 256 with mask](vpl:block:set-state-256-with-mask)",
-					"Type: action block",
+					"Type: bloc d'action",
 					"..."
 				],
 				"set timer": [
-					"# Start timer",
+					"# Démarre la minuterie",
 					"![set timer](vpl:block:set-timer)",
-					"Type: action block",
+					"Type: bloc d'action",
 					"..."
 				],
 				"arithmetic": [
-					"# Arithmetic",
+					"# Arithmétique",
 					"![arithmetic](vpl:block:arithmetic)",
-					"Type: action block",
+					"Type: bloc d'action",
 					"..."
 				],
 				"button": [
-					"# Multiple buttons",
+					"# Boutons multiples",
 					"![button](vpl:block:button)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"horiz prox adv": [
-					"# Proximity sensors with 2 thresholds",
+					"# Capteurs de proximité avec seuils bas et haut",
 					"![horiz prox adv](vpl:block:horiz-prox-adv)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				],
 				"ground adv": [
-					"# Ground reflection sensors with 2 thresholds",
+					"# Capteurs de réflexion sur le sol avec seuils bas et haut",
 					"![ground adv](vpl:block:ground-adv)",
-					"Type: event or condition block",
+					"Type: bloc d'événement ou de condition",
 					"..."
 				]
 			}

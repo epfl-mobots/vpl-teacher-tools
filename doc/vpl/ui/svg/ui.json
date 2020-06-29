@@ -30,6 +30,15 @@
 		"vpl-export-html.css": "td.events, td.then, td.actions {\n\tborder: solid 2px silver;\n\tborder-style: solid none;\n}\ntd.block {\n\tpadding: 15px;\n}\ntd.events {\n    min-width: 20px;\n    border-left-style: solid;\n    border-top-left-radius: 20px; \n    border-bottom-left-radius: 20px;\n}\ntd.event-aux {    transform: scale(0.8) translate(0,10px);\n}\ntd.actions {\n    min-width: 20px;\n    border-right-style: solid;\n    border-bottom-right-radius: 20px; \n    border-top-right-radius: 20px; \n}\ntable.program {\n\tborder-collapse: separate;\n\tborder-spacing: 0 10px;\n\tmargin-left: auto;\n\tmargin-right: auto;\n}\n"
 	},
 
+	"doc": {
+		"en": {
+			"doctemplate.html": "doctemplate-english.html"
+		},
+		"fr": {
+			"doctemplate.html": "doctemplate-french.html"
+		}
+	},
+
 	"blocks": [
 		{
 			"name": "!stop",
@@ -713,6 +722,31 @@
 			"draw": [
 				{
 					"uri": "Blocks.svg#Ev_TimersUp"
+				}
+			]
+		},
+		{
+			"name": "clock",
+			"type": "event",
+			"modes": [],
+			"draw": [
+				{
+					"uri": "Blocks.svg#Ev_Freq"
+				},
+				{
+					"js": "ctx.font = 'bold 170px sans-serif'; ctx.fillStyle = 'black'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText($[0].toString(10) + ' Hz', 350, 540);"
+				}
+			],
+			"defaultParameters": [10],
+			"otherParameters": 1,
+			"pushbuttons": [
+				{
+					"id": "FreqDownDown",
+					"newParameters": "`[10]`"
+				},
+				{
+					"id": "FreqUp",
+					"newParameters": "`[20]`"
 				}
 			]
 		},
@@ -2067,6 +2101,8 @@
 		"Blocks16.svg"
 	],
 	"overlays": [
+		"block-list.json",
+
 		"aesl.json",
 
 		"aseba.json",
@@ -2083,6 +2119,9 @@
 		"cmd-sim-french.json",
 
 		"block-english.json",
-		"block-french.json"
+		"block-french.json",
+
+		"help-blocks-english.json",
+		"help-blocks-french.json"
 	]
 }

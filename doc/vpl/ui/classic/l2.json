@@ -44,7 +44,7 @@
 			"l2": {
 				"sectionBegin": "onevent prox {\n",
 				"sectionEnd": "}\n",
-				"clause": "`[2, 1, 3, 0, 4, 5, 6].map(function (ix, i) { return $[i] ? 'prox.horizontal[' + ix + '] ' + ($[i] > 0 ? '>= ' + Math.round(7 + 33 * $[7]) : '<= ' + Math.round(7 + 33 * $[8])) + '00' : ''; }).filter(function (s) { return s; }).join(' && ') || [2, 1, 3, 0, 4, 5, 6].map(function (ix) { return 'prox.horizontal[' + ix + '] >= 2000'; }).join(' || ')`"
+				"clause": "`[2, 1, 3, 0, 4, 5, 6].map(function (ix, i) { var p = 'prox.horizontal[' + ix + '] ', l = Math.round(17 + 33 * $[7]) + '00', g = Math.round(17 + 33 * $[8]) + '00'; return $[i] === 1 ? p + '>= ' + g : $[i] === 2 ? p + '< ' + l : $[i] === 3 ? p + '>= ' + l + ' && ' + p + '< ' + g : ''; }).filter(function (s) { return s; }).join(' && ') || [2, 1, 3, 0, 4, 5, 6].map(function (ix) { return 'prox.horizontal[' + ix + '] >= 2000'; }).join(' || ')`"
 			}
 		},
 		{
@@ -69,7 +69,7 @@
 			"l2": {
 				"sectionBegin": "onevent prox {\n",
 				"sectionEnd": "}\n",
-				"clause": "`[0, 1].map(function (ix, i) { var p = 'prox.ground.delta[' + ix + '] ', g = '>= ' + Math.round(25 + 40 * $[2]) + '0', l = '<= ' + Math.round(25 + 40 * $[3]) + '0'; return $[i] === 1 ? p + g : $[i] === 2 ? p + l : $[i] === 3 ? p + g + ' && ' + p + l : ''; }).filter(function (s) { return s; }).join(' && ') || [2, 1, 3, 0, 4, 5, 6].map(function (ix) { return 'prox.ground.delta[' + ix + '] >= 450'; }).join(' || ')`"
+				"clause": "`[0, 1].map(function (ix, i) { var p = 'prox.ground.delta[' + ix + '] ', l = Math.round(25 + 40 * $[2]) + '0', g = Math.round(25 + 40 * $[3]) + '0'; return $[i] === 1 ? p + '>= ' + g : $[i] === 2 ? p + '< ' + l : $[i] === 3 ? p + '>= ' + l + ' && ' + p + '< ' + g : ''; }).filter(function (s) { return s; }).join(' && ') || [2, 1, 3, 0, 4, 5, 6].map(function (ix) { return 'prox.ground.delta[' + ix + '] >= 450'; }).join(' || ')`"
 			}
 		},
 		{
@@ -117,9 +117,9 @@
 				"sectionBegin": "onevent acc {\n",
 				"sectionEnd": "}\n",
 				"clauseInit":
-					"fixed rollAngle = atan2(acc[0], acc[2]);\n",
+					"fixed rollAngle = atan2(-acc[0], acc[2]);\n",
 				"clause":
-					"rollAngle >= `(Math.PI / 12 * ($[0] - 0.5)).toFixed(2)` && rollAngle < `(Math.PI / 12 * ($[0] + 0.5)).toFixed(2)`"
+					"`Math.abs($[0]) === 12 ? 'rollAngle >= ' + (Math.PI / 12 * (12 - 0.5)).toFixed(2) + ' or rollAngle < ' + (Math.PI / 12 * (-12 + 0.5)).toFixed(2) : 'rollAngle >= ' + (Math.PI / 12 * ($[0] - 0.5)).toFixed(2) + ' and rollAngle < ' + (Math.PI / 12 * ($[0] + 0.5)).toFixed(2)`"
 			}
 		},
 		{
@@ -128,9 +128,9 @@
 				"sectionBegin": "onevent acc {\n",
 				"sectionEnd": "}\n",
 				"clauseInit":
-					"fixed pitchAngle = atan2(acc[1], acc[2]);\n",
+					"fixed pitchAngle = atan2(-acc[1], acc[2]);\n",
 				"clause":
-					"pitchAngle >= `(Math.PI / 12 * (-$[0] - 0.5)).toFixed(2)` && pitchAngle < `(Math.PI / 12 * (-$[0] + 0.5)).toFixed(2)`"
+					"`Math.abs($[0]) === 12 ? 'pitchAngle >= ' + (Math.PI / 12 * (12 - 0.5)).toFixed(2) + ' or pitchAngle < ' + (Math.PI / 12 * (-12 + 0.5)).toFixed(2) : 'pitchAngle >= ' + (Math.PI / 12 * ($[0] - 0.5)).toFixed(2) + ' and pitchAngle < ' + (Math.PI / 12 * ($[0] + 0.5)).toFixed(2)`"
 			}
 		},
 		{
@@ -139,9 +139,9 @@
 				"sectionBegin": "onevent acc {\n",
 				"sectionEnd": "}\n",
 				"clauseInit":
-					"fixed yawAngle = atan2(acc[0], acc[1]);\n",
+					"fixed yawAngle = atan2(-acc[0], acc[1]);\n",
 				"clause":
-					"yawAngle >= `(Math.PI / 12 * ($[0] - 0.5)).toFixed(2)` && yawAngle < `(Math.PI / 12 * ($[0] + 0.5)).toFixed(2)`"
+					"`Math.abs($[0]) === 12 ? 'yawAngle >= ' + (Math.PI / 12 * (12 - 0.5)).toFixed(2) + ' or yawAngle < ' + (Math.PI / 12 * (-12 + 0.5)).toFixed(2) : 'yawAngle >= ' + (Math.PI / 12 * ($[0] - 0.5)).toFixed(2) + ' and yawAngle < ' + (Math.PI / 12 * ($[0] + 0.5)).toFixed(2)`"
 			}
 		},
 		{
@@ -182,6 +182,13 @@
 				"sectionEnd": "}\n",
 				"sectionPreamble": "timerElapsed = true;\ntimer.period[0] = 0;\n",
 				"clauseAsCondition": "timerElapsed"
+			}
+		},
+		{
+			"name": "clock",
+			"l2": {
+				"sectionBegin": "onevent `$[0] === 10 ? 'prox' : 'button'` {\n",
+				"sectionEnd": "}\n"
 			}
 		},
 		{

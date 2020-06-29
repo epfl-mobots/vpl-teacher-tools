@@ -61,7 +61,7 @@
 				"sectionBegin": "onevent acc\n",
 				"clauseInit":
 					"call math.atan2(rollAngle, -acc[0], acc[2])\n",
-				"clause": "`$[0] === -12 ? 'rollAngle >= 31403 or rollAngle < -31403' : 'rollAngle >= ' + Math.round(2730.67 * $[0] - 1365.33) + ' and rollAngle < ' + Math.round(2730.67 * $[0] + 1365.33)`"
+				"clause": "`Math.abs($[0]) === 12 ? 'rollAngle >= 31403 or rollAngle < -31403' : 'rollAngle >= ' + Math.round(2730.67 * $[0] - 1365.33) + ' and rollAngle < ' + Math.round(2730.67 * $[0] + 1365.33)`"
 			}
 		},
 		{
@@ -95,7 +95,7 @@
 				"sectionBegin": "onevent acc\n",
 				"clauseInit":
 					"call math.atan2(yawAngle, -acc[0], acc[1])\n",
-				"clause": "`$[0] === -12 ? 'yawAngle >= 31403 or yawAngle < -31403' : 'yawAngle >= ' + Math.round(2730.67 * $[0] - 1365.33) + ' and yawAngle < ' + Math.round(2730.67 * $[0] + 1365.33)`"
+				"clause": "`Math.abs($[0]) === 12 ? 'yawAngle >= 31403 or yawAngle < -31403' : 'yawAngle >= ' + Math.round(2730.67 * $[0] - 1365.33) + ' and yawAngle < ' + Math.round(2730.67 * $[0] + 1365.33)`"
 			}
 		},
 		{
@@ -110,7 +110,7 @@
 				"sectionBegin": "onevent acc\n",
 				"clauseInit":
 					"call math.atan2(pitchAngle, -acc[1], acc[2])\n",
-				"clause": "`$[0] === -12 ? 'pitchAngle >= 31403 or pitchAngle < -31403' : 'pitchAngle >= ' + Math.round(2730.67 * $[0] - 1365.33) + ' and pitchAngle < ' + Math.round(2730.67 * $[0] + 1365.33)`"
+				"clause": "`Math.abs($[0]) === 12 ? 'pitchAngle >= 31403 or pitchAngle < -31403' : 'pitchAngle >= ' + Math.round(2730.67 * $[0] - 1365.33) + ' and pitchAngle < ' + Math.round(2730.67 * $[0] + 1365.33)`"
 			}
 		},
 		{
@@ -251,6 +251,12 @@
 					"timer.period[0] = 0\n"
 				],
 				"clauseAsCondition": "timerElapsed != 0"
+			}
+		},
+		{
+			"name": "clock",
+			"aseba": {
+				"sectionBegin": "onevent `$[0] === 10 ? 'prox' : 'button'`\n"
 			}
 		},
 		{
@@ -611,21 +617,21 @@
 			"name": "button",
 			"aseba": {
 				"sectionBegin": "onevent buttons\n",
-				"clause": "`['center', 'forward', 'backward', 'right', 'left'].map(function (s, i) { return $[i] ? 'button.' + s : ''; }).filter(function (s) { return s; }).join(' and ') || ['center', 'forward', 'backward', 'right', 'left'].map(function (s) { return 'button.' + s; }).join(' or ')`"
+				"clause": "`['center', 'forward', 'backward', 'right', 'left'].map(function (s, i) { return $[i] ? 'button.' + s + ' != 0' : ''; }).filter(function (s) { return s; }).join(' and ') || ['center', 'forward', 'backward', 'right', 'left'].map(function (s) { return 'button.' + s + ' != 0'; }).join(' or ')`"
 			}
 		},
 		{
 			"name": "horiz prox adv",
 			"aseba": {
 				"sectionBegin": "onevent prox\n",
-				"clause": "`[2, 1, 3, 0, 4, 5, 6].map(function (ix, i) { var p = 'prox.horizontal[' + ix + '] ', g = '>= ' + Math.round(17 + 33 * $[8]) + '00', l = '<= ' + Math.round(17 + 33 * $[7]) + '00'; return $[i] === 1 ? p + g : $[i] === 2 ? p + l : $[i] === 3 ? p + g + ' and ' + p + l : ''; }).filter(function (s) { return s; }).join(' and ') || [2, 1, 3, 0, 4, 5, 6].map(function (ix) { return 'prox.horizontal[' + ix + '] >= 2000'; }).join(' or ')`"
+				"clause": "`[2, 1, 3, 0, 4, 5, 6].map(function (ix, i) { var p = 'prox.horizontal[' + ix + '] ', l = Math.round(17 + 33 * $[7]) + '00', g = Math.round(17 + 33 * $[8]) + '00'; return $[i] === 1 ? p + '>= ' + g : $[i] === 2 ? p + '< ' + l : $[i] === 3 ? p + '>= ' + l + ' and ' + p + '< ' + g : ''; }).filter(function (s) { return s; }).join(' and ') || [2, 1, 3, 0, 4, 5, 6].map(function (ix) { return 'prox.horizontal[' + ix + '] >= 2000'; }).join(' or ')`"
 			}
 		},
 		{
 			"name": "ground adv",
 			"aseba": {
 				"sectionBegin": "onevent prox\n",
-				"clause": "`[0, 1].map(function (ix, i) { var p = 'prox.ground.delta[' + ix + '] ', g = '>= ' + Math.round(25 + 40 * $[2]) + '0', l = '<= ' + Math.round(25 + 40 * $[3]) + '0'; return $[i] === 1 ? p + g : $[i] === 2 ? p + l : $[i] === 3 ? p + g + ' and ' + p + l : ''; }).filter(function (s) { return s; }).join(' and ') || [2, 1, 3, 0, 4, 5, 6].map(function (ix) { return 'prox.ground.delta[' + ix + '] >= 450'; }).join(' or ')`"
+				"clause": "`[0, 1].map(function (ix, i) { var p = 'prox.ground.delta[' + ix + '] ', l = Math.round(25 + 40 * $[2]) + '0', g = Math.round(25 + 40 * $[3]) + '0'; return $[i] === 1 ? p + '>= ' + g : $[i] === 2 ? p + '< ' + l : $[i] === 3 ? p + '>= ' + l + ' and ' + p + '< ' + g : ''; }).filter(function (s) { return s; }).join(' and ') || [0, 1].map(function (ix) { return 'prox.ground.delta[' + ix + '] >= 450'; }).join(' or ')`"
 			}
 		}
 	]
