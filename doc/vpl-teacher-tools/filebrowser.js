@@ -7,7 +7,6 @@ VPLTeacherTools.FileBrowser = function (options) {
     this.teacherFiles = [];
     this.studentFiles = [];
     this.options = options || {};
-    this.filterTeacherLast = true;
     this.filterStudent = null;
     this.filterStudentLast = true;
 	this.client = new VPLTeacherTools.HTTPClient();
@@ -22,7 +21,7 @@ VPLTeacherTools.FileBrowser.prototype.updateFiles = function (renamedFileId) {
 
 	// teacher files
 	this.client.listFiles({
-        last: this.filterTeacherLast
+        last: true
     },
     {
 		onSuccess: function (files) {

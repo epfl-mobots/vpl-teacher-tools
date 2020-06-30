@@ -264,12 +264,6 @@ window.addEventListener("load", function () {
 		fileBrowser.deleteFiles();
 	}, false);
 
-	var chkFilterTeacherLast = document.getElementById("chk-filter-teacher-last");
-	chkFilterTeacherLast.addEventListener("change", function () {
-		fileBrowser.filterTeacherLast = chkFilterTeacherLast.checked;
-		fileBrowser.updateFiles();
-	}, false);
-
 	var btn = document.getElementById("btn-view-st");
 	btn.addEventListener("click", function () {
 		fileBrowser.openFile(true);
