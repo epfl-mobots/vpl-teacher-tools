@@ -123,7 +123,7 @@ VPLTeacherTools.Dashboard.prototype.updateSessions = function (sessionIndex, msg
 			var str = num.toString(10);
 			return "0000".slice(0, len - str.length) + str;
 		}
-		return s(d.getFullYear(), 4) + "-" + s(d.getMonth(), 2) + "-" + s(d.getDate(), 2) +
+		return s(d.getFullYear(), 4) + "-" + s(d.getMonth() + 1, 2) + "-" + s(d.getDate(), 2) +
 			" " + s(d.getHours(), 2) + ":" + s(d.getMinutes(), 2) + ":" + s(d.getSeconds(), 2);
 	}
 
