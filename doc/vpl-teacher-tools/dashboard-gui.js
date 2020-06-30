@@ -208,9 +208,13 @@ window.addEventListener("load", function () {
 
 	document.getElementById("suspended").addEventListener("change", function () {
 		dashboard.suspend(this.checked,
-			"<p style='text-align: center;'>" +
-				document.getElementById("suspended-text").value +
-			"</p>");
+			"<div style='display: table; height: 100%; width: 100%; overflow: hidden;'>" +
+				"<div style='display: table-cell; vertical-align: middle;'>" +
+					"<p style='text-align: center;'>" +
+						document.getElementById("suspended-text").value +
+					"</p>" +
+				"</div>" +
+			"</div>");
 	});
 
 	document.getElementById("clear-log").addEventListener("click", function () {
