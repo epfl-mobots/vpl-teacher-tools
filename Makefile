@@ -56,9 +56,11 @@ THYMIOFILES = \
 	doc/vpl/thymio/thymio.js
 
 UICLASSICFILES = \
+	doc/vpl/ui/classic/aesl.json \
 	doc/vpl/ui/classic/aseba.json \
 	doc/vpl/ui/classic/block-english.json \
 	doc/vpl/ui/classic/block-french.json \
+	doc/vpl/ui/classic/block-list.json \
 	doc/vpl/ui/classic/classic.css \
 	doc/vpl/ui/classic/cmd-sim-english.json \
 	doc/vpl/ui/classic/cmd-sim-french.json \
@@ -69,6 +71,7 @@ UICLASSICFILES = \
 	doc/vpl/ui/classic/l2.json \
 	doc/vpl/ui/classic/python.json \
 	doc/vpl/ui/classic/typical-param-set.json \
+	doc/vpl/ui/classic/typical-states.json \
 	doc/vpl/ui/classic/ui.json
 
 TOOLSFILES = \
