@@ -8,25 +8,34 @@ VPLTeacherTools.translate = function(str, language) {
 	/** @const */
 	var fr = {
 		"add": "ajouter",
+		"Blocks": "Blocs",
+		"Connection": "Connexion",
 		"Dashboard": "Tableau de bord",
 		"Default": "Défaut",
+		"error:": "erreur:",
 		"Filename": "Fichier",
 		"Group": "Groupe",
+		"hr": "h",
 		"Import Pupil Names": "Importer les noms des élèves",
+		"min": "min",
 		"pupil local bridge": "passerelle locale",
 		"(pupil local bridge)": "(passerelle locale)",
 		"Marked": "Marque",
 		"Message": "Message",
+		"no": "non",
+		"Program": "Programme",
 		"remove": "supprimer",
+		"Rows": "Lignes",
+		"sec": "s",
 		"simulator": "simulateur",
 		"(simulator)": "(simulateur)",
 		"Size": "Taille",
 		"Students": "Élèves",
-		"T": "E",	// Teacher: Enseignant.e (column header for connection in dashboard)
+		"Teacher": "Enseignant.e",
 		"Time": "Heure",
 		"Time (d)": "Temps",
-		"# blocks": "# blocs",
-		"# rules": "# règles"
+		"warning:": "remarque:",
+		"yes": "oui"
 	};
 
 	var dict = {

@@ -5,19 +5,32 @@ function clearTable(id, labels) {
 	while (table.firstElementChild) {
 		table.removeChild(table.firstElementChild);
 	}
-	if (labels) {
+	labels.forEach(function (labelRow) {
 		var tr = document.createElement("tr");
-		labels.forEach(function (label) {
-			var th = document.createElement("th");
-			th.textContent = label;
-			tr.appendChild(th);
+		labelRow.forEach(function (label, i) {
+			if (label !== "<") {
+				// "<" are merged to a single colspan
+				var th = document.createElement("th");
+				th.textContent = label;
+				if (labelRow[i + 1] === "<") {
+					var colSpan = 1;
+					while (labelRow[i + colSpan] === "<") {
+						colSpan++;
+					}
+					th.setAttribute("colspan", colSpan.toString(10));
+				}
+				tr.appendChild(th);
+			}
 		});
 		table.appendChild(tr);
-	}
+	});
 }
 
 function fillGroupTable(sessionArray, dashboard) {
-	clearTable("groups", VPLTeacherTools.translateArray(["", "T", "R", "Time (d)", "Filename", "#R", "#B", "Message"]));
+	clearTable("groups", [
+		VPLTeacherTools.translateArray(["", "Connection", "<", "Time (d)", "Filename", "Program", "<", "Message"]),
+		VPLTeacherTools.translateArray(["", "Teacher", "Robot", "", "", "Rows", "Blocks", ""])
+	]);
 	var table = document.getElementById("groups");
 
 	sessionArray.forEach(function (session) {
@@ -37,7 +50,7 @@ function fillGroupTable(sessionArray, dashboard) {
 
 		// connection to teacher (VPL server)
 		td = document.createElement("td");
-		td.textContent = session.isConnected ? "\u260d" : "";
+		td.textContent = VPLTeacherTools.translate(session.isConnected ? "yes" : "no");
 		tr.appendChild(td);
 
 		if (session.lastVPLChangedLogEntry != null) {
@@ -45,7 +58,7 @@ function fillGroupTable(sessionArray, dashboard) {
 
 			// connection to robot
 			td = document.createElement("td");
-			td.textContent = lastVPLChangedData["robot"] ? "r" : "";
+			td.textContent = VPLTeacherTools.translate(lastVPLChangedData["robot"] ? "yes" : "no");
 			tr.appendChild(td);
 
 			// elapsed time
@@ -56,14 +69,15 @@ function fillGroupTable(sessionArray, dashboard) {
 			var dateLogEntry = new Date(ymd[0], ymd[1] - 1, ymd[2], hms[0], hms[1], hms[2]);
 			var now = new Date();
 			var elapsedSec = (now - dateLogEntry) / 1000;
-			var elapsedStr = elapsedSec < 120 ? elapsedSec.toString(10) + " sec"
-				: elapsedSec < 7200 ? Math.floor(elapsedSec / 60).toString(10) + " min"
-				: elapsedSec < 172800 ? Math.floor(elapsedSec / 3600).toString(10) + " hr"
+			var elapsedStr = elapsedSec < 120 ? elapsedSec.toFixed(0) + " " + VPLTeacherTools.translate("sec")
+				: elapsedSec < 7200 ? Math.floor(elapsedSec / 60).toString(10) + " " + VPLTeacherTools.translate("min")
+				: elapsedSec < 172800 ? Math.floor(elapsedSec / 3600).toString(10) + " " + VPLTeacherTools.translate("hr")
 				: Math.floor(elapsedSec / 86400).toString(10) + " d";
 			td.textContent = elapsedStr;
 			tr.appendChild(td);
 
 			// program
+			var details = [];
 			if (lastVPLChangedData && lastVPLChangedData["nrules"] != undefined) {
 				// filename
 				td = document.createElement("td");
@@ -79,17 +93,17 @@ function fillGroupTable(sessionArray, dashboard) {
 				tr.appendChild(td);
 
 				details = [
-					lastVPLChangedData["filename"] || "",
 					lastVPLChangedData["nrules"].toString(10),
 					lastVPLChangedData["nblocks"].toString(10)
 				];
+			} else {
+				details = ["", "", ""];
 			}
 
-			var details = [];
-			if (lastVPLChangedData["error"]) {
-				details.push("error: " + lastVPLChangedData["error"]);
-			} else if (lastVPLChangedData["warning"]) {
-				details.push("warning: " + lastVPLChangedData["warning"]);
+			if (lastVPLChangedData["error-tr"]) {
+				details.push(VPLTeacherTools.translate("error:") + " " + lastVPLChangedData["error-tr"]);
+			} else if (lastVPLChangedData["warning-tr"]) {
+				details.push(VPLTeacherTools.translate("warning:") + " " + lastVPLChangedData["warning-tr"]);
 			}
 			details.forEach(function (str) {
 				td = document.createElement("td");
@@ -103,7 +117,9 @@ function fillGroupTable(sessionArray, dashboard) {
 }
 
 function fillFileTable(fileArray, dashboard) {
-	clearTable("files-dashboard", VPLTeacherTools.translateArray(["", "Filename", "Default"]));
+	clearTable("files-dashboard", [
+		VPLTeacherTools.translateArray(["", "Filename", "Default"])
+	]);
 	var table = document.getElementById("files-dashboard");
 
 	if (fileArray.length === 0) {
