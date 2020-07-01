@@ -141,7 +141,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 				}
 				tr.appendChild(td);
 				td = document.createElement("td");
-				if (suffix === "vpl3" || suffix === "vpl3ui") {
+				if (suffix === "vpl3") {
 					td.textContent = file["default"] ? "\u2612" : "\u2610";
 					td.addEventListener("click", function () {
 						fileBrowser.setDefaultFile(file.id, suffix);
