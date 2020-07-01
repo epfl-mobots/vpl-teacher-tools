@@ -215,7 +215,7 @@ window.addEventListener("load", function () {
 	dashboard.connect();
 
 	[
-		"vpl:stop"
+		"vpl:stop-abnormally"
 	].forEach(function (name) {
 		document.getElementById(name).addEventListener("click", function () {
 			dashboard.sendCommand(name);
