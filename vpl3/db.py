@@ -43,7 +43,7 @@ class Db:
 
         def fun_equal_ic(str1, str2):
             """True if strings are equal, ignoring case"""
-            return str1.casefold() == str2.casefold()
+            return (str1 or "").casefold() == (str2 or "").casefold()
 
         if self.new_db:
             self.create_tables()
@@ -68,6 +68,7 @@ class Db:
             CREATE TABLE IF NOT EXISTS students (
                 studentid INTEGER PRIMARY KEY,
                 name TEXT UNIQUE,
+                class TEXT,
                 time TEXT DEFAULT CURRENT_TIMESTAMP,
                 groupid INTEGER
             );
@@ -124,6 +125,39 @@ class Db:
         """Upgrade tables"""
 
         sql = [
+            """
+            CREATE TEMPORARY TABLE students_backup(
+                studentid INTEGER PRIMARY KEY,
+                name TEXT UNIQUE,
+                class TEXT,
+                time TEXT DEFAULT CURRENT_TIMESTAMP,
+                groupid INTEGER
+            )
+            """,
+            """
+            INSERT INTO students_backup (studentid, name, class, time, groupid)
+            SELECT studentid, name, class, time, groupid FROM students
+            """,
+            """
+            DROP TABLE students
+            """,
+            """
+            CREATE TABLE students(
+                studentid INTEGER PRIMARY KEY,
+                name TEXT UNIQUE,
+                class TEXT,
+                time TEXT DEFAULT CURRENT_TIMESTAMP,
+                groupid INTEGER
+            )
+            """,
+            """
+            INSERT INTO students (studentid, name, class, time, groupid)
+            SELECT studentid, name, class, time, groupid FROM students_backup
+            """,
+            """
+            DROP TABLE students_backup
+            """,
+
             """
             CREATE TEMPORARY TABLE groups_backup(
                 groupid INTEGER PRIMARY KEY,
@@ -203,6 +237,12 @@ class Db:
             raise ValueError("student id not found")
         return r[0]
 
+    def get_student_class(self, student_id):
+        r = self.get_first_result("class", "students", "studentid=?", (student_id,))
+        if r is None:
+            raise ValueError("student id not found")
+        return r[0]
+
     def delete_all_students(self):
         """Delete all students and groups"""
         c = self._db.cursor()
@@ -216,48 +256,62 @@ class Db:
         finally:
             self._db.commit()
 
-    def add_student(self, name):
+    def add_student(self, name, clas=None):
         """Add a new student"""
         if self.select_has_result("students", "equal_ic(name,?)", (name,)):
             raise ValueError("duplicate student")
         c = self._db.cursor()
         try:
-            c.execute("INSERT INTO students (name) VALUES (?)", (name,))
+            c.execute("INSERT INTO students (name, class) VALUES (?, ?)", (name, clas))
         finally:
             self._db.commit()
 
-    def add_students(self, name_list):
+    def add_students(self, name_list, class_list=None):
         """Add multiple students, ignoring existing ones"""
         c = self._db.cursor()
         try:
-            for name in name_list:
+            for i, name in enumerate(name_list):
                 c.execute("""
-                    INSERT INTO students (name)
-                    SELECT ?
+                    INSERT INTO students (name, class)
+                    SELECT ?, ?
                     WHERE NOT EXISTS(SELECT name FROM students WHERE name = ?)
-                """, (name, name))
+                """, (name, class_list[i] if class_list else None, name))
         finally:
             self._db.commit()
 
-    def list_students(self):
-        """Get a list of all students"""
+    def list_students(self, clas=None):
+        """Get a list of all students, or students belonging to a class"""
         c = self._db.cursor()
         try:
-            c.execute(f"""
-                SELECT name,
-                       studentid,
-                       {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
-                       groupid
-                FROM students
-            """)
+            if clas is None:
+                c.execute(f"""
+                    SELECT name,
+                           studentid,
+                           class,
+                           {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
+                           groupid
+                    FROM students
+                """)
+            else:
+                print("clas", clas)
+                c.execute(f"""
+                    SELECT name,
+                           studentid,
+                           class,
+                           {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
+                           groupid
+                    FROM students
+                    WHERE equal_ic(class,?)
+                """, (clas,))
         finally:
             self._db.commit()
         return [
             {
                 "name": row[0],
                 "student_id": row[1],
-                "time": row[2],
-                "group_id": row[3]
+                "class": row[2],
+                "time": row[3],
+                "group_id": row[4]
             }
             for row in c.fetchall()
         ]

@@ -84,7 +84,9 @@ class VPLHTTPServer:
             q = VPLHTTPServer.query_param(handler)
             if "student" not in q:
                 return VPLHTTPServer.error("Missing student name")
-            return self.call_api(Db.add_student, q["student"][0])
+            return self.call_api(Db.add_student,
+                q["student"][0],
+                q["class"][0] if "class" in q else None)
 
         @self.httpd.http_get("/api/addStudents")
         def http_get_api_addStudents(self, handler):
@@ -92,7 +94,8 @@ class VPLHTTPServer:
             if "students" not in q:
                 return VPLHTTPServer.error("Missing student names")
             name_list = list(q["students"][0].split(","))
-            return self.call_api(Db.add_students, name_list)
+            class_list = list(q["classes"][0].split(",")) if "classes" in q else None
+            return self.call_api(Db.add_students, name_list, class_list)
 
         @self.httpd.http_get("/api/removeStudent")
         def http_get_api_removeStudent(self, handler):
@@ -103,7 +106,9 @@ class VPLHTTPServer:
 
         @self.httpd.http_get("/api/listStudents")
         def http_get_api_listStudents(self, handler):
-            return self.call_api(Db.list_students)
+            q = VPLHTTPServer.query_param(handler)
+            return self.call_api(Db.list_students,
+                                 q["class"][0] if "class" in q else None)
 
         @self.httpd.http_get("/api/addGroup")
         def http_get_api_addGroup(self, handler):
