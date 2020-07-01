@@ -7,6 +7,7 @@ VPLTeacherTools.StudentManagement = function (options) {
     this.options = options || {};
     this.students = [];
     this.groups = [];
+    this.filterClass = "";
     this.selectedStudent = "";
     this.selectedGroup = "";
 
@@ -52,7 +53,7 @@ VPLTeacherTools.StudentManagement.prototype.findGroup = function (groupName) {
 
 VPLTeacherTools.StudentManagement.prototype.updateStudents = function () {
     var self = this;
-	this.client.listStudents({
+	this.client.listStudents(this.filterClass, {
 		onSuccess: function (students) {
             self.students = students;
             if (self.options.onStudents) {
@@ -107,19 +108,20 @@ VPLTeacherTools.StudentManagement.prototype.canAddStudent = function (name) {
         }) == undefined;
 };
 
-VPLTeacherTools.StudentManagement.prototype.addStudent = function (name) {
+VPLTeacherTools.StudentManagement.prototype.addStudent = function (name, className) {
     name = name.trim();
+    className = className && className.trim();
     var self = this;
-    this.client.addStudent(name, {
+    this.client.addStudent(name, className, {
         onSuccess: function (r) {
             self.updateStudents();
         }
     });
 };
 
-VPLTeacherTools.StudentManagement.prototype.addStudents = function (names) {
+VPLTeacherTools.StudentManagement.prototype.addStudents = function (names, classNames) {
     var self = this;
-    this.client.addStudents(names, {
+    this.client.addStudents(names, classNames, {
         onSuccess: function (r) {
             self.updateStudents();
         }

@@ -5,6 +5,17 @@ function clearChildren(id) {
 	}
 }
 
+function addLabels(id, labels) {
+	var table = document.getElementById(id);
+	var tr = document.createElement("tr");
+	labels.forEach(function (label) {
+		var th = document.createElement("th");
+		th.textContent = label;
+		tr.appendChild(th);
+	});
+	table.appendChild(tr);
+}
+
 /*
 Drag-and-drop data:
 "S/" + student name: item in the pupil table (to add to a group)
@@ -69,9 +80,12 @@ function fillRobotTable(robotArray, pairing) {
 
 function fillStudentTable(studentArray, pairing) {
 	clearChildren("students");
+	addLabels("students",
+		VPLTeacherTools.translateArray(["Name", "Class"]));
+
 	var table = document.getElementById("students");
 
-	function addRow(studentName, groupId) {
+	function addRow(studentName, studentClass, groupId) {
 
 		var tr = document.createElement("tr");
 
@@ -94,6 +108,16 @@ function fillStudentTable(studentArray, pairing) {
 		tr.appendChild(td);
 
 		td = document.createElement("td");
+		td.textContent = studentClass;
+		td.className = "rect";
+		td.addEventListener("click", function () {
+			if (pairing.selectByStudentName(studentName)) {
+				pairing.updateGroups();
+			}
+		}, false);
+		tr.appendChild(td);
+
+		td = document.createElement("td");
 		td.textContent = groupId ? "\u2713" : "";	// checkmark
 		tr.appendChild(td);
 
@@ -102,7 +126,7 @@ function fillStudentTable(studentArray, pairing) {
 
     if (studentArray.length > 0) {
         studentArray.forEach(function (student) {
-            addRow(student.name, student.group_id);
+            addRow(student.name, student["class"], student.group_id);
         });
         document.getElementById("student-help").style.display = "block";
         document.getElementById("nostudent-help").style.display = "none";
@@ -396,6 +420,13 @@ window.addEventListener("load", function () {
 				correctLevel: QRCode.CorrectLevel.L
 			});
 	}
+
+	// class filter
+	var vFilterClass = document.getElementById("v-filter-class");
+	vFilterClass.addEventListener("change", function () {
+		pairing.filterClass = vFilterClass.value;
+		pairing.updateStudents();
+	}, false);
 
 	// show which connection method is used
 	document.getElementById("tdm-msg").style.display = useTDM ? "block" : "none";

@@ -15,10 +15,11 @@ function clearTable(id, labels) {
 }
 
 function fillStudentTable(studentArray, students) {
-	clearTable("students");
+	clearTable("students",
+		VPLTeacherTools.translateArray(["Name", "Class"]));
 	var table = document.getElementById("students");
 
-	function addRow(studentName, groupName) {
+	function addRow(studentName, studentClass) {
 
 		function selectRow() {
 			students.selectStudent(studentName);
@@ -42,6 +43,12 @@ function fillStudentTable(studentArray, students) {
 		tr.appendChild(td);
 
 		td = document.createElement("td");
+		td.textContent = studentClass;
+		// td.addEventListener("click", selectRow, false);
+		td.className = students.isStudentSelected(studentName) ? "rect selected" : "rect";
+		tr.appendChild(td);
+
+		td = document.createElement("td");
 		var btn = document.createElement("button");
 		btn.textContent = VPLTeacherTools.translate("remove");
 		btn.addEventListener("click", function () {
@@ -54,7 +61,7 @@ function fillStudentTable(studentArray, students) {
 	}
 
 	studentArray.forEach(function (student) {
-		addRow(student.name, student.group);
+		addRow(student.name, student["class"]);
 	});
 
 	// row for adding a new student
@@ -63,21 +70,35 @@ function fillStudentTable(studentArray, students) {
 	var td = document.createElement("td");
 	td.className = "rect";
 	var fldStudentName = document.createElement("input");
+	var fldStudentClass = document.createElement("input");
 	var btnAddStudent = document.createElement("button");
 	btnAddStudent.disabled = true;
 	fldStudentName.addEventListener("input", function () {
 		btnAddStudent.disabled = !students.canAddStudent(fldStudentName.value);
 	}, false);
-	fldStudentName.addEventListener("change", function () {
-		students.addStudent(fldStudentName.value);
+	fldStudentName.addEventListener("keypress", function (event) {
+		if (event.keyCode === 13) {
+			event.preventDefault();
+			students.addStudent(fldStudentName.value, fldStudentClass.value);
+		}
 	}, false);
 	td.appendChild(fldStudentName);
 	tr.appendChild(td);
 
 	td = document.createElement("td");
+	fldStudentClass.addEventListener("keypress", function () {
+		if (event.keyCode === 13) {
+			event.preventDefault();
+			students.addStudent(fldStudentName.value, fldStudentClass.value);
+		}
+	}, false);
+	td.appendChild(fldStudentClass);
+	tr.appendChild(td);
+
+	td = document.createElement("td");
 	btnAddStudent.textContent = VPLTeacherTools.translate("add");
 	btnAddStudent.addEventListener("click", function () {
-		students.addStudent(fldStudentName.value);
+		students.addStudent(fldStudentName.value, fldStudentClass.value);
 	}, false);
 	td.appendChild(btnAddStudent);
 	tr.appendChild(td);
@@ -111,12 +132,14 @@ window.addEventListener("load", function () {
 			}
 			// pick non-empty names
 			var names = [];
+			var classes = [];
 			for (var i = 0; i < table.length; i++) {
 				if (table[i][col]) {
 					names.push(table[i][col]);
+					classes.push(table[i][col + 1]);
 				}
 			}
-			students.addStudents(names);
+			students.addStudents(names, classes);
 		}, VPLTeacherTools.translate("Import Pupil Names"), ".txt,.csv");
 	}, false);
 
@@ -124,9 +147,15 @@ window.addEventListener("load", function () {
 	btn.addEventListener("click", function () {
 		// make list of students, one name per line
 		var csv = students.students.map(function (student) {
-			return student.name + "\n";
+			return student.name + "\t" + student["class"] + "\n";
 		}).join("");
 		VPLTeacherTools.downloadText(csv, "pupils.csv", "text/csv");
+	}, false);
+
+	var vFilterClass = document.getElementById("v-filter-class");
+	vFilterClass.addEventListener("change", function () {
+		students.filterClass = vFilterClass.value;
+		students.updateStudents();
 	}, false);
 
 }, false);

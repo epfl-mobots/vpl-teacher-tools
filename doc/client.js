@@ -61,20 +61,24 @@ VPLTeacherTools.HTTPClient.prototype.deleteAllStudents = function (opt) {
 	this.rest("/api/deleteAllStudents", opt);
 };
 
-VPLTeacherTools.HTTPClient.prototype.addStudent = function (name, opt) {
-	this.rest("/api/addStudent?student=" + encodeURIComponent(name), opt);
+VPLTeacherTools.HTTPClient.prototype.addStudent = function (name, className, opt) {
+	this.rest("/api/addStudent?student=" + encodeURIComponent(name) +
+		(className ? "&class=" + encodeURIComponent(className) : ""),
+		opt);
 };
 
-VPLTeacherTools.HTTPClient.prototype.addStudents = function (names, opt) {
-	this.rest("/api/addStudents?students=" + encodeURIComponent(names.join(",")), opt);
+VPLTeacherTools.HTTPClient.prototype.addStudents = function (names, classNames, opt) {
+	this.rest("/api/addStudents?students=" + encodeURIComponent(names.join(",")) +
+		(classNames ? "&classes=" + encodeURIComponent(classNames.join(",")) : ""),
+		opt);
 };
 
 VPLTeacherTools.HTTPClient.prototype.removeStudent = function (name, opt) {
 	this.rest("/api/removeStudent?student=" + encodeURIComponent(name), opt);
 };
 
-VPLTeacherTools.HTTPClient.prototype.listStudents = function (opt) {
-	this.rest("/api/listStudents", opt);
+VPLTeacherTools.HTTPClient.prototype.listStudents = function (filterClass, opt) {
+	this.rest("/api/listStudents" + (filterClass ? "?class=" + encodeURIComponent(filterClass) : ""), opt);
 };
 
 VPLTeacherTools.HTTPClient.prototype.addGroup = function (student, opt) {

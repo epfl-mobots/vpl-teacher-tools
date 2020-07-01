@@ -24,10 +24,10 @@ window.addEventListener("load", function () {
 
 	btn = document.getElementById("init");
 	btn.addEventListener("click", function () {
-		client.addStudent("Alice", opt);
-		client.addStudent("Bob", opt);
-		client.addStudent("Carol", opt);
-		client.addStudent("David", opt);
+		client.addStudent("Alice", "Cl.1", opt);
+		client.addStudent("Bob", "Cl.1", opt);
+		client.addStudent("Carol", "Cl.2", opt);
+		client.addStudent("David", "Cl.2", opt);
 		client.addGroup("Alice", {
 			logURL: opt.logURL,
 			onSuccess: function (r) {
@@ -41,7 +41,7 @@ window.addEventListener("load", function () {
 
 	btn = document.getElementById("list-students");
 	btn.addEventListener("click", function () {
-		client.listStudents(opt);
+		client.listStudents(null, opt);
 	});
 
 	btn = document.getElementById("list-groups");

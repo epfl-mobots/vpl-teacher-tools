@@ -9,6 +9,7 @@ VPLTeacherTools.translate = function(str, language) {
 	var fr = {
 		"add": "ajouter",
 		"Blocks": "Blocs",
+		"Class": "Classe",
 		"Connection": "Connexion",
 		"Dashboard": "Tableau de bord",
 		"Default": "Défaut",
@@ -22,6 +23,7 @@ VPLTeacherTools.translate = function(str, language) {
 		"(pupil local bridge)": "(passerelle locale)",
 		"Marked": "Marque",
 		"Message": "Message",
+		"Name": "Nom",
 		"no": "non",
 		"Program": "Programme",
 		"remove": "supprimer",

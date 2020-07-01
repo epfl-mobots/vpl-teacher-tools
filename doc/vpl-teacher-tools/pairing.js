@@ -11,6 +11,7 @@ VPLTeacherTools.Pairing = function (options) {
     this.selectedRobot = "";
     this.selectedGroup = "";
     this.groupOfSelectedPair = "";
+    this.filterClass = null;
 	this.noRedraw = false;
 
     var self = this;
@@ -43,7 +44,7 @@ VPLTeacherTools.Pairing = function (options) {
 
 VPLTeacherTools.Pairing.prototype.updateStudents = function () {
     var self = this;
-	this.client.listStudents({
+	this.client.listStudents(this.filterClass, {
 		onSuccess: function (students) {
             self.students = students;
             if (self.options.onStudents) {
