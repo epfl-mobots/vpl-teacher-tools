@@ -9,11 +9,13 @@ VPLTeacherTools.translate = function(str, language) {
 	var fr = {
 		"add": "ajouter",
 		"Blocks": "Blocs",
+		"cancel": "annuler",
 		"Cancel": "Annuler",
 		"Class": "Classe",
 		"Connection": "Connexion",
 		"Dashboard": "Tableau de bord",
 		"Default": "Défaut",
+		"edit": "éditer",
 		"error:": "erreur:",
 		"Filename": "Fichier",
 		"Group": "Groupe",

@@ -104,6 +104,18 @@ class VPLHTTPServer:
                 return VPLHTTPServer.error("Missing student name")
             return self.call_api(Db.remove_student, q["student"][0])
 
+        @self.httpd.http_get("/api/updateStudent")
+        def http_get_api_updateStudent(self, handler):
+            q = VPLHTTPServer.query_param(handler)
+            if "student" not in q:
+                return VPLHTTPServer.error("Missing student name")
+            student = q["student"][0]
+            new_name = q["newName"][0] if "newName" in q else student
+            if "class" in q:
+                return self.call_api(Db.update_student, student, new_name, q["class"][0])
+            else:
+                return self.call_api(Db.rename_student, student, new_name)
+
         @self.httpd.http_get("/api/listStudents")
         def http_get_api_listStudents(self, handler):
             q = VPLHTTPServer.query_param(handler)

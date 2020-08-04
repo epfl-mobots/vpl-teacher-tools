@@ -77,6 +77,19 @@ VPLTeacherTools.HTTPClient.prototype.removeStudent = function (name, opt) {
 	this.rest("/api/removeStudent?student=" + encodeURIComponent(name), opt);
 };
 
+VPLTeacherTools.HTTPClient.prototype.renameStudent = function (oldName, newName, opt) {
+	this.rest("/api/updateStudent?student=" + encodeURIComponent(oldName) +
+		"&newName=" + encodeURIComponent(newName),
+		opt);
+};
+
+VPLTeacherTools.HTTPClient.prototype.updateStudent = function (name, newName, newClassName, opt) {
+	this.rest("/api/updateStudent?student=" + encodeURIComponent(name) +
+		"&newName=" + encodeURIComponent(newName) +
+		(newClassName ? "&class=" + encodeURIComponent(newClassName) : ""),
+		opt);
+};
+
 VPLTeacherTools.HTTPClient.prototype.listStudents = function (filterClass, opt) {
 	this.rest("/api/listStudents" + (filterClass ? "?class=" + encodeURIComponent(filterClass) : ""), opt);
 };

@@ -18,44 +18,94 @@ function fillStudentTable(studentArray, students) {
 	clearTable("students",
 		VPLTeacherTools.translateArray(["Name", "Class"]));
 	var table = document.getElementById("students");
+	var fldStudentName;
 
 	function addRow(studentName, studentClass) {
 
-		function selectRow() {
-			students.selectStudent(studentName);
-			fillStudentTable(studentArray, students);
-		}
-
 		var tr = document.createElement("tr");
-
-		// drag student name
-		tr.draggable = true;
-		tr.addEventListener("dragstart", function (ev) {
-			ev.dataTransfer.setData("text/plain", studentName);
-			ev.dataTransfer.setDragImage(tr.getElementsByTagName("td")[0], 0, 0);
-			ev.dataTransfer.effectAllowed = "copy";
-		});
-
 		var td = document.createElement("td");
-		td.textContent = studentName;
-		// td.addEventListener("click", selectRow, false);
-		td.className = students.isStudentSelected(studentName) ? "rect selected" : "rect";
-		tr.appendChild(td);
+		td.className = "rect";
 
-		td = document.createElement("td");
-		td.textContent = studentClass;
-		// td.addEventListener("click", selectRow, false);
-		td.className = students.isStudentSelected(studentName) ? "rect selected" : "rect";
-		tr.appendChild(td);
+		if (studentName === students.editedStudent) {
+			var btnAcceptEdit;
+			fldStudentName = document.createElement("input");
+			fldStudentName.value = studentName;
+			fldStudentName.addEventListener("input", function () {
+				btnAcceptEdit.disabled = !students.canAddStudent(fldStudentName.value);
+			}, false);
+			fldStudentName.addEventListener("keyup", function (event) {
+				if (event.key === "Enter") {
+					event.preventDefault();
+					students.acceptEditStudent(fldStudentName.value, fldStudentClass.value);
+				} else if (event.key === "Escape") {
+					event.preventDefault();
+					students.cancelEditStudent();
+				}
+			}, false);
+			td.appendChild(fldStudentName);
+			tr.appendChild(td);
 
-		td = document.createElement("td");
-		var btn = document.createElement("button");
-		btn.textContent = VPLTeacherTools.translate("remove");
-		btn.addEventListener("click", function () {
-			students.removeStudent(studentName);
-		}, false);
-		td.appendChild(btn);
-		tr.appendChild(td);
+			td = document.createElement("td");
+			var fldStudentClass = document.createElement("input");
+			fldStudentClass.value = studentClass;
+			fldStudentClass.addEventListener("keyup", function (event) {
+				if (event.key === "Enter") {
+					event.preventDefault();
+					students.acceptEditStudent(fldStudentName.value, fldStudentClass.value);
+				} else if (event.key === "Escape") {
+					event.preventDefault();
+					students.cancelEditStudent();
+				}
+			}, false);
+			td.appendChild(fldStudentClass);
+			tr.appendChild(td);
+
+			td = document.createElement("td");
+			var btnCancelEdit = document.createElement("button");
+			btnCancelEdit.textContent = VPLTeacherTools.translate("cancel");
+			btnCancelEdit.addEventListener("click", function () {
+				students.cancelEditStudent();
+			}, false);
+			td.appendChild(btnCancelEdit);
+			tr.appendChild(td);
+
+			td = document.createElement("td");
+			btnAcceptEdit = document.createElement("button");
+			btnAcceptEdit.textContent = VPLTeacherTools.translate("OK");
+			btnAcceptEdit.addEventListener("click", function () {
+				students.acceptEditStudent(fldStudentName.value, fldStudentClass.value);
+			}, false);
+			td.appendChild(btnAcceptEdit);
+			tr.appendChild(td);
+		} else {
+			td.textContent = studentName;
+			tr.appendChild(td);
+
+			td = document.createElement("td");
+			td.textContent = studentClass;
+			td.className = "rect";
+			tr.appendChild(td);
+
+			if (!students.editedStudent) {
+				td = document.createElement("td");
+				var btn = document.createElement("button");
+				btn.textContent = VPLTeacherTools.translate("edit");
+				btn.addEventListener("click", function () {
+					students.editStudent(studentName);
+				}, false);
+				td.appendChild(btn);
+				tr.appendChild(td);
+
+				td = document.createElement("td");
+				var btn = document.createElement("button");
+				btn.textContent = VPLTeacherTools.translate("remove");
+				btn.addEventListener("click", function () {
+					students.removeStudent(studentName);
+				}, false);
+				td.appendChild(btn);
+				tr.appendChild(td);
+			}
+		}
 
 		table.appendChild(tr);
 	}
@@ -65,45 +115,47 @@ function fillStudentTable(studentArray, students) {
 	});
 
 	// row for adding a new student
-	var tr = document.createElement("tr");
+	if (!students.editedStudent) {
+		var tr = document.createElement("tr");
 
-	var td = document.createElement("td");
-	td.className = "rect";
-	var fldStudentName = document.createElement("input");
-	var fldStudentClass = document.createElement("input");
-	var btnAddStudent = document.createElement("button");
-	btnAddStudent.disabled = true;
-	fldStudentName.addEventListener("input", function () {
-		btnAddStudent.disabled = !students.canAddStudent(fldStudentName.value);
-	}, false);
-	fldStudentName.addEventListener("keypress", function (event) {
-		if (event.keyCode === 13) {
-			event.preventDefault();
+		var td = document.createElement("td");
+		td.className = "rect";
+		fldStudentName = document.createElement("input");
+		var fldStudentClass = document.createElement("input");
+		var btnAddStudent = document.createElement("button");
+		btnAddStudent.disabled = true;
+		fldStudentName.addEventListener("input", function () {
+			btnAddStudent.disabled = !students.canAddStudent(fldStudentName.value);
+		}, false);
+		fldStudentName.addEventListener("keypress", function (event) {
+			if (event.keyCode === 13) {
+				event.preventDefault();
+				students.addStudent(fldStudentName.value, fldStudentClass.value);
+			}
+		}, false);
+		td.appendChild(fldStudentName);
+		tr.appendChild(td);
+
+		td = document.createElement("td");
+		fldStudentClass.addEventListener("keypress", function () {
+			if (event.keyCode === 13) {
+				event.preventDefault();
+				students.addStudent(fldStudentName.value, fldStudentClass.value);
+			}
+		}, false);
+		td.appendChild(fldStudentClass);
+		tr.appendChild(td);
+
+		td = document.createElement("td");
+		btnAddStudent.textContent = VPLTeacherTools.translate("add");
+		btnAddStudent.addEventListener("click", function () {
 			students.addStudent(fldStudentName.value, fldStudentClass.value);
-		}
-	}, false);
-	td.appendChild(fldStudentName);
-	tr.appendChild(td);
+		}, false);
+		td.appendChild(btnAddStudent);
+		tr.appendChild(td);
 
-	td = document.createElement("td");
-	fldStudentClass.addEventListener("keypress", function () {
-		if (event.keyCode === 13) {
-			event.preventDefault();
-			students.addStudent(fldStudentName.value, fldStudentClass.value);
-		}
-	}, false);
-	td.appendChild(fldStudentClass);
-	tr.appendChild(td);
-
-	td = document.createElement("td");
-	btnAddStudent.textContent = VPLTeacherTools.translate("add");
-	btnAddStudent.addEventListener("click", function () {
-		students.addStudent(fldStudentName.value, fldStudentClass.value);
-	}, false);
-	td.appendChild(btnAddStudent);
-	tr.appendChild(td);
-
-	table.appendChild(tr);
+		table.appendChild(tr);
+	}
 
 	fldStudentName.select();
 	fldStudentName.focus();

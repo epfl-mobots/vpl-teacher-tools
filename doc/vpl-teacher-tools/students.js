@@ -6,10 +6,8 @@
 VPLTeacherTools.StudentManagement = function (options) {
     this.options = options || {};
     this.students = [];
-    this.groups = [];
+    this.editedStudent = null;
     this.filterClass = "";
-    this.selectedStudent = "";
-    this.selectedGroup = "";
 
 	this.client = new VPLTeacherTools.HTTPClient();
 
@@ -18,7 +16,6 @@ VPLTeacherTools.StudentManagement = function (options) {
         options.onStudents([], this);
     }
     this.updateStudents();
-    this.updateGroups();
 };
 
 VPLTeacherTools.StudentManagement.prototype.doesStudentExist = function (studentName) {
@@ -38,19 +35,6 @@ VPLTeacherTools.StudentManagement.prototype.groupForStudent = function (studentN
     return null;
 };
 
-/** Find group
-    @param {string} groupName
-    @return {?Object}
-*/
-VPLTeacherTools.StudentManagement.prototype.findGroup = function (groupName) {
-    for (var i = 0; i < this.groups.length; i++) {
-        if (this.groups[i].name === groupName) {
-            return this.groups[i];
-        }
-    }
-    return null;
-};
-
 VPLTeacherTools.StudentManagement.prototype.updateStudents = function () {
     var self = this;
 	this.client.listStudents(this.filterClass, {
@@ -61,42 +45,6 @@ VPLTeacherTools.StudentManagement.prototype.updateStudents = function () {
             }
         }
 	});
-};
-
-VPLTeacherTools.StudentManagement.prototype.updateGroups = function () {
-    var self = this;
-	this.client.listGroupsWithStudents({
-		onSuccess: function (groups) {
-            self.groups = groups;
-            if (self.options.onGroups) {
-                self.options.onGroups(groups, self);
-            }
-        }
-	});
-};
-
-VPLTeacherTools.StudentManagement.prototype.selectStudent = function (studentName) {
-    this.selectedStudent = studentName;
-};
-
-VPLTeacherTools.StudentManagement.prototype.unselectStudent = function () {
-    this.selectedStudent = "";
-};
-
-VPLTeacherTools.StudentManagement.prototype.isStudentSelected = function (studentName) {
-    return this.selectedStudent === studentName;
-};
-
-VPLTeacherTools.StudentManagement.prototype.selectGroup = function (groupName) {
-    this.selectedGroup = groupName;
-};
-
-VPLTeacherTools.StudentManagement.prototype.unselectGroup = function () {
-    this.selectedGroup = "";
-};
-
-VPLTeacherTools.StudentManagement.prototype.isGroupSelected = function (groupName) {
-    return this.selectedGroup === groupName;
 };
 
 VPLTeacherTools.StudentManagement.prototype.canAddStudent = function (name) {
@@ -123,6 +71,40 @@ VPLTeacherTools.StudentManagement.prototype.addStudents = function (names, class
     var self = this;
     this.client.addStudents(names, classNames, {
         onSuccess: function (r) {
+            self.updateStudents();
+        }
+    });
+};
+
+VPLTeacherTools.StudentManagement.prototype.editStudent = function (name) {
+    name = name.trim();
+    if (this.editedStudent) {
+        // already editing: cancel
+        return;
+    }
+
+    for (var i = 0; i < this.students.length; i++) {
+        if (name === this.students[i].name) {
+            // found
+            this.editedStudent = name;
+            this.updateStudents();
+            return;
+        }
+    }
+};
+
+VPLTeacherTools.StudentManagement.prototype.cancelEditStudent = function () {
+    this.editedStudent = null;
+    this.updateStudents();
+};
+
+VPLTeacherTools.StudentManagement.prototype.acceptEditStudent = function (newName, newClassName) {
+    newName = newName.trim();
+    newClassName = newClassName && newClassName.trim();
+    var self = this;
+    this.client.updateStudent(self.editedStudent, newName, newClassName, {
+        onSuccess: function (r) {
+            self.editedStudent = null;
             self.updateStudents();
         }
     });

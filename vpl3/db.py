@@ -316,6 +316,35 @@ class Db:
             for row in c.fetchall()
         ]
 
+    def rename_student(self, name, new_name):
+        if name != new_name:
+            if self.select_has_result("students", "equal_ic(name,?)", (new_name,)):
+                raise ValueError("duplicate student")
+            c = self._db.cursor()
+            try:
+                c.execute("""
+                    UPDATE students
+                    SET name = ?
+                    WHERE name = ?
+                """, (new_name, name))
+            finally:
+                self._db.commit()
+
+    def update_student(self, name, new_name, new_class=None):
+        if name != new_name:
+            if self.select_has_result("students", "equal_ic(name,?)", (new_name,)):
+                raise ValueError("duplicate student")
+        c = self._db.cursor()
+        try:
+            c.execute("""
+                UPDATE students
+                SET name = ?,
+                    class = ?
+                WHERE name = ?
+            """, (new_name, new_class, name))
+        finally:
+            self._db.commit()
+
     def remove_student(self, name):
         """Remove a student"""
         if not self.select_has_result("students", "equal_ic(name,?)", (name,)):
