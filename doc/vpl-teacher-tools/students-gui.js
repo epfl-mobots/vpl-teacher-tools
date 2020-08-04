@@ -143,6 +143,7 @@ function fillStudentTable(studentArray, students) {
 				students.addStudent(fldStudentName.value, fldStudentClass.value);
 			}
 		}, false);
+		fldStudentClass.value = students.filterClass;
 		td.appendChild(fldStudentClass);
 		tr.appendChild(td);
 
