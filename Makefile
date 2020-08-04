@@ -85,6 +85,7 @@ TOOLSFILES = \
 	doc/vpl-teacher-tools/doc.fr.html \
 	doc/vpl-teacher-tools/filebrowser.html \
 	doc/vpl-teacher-tools/filebrowser.fr.html \
+	doc/vpl-teacher-tools/filedialog.js \
 	doc/vpl-teacher-tools/filebrowser-gui.js \
 	doc/vpl-teacher-tools/filebrowser.js \
 	doc/vpl-teacher-tools/html-tools.css \

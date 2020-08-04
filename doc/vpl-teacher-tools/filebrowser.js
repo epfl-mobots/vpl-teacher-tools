@@ -156,7 +156,7 @@ VPLTeacherTools.FileBrowser.prototype.setDefaultFile = function (fileId, suffix)
     });
 };
 
-VPLTeacherTools.FileBrowser.prototype.addFile = function (filename, content) {
+VPLTeacherTools.FileBrowser.prototype.addFile = function (filename, content, noRename) {
     var props = {};
     var self = this;
     this.client.addFile(filename, content,
@@ -164,7 +164,7 @@ VPLTeacherTools.FileBrowser.prototype.addFile = function (filename, content) {
         {
             onSuccess: function (r) {
 				// rename immediately
-                self.updateFiles(r);
+                self.updateFiles(noRename ? null : r);
             }
         });
 };
@@ -292,6 +292,10 @@ VPLTeacherTools.FileBrowser.prototype.duplicateTeacherFile = function (filename)
         });
         this.duplicateFile(file, filename);
 	}
+};
+
+VPLTeacherTools.FileBrowser.prototype.canImportTeacherFile = function () {
+    return true;
 };
 
 VPLTeacherTools.FileBrowser.prototype.canExportTeacherFile = function () {

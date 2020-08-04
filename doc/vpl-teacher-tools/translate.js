@@ -9,6 +9,7 @@ VPLTeacherTools.translate = function(str, language) {
 	var fr = {
 		"add": "ajouter",
 		"Blocks": "Blocs",
+		"Cancel": "Annuler",
 		"Class": "Classe",
 		"Connection": "Connexion",
 		"Dashboard": "Tableau de bord",
@@ -17,6 +18,7 @@ VPLTeacherTools.translate = function(str, language) {
 		"Filename": "Fichier",
 		"Group": "Groupe",
 		"hr": "h",
+		"Import Files": "Importer des fichiers",
 		"Import Pupil Names": "Importer les noms des élèves",
 		"min": "min",
 		"pupil local bridge": "passerelle locale",
@@ -25,6 +27,7 @@ VPLTeacherTools.translate = function(str, language) {
 		"Message": "Message",
 		"Name": "Nom",
 		"no": "non",
+		"OK": "OK",
 		"Program": "Programme",
 		"remove": "supprimer",
 		"Rows": "Lignes",
