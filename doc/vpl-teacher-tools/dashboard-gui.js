@@ -69,7 +69,7 @@ function fillGroupTable(sessionArray, dashboard) {
 			var dateLogEntry = new Date(ymd[0], ymd[1] - 1, ymd[2], hms[0], hms[1], hms[2]);
 			var now = new Date();
 			var elapsedSec = (now - dateLogEntry) / 1000;
-			var elapsedStr = elapsedSec < 120 ? elapsedSec.toFixed(0) + " " + VPLTeacherTools.translate("sec")
+			var elapsedStr = elapsedSec < 120 ? (elapsedSec < 10 ? "1" : Math.floor(elapsedSec / 10).toFixed(0) + "0") + " " + VPLTeacherTools.translate("sec")
 				: elapsedSec < 7200 ? Math.floor(elapsedSec / 60).toString(10) + " " + VPLTeacherTools.translate("min")
 				: elapsedSec < 172800 ? Math.floor(elapsedSec / 3600).toString(10) + " " + VPLTeacherTools.translate("hr")
 				: Math.floor(elapsedSec / 86400).toString(10) + " d";
