@@ -66,19 +66,13 @@ var uiLanguage = "fr";
 
 </div>
 
-<div class="border">
+<div class="border" id="divcontrol">
 	<h2>Commande</h2>
-
-	<!--
-	<p style="display: flex; align-items: center;">
-	<span id="stop-abnormally"><img src="vpl_stop.png" width="32" height="32"></span> stop
-	</p>
-	-->
-
-	<p>
-	<label><input id="suspended" type="checkbox">Suspendu</label>
-	<input id="suspended-text" value="Suspendu par l'enseignant.e">
-	</p>
+	<dl>
+	       <dt><label><input id="suspended" type="checkbox">Suspendu</label></dt>
+           <dd><input name="suspended-kind" id="suspended-kind-text" type="radio" checked> <input id="suspended-text" value="Suspendu par l'enseignant.e"></dd>
+           <dd><input name="suspended-kind" id="suspended-kind-file" type="radio"> <input id="suspended-file" type="file"></dd>
+    </dl>
 </div>
 
 <div class="border" id="divlog">

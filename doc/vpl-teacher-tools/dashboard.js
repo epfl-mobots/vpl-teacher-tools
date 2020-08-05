@@ -39,6 +39,8 @@ VPLTeacherTools.Dashboard = function (wsURL, options) {
 	this.loadSessions();
 	this.updateFiles();
 
+	this.suspendFile = null;
+
 	window.addEventListener("unload", function () {
 		if (self.ws) {
 			self.ws.addEventListener("open", function () {
@@ -244,10 +246,13 @@ VPLTeacherTools.Dashboard.prototype.sendCommand = function (name, opt) {
 };
 
 /** Send a file
-	@param {number} fileId
+	@param {string} filename
+	@param {string} kind
+	@param {string} content
+	@param {boolean=} isBase64
 	@return {void}
 */
-VPLTeacherTools.Dashboard.prototype.sendFile = function (filename, kind, content) {
+VPLTeacherTools.Dashboard.prototype.sendFile = function (filename, kind, content, isBase64) {
 	var msg = {
 		"sender": {
 			"type": "dashboard"
@@ -258,7 +263,8 @@ VPLTeacherTools.Dashboard.prototype.sendFile = function (filename, kind, content
 			"name": filename,
 			"kind": kind,
 			"metadata": {},
-			"content": content
+			"content": content,
+			"base64": isBase64 || false
 		}
 	};
 	this.ws.send(JSON.stringify(msg));
@@ -277,14 +283,39 @@ VPLTeacherTools.Dashboard.prototype.sendFileById = function (fileId) {
     });
 };
 
-/** Suspend (selected) or unsuspend (all) VPL web apps
-	@param {boolean} state
-	@param {string=} html
+/** Set the file to be displayed in suspended mode
+	@param {string} filename
+	@param {string} contentBase64
 	@return {void}
 */
-VPLTeacherTools.Dashboard.prototype.suspend = function (state, html) {
-	if (html && state) {
-		this.sendFile("suspend.html", "suspend", html);
+VPLTeacherTools.Dashboard.prototype.setSuspendHTML = function (html) {
+	this.suspendFile = {
+		filename: "suspend.html",
+		content: html,
+		base64: false
+	};
+};
+
+/** Set the text to be displayed in suspended mode
+	@param {string} filename
+	@param {string} contentBase64
+	@return {void}
+*/
+VPLTeacherTools.Dashboard.prototype.setSuspendFile = function (filename, contentBase64) {
+	this.suspendFile = {
+		filename: filename,
+		content: contentBase64,
+		base64: true
+	};
+};
+
+/** Suspend (selected) or unsuspend (all) VPL web apps
+	@param {boolean} state
+	@return {void}
+*/
+VPLTeacherTools.Dashboard.prototype.suspend = function (state) {
+	if (this.suspendFile && state) {
+		this.sendFile(this.suspendFile.filename, "suspend", this.suspendFile.content, this.suspendFile.base64);
 	}
 	this.sendCommand("vpl:suspend", {selected: state, toAll: !state});
 };

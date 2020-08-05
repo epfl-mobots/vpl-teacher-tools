@@ -66,18 +66,13 @@ var uiLanguage = "en";
 
 </div>
 
-<div class="border">
+<div class="border" id="divcontrol">
 	<h2>Control</h2>
-    <!--
-	<p style="display: flex; align-items: center;">
-	<span id="vpl:stop-abnormally"><img src="vpl_stop.png" width="32" height="32"></span> stop
-	</p>
-    -->
-
-	<p>
-	<label><input id="suspended" type="checkbox">Suspended</label>
-	<input id="suspended-text" value="Suspended by the teacher">
-	</p>
+	<dl>
+	       <dt><label><input id="suspended" type="checkbox">Suspended</label></dt>
+           <dd><input name="suspended-kind" id="suspended-kind-text" type="radio" checked> <input id="suspended-text" value="Suspended by the teacher"></dd>
+           <dd><input name="suspended-kind" id="suspended-kind-file" type="radio"> <input id="suspended-file" type="file"></dd>
+    </dl>
 </div>
 
 <div class="border" id="divlog">
