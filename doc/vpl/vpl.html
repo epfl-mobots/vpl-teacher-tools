@@ -61,6 +61,11 @@ window["vplStorageSetFunction"] = function (filename, json) {
 	sessionStorage.setItem("initialFileContent", json);
 };
 
+window["vplUpload"] = function (filename, json) {
+	// empty (file sent by logger for action "vpl:upload")
+	// must be defined to show button "vpl:upload"
+};
+
 </script>
 
 </head>

@@ -38,6 +38,7 @@ VPLTeacherTools.translate = function(str, language) {
 		"(simulator)": "(simulateur)",
 		"Size": "Taille",
 		"Students": "Élèves",
+		"Submitted": "Soumis",
 		"Teacher": "Enseignant.e",
 		"Time": "Heure",
 		"Time (d)": "Temps",

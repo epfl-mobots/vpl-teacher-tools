@@ -156,8 +156,9 @@ class VPLWebSocketServer:
             session_id = msg["sender"]["sessionid"]
             filename = msg["data"]["name"]
             content = msg["data"]["content"]
+            submitted = msg["reason"] == "vpl:upload"
             group_id = db.get_session_group_id(session_id)
-            db.add_file(filename, content, group_id=group_id)
+            db.add_file(filename, content, group_id=group_id, submitted=submitted)
         elif msg["type"] in ("cmd", "file"):
             # forward command to all (or msg["rcpt"]) other websockets but self
             await self.ws.sendToAll(msg,

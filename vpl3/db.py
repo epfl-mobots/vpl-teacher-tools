@@ -95,6 +95,7 @@ class Db:
                 time TEXT DEFAULT CURRENT_TIMESTAMP,
                 mark INTEGER DEFAULT 0,
                 defaul INTEGER DEFAULT 0,
+                submitted INTEGER DEFAULT 0,
                 metadata TEXT,
                 content TEXT
             );
@@ -723,16 +724,16 @@ class Db:
             self._db.commit()
 
     def add_file(self, filename, content,
-                 group_id=None, metadata=None):
+                 group_id=None, metadata=None, submitted=False):
         """Add a file"""
         owner = self.list_to_str(self.get_group_student_list(group_id))
         c = self._db.cursor()
         try:
             c.execute("""
                 INSERT
-                INTO files (name, content, owner, metadata)
-                VALUES (?,?,?,?)
-            """, (filename, content, owner, metadata))
+                INTO files (name, content, owner, submitted, metadata)
+                VALUES (?,?,?,?,?)
+            """, (filename, content, owner, 1 if submitted else 0, metadata))
         finally:
             self._db.commit()
         rowid = c.lastrowid
@@ -883,6 +884,7 @@ class Db:
                 LENGTH(content),
                 owner,
                 content,
+                submitted,
                 metadata
             """,
             "files",
@@ -896,11 +898,12 @@ class Db:
             "size": r[2],
             "owner": self.str_to_list(r[3]),
             "content": r[4],
-            "metadata": r[5]
+            "submitted": r[5] != 0,
+            "metadata": r[6]
         }
 
     def get_last_file_for_group(self, group_id):
-        """Get the most recent file saved by the specified group"""
+        """Get the most (submitted) recent file saved by the specified group"""
         student_id_list = self.list_to_str(self.get_group_student_list(group_id))
         r = self.get_first_result(
             f"""fileid,
@@ -909,10 +912,23 @@ class Db:
                 LENGTH(content),
                 owner,
                 content,
+                submitted,
                 metadata
             """,
             "files",
-            "NOT list_aredisjoint(owner, ?)", (student_id_list,))
+            "submitted AND NOT list_aredisjoint(owner, ?)", (student_id_list,))
+        if r is None:
+            r = self.get_first_result(
+                f"""fileid,
+                    name,
+                    {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
+                    LENGTH(content),
+                    owner,
+                    content,
+                    metadata
+                """,
+                "files",
+                "NOT list_aredisjoint(owner, ?)", (student_id_list,))
         if r is None:
             raise ValueError("no file for group id")
         return {
@@ -922,7 +938,8 @@ class Db:
             "size": r[3],
             "owner": self.str_to_list(r[4]),
             "content": r[5],
-            "metadata": r[6]
+            "submitted": r[6] != 0,
+            "metadata": r[7]
         }
 
     def get_default_file(self):
@@ -952,7 +969,7 @@ class Db:
                    filename=None, student=None,
                    order=None,
                    last=False):
-        """Get a list of files, optionnally filtering, ordering and last;
+        """Get a list of files, optionnally filtering, ordering and last (submitted);
         student is None for teacher, "*" for any student, or student name"""
         order = order or (Db.ORDER_FILENAME if last else Db.ORDER_TIME)
         c = self._db.cursor()
@@ -965,50 +982,73 @@ class Db:
                 if r is None:
                     raise ValueError("student not found")
                 student_id = r[0]
-            sql = f"""
-                SELECT fileid, name,
-                       {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
-                       LENGTH(content),
-                       mark, defaul,
-                       metadata,
-                       owner
-                FROM files
-                {
-                    "WHERE files.owner = ''" if student is None else
-                    "WHERE files.owner != ''" if student == "*" else
-                    "WHERE list_doesinclude(files.owner, " + str(student_id) + ")"
-                }
-                ORDER BY {
-                    "fileid DESC" if order is Db.ORDER_TIME
-                    else "name ASC, fileid DESC"
-                }
-            """
-            c.execute(sql)
-            files = [
-                next(group) for key, group in itertools.groupby(({
+            if last:
+                sql = f"""
+                    SELECT fileid, name,
+                           {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
+                           LENGTH(content),
+                           mark, defaul,
+                           submitted,
+                           metadata,
+                           owner
+                    FROM files
+                    {
+                        "WHERE files.owner = ''" if student is None else
+                        "WHERE files.owner != ''" if student == "*" else
+                        "WHERE list_doesinclude(files.owner, " + str(student_id) + ")"
+                    }
+                    ORDER BY submitted DESC, fileid DESC
+                """
+                c.execute(sql)
+                files = [
+                    next(group) for key, group in itertools.groupby(({
+                            "id": row[0],
+                            "filename": row[1],
+                            "time": row[2],
+                            "size": row[3],
+                            "mark": row[4] != 0,
+                            "default": row[5] != 0,
+                            "submitted": row[6] != 0,
+                            "metadata": row[7],
+                            "owner": row[8]
+                        } for row in c.fetchall()),
+                        key=lambda e: (e["filename"], e["owner"]))
+                ]
+            else:
+                sql = f"""
+                    SELECT fileid, name,
+                           {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
+                           LENGTH(content),
+                           mark, defaul,
+                           submitted,
+                           metadata,
+                           owner
+                    FROM files
+                    {
+                        "WHERE files.owner = ''" if student is None else
+                        "WHERE files.owner != ''" if student == "*" else
+                        "WHERE list_doesinclude(files.owner, " + str(student_id) + ")"
+                    }
+                    ORDER BY {
+                        "fileid DESC" if order is Db.ORDER_TIME
+                        else "name ASC, fileid DESC"
+                    }
+                """
+                c.execute(sql)
+                files = [
+                    {
                         "id": row[0],
                         "filename": row[1],
                         "time": row[2],
                         "size": row[3],
                         "mark": row[4] != 0,
                         "default": row[5] != 0,
-                        "metadata": row[6],
-                        "owner": row[7]
-                    } for row in c.fetchall()),
-                    key=lambda e: (e["filename"], e["owner"]))
-            ] if last else [
-                {
-                    "id": row[0],
-                    "filename": row[1],
-                    "time": row[2],
-                    "size": row[3],
-                    "mark": row[4] != 0,
-                    "default": row[5] != 0,
-                    "metadata": row[6],
-                    "owner": row[7]
-                }
-                for row in c.fetchall()
-            ]
+                        "submitted": row[6] != 0,
+                        "metadata": row[7],
+                        "owner": row[8]
+                    }
+                    for row in c.fetchall()
+                ]
 
             # map student ids in owner to student names
             # get all student id->name mappings which will be needed

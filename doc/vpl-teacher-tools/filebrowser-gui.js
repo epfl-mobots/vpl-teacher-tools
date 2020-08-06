@@ -40,7 +40,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 	if (fileArray.length > 0) {
 		clearTable(tableId,
 			VPLTeacherTools.translateArray(forStudents
-				? ["", "Filename", "Students", "Time", "Size"]
+				? ["", "Filename", "Students", "Time", "Size", "Submitted"]
 				: ["", "Filename", "Time", "Size", "Dashboard", "Default"]));
 
 		fileArray.forEach(function (file) {
@@ -71,6 +71,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 
 			var tr = document.createElement("tr");
 
+			// icon
 			var td = document.createElement("td");
 			var fileIconURL = {"vpl3": "icon-file-vpl3.svg", "vpl3ui": "icon-file-vpl3ui.svg"}[suffix];
 			if (fileIconURL) {
@@ -82,6 +83,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 			}
 			tr.appendChild(td);
 
+			// filename
 			td = document.createElement("td");
 			if (file.renamed) {
 				renamedFilename = document.createElement("input");
@@ -110,6 +112,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 			tr.appendChild(td);
 
 			if (forStudents) {
+				// list of students
 				td = document.createElement("td");
 				td.textContent = file.students.join(", ");
 				td.addEventListener("click", select, false);
@@ -118,6 +121,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 				tr.appendChild(td);
 			}
 
+			// time
 			td = document.createElement("td");
 			td.textContent = file.time || "";
 			td.addEventListener("click", select, false);
@@ -125,6 +129,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 			td.className = fileBrowser.isFileSelected(forStudents, file.id) ? "selected" : "";
 			tr.appendChild(td);
 
+			// size
 			td = document.createElement("td");
 			td.textContent = file.size != null ? file.size.toString(10) : "";
 			td.addEventListener("click", select, false);
@@ -132,7 +137,15 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 			td.className = fileBrowser.isFileSelected(forStudents, file.id) ? "selected" : "";
 			tr.appendChild(td);
 
-			if (!forStudents) {
+			if (forStudents) {
+				// submitted
+				td = document.createElement("td");
+				td.textContent = file.submitted ? "\u2713" : "";
+				td.addEventListener("click", select, false);
+				td.addEventListener("dblclick", doubleclick, false);
+				tr.appendChild(td);
+			} else {
+				// available in dashboard
 				td = document.createElement("td");
 				if (suffix === "vpl3" || suffix === "vpl3ui") {
 					td.textContent = file.mark ? "\u2612" : "\u2610";
@@ -141,6 +154,8 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 					}, false);
 				}
 				tr.appendChild(td);
+
+				// default
 				td = document.createElement("td");
 				if (suffix === "vpl3") {
 					td.textContent = file["default"] ? "\u2612" : "\u2610";
