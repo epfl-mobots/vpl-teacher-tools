@@ -28,8 +28,8 @@ function clearTable(id, labels) {
 
 function fillGroupTable(sessionArray, dashboard) {
 	clearTable("groups", [
-		VPLTeacherTools.translateArray(["", "Connection", "<", "Time (d)", "Filename", "Program", "<", "Message"]),
-		VPLTeacherTools.translateArray(["", "Teacher", "Robot", "", "", "Rows", "Blocks", ""])
+		VPLTeacherTools.translateArray(["", "Connection", "<", "Time (d)", "Filename", "", "Program", "<", "Message"]),
+		VPLTeacherTools.translateArray(["", "Teacher", "Robot", "", "", "", "Rows", "Blocks", ""])
 	]);
 	var table = document.getElementById("groups");
 
@@ -90,6 +90,11 @@ function fillGroupTable(sessionArray, dashboard) {
 					}, false);
 				    td.appendChild(btn);
 				}
+				tr.appendChild(td);
+
+				// submitted
+				td = document.createElement("td");
+				td.textContent = lastVPLChangedData["uploadedToServer"] ? "\u2713" : "";
 				tr.appendChild(td);
 
 				details = [
