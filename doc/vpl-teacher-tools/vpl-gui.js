@@ -1,3 +1,9 @@
+window["vplConfig"] = {
+	"ignoredCommands": [
+		"vpl:flash"
+	]
+};
+
 window["vplStorageGetFunction"] = function (filename, fun) {
 
 	var progJSON = sessionStorage.getItem("initialFileContent");
