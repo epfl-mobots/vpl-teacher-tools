@@ -53,6 +53,7 @@ DATA_FILES = [
             "doc/vpl-teacher-tools/filebrowser.fr.html",
             "doc/vpl-teacher-tools/filebrowser-gui.js",
             "doc/vpl-teacher-tools/filebrowser.js",
+            "doc/vpl-teacher-tools/filedialog.js",
             "doc/vpl-teacher-tools/html-tools.css",
         	"doc/vpl-teacher-tools/icon-file-vpl3.svg",
         	"doc/vpl-teacher-tools/icon-file-vpl3ui.svg",
