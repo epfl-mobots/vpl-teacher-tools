@@ -1,6 +1,5 @@
 
 /**
-    @constructor
     @param {Object} group
 	@param {string} method "tdm" or "jws" or "none"
 */

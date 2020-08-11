@@ -300,19 +300,18 @@ function fillGroupTable(groupArray, pairing) {
 			: selectedGroup.group_id;
 		p.textContent = VPLTeacherTools.translate("Group") + ": " + groupDescr;
 		div.appendChild(p);
-		var p = document.createElement("p");
+		p = document.createElement("p");
 		p.style.overflowWrap = "break-word";
 		var a = document.createElement("a");
 		a.setAttribute("class", "url");
-		var toolURL = VPLTeacherTools.makeVPLURL(selectedGroup, "$BRIDGE");
-		var url = document.location.origin + toolURL;
-		a.textContent = url;
-		a.setAttribute("href", url);
 		a.setAttribute("target", "_blank");
 		a.setAttribute("rel", "noopener");
 		p.appendChild(a);
 		div.appendChild(p);
-		if (toolURL && window.QRCode) {
+		var toolURL = VPLTeacherTools.makeVPLURL(selectedGroup, "$BRIDGE");
+		var url = document.location.origin + toolURL;
+
+		if (window.QRCode) {
 			var qrdiv = document.createElement("div");
 			div.appendChild(qrdiv);
 			var size = qrCodeSize();
@@ -338,13 +337,19 @@ function fillGroupTable(groupArray, pairing) {
     						correctLevel: QRCode.CorrectLevel.L
     					});
     			});
-            }
+            } else {
+				a.textContent = url;
+				a.setAttribute("href", url);
+			}
 		} else {
             if ($SHORTENURL) {
     			pairing.shortenURL(url, function (shortenedURL) {
     				a.textContent = shortenedURL;
     			});
-            }
+            } else {
+				a.textContent = url;
+				a.setAttribute("href", url);
+			}
 		}
 		document.getElementById("info").appendChild(div);
 	}
