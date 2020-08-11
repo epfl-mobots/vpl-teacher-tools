@@ -4,6 +4,7 @@
 # URL shortcuts
 
 import os
+import hashlib
 
 
 class URLShortcuts:
@@ -21,18 +22,15 @@ class URLShortcuts:
         b = os.urandom(4)
         self.state = (b[0] | b[1] << 9 | b[2] << 18 | b[3] << 27) % self.num
 
-    def current_key(self):
+    def digest_to_key(self, digest):
         key = ""
         for i in range(self.length):
-            key += chr(97 + self.state // 26 ** i % 26)
+            key += chr(97 + digest[i] % 26)
         return key
 
-    def next_key(self):
-        self.state = (self.state + self.step) % self.num
-        return self.current_key()
-
     def add(self, url):
-        key = self.next_key()
+        digest =  hashlib.sha256(bytes(url,"utf-8")).digest()
+        key = self.digest_to_key(digest)
         self.dict[key] = url
         return key
 
