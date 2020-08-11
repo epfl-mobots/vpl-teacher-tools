@@ -59,16 +59,18 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     self.wfile.write(content["data"].encode())
 
         p = urllib.parse.urlparse(self.path)
-        if p.path in self.server.dict_get:
-            content = self.server.dict_get[p.path](self.server.context, self)
+        path = self.map_path(p.path)
+
+        if path in self.server.dict_get:
+            content = self.server.dict_get[path](self.server.context, self)
             send_reply(content)
         else:
             if (re.compile(r"^(/[-_a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?)+")
-                  .match(p.path)):
+                  .match(path)):
                 try:
-                    with open(HTTPRequestHandler.DOC_ROOT + p.path, "rb") as f:
+                    with open(HTTPRequestHandler.DOC_ROOT + path, "rb") as f:
                         self.send_response(http.server.HTTPStatus.OK)
-                        mimetype = mimetypes.MimeTypes().guess_type(p.path)
+                        mimetype = mimetypes.MimeTypes().guess_type(path)
                         self.send_header("Content-type",
                                          mimetype[0]
                                          if mimetype[0]
@@ -76,7 +78,7 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                         self.end_headers()
                         if not head_only:
                             content = f.read()
-                            content = self.server.doc_filter_set.process(p.path,
+                            content = self.server.doc_filter_set.process(path,
                                                                          content)
                             self.wfile.write(content)
                     return
@@ -84,7 +86,7 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                     pass
 
             for f in self.server.list_get_any:
-                content = f(p.path, self.server.context, self)
+                content = f(path, self.server.context, self)
                 if content is not None:
                     send_reply(content)
                     return
@@ -93,7 +95,7 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.send_header("Content-type", "text/plain; charset=utf-8")
             self.end_headers()
             if not head_only:
-                self.wfile.write(("404 Not Found\n" + p.path).encode())
+                self.wfile.write(("404 Not Found\n" + path).encode())
 
     def do_GET(self):
         """Implementation of GET HTTP method"""
@@ -106,8 +108,9 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         """Implementation of POST HTTP method"""
         p = urllib.parse.urlparse(self.path)
-        if p.path in self.server.dict_post:
-            content = self.server.dict_post[p.path](self.server.context, self)
+        path = self.map_path(p.path)
+        if path in self.server.dict_post:
+            content = self.server.dict_post[path](self.server.context, self)
             if "location" in content:
                 self.send_response(http.server.HTTPStatus.MOVED_PERMANENTLY)
                 self.send_header("Location", content["location"])
@@ -120,7 +123,10 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.send_response(http.server.HTTPStatus.NOT_FOUND)
             self.send_header("Content-type", "text/plain; charset=utf-8")
             self.end_headers()
-            self.wfile.write(("404 Not Found\n" + p.path).encode())
+            self.wfile.write(("404 Not Found\n" + path).encode())
+
+    def map_path(self, path):
+        return path
 
     def log_message(self, format, *args):
         if self.server.logger is not None:

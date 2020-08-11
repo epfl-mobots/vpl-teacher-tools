@@ -1,0 +1,14 @@
+{
+    "fr": {
+        "/login.html": "/login.fr.html",
+        "/tt.html": "/tt.fr.html",
+        "/vpl-teacher-tools/dashboard.html": "/vpl-teacher-tools/dashboard.fr.html",
+        "/vpl-teacher-tools/dev.html": "/vpl-teacher-tools/dev.fr.html",
+        "/vpl-teacher-tools/doc.html": "/vpl-teacher-tools/doc.fr.html",
+        "/vpl-teacher-tools/filebrowser.html": "/vpl-teacher-tools/filebrowser.fr.html",
+        "/vpl-teacher-tools/initdb-dev.html": "/vpl-teacher-tools/initdb-dev.fr.html",
+        "/vpl-teacher-tools/pairing.html": "/vpl-teacher-tools/pairing.fr.html",
+        "/vpl-teacher-tools/students.html": "/vpl-teacher-tools/students.fr.html",
+        "/vpl-teacher-tools/vpl.html": "/vpl-teacher-tools/vpl.fr.html"
+    }
+}

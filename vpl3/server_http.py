@@ -15,6 +15,7 @@ from vpl3.urlutil import URLUtil
 from vpl3.urltiny import URLShortcuts
 import sys
 import getopt
+import json
 
 
 class VPLHTTPRequestHandler(HTTPRequestHandler):
@@ -22,11 +23,18 @@ class VPLHTTPRequestHandler(HTTPRequestHandler):
     def __init__(self, request, client_address, server):
         HTTPRequestHandler.__init__(self, request, client_address, server)
 
+    def map_path(self, path):
+        if self.server.context.language in self.server.context.tr_mappings and path in self.server.context.tr_mappings[self.server.context.language]:
+            return self.server.context.tr_mappings[self.server.context.language][path]
+        else:
+            return path
+
 
 class VPLHTTPServer:
 
     DEFAULT_PORT = HTTPServerWithContext.DEFAULT_PORT
     SHORTENED_URL_PREFIX = "/vv"
+    TR_MAPPINGS_JSON = HTTPRequestHandler.DOC_ROOT + "/" + "tr-mappings.json"
 
     def __init__(self,
                  db_path=Db.DEFAULT_PATH,
@@ -52,6 +60,7 @@ class VPLHTTPServer:
         self.db = Db(self.db_path)
         self.handler = VPLHTTPRequestHandler
         self.url_shortcuts = URLShortcuts(length=3)
+        self.load_tr_mappings()
         self.httpd = HTTPServerWithContext(context=self,
                                            port=http_port, logger=logger)
 
@@ -375,6 +384,10 @@ class VPLHTTPServer:
                               r"^/vpl-teacher-tools/.*\.(html|css)$")
         self.httpd.add_filter(lambda s: s.replace(b"$VPLUIURI", bytes(self.vpl_ui_uri, "utf-8")))
         self.groups = []
+
+    def load_tr_mappings(self):
+        with open(self.TR_MAPPINGS_JSON) as file:
+            self.tr_mappings = json.load(file)
 
     def run(self):
         self.httpd.serve_forever()
