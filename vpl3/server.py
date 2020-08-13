@@ -64,8 +64,7 @@ class Server:
                 if f.match(filename) and
                    os.path.isfile(os.path.join(self.initial_file_dir, filename))
             ]
-            if len(filenames) > 0:
-                db.add_local_files(filenames)
+            db.add_local_files(filenames, "")
 
     def set_bridge(self, bridge, app=None):
         if self.bridge != bridge:

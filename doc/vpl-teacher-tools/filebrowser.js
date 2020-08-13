@@ -7,8 +7,10 @@ VPLTeacherTools.FileBrowser = function (options) {
     this.teacherFiles = [];
     this.studentFiles = [];
     this.options = options || {};
+    this.filterTeacherSet = "";
     this.filterStudent = null;
     this.filterStudentLast = true;
+    this.filterStudentSet = "";
 	this.client = new VPLTeacherTools.HTTPClient();
     this.updateFiles();
 };
@@ -21,7 +23,8 @@ VPLTeacherTools.FileBrowser.prototype.updateFiles = function (renamedFileId) {
 
 	// teacher files
 	this.client.listFiles({
-        last: true
+        last: true,
+        filterTag: this.filterTeacherSet || null
     },
     {
 		onSuccess: function (files) {
@@ -29,6 +32,7 @@ VPLTeacherTools.FileBrowser.prototype.updateFiles = function (renamedFileId) {
                 var file1 = Object.create(file);    // prototype-based "copy"
                 file1.selected = file.id === renamedFileId;
 				file1.renamed = file.id === renamedFileId;
+                file1.moved = false;
                 return file1;
             });
             if (self.options.onTeacherFiles) {
@@ -38,7 +42,8 @@ VPLTeacherTools.FileBrowser.prototype.updateFiles = function (renamedFileId) {
 	});
 	this.client.listFiles({
         filterStudent: this.filterStudent || "*",
-        last: this.filterStudentLast
+        last: this.filterStudentLast,
+        filterTag: this.filterStudentSet || null
     },
     {
 		onSuccess: function (files) {
@@ -135,7 +140,7 @@ VPLTeacherTools.FileBrowser.prototype.countSelectedFiles = function (isStudentFi
 
 VPLTeacherTools.FileBrowser.prototype.countSelectedNotRenamedFiles = function () {
     return this.teacherFiles
-		.reduce(function (acc, val) { return val.selected && !val.renamed ? acc + 1 : acc; }, 0);
+		.reduce(function (acc, val) { return val.selected && !val.renamed && !val.moved ? acc + 1 : acc; }, 0);
 };
 
 VPLTeacherTools.FileBrowser.prototype.toggleMark = function (fileId) {
@@ -221,10 +226,10 @@ VPLTeacherTools.FileBrowser.prototype.renameTeacherFile = function (newFilename)
             return val.renamed;
         });
 		newFilename = newFilename.trim();
-		if (newFilename !== file.filename) {
+		if (file && newFilename !== file.filename) {
 			file.filename = newFilename;
 			var self = this;
-	        this.client.renameFiles(file.id, newFilename, {
+	        this.client.renameFile(file.id, newFilename, {
 	            onSuccess: function () {
 					file.renamed = false;
 			        if (self.options.onTeacherFiles) {
@@ -233,7 +238,7 @@ VPLTeacherTools.FileBrowser.prototype.renameTeacherFile = function (newFilename)
 	            }
 	        });
 		} else {
-			// same filename: redisplay teacher files to get rid of input field
+			// error or same filename: redisplay teacher files to get rid of input field
 			file.renamed = false;
 	        if (this.options.onTeacherFiles) {
 	            this.options.onTeacherFiles(this.teacherFiles, this);
@@ -245,6 +250,47 @@ VPLTeacherTools.FileBrowser.prototype.renameTeacherFile = function (newFilename)
             return val.selected;
         });
 		file.renamed = true;
+        if (this.options.onTeacherFiles) {
+            this.options.onTeacherFiles(this.teacherFiles, this);
+        }
+	}
+};
+
+VPLTeacherTools.FileBrowser.prototype.canMoveTeacherFile = function () {
+    return this.countSelectedNotRenamedFiles() == 1;
+};
+
+VPLTeacherTools.FileBrowser.prototype.moveTeacherFile = function (newSet) {
+	if (newSet) {
+		// change tag for which file.moved is true
+        var file = this.teacherFiles.find(function (val) {
+            return val.moved;
+        });
+		newSet = newSet.trim();
+		if (file && newSet !== file.tag) {
+			file.tag = newSet;
+			var self = this;
+	        this.client.setFileTag(file.id, newSet, {
+	            onSuccess: function () {
+					file.moved = false;
+			        if (self.options.onTeacherFiles) {
+			            self.options.onTeacherFiles(self.teacherFiles, self);
+			        }
+	            }
+	        });
+		} else {
+			// error or same filename: redisplay teacher files to get rid of input field
+			file.moved = false;
+	        if (this.options.onTeacherFiles) {
+	            this.options.onTeacherFiles(this.teacherFiles, this);
+	        }
+		}
+	} else {
+		// start changing tag of selected file
+        var file = this.teacherFiles.find(function (val) {
+            return val.selected;
+        });
+		file.moved = true;
         if (this.options.onTeacherFiles) {
             this.options.onTeacherFiles(this.teacherFiles, this);
         }

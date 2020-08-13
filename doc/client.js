@@ -217,8 +217,12 @@ VPLTeacherTools.HTTPClient.prototype.updateFile = function (id, content, opt) {
 		content, "text/plain");
 };
 
-VPLTeacherTools.HTTPClient.prototype.renameFiles = function (id, newFilename, opt) {
+VPLTeacherTools.HTTPClient.prototype.renameFile = function (id, newFilename, opt) {
 	this.rest("/api/renameFile?id=" + id.toString(10) + "&name=" + encodeURIComponent(newFilename), opt);
+};
+
+VPLTeacherTools.HTTPClient.prototype.setFileTag = function (id, newTag, opt) {
+	this.rest("/api/setFileTag?id=" + id.toString(10) + "&tag=" + encodeURIComponent(newTag), opt);
 };
 
 VPLTeacherTools.HTTPClient.prototype.removeFiles = function (idArray, opt) {
@@ -238,6 +242,9 @@ VPLTeacherTools.HTTPClient.prototype.listFiles = function (queryProps, opt) {
 	if (queryProps) {
 		if (queryProps.filterStudent != null) {
 			params.push("student=" + encodeURIComponent(queryProps.filterStudent));
+		}
+		if (queryProps.filterTag != null) {
+			params.push("tag=" + encodeURIComponent(queryProps.filterTag));
 		}
 		if (queryProps.last) {
 			params.push("last=true");

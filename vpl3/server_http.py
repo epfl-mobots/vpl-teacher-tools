@@ -225,6 +225,7 @@ class VPLHTTPServer:
             return self.call_api(Db.copy_file,
                                  int(q["id"][0]),
                                  q["filename"][0],
+                                 q["tag"][0] if "tag" in q else "",
                                  mark=q["mark"][0].lower() == "true"
                                       if "mark" in q
                                       else False,
@@ -282,6 +283,16 @@ class VPLHTTPServer:
             return self.call_api(Db.rename_file,
                                  int(q["id"][0]), q["name"][0])
 
+        @self.httpd.http_get("/api/setFileTag")
+        def http_get_api_setFileTag(self, handler):
+            q = VPLHTTPServer.query_param(handler)
+            if "id" not in q:
+                return VPLHTTPServer.error("Missing id")
+            if "tag" not in q:
+                return VPLHTTPServer.error("Missing tag")
+            return self.call_api(Db.set_file_tag,
+                                 int(q["id"][0]), q["tag"][0])
+
         @self.httpd.http_get("/api/markFile")
         def http_get_api_markFile(self, handler):
             q = VPLHTTPServer.query_param(handler)
@@ -318,9 +329,11 @@ class VPLHTTPServer:
         def http_get_api_listFiles(self, handler):
             q = VPLHTTPServer.query_param(handler)
             student = q["student"][0] if "student" in q else None
+            tag = q["tag"][0] if "tag" in q else None
             last = q["last"][0].lower() == "true" if "last" in q else False
             return self.call_api(Db.list_files,
                                  student=student,
+                                 tag=tag,
                                  last=last)
 
         @self.httpd.http_get("/api/clearFiles")

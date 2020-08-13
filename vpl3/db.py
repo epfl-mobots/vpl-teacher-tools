@@ -92,6 +92,7 @@ class Db:
                 fileid INTEGER PRIMARY KEY,
                 owner TEXT,
                 name TEXT,
+                tag TEXT,
                 time TEXT DEFAULT CURRENT_TIMESTAMP,
                 mark INTEGER DEFAULT 0,
                 defaul INTEGER DEFAULT 0,
@@ -723,7 +724,7 @@ class Db:
         finally:
             self._db.commit()
 
-    def add_file(self, filename, content,
+    def add_file(self, filename, tag, content,
                  group_id=None, metadata=None, submitted=False):
         """Add a file"""
         owner = self.list_to_str(self.get_group_student_list(group_id))
@@ -731,9 +732,9 @@ class Db:
         try:
             c.execute("""
                 INSERT
-                INTO files (name, content, owner, submitted, metadata)
-                VALUES (?,?,?,?,?)
-            """, (filename, content, owner, 1 if submitted else 0, metadata))
+                INTO files (name, tag, content, owner, submitted, metadata)
+                VALUES (?,?,?,?,?,?)
+            """, (filename, tag, content, owner, 1 if submitted else 0, metadata))
         finally:
             self._db.commit()
         rowid = c.lastrowid
@@ -741,14 +742,15 @@ class Db:
                                         (rowid,))[0]
         return file_id
 
-    def add_local_files(self, path_array):
+    def add_local_files(self, path_array, tag):
         for path in path_array:
+            print(f"add_local_files {path} {tag}")
             filename = os.path.split(path)[-1]
             with open(path, encoding="utf-8") as f:
                 content = f.read()
-            self.add_file(filename, content)
+            self.add_file(filename, tag, content)
 
-    def copy_file(self, file_id, filename, mark=False, metadata=None):
+    def copy_file(self, file_id, filename, tag, mark=False, metadata=None):
         """Copy a file"""
         r = self.get_first_result("content", "files", "fileid=?", (file_id,))
         if r is None:
@@ -759,9 +761,9 @@ class Db:
         try:
             c.execute("""
                 INSERT
-                INTO files (name, content, owner, mark, metadata)
-                VALUES (?,?,'',?,?)
-            """, (filename, content, 1 if mark else 0, metadata))
+                INTO files (name, tag, content, owner, mark, metadata)
+                VALUES (?,?,?,'',?,?)
+            """, (filename, tag, content, 1 if mark else 0, metadata))
         finally:
             self._db.commit()
         rowid = c.lastrowid
@@ -777,7 +779,7 @@ class Db:
                 del obj[prop]
         return json.dumps(obj)
 
-    def extract_config_from_vpl3_file(self, file_id, filename, mark=False, metadata=None):
+    def extract_config_from_vpl3_file(self, file_id, filename, tag, mark=False, metadata=None):
         """Extract configuration from VPL3 file"""
         r = self.get_first_result("content", "files", "fileid=?", (file_id,))
         if r is None:
@@ -788,9 +790,9 @@ class Db:
         try:
             c.execute("""
                 INSERT
-                INTO files (name, content, owner, mark, metadata)
-                VALUES (?,?,'',?,?)
-            """, (filename, content, 1 if mark else 0, metadata))
+                INTO files (name, tag, content, owner, mark, metadata)
+                VALUES (?,?,?,'',?,?)
+            """, (filename, tag, content, 1 if mark else 0, metadata))
         finally:
             self._db.commit()
         rowid = c.lastrowid
@@ -819,6 +821,18 @@ class Db:
                 SET name=?
                 WHERE fileid=?
             """, (new_filename, file_id))
+        finally:
+            self._db.commit()
+
+    def set_file_tag(self, file_id, new_tag):
+        """Change the tag of a file"""
+        c = self._db.cursor()
+        try:
+            c.execute("""
+                UPDATE files
+                SET tag=?
+                WHERE fileid=?
+            """, (new_tag, file_id))
         finally:
             self._db.commit()
 
@@ -880,6 +894,7 @@ class Db:
     def get_file(self, file_id):
         r = self.get_first_result(
             f"""name,
+                tag,
                 {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
                 LENGTH(content),
                 owner,
@@ -894,12 +909,13 @@ class Db:
         return {
             "id": file_id,
             "filename": r[0],
-            "time": r[1],
-            "size": r[2],
-            "owner": self.str_to_list(r[3]),
-            "content": r[4],
-            "submitted": r[5] != 0,
-            "metadata": r[6]
+            "tag": r[1],
+            "time": r[2],
+            "size": r[3],
+            "owner": self.str_to_list(r[4]),
+            "content": r[5],
+            "submitted": r[6] != 0,
+            "metadata": r[7]
         }
 
     def get_last_file_for_group(self, group_id):
@@ -921,6 +937,7 @@ class Db:
             r = self.get_first_result(
                 f"""fileid,
                     name,
+                    tag,
                     {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
                     LENGTH(content),
                     owner,
@@ -934,12 +951,13 @@ class Db:
         return {
             "id": r[0],
             "filename": r[1],
-            "time": r[2],
-            "size": r[3],
-            "owner": self.str_to_list(r[4]),
-            "content": r[5],
-            "submitted": r[6] != 0,
-            "metadata": r[7]
+            "tag": r[2],
+            "time": r[3],
+            "size": r[4],
+            "owner": self.str_to_list(r[5]),
+            "content": r[6],
+            "submitted": r[7] != 0,
+            "metadata": r[8]
         }
 
     def get_default_file(self):
@@ -947,6 +965,7 @@ class Db:
         r = self.get_first_result(
             f"""fileid,
                 name,
+                tag,
                 {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
                 LENGTH(content),
                 owner,
@@ -958,15 +977,20 @@ class Db:
         return {
             "id": r[0],
             "filename": r[1],
-            "time": r[2],
-            "size": r[3],
-            "owner": self.str_to_list(r[4]),
-            "content": r[5],
-            "metadata": r[6]
+            "tag": r[2],
+            "time": r[3],
+            "size": r[4],
+            "owner": self.str_to_list(r[5]),
+            "content": r[6],
+            "metadata": r[7]
         } if r else None
 
+    @staticmethod
+    def sql_stringify(str):
+        return "'" + re.sub(r"[^-\w\s/]", "", str) + "'"
+
     def list_files(self,
-                   filename=None, student=None,
+                   filename=None, tag=None, student=None,
                    order=None,
                    last=False):
         """Get a list of files, optionnally filtering, ordering and last (submitted);
@@ -984,7 +1008,7 @@ class Db:
                 student_id = r[0]
             if last:
                 sql = f"""
-                    SELECT fileid, name,
+                    SELECT fileid, name, tag,
                            {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
                            LENGTH(content),
                            mark, defaul,
@@ -993,9 +1017,11 @@ class Db:
                            owner
                     FROM files
                     {
-                        "WHERE files.owner = ''" if student is None else
-                        "WHERE files.owner != ''" if student == "*" else
-                        "WHERE list_doesinclude(files.owner, " + str(student_id) + ")"
+                        ("WHERE files.owner = ''" if student is None else
+                         "WHERE files.owner != ''" if student == "*" else
+                         "WHERE list_doesinclude(files.owner, " + str(student_id) + ")") +
+                        ("" if tag is None else
+                         " AND files.tag = " + self.sql_stringify(tag))
                     }
                     ORDER BY submitted DESC, fileid DESC
                 """
@@ -1004,19 +1030,20 @@ class Db:
                     next(group) for key, group in itertools.groupby(({
                             "id": row[0],
                             "filename": row[1],
-                            "time": row[2],
-                            "size": row[3],
-                            "mark": row[4] != 0,
-                            "default": row[5] != 0,
-                            "submitted": row[6] != 0,
-                            "metadata": row[7],
-                            "owner": row[8]
+                            "tag": row[2],
+                            "time": row[3],
+                            "size": row[4],
+                            "mark": row[5] != 0,
+                            "default": row[6] != 0,
+                            "submitted": row[7] != 0,
+                            "metadata": row[8],
+                            "owner": row[9]
                         } for row in c.fetchall()),
                         key=lambda e: (e["filename"], e["owner"]))
                 ]
             else:
                 sql = f"""
-                    SELECT fileid, name,
+                    SELECT fileid, name, tag,
                            {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
                            LENGTH(content),
                            mark, defaul,
@@ -1025,9 +1052,11 @@ class Db:
                            owner
                     FROM files
                     {
-                        "WHERE files.owner = ''" if student is None else
-                        "WHERE files.owner != ''" if student == "*" else
-                        "WHERE list_doesinclude(files.owner, " + str(student_id) + ")"
+                        ("WHERE files.owner = ''" if student is None else
+                         "WHERE files.owner != ''" if student == "*" else
+                         "WHERE list_doesinclude(files.owner, " + str(student_id) + ")") +
+                        ("" if tag is None else
+                         " AND files.tag = " + self.sql_stringify(tag))
                     }
                     ORDER BY {
                         "fileid DESC" if order is Db.ORDER_TIME
@@ -1039,13 +1068,14 @@ class Db:
                     {
                         "id": row[0],
                         "filename": row[1],
-                        "time": row[2],
-                        "size": row[3],
-                        "mark": row[4] != 0,
-                        "default": row[5] != 0,
-                        "submitted": row[6] != 0,
-                        "metadata": row[7],
-                        "owner": row[8]
+                        "tag": row[2],
+                        "time": row[3],
+                        "size": row[4],
+                        "mark": row[5] != 0,
+                        "default": row[6] != 0,
+                        "submitted": row[7] != 0,
+                        "metadata": row[8],
+                        "owner": row[9]
                     }
                     for row in c.fetchall()
                 ]

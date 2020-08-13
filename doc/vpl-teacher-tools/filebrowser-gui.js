@@ -8,6 +8,7 @@ function updateGUI(fileBrowser) {
 	enable("btn-get-conf", fileBrowser.canGetConfigFile());
 	enable("btn-edit-teacher", fileBrowser.canEditTeacherFile());
 	enable("btn-rename-teacher", fileBrowser.canRenameTeacherFile());
+	enable("btn-move-teacher", fileBrowser.canMoveTeacherFile());
 	enable("btn-duplicate-teacher", fileBrowser.canDuplicateTeacherFile());
 	enable("btn-import-teacher", fileBrowser.canImportTeacherFile());
 	enable("btn-export-teacher", fileBrowser.canExportTeacherFile());
@@ -36,21 +37,25 @@ function clearTable(id, labels) {
 function fillFileTable(fileArray, fileBrowser, forStudents) {
 	var tableId = forStudents ? "files-students" : "files-teacher";
 	var table = document.getElementById(tableId);
-	var renamedFilename = null;
+	var renamedFilename = null;	// input element for renamed file name
+	var movedSet = null;	// input element for moved file set
 	if (fileArray.length > 0) {
 		clearTable(tableId,
 			VPLTeacherTools.translateArray(forStudents
-				? ["", "Filename", "Students", "Time", "Size", "Submitted"]
-				: ["", "Filename", "Time", "Size", "Dashboard", "Default"]));
+				? ["", "Filename", "Set", "Students", "Time", "Size", "Submitted"]
+				: ["", "Filename", "Set", "Time", "Size", "Dashboard", "Default"]));
 
 		fileArray.forEach(function (file) {
-			if (!file.renamed) {
+			if (!file.renamed && !file.moved) {
 				function select(ev) {
 					fileBrowser.selectFile(forStudents, file.id,
 						ev.ctrlKey || ev.metaKey, ev.shiftKey);
 					if (renamedFilename) {
 						// rename + refresh
 						fileBrowser.renameTeacherFile(renamedFilename.value);
+					} else if (movedSet) {
+						// move + refresh
+						fileBrowser.moveTeacherFile(movedSet.value);
 					} else {
 						// just refresh
 						fileBrowser.refreshFiles();
@@ -88,9 +93,6 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 			if (file.renamed) {
 				renamedFilename = document.createElement("input");
 				renamedFilename.value = file.filename;
-				renamedFilename.addEventListener("change", function () {
-					fileBrowser.renameTeacherFile(renamedFilename.value);
-				});
 				renamedFilename.addEventListener("keydown", function (ev) {
 					if (ev.key === "Escape") {
 						file.renamed = false;
@@ -105,6 +107,31 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 				td.appendChild(renamedFilename);
 			} else {
 				td.textContent = file.filename;
+			}
+			td.addEventListener("click", select, false);
+			td.addEventListener("dblclick", doubleclick, false);
+			td.className = fileBrowser.isFileSelected(forStudents, file.id) ? "selected" : "";
+			tr.appendChild(td);
+
+			// set
+			td = document.createElement("td");
+			if (file.moved) {
+				movedSet = document.createElement("input");
+				movedSet.value = file.tag;
+				movedSet.addEventListener("keydown", function (ev) {
+					if (ev.key === "Escape") {
+						file.moved = false;
+						fillFileTable(fileArray, fileBrowser, forStudents);
+					} else if (ev.key === "Enter") {
+						// "change" listener not called if value hasn't changed
+						ev.stopPropagation();
+						ev.preventDefault();
+						fileBrowser.moveTeacherFile(movedSet.value);
+					}
+				}, false);
+				td.appendChild(movedSet);
+			} else {
+				td.textContent = file.tag;
 			}
 			td.addEventListener("click", select, false);
 			td.addEventListener("dblclick", doubleclick, false);
@@ -186,6 +213,10 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 		renamedFilename.focus();
 		renamedFilename.setSelectionRange(0, basename.length);
 	}
+	if (movedSet) {
+		movedSet.focus();
+		movedSet.setSelectionRange(0, movedSet.value.length);
+	}
 }
 
 window.addEventListener("load", function () {
@@ -264,6 +295,11 @@ window.addEventListener("load", function () {
 		fileBrowser.renameTeacherFile(null);
 	}, false);
 
+	btn = document.getElementById("btn-move-teacher");
+	btn.addEventListener("click", function () {
+		fileBrowser.moveTeacherFile(null);
+	}, false);
+
 	btn = document.getElementById("btn-duplicate-teacher");
 	btn.addEventListener("click", function () {
 		fileBrowser.duplicateTeacherFile(null);
@@ -294,6 +330,18 @@ window.addEventListener("load", function () {
 	btn = document.getElementById("btn-remove-teacher");
 	btn.addEventListener("click", function () {
 		fileBrowser.deleteFiles();
+	}, false);
+
+	var vFilterTeacherSet = document.getElementById("v-filter-set-teacher");
+	vFilterTeacherSet.addEventListener("change", function () {
+		fileBrowser.filterTeacherSet = vFilterTeacherSet.value;
+		fileBrowser.updateFiles();
+	}, false);
+
+	var vFilterStudentSet = document.getElementById("v-filter-set-student");
+	vFilterStudentSet.addEventListener("change", function () {
+		fileBrowser.filterStudentSet = vFilterStudentSet.value;
+		fileBrowser.updateFiles();
 	}, false);
 
 	var btn = document.getElementById("btn-view-st");
