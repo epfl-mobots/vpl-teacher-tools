@@ -165,7 +165,7 @@ VPLServer.dmg: VPL3Server.app readme-mac.txt
 	rm -Rf "VPL Server" $@
 	mkdir "VPL Server"
 	cp -R $^ "VPL Server"
-	hdiutil create -srcfolder "VPL Server" $@
+	hdiutil create -format UDZO -imagekey zlib-level=9 -srcfolder "VPL Server" $@
 	rm -Rf "VPL Server"
 
 ServeFile.dmg: Serve\ File.app

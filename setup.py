@@ -30,6 +30,7 @@ DATA_FILES = [
             "doc/login.html",
             "doc/login.fr.html",
             "doc/login-gui.js",
+            "doc/tr-mappings.json",
             "doc/tt.html",
             "doc/tt.fr.html",
         ]),
