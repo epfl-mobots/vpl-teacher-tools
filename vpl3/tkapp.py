@@ -172,17 +172,20 @@ class Application(ApplicationBase, tk.Tk):
         self.no_serial = True
         self.options_menu.entryconfig("JSON WebSocket", state="disabled")
 
+    def is_initialized(self):
+        return  "initialized" in self.__dict__ and self.initialized
+
     def writeln(self, str):
-        if hasattr(self, "initialized") and self.initialized and self.log:
+        if self.is_initialized() and self.log:
             self.log.insert("end", str + "\n")
             self.log.see(tk.END)
 
     def show_connection_status(self, str):
-        if str:
+        if self.is_initialized() and str:
             self.status["text"] = str
 
     def show_robot_status(self, str):
-        if str:
+        if self.is_initialized() and str:
             self.robot_status["text"] = str
 
     def draw_qr_code(self):
