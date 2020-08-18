@@ -10,6 +10,7 @@ ROOTFILES = \
 	launch_objc.py \
 	launch_tk.py \
 	launch_windows.bat \
+	launch_mac.command \
 	launch_wx.py \
 	setup.py
 
