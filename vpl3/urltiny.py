@@ -35,4 +35,4 @@ class URLShortcuts:
         return key
 
     def get(self, key):
-        return self.dict[key]
+        return self.dict[key] if key in self.dict else None
