@@ -167,6 +167,15 @@ VPLTeacherTools.Pairing.prototype.addStudentToGroup = function (studentName, gro
 */
 VPLTeacherTools.Pairing.prototype.removeStudentFromGroup = function (studentName, groupId) {
     var self = this;
+
+    // leave group in local cache to prevent multiple removals
+    for (var i = 0; i < this.students.length; i++) {
+        if (this.students[i].name === studentName) {
+            this.students[i].group_id = null;
+            break;
+        }
+    }
+
     this.client.removeStudentFromGroup(studentName, groupId, {
         onSuccess: function (r) {
             self.updateStudents();
