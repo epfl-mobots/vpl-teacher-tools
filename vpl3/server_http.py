@@ -209,11 +209,12 @@ class VPLHTTPServer:
             content = VPLHTTPServer.get_data(handler)
             return self.call_api(Db.add_file,
                                  q["filename"][0],
+                                 q["tag"][0] if "tag" in q else "",
                                  content,
                                  q["groupid"][0] if "groupid" in q else None,
-                                 q["metadata"][0]
-                                 if "metadata" in q
-                                 else None)
+                                 metadata = q["metadata"][0]
+                                            if "metadata" in q
+                                            else None)
 
         @self.httpd.http_get("/api/copyFile")
         def http_get_api_copyFile(self, handler):
@@ -243,6 +244,7 @@ class VPLHTTPServer:
             return self.call_api(Db.extract_config_from_vpl3_file,
                                  int(q["id"][0]),
                                  q["filename"][0],
+                                 q["tag"][0] if "tag" in q else "",
                                  mark=q["mark"][0].lower() == "true"
                                       if "mark" in q
                                       else False,
