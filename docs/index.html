@@ -27,6 +27,12 @@ td {
 
 <h3>Mac</h3>
 
+<p>Download the most recent file below, double-click its icon to mount the image, and copy <em>VPL3Server.app</em> (maybe shown as <em>VPL3Server</em> depending on your settings) to a convenient location on your Mac, such as the Applications folder or the Desktop.</p>
+
+<p>At least the first time, the Mac is likely to complain that the application represents a security risk. To open it anyway, control-click its icon, choose Open in the contextual menu; in the dialog, click the checkbox to not show warnings again if there is one, and click Open. Repeat once if it fails.</p>
+
+<p>Should it still fail, download the most recent generic version below, uncompress the zip file, and double-click <em>launch_mac.command</em> (maybe shown as <em>launch_mac</em>).</p>
+
 <table>
 <tr>
 <td><a href="VPLServer-200817.dmg">VPLServer-200817.dmg</a></td>
@@ -61,9 +67,33 @@ td {
 
 <h3>Windows</h3>
 
-<p>We don't have yet a packaged application for Windows. You should install Python&nbsp;3 unless you already have it (we suggest the <a href="https://www.python.org/downloads/windows/">official distribution</a>, but <a href="https://www.anaconda.com/products/individual">Anaconda</a> is a popular alternative if you intend to use Python beyond VPL; <em>if you're asked, check the checkbox <strong>Add Python 3.8 PATH</strong></em>). Then just double-click <em>launch_windows.bat</em>. It will download and install required libraries if needed.</p>
+<p>We don't have yet a packaged application for Windows. You should install Python&nbsp;3 unless you already have it (we suggest the <a href="https://www.python.org/downloads/windows/">official distribution</a>, but <a href="https://www.anaconda.com/products/individual">Anaconda</a> is a popular alternative if you intend to use Python beyond VPL; if you're asked, check the checkbox <em>Add Python 3.8 PATH</em>).</p>
+
+<p>Then download the most recent generic version below and uncompress the zip file. To start the server, double-click <em>launch_windows.bat</em>. It will download and install required libraries if needed.</p>
+
+<h3>Linux</h3>
+
+<p>Make sure Python&nbsp;3 is installed (type <code>python3</code> in a terminal, ctrl-d to quit). Download the last zip file for Windows above, uncompress it, open a terminal, cd to the root directory of the uncompressed zip file. The first time, type</p>
+
+<pre>
+python3 -m pip install websocket websockets qrcode
+</pre>
+
+<p>Then get the most recent generic version below. To start the server, type</p>
+
+<pre>
+python3 launch_tk.py
+</pre>
+
+<h3>Generic</h3>
 
 <table>
+<tr>
+<td><a href="VPLServer-200818.zip">VPLServer-200818.zip</a></td>
+<td>generic</td>
+<td>18 August 2020</td>
+<td></td>
+</tr>
 <tr>
 <td><a href="VPLServer-200817.zip">VPLServer-200817.zip</a></td>
 <td>generic</td>
@@ -77,20 +107,6 @@ td {
 <td><a href="#footnote">*</a></td>
 </tr>
 </table>
-
-<h3>Linux</h3>
-
-<p>Make sure Python&nbsp;3 is installed (type <code>python3</code> in a terminal, ctrl-d to quit). Download the last zip file for Windows above, uncompress it, open a terminal, cd to the root directory of the uncompressed zip file. The first time, type</p>
-
-<pre>
-python3 -m pip install websocket websockets qrcode
-</pre>
-
-<p>To launch the teacher tools server, type</p>
-
-<pre>
-python3 launch_tk.py
-</pre>
 
 <p id="footnote">* Database format change. Please delete file vplserver-db.sqlite in your home directory manually. You will loose all its content, including the pupil names and the files. To preserve the pupil names, you can export them with your current version of the VPL Teacher Tools, delete vplserver-db.sqlite and upgrade the VPL Teacher Tools, and import the pupil names in the new version. Likewise for the teacher files, you can export them with the current version and reimport them with the new version.</p>
 
