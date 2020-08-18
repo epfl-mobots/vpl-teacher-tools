@@ -1,5 +1,7 @@
 window["vplConfig"] = {
 	"ignoredCommands": [
+		"vpl:text",
+		"vpl:sim",
 		"vpl:flash"
 	]
 };
