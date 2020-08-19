@@ -58,7 +58,9 @@ function fillGroupTable(sessionArray, dashboard) {
 
 			// connection to robot
 			td = document.createElement("td");
-			td.textContent = VPLTeacherTools.translate(lastVPLChangedData["robot"] ? "yes" : "no");
+			if (session.isConnected) {
+				td.textContent = VPLTeacherTools.translate(lastVPLChangedData["robot"] ? "yes" : "no");
+			}
 			tr.appendChild(td);
 
 			// elapsed time

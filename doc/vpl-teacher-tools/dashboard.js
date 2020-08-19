@@ -164,7 +164,6 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
 };
 
 VPLTeacherTools.Dashboard.prototype.openLastFile = function (group_id, group) {
-    console.info(group_id);
 	this.client.getLastFileForGroup(group_id, {
         onSuccess: function (file) {
 			var options = {
