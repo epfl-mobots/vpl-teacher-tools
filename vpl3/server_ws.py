@@ -57,12 +57,8 @@ class VPLWebSocketServer:
                 "type": "server"
             },
             "type": "change",
-            "data":
-                list(
-                    filter(
-                        lambda i:
-                            hasattr(i, "is_connected") and i.is_connected,
-                        self.ws.get_instances()))
+            "data": self.ws.get_instances(lambda ws:
+                                          hasattr(ws, "is_connected") and ws.is_connected)
         }
         for ws in self.log_recipients:
             await self.ws.send(ws, msg)
@@ -101,7 +97,9 @@ class VPLWebSocketServer:
                         "type": "server"
                     },
                     "type": "hello",
-                    "data": self.ws.get_instances()
+                    "data": self.ws.get_instances(lambda ws:
+                                                  hasattr(ws, "is_connected") and ws.is_connected)
+
                 })
             elif msg["sender"]["type"] == "vpl":
                 # accept if a session id was provided
@@ -153,6 +151,7 @@ class VPLWebSocketServer:
                     pass
         elif msg["type"] == "file" and msg["sender"]["type"] == "vpl":
             # save file
+            websocket.is_connected = True
             session_id = msg["sender"]["sessionid"]
             filename = msg["data"]["name"]
             content = msg["data"]["content"]
@@ -161,11 +160,13 @@ class VPLWebSocketServer:
             db.add_file(filename, content, group_id=group_id, submitted=submitted)
         elif msg["type"] in ("cmd", "file"):
             # forward command to all (or msg["rcpt"]) other websockets but self
+            websocket.is_connected = True
             await self.ws.sendToAll(msg,
                                     except_websocket=websocket,
                                     only_websockets=msg["rcpt"])
         elif msg["type"] == "log":
             # save log message to database and forward to all dashboards
+            websocket.is_connected = True
             db.add_log(msg["sender"]["sessionid"], msg["data"]["type"],
                        json.dumps(msg["data"]["data"]))
             for ws in self.log_recipients:

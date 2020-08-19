@@ -62,8 +62,18 @@ class WSServer:
             self.loop.stop()
         self.loop.call_soon_threadsafe(s)
 
-    def get_instances(self):
-        return list(map(lambda ws: ws.session_id, self.instances))
+    def get_instances(self, filter_instance=None):
+        if filter_instance:
+            return [
+                ws.session_id
+                for ws in self.instances
+                if filter_instance(ws)
+            ]
+        else:
+            return [
+                ws.session_id
+                for ws in self.instances
+            ]
 
     async def send(self, websocket, msg):
         try:
