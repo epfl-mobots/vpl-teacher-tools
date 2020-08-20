@@ -8,6 +8,7 @@ VPLTeacherTools.translate = function(str, language) {
 	/** @const */
 	var fr = {
 		"add": "ajouter",
+		"All pupils": "Tou.te.s les élèves",
 		"Blocks": "Blocs",
 		"cancel": "annuler",
 		"Cancel": "Annuler",

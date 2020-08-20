@@ -131,6 +131,10 @@ class VPLHTTPServer:
             return self.call_api(Db.list_students,
                                  q["class"][0] if "class" in q else None)
 
+        @self.httpd.http_get("/api/listClasses")
+        def http_get_api_listClasses(self, handler):
+            return self.call_api(Db.list_classes)
+
         @self.httpd.http_get("/api/addGroup")
         def http_get_api_addGroup(self, handler):
             q = VPLHTTPServer.query_param(handler)

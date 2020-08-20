@@ -295,7 +295,6 @@ class Db:
                     FROM students
                 """)
             else:
-                print("clas", clas)
                 c.execute(f"""
                     SELECT name,
                            studentid,
@@ -315,6 +314,22 @@ class Db:
                 "time": row[3],
                 "group_id": row[4]
             }
+            for row in c.fetchall()
+        ]
+
+    def list_classes(self):
+        """Get a list of all student classes"""
+        c = self._db.cursor()
+        try:
+            c.execute("""
+                SELECT DISTINCT class
+                FROM students
+                ORDER BY class
+            """)
+        finally:
+            self._db.commit()
+        return [
+            row[0]
             for row in c.fetchall()
         ]
 

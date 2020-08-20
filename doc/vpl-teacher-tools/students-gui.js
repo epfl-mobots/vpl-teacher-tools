@@ -162,10 +162,51 @@ function fillStudentTable(studentArray, students) {
 	fldStudentName.focus();
 }
 
+function fillFilterClass(studentArray) {
+	var classes = [];
+	studentArray.forEach(function (st) {
+		var cl = st["class"];
+		if (cl && classes.indexOf(cl) < 0) {
+			classes.push(st["class"]);
+		}
+	});
+	classes.sort();
+
+	var selFilterClass = document.getElementById("sel-filter-class");
+	var currentClass = selFilterClass.selectedIndex === selFilterClass.options.length - 1
+		? null
+		: selFilterClass.options[selFilterClass.selectedIndex].value;
+
+	// don't update if there is a single class matching the currently-selected class
+	// (we've got only its students, so our classes isn't relevant)
+	if (classes.length === 1 && classes[0] === currentClass) {
+		return;
+	}
+
+	while (selFilterClass.firstElementChild) {
+		selFilterClass.removeChild(selFilterClass.firstElementChild);
+	}
+	classes.forEach(function (cl) {
+		var option = document.createElement("option");
+		option.textContent = cl;
+		if (cl === currentClass) {
+			option.selected = true;
+		}
+		selFilterClass.appendChild(option);
+	});
+	var option = document.createElement("option");
+	option.textContent = VPLTeacherTools.translate("All pupils");
+	if (currentClass === null) {
+		option.selected = true;
+	}
+	selFilterClass.appendChild(option);
+}
+
 window.addEventListener("load", function () {
 	var students = new VPLTeacherTools.StudentManagement({
 		onStudents: function (studentArray, students) {
     		fillStudentTable(studentArray, students);
+			fillFilterClass(studentArray);
 		},
 	});
 
@@ -205,9 +246,11 @@ window.addEventListener("load", function () {
 		VPLTeacherTools.downloadText(csv, "pupils.csv", "text/csv");
 	}, false);
 
-	var vFilterClass = document.getElementById("v-filter-class");
-	vFilterClass.addEventListener("change", function () {
-		students.filterClass = vFilterClass.value;
+	var selFilterClass = document.getElementById("sel-filter-class");
+	selFilterClass.addEventListener("change", function () {
+		students.filterClass = selFilterClass.selectedIndex === selFilterClass.options.length - 1
+			? null
+			: selFilterClass.options[selFilterClass.selectedIndex].value;
 		students.updateStudents();
 	}, false);
 

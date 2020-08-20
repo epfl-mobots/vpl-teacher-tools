@@ -94,6 +94,10 @@ VPLTeacherTools.HTTPClient.prototype.listStudents = function (filterClass, opt) 
 	this.rest("/api/listStudents" + (filterClass ? "?class=" + encodeURIComponent(filterClass) : ""), opt);
 };
 
+VPLTeacherTools.HTTPClient.prototype.listClasses = function (opt) {
+	this.rest("/api/listClasses", opt);
+};
+
 VPLTeacherTools.HTTPClient.prototype.addGroup = function (student, opt) {
 	this.rest("/api/addGroup" + (student ? "?student=" + encodeURIComponent(student) : ""), opt);
 };
