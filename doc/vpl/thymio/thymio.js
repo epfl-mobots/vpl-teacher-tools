@@ -39419,4 +39419,3 @@ module.exports = __webpack_require__(/*! ./src/index.js */"./src/index.js");
 /***/ })
 
 /******/ });
-//# sourceMappingURL=thymio.js.map
