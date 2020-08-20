@@ -19,6 +19,7 @@ function fillStudentTable(studentArray, students) {
 		VPLTeacherTools.translateArray(["Name", "Class"]));
 	var table = document.getElementById("students");
 	var fldStudentName;
+	var fldStudentClass;
 
 	function addRow(studentName, studentClass) {
 
@@ -46,7 +47,7 @@ function fillStudentTable(studentArray, students) {
 			tr.appendChild(td);
 
 			td = document.createElement("td");
-			var fldStudentClass = document.createElement("input");
+			fldStudentClass = document.createElement("input");
 			fldStudentClass.value = studentClass;
 			fldStudentClass.addEventListener("keyup", function (event) {
 				if (event.key === "Enter") {
@@ -79,11 +80,23 @@ function fillStudentTable(studentArray, students) {
 			tr.appendChild(td);
 		} else {
 			td.textContent = studentName;
+			td.addEventListener("dblclick", function () {
+				if (students.editedStudent) {
+					students.cancelEditStudent();
+				}
+				students.editStudent(studentName);
+			}, false);
 			tr.appendChild(td);
 
 			td = document.createElement("td");
 			td.textContent = studentClass;
 			td.className = "rect";
+			td.addEventListener("dblclick", function () {
+				if (students.editedStudent) {
+					students.cancelEditStudent();
+				}
+				students.editStudent(studentName, true);
+			}, false);
 			tr.appendChild(td);
 
 			if (!students.editedStudent) {
@@ -156,10 +169,17 @@ function fillStudentTable(studentArray, students) {
 		tr.appendChild(td);
 
 		table.appendChild(tr);
+
+		students.focusOnClass = false;
 	}
 
-	fldStudentName.select();
-	fldStudentName.focus();
+	if (students.focusOnClass) {
+		fldStudentClass.select();
+		fldStudentClass.focus();
+	} else {
+		fldStudentName.select();
+		fldStudentName.focus();
+	}
 }
 
 function fillFilterClass(studentArray) {

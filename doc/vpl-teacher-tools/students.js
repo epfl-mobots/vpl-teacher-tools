@@ -7,6 +7,7 @@ VPLTeacherTools.StudentManagement = function (options) {
     this.options = options || {};
     this.students = [];
     this.editedStudent = null;
+    this.focusOnClass = false;
     this.filterClass = "";
 
 	this.client = new VPLTeacherTools.HTTPClient();
@@ -76,7 +77,7 @@ VPLTeacherTools.StudentManagement.prototype.addStudents = function (names, class
     });
 };
 
-VPLTeacherTools.StudentManagement.prototype.editStudent = function (name) {
+VPLTeacherTools.StudentManagement.prototype.editStudent = function (name, focusOnClass) {
     name = name.trim();
     if (this.editedStudent) {
         // already editing: cancel
@@ -87,6 +88,7 @@ VPLTeacherTools.StudentManagement.prototype.editStudent = function (name) {
         if (name === this.students[i].name) {
             // found
             this.editedStudent = name;
+            this.focusOnClass = focusOnClass === true;
             this.updateStudents();
             return;
         }
