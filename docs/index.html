@@ -31,7 +31,7 @@ td {
 
 <p>At least the first time, the Mac is likely to complain that the application represents a security risk. To open it anyway, control-click its icon, choose Open in the contextual menu; in the dialog, click the checkbox to not show warnings again if there is one, and click Open. Repeat once if it fails.</p>
 
-<p>Should it still fail, download the most recent generic version below, uncompress the zip file, and double-click <em>launch_mac.command</em> (maybe shown as <em>launch_mac</em>).</p>
+<p>Should it still fail, install <a href="https://www.python.org/downloads/mac-osx/">Python&nbsp;3</a>, download the most recent <a href="#generic">generic version</a> below, uncompress the zip file, and double-click <em>launch_mac.command</em> (maybe shown as <em>launch_mac</em>).</p>
 
 <table>
 <tr>
@@ -75,17 +75,17 @@ td {
 
 <p>We don't have yet a packaged application for Windows. You should install Python&nbsp;3 unless you already have it (we suggest the <a href="https://www.python.org/downloads/windows/">official distribution</a>, but <a href="https://www.anaconda.com/products/individual">Anaconda</a> is a popular alternative if you intend to use Python beyond VPL; if you're asked, check the checkbox <em>Add Python 3.8 PATH</em>).</p>
 
-<p>Then download the most recent generic version below and uncompress the zip file. To start the server, double-click <em>launch_windows.bat</em>. It will download and install required libraries if needed.</p>
+<p>Then download the most recent <a href="#generic">generic version</a> below and uncompress the zip file. To start the server, double-click <em>launch_windows.bat</em>. It will download and install required libraries if needed.</p>
 
 <h3>Linux</h3>
 
-<p>Make sure Python&nbsp;3 is installed (type <code>python3</code> in a terminal, ctrl-d to quit). Download the last zip file for Windows above, uncompress it, open a terminal, cd to the root directory of the uncompressed zip file. The first time, type</p>
+<p>Make sure Python&nbsp;3 is installed (type <code>python3</code> in a terminal, ctrl-d to quit). The first time, type</p>
 
 <pre>
 python3 -m pip install websocket websockets qrcode
 </pre>
 
-<p>Then get the most recent generic version below. To start the server, type</p>
+<p>Then get the most recent generic version below, uncompress it, and (in a terminal) cd to the root directory of the uncompressed zip file. To start the server, type</p>
 
 <pre>
 python3 launch_tk.py
@@ -93,7 +93,15 @@ python3 launch_tk.py
 
 <h3>Generic</h3>
 
-<table>
+<p>Zip files below are just the text files of the teacher tools with Python source code, the teacher tools with their web user interface, VPL 3, and a few data files. They can be run on any computer which supports Python 3 and its distribution system PyPI.</p>
+
+<table id="generic">
+<tr>
+<td><a href="VPLServer-200820.zip">VPLServer-200820.zip</a></td>
+<td>generic</td>
+<td>20 August 2020</td>
+<td></td>
+</tr>
 <tr>
 <td><a href="VPLServer-200818.zip">VPLServer-200818.zip</a></td>
 <td>generic</td>
