@@ -6,6 +6,9 @@
 VPLTeacherTools.FileBrowser = function (options) {
     this.teacherFiles = [];
     this.studentFiles = [];
+    this.classes = [];
+    this.students = [];
+    this.currentClass = null;
     this.options = options || {};
     this.filterTeacherSet = "";
     this.filterStudent = null;
@@ -13,6 +16,7 @@ VPLTeacherTools.FileBrowser = function (options) {
     this.filterStudentSet = "";
 	this.client = new VPLTeacherTools.HTTPClient();
     this.updateFiles();
+    this.updateStudents();
 };
 
 /** Fetch all files from db and refresh their display
@@ -57,6 +61,15 @@ VPLTeacherTools.FileBrowser.prototype.updateFiles = function (renamedFileId) {
             }
         }
 	});
+
+    // sets
+    if (this.options.onSets) {
+        this.client.listFileTags({
+            onSuccess: function (tags) {
+                self.options.onSets(tags);
+            }
+        });
+    }
 };
 
 VPLTeacherTools.FileBrowser.prototype.refreshFiles = function () {
@@ -276,6 +289,13 @@ VPLTeacherTools.FileBrowser.prototype.moveTeacherFile = function (newSet) {
 			        if (self.options.onTeacherFiles) {
 			            self.options.onTeacherFiles(self.teacherFiles, self);
 			        }
+                    if (self.options.onSets) {
+                        self.client.listFileTags({
+                            onSuccess: function (tags) {
+                                self.options.onSets(tags);
+                            }
+                        });
+                    }
 	            }
 	        });
 		} else {
@@ -481,4 +501,45 @@ VPLTeacherTools.FileBrowser.suffixToMimetype = function (suffix) {
         "png": "image/png",
         "txt": "text/plain"
     }[suffix] || "application/octet-stream";
+};
+
+VPLTeacherTools.FileBrowser.prototype.callOnStudents = function () {
+    if (this.options.onStudents) {
+        this.options.onStudents(this.students
+            .filter(function (st) {
+                return this.currentClass === null || st["class"] === this.currentClass;
+            }, this)
+            .map(function (st) {
+                return st.name;
+            }));
+    }
+};
+
+VPLTeacherTools.FileBrowser.prototype.updateStudents = function () {
+    var self = this;
+	this.client.listStudents(this.filterClass, {
+		onSuccess: function (students) {
+            if (self.options.onStudents || self.options.onClasses) {
+                // get list of unique classes
+            	self.classes = [];
+            	students.forEach(function (st) {
+            		var cl = st["class"];
+            		if (cl && self.classes.indexOf(cl) < 0) {
+            			self.classes.push(st["class"]);
+            		}
+            	});
+            	self.classes.sort();
+                self.students = students;
+                if (self.options.onClasses) {
+                    self.options.onClasses(self.classes, self.currentClass);
+                }
+                self.callOnStudents();
+            }
+        }
+	});
+};
+
+VPLTeacherTools.FileBrowser.prototype.setClass = function (cl) {
+    this.currentClass = cl;
+    this.callOnStudents();
 };

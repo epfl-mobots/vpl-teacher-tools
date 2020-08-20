@@ -342,6 +342,10 @@ class VPLHTTPServer:
                                  tag=tag,
                                  last=last)
 
+        @self.httpd.http_get("/api/listFileTags")
+        def http_get_api_listFileTags(self, handler):
+            return self.call_api(Db.list_file_tags)
+
         @self.httpd.http_get("/api/clearFiles")
         def http_get_api_clearFiles(self, handler):
             return self.call_api(Db.clear_files)

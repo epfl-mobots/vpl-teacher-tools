@@ -257,6 +257,10 @@ VPLTeacherTools.HTTPClient.prototype.listFiles = function (queryProps, opt) {
 	this.rest("/api/listFiles" + (params.length > 0 ? "?" + params.join("&") : ""), opt);
 };
 
+VPLTeacherTools.HTTPClient.prototype.listFileTags = function (opt) {
+	this.rest("/api/listFileTags", opt);
+};
+
 VPLTeacherTools.HTTPClient.prototype.clearFiles = function (opt) {
 	this.rest("/api/clearFiles", opt);
 };

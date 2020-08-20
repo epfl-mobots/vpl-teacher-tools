@@ -200,7 +200,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 		var tr = document.createElement("tr");
 		var td = document.createElement("td");
 		td.setAttribute("class", "empty");
-		td.textContent = "(none)";
+		td.textContent = VPLTeacherTools.translate("(none)");
 		tr.appendChild(td);
 		table.appendChild(tr);
 	}
@@ -242,6 +242,71 @@ window.addEventListener("load", function () {
 			document.location = "vpl$LANGSUFFIX.html?ui=$VPLUIURI&robot=sim&uilanguage=$LANGUAGE" +
 				(teacherFile ? "&role=teacher" : "") +
 				(file.students ? "&user=" + encodeURIComponent(file.students.join(", ")) : "");
+		},
+		onClasses: function (classes, currentClass) {
+			// fill class filter
+			var selFilterClass = document.getElementById("sel-filter-class");
+
+			while (selFilterClass.firstElementChild) {
+				selFilterClass.removeChild(selFilterClass.firstElementChild);
+			}
+			classes.forEach(function (cl, currentClass) {
+				var option = document.createElement("option");
+				option.textContent = cl;
+				if (cl === currentClass) {
+					option.selected = true;
+				}
+				selFilterClass.appendChild(option);
+			});
+			var option = document.createElement("option");
+			option.textContent = VPLTeacherTools.translate("All pupils");
+			if (currentClass === null) {
+				option.selected = true;
+			}
+			selFilterClass.appendChild(option);
+		},
+		onStudents: function (students) {
+			// fill student filter
+			var selFilterStudent = document.getElementById("sel-filter-student");
+			while (selFilterStudent.firstElementChild) {
+				selFilterStudent.removeChild(selFilterStudent.firstElementChild);
+			}
+			students.forEach(function (st) {
+				var option = document.createElement("option");
+				option.textContent = st;
+				selFilterStudent.appendChild(option);
+			});
+			var option = document.createElement("option");
+			option.textContent = VPLTeacherTools.translate("All pupils");
+			option.selected = true;
+			selFilterStudent.appendChild(option);
+		},
+		onSets: function (sets) {
+			// fill set filters
+			["sel-filter-set-teacher", "sel-filter-set-student"].forEach(function (selId) {
+				var selFilterSet = document.getElementById(selId);
+				var currentSet = selFilterSet.selectedIndex === selFilterSet.options.length - 1
+					? null
+					: selFilterSet.options[selFilterSet.selectedIndex].value;
+
+				while (selFilterSet.firstElementChild) {
+					selFilterSet.removeChild(selFilterSet.firstElementChild);
+				}
+				sets.forEach(function (s) {
+					var option = document.createElement("option");
+					option.textContent = s;
+					if (s === currentSet) {
+						option.selected = true;
+					}
+					selFilterSet.appendChild(option);
+				});
+				var option = document.createElement("option");
+				option.textContent = VPLTeacherTools.translate("All files");
+				if (currentSet === null) {
+					option.selected = true;
+				}
+				selFilterSet.appendChild(option);
+			}, this);
 		}
 	});
 
@@ -332,15 +397,19 @@ window.addEventListener("load", function () {
 		fileBrowser.deleteFiles();
 	}, false);
 
-	var vFilterTeacherSet = document.getElementById("v-filter-set-teacher");
-	vFilterTeacherSet.addEventListener("change", function () {
-		fileBrowser.filterTeacherSet = vFilterTeacherSet.value;
+	var selFilterTeacherSet = document.getElementById("sel-filter-set-teacher");
+	selFilterTeacherSet.addEventListener("change", function () {
+		fileBrowser.filterTeacherSet = selFilterTeacherSet.selectedIndex === selFilterTeacherSet.options.length - 1
+			? null
+			: selFilterTeacherSet.options[selFilterTeacherSet.selectedIndex].value;
 		fileBrowser.updateFiles();
 	}, false);
 
-	var vFilterStudentSet = document.getElementById("v-filter-set-student");
-	vFilterStudentSet.addEventListener("change", function () {
-		fileBrowser.filterStudentSet = vFilterStudentSet.value;
+	var selFilterStudentSet = document.getElementById("sel-filter-set-student");
+	selFilterStudentSet.addEventListener("change", function () {
+		fileBrowser.filterStudentSet = selFilterStudentSet.selectedIndex === selFilterStudentSet.options.length - 1
+			? null
+			: selFilterStudentSet.options[selFilterStudentSet.selectedIndex].value;
 		fileBrowser.updateFiles();
 	}, false);
 
@@ -359,9 +428,20 @@ window.addEventListener("load", function () {
 		fileBrowser.deleteFiles();
 	}, false);
 
-	var vFilterStudent = document.getElementById("v-filter-student");
-	vFilterStudent.addEventListener("input", function () {
-		fileBrowser.filterStudent = vFilterStudent.value;
+	var selFilterClass = document.getElementById("sel-filter-class");
+	selFilterClass.addEventListener("change", function () {
+		var filterClass = selFilterClass.selectedIndex === selFilterClass.options.length - 1
+			? null
+			: selFilterClass.options[selFilterClass.selectedIndex].value;
+		fileBrowser.setClass(filterClass);
+		fileBrowser.updateFiles();
+	}, false);
+
+	var selFilterStudent = document.getElementById("sel-filter-student");
+	selFilterStudent.addEventListener("input", function () {
+		fileBrowser.filterStudent = selFilterStudent.selectedIndex === selFilterStudent.options.length - 1
+			? null
+			: selFilterStudent.options[selFilterStudent.selectedIndex].value;
 		fileBrowser.updateFiles();
 	}, false);
 

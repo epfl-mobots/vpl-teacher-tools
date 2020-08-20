@@ -66,28 +66,28 @@ var uiLanguage = "en";
 	<h2>Teacher files</h2>
 
 	<p>
-		<label>Set: <input id="v-filter-set-teacher"></input></label>
+		<label>Set: <select id="sel-filter-set-teacher"></select></label>
 	</p>
 
 	<table id="files-teacher">
 	</table>
 
 	<p>
-	<button id="btn-new">New program</button>
-	<button id="btn-new-conf">New config</button>
-	<button id="btn-get-conf">Get config</button>
-	<button id="btn-edit-teacher" disabled="true">Edit</button>
-	<button id="btn-rename-teacher" disabled="true">Rename</button>
-	<button id="btn-move-teacher" disabled="true">Change Set</button>
-	<button id="btn-duplicate-teacher" disabled="true">Duplicate</button>
-	<button id="btn-import-teacher" disabled="true">Import</button>
-	<button id="btn-export-teacher" disabled="true">Export</button>
-	<button id="btn-remove-teacher" disabled="true">Delete</button>
+		<button id="btn-new">New program</button>
+		<button id="btn-new-conf">New config</button>
+		<button id="btn-get-conf">Get config</button>
+		<button id="btn-edit-teacher" disabled="true">Edit</button>
+		<button id="btn-rename-teacher" disabled="true">Rename</button>
+		<button id="btn-move-teacher" disabled="true">Change Set</button>
+		<button id="btn-duplicate-teacher" disabled="true">Duplicate</button>
+		<button id="btn-import-teacher" disabled="true">Import</button>
+		<button id="btn-export-teacher" disabled="true">Export</button>
+		<button id="btn-remove-teacher" disabled="true">Delete</button>
 	</p>
 
 	<p>
-	The default .vpl3ui file is used as a template for new programs unless another .vpl3ui file is selected.
-	The default .vpl3 file is sent automatically to groups when they start VPL.
+		The default .vpl3ui file is used as a template for new programs unless another .vpl3ui file is selected.
+		The default .vpl3 file is sent automatically to groups when they start VPL.
 	</p>
 
 </div>
@@ -97,22 +97,24 @@ var uiLanguage = "en";
 	<h2>Pupil files</h2>
 
 	<p>
-		<label>Set: <input id="v-filter-set-student"></input></label>
+		<label>Set: <select id="sel-filter-set-student"></select></label>
 	</p>
 
 	<p>
-	<label>Pupil: <input id="v-filter-student"></input></label>
-	&nbsp;&nbsp;
-	<label><input id="chk-filter-students-last" type="checkbox" checked> most recent version only</label>
+		<label>Classe: <select id="sel-filter-class"></select></label>
+		&nbsp;&nbsp;
+		<label>Pupil: <select id="sel-filter-student"></select></label>
+		&nbsp;&nbsp;
+		<label><input id="chk-filter-students-last" type="checkbox" checked> most recent version only</label>
 	</p>
 
 	<table id="files-students">
 	</table>
 
 	<p>
-	<button id="btn-view-st" disabled="true">View</button>
-	<button id="btn-export-st" disabled="true">Export</button>
-	<button id="btn-remove-st" disabled="true">Delete</button>
+		<button id="btn-view-st" disabled="true">View</button>
+		<button id="btn-export-st" disabled="true">Export</button>
+		<button id="btn-remove-st" disabled="true">Delete</button>
 	</p>
 
 </div>

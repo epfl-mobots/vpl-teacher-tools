@@ -1119,6 +1119,23 @@ class Db:
         finally:
             self._db.commit()
 
+    def list_file_tags(self):
+        """Get a list of all the file tags"""
+        c = self._db.cursor()
+        try:
+            c.execute("""
+                SELECT DISTINCT tag
+                FROM files
+                WHERE tag IS NOT NULL AND tag != ''
+                ORDER BY tag
+            """)
+        finally:
+            self._db.commit()
+        return [
+            row[0]
+            for row in c.fetchall()
+        ]
+
     def clear_files(self):
         """Delete all files"""
         c = self._db.cursor()
