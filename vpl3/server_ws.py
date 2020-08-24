@@ -154,10 +154,17 @@ class VPLWebSocketServer:
             websocket.is_connected = True
             session_id = msg["sender"]["sessionid"]
             filename = msg["data"]["name"]
+            # filename can be prefixed with "tag/"; get tag
+            filename_parts = filename.split("/")
+            if len(filename_parts) > 1:
+                tag = filename_parts[0]
+                filename = filename_parts[-1]
+            else:
+                tag = None
             content = msg["data"]["content"]
             submitted = msg["reason"] == "vpl:upload"
             group_id = db.get_session_group_id(session_id)
-            db.add_file(filename, content, group_id=group_id, submitted=submitted)
+            db.add_file(filename, tag, content, group_id=group_id, submitted=submitted)
         elif msg["type"] in ("cmd", "file"):
             # forward command to all (or msg["rcpt"]) other websockets but self
             websocket.is_connected = True

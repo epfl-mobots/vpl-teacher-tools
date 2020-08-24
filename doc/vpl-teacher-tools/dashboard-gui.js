@@ -28,8 +28,8 @@ function clearTable(id, labels) {
 
 function fillGroupTable(sessionArray, dashboard) {
 	clearTable("groups", [
-		VPLTeacherTools.translateArray(["", "Connection", "<", "Time (d)", "Filename", "", "Program", "<", "Message"]),
-		VPLTeacherTools.translateArray(["", "Teacher", "Robot", "", "", "", "Rows", "Blocks", ""])
+		VPLTeacherTools.translateArray(["", "Connection", "<", "Time (d)", "Filename", "", "Set", "Program", "<", "Message"]),
+		VPLTeacherTools.translateArray(["", "Teacher", "Robot", "", "", "", "", "Rows", "Blocks", ""])
 	]);
 	var table = document.getElementById("groups");
 
@@ -83,9 +83,16 @@ function fillGroupTable(sessionArray, dashboard) {
 			if (lastVPLChangedData && lastVPLChangedData["nrules"] != undefined) {
 				// filename
 				td = document.createElement("td");
+				var tag = "";
 				if (lastVPLChangedData["filename"]) {
 					var btn = document.createElement("button");
-					btn.textContent = lastVPLChangedData["filename"];
+					var filename = lastVPLChangedData["filename"];
+					var filenameParts = filename.split("/");
+					if (filenameParts.length > 1) {
+						tag = filenameParts[0];
+						filename = filenameParts[filenameParts.length - 1];
+					}
+					btn.textContent = filename;
 					btn.addEventListener("click", function () {
 						dashboard.openLastFile(session.group_id,
                             session.students ? session.students.join(", ") : session.group);
@@ -97,6 +104,11 @@ function fillGroupTable(sessionArray, dashboard) {
 				// submitted
 				td = document.createElement("td");
 				td.textContent = lastVPLChangedData["uploadedToServer"] ? "\u2713" : "";
+				tr.appendChild(td);
+
+				// tag
+				td = document.createElement("td");
+				td.textContent = tag;
 				tr.appendChild(td);
 
 				details = [
@@ -125,7 +137,7 @@ function fillGroupTable(sessionArray, dashboard) {
 
 function fillFileTable(fileArray, dashboard) {
 	clearTable("files-dashboard", [
-		VPLTeacherTools.translateArray(["", "Filename", "Default"])
+		VPLTeacherTools.translateArray(["", "Filename", "Set", "Default"])
 	]);
 	var table = document.getElementById("files-dashboard");
 
@@ -141,6 +153,7 @@ function fillFileTable(fileArray, dashboard) {
 	fileArray.forEach(function (file) {
 		var tr = document.createElement("tr");
 
+		// icon
 		var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename);
 		var td = document.createElement("td");
 		var fileIconURL = {"vpl3": "icon-file-vpl3.svg", "vpl3ui": "icon-file-vpl3ui.svg"}[suffix];
@@ -151,10 +164,17 @@ function fillFileTable(fileArray, dashboard) {
 		}
 		tr.appendChild(td);
 
+		// filename
 		var td = document.createElement("td");
 		td.textContent = file.filename;
 		tr.appendChild(td);
 
+		// set
+		var td = document.createElement("td");
+		td.textContent = file.tag;
+		tr.appendChild(td);
+
+		// default checkbox
 		td = document.createElement("td");
 		if (/\.vpl3$/.test(file.filename)) {
 			td.textContent = file["default"] ? "\u2612" : "\u2610";

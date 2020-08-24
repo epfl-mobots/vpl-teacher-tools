@@ -277,7 +277,11 @@ VPLTeacherTools.Dashboard.prototype.sendFileById = function (fileId) {
 	var self = this;
     this.client.getFile(fileId, {
         onSuccess: function (file) {
-			self.sendFile(file.filename, "vpl", file.content);
+			var filename = file.filename;
+			if (file.tag) {
+				filename = file.tag + "/" + filename;
+			}
+			self.sendFile(filename, "vpl", file.content);
         }
     });
 };
