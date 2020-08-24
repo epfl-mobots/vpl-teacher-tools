@@ -957,6 +957,7 @@ class Db:
                     LENGTH(content),
                     owner,
                     content,
+                    submitted,
                     metadata
                 """,
                 "files",
