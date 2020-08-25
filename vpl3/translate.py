@@ -32,6 +32,11 @@ class Translate:
             "Shortened URLs": "Shortened URLs",
             "Thymio Device Manager": "Thymio Device Manager",
             "VPL Server": "VPL Server",
+            "help-message": """To open the user interface of the Teacher Tools:
+in Firefox, click the button
+in another browser, menu Edit > Copy, then paste the URL in the browser
+on a tablet, scan the QR code above
+""",
         }
 
     def set_dictionary(self, language, dict):

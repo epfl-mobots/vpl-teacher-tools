@@ -27,5 +27,10 @@ def add_translations_fr(tr):
         "Shortened URLs": "URLs raccourcis",
         "Thymio Device Manager": "Thymio Device Manager",
         "VPL Server": "Serveur VPL",
+            "help-message": """Pour ouvrir l'interface utilisateur des Outils pour les enseignant.e.s:
+dans Firefox, cliquez sur le bouton
+dans un autre navigateur, menu Édition > Copier, puis collez l'URL dans le navigateur
+sur une tablette, scannez le code QR ci-dessus
+""",
     }
     tr.set_dictionary("fr", dict)

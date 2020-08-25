@@ -22,7 +22,7 @@ class Application(ApplicationBase, tk.Tk):
         self.protocol("WM_DELETE_WINDOW", self.quit)  # close widget
         self.createcommand("exit", self.quit)  # Quit menu
 
-        self.geometry("500x300")
+        self.geometry("500x400")
         self.resizable(width=False, height=False)
 
         padding = 10
@@ -42,6 +42,9 @@ class Application(ApplicationBase, tk.Tk):
         self.qr_canvas = tk.Canvas(width=160, height=160)
         self.qr_canvas.pack(padx=padding, pady=padding)
         self.draw_qr_code()
+
+        self.help = tk.Label(self, anchor="center", width=400)
+        self.help.pack(padx=padding, pady=padding)
 
         #self.log = ScrolledText(self)
         #self.log.grid(sticky=tk.N+tk.W+tk.E+tk.S)
@@ -82,6 +85,7 @@ class Application(ApplicationBase, tk.Tk):
             self.update_robots()
             self.browser_button.config(text=self.tr("Open tools in browser"))
             self.draw_qr_code()
+            self.help["text"] = self.tr("help-message")
 
         def change_language(language):
             self.set_language(language)
