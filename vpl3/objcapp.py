@@ -111,24 +111,31 @@ class Application(ApplicationBase):
             ApplicationObjCShell.modalAlert(str(e), buttons=["Quit"])
             NSApp.terminate_(None)
 
+        width = 600
+        height = 370
+        y = 330
+
         self.window = self.app_objc.createWindowWithTitle_width_height_x_y_(
             self.title(),
-            400, 260,
+            width, height,
             20, 20
         )
         self.status = self.app_objc.addLabelToWindow_title_width_x_y_(
             self.window,
             "",
-            250, 10, 220)
+            width - 40, 20, y)
+        y -= 20
         self.robots_status = self.app_objc.addLabelToWindow_title_width_x_y_(
             self.window,
             "",
-            250, 10, 200)
+            width - 40, 20, y)
+        y -= 40
         self.open_button = self.app_objc.addButtonToWindow_title_action_width_x_y_(
             self.window,
             self.tr("Open tools in browser"),
             lambda sender: self.start_browser_tt(),
-            240, 80, 160)
+            240, (width - 240) / 2, y)
+        y -= 155
 
         def drawQRCode(rect):
             import qrcode
@@ -148,7 +155,14 @@ class Application(ApplicationBase):
                         NSRectFill(NSMakeRect(margin + s * j, 160 - margin - s * i - s, s, s))
         self.qr = self.app_objc.addDrawingToWindow_draw_x_y_width_height_(self.window,
                                                                           drawQRCode,
-                                                                          120, 5, 160, 160)
+                                                                          (width - 160) / 2, y, 160, 160)
+        y -= 140
+
+        self.help_message = self.app_objc.addLabelToWindow_title_width_x_y_(
+            self.window,
+            self.tr("help-message"),
+            width - 40, 20, y
+        )
 
         self.load_prefs()
         self.update_menu_state()
@@ -188,6 +202,7 @@ class Application(ApplicationBase):
             self.update_connection()
             self.update_robots()
             self.open_button.setTitle_(self.tr("Open tools in browser"))
+            self.help_message.setStringValue_(self.tr("help-message"))
         if self.qr:
             self.qr.needsDisplay = True
             self.qr.display()

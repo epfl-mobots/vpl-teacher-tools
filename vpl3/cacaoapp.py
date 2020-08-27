@@ -115,9 +115,11 @@ class ApplicationObjCShell(NSApplication):
         return window
 
     def addLabelToWindow_title_width_x_y_(self, window, title, width, x, y):
+        num_lines = title.count("\n") + 1
         label = (NSTextField.alloc()
-                  .initWithFrame_(NSMakeRect(x, y, width, 25))
+                  .initWithFrame_(NSMakeRect(x, y, width, 25 * num_lines))
                   .autorelease())
+        # label.setUsesSingleLineMode_(False)
         label.setFont_(NSFont.systemFontOfSize_(14))
         label.setDrawsBackground_(False)
         label.setBordered_(False)
