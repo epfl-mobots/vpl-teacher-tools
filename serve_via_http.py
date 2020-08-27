@@ -98,11 +98,11 @@ class Application:
         self.address = f"{URLUtil.get_local_IP()}:{self.httpd.server_port}"
         self.app_objc = ApplicationObjCShell.alloc().init()
         self.app_objc.addMenu_withItems_("File", [
-            (
+            [
                 "Open in Browser",
                 "b",
-                lambda sender: self.start_browser()
-            )
+                lambda sender: self.start_browser(),
+            ],
         ])
         self.app_objc.start()
         window = self.app_objc.createWindowWithTitle_width_height_x_y_(
