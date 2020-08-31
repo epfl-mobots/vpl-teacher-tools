@@ -27,20 +27,13 @@ td {
 
 <h3>Mac</h3>
 
-<p>Download the most recent file below, double-click its icon to mount the image, and copy <em>VPL3Server.app</em> (maybe shown as <em>VPL3Server</em> depending on your settings) to a convenient location on your Mac, such as the Applications folder or the Desktop.</p>
+<p>Follow the link below and download the most recent .dmg file, double-click its icon to mount the image, and copy <em>VPL3Server.app</em> (maybe shown as <em>VPL3Server</em> depending on your settings) to a convenient location on your Mac, such as the Applications folder or the Desktop.</p>
+
+<p><a href="https://github.com/epfl-mobots/vpl-teacher-tools/releases/">https://github.com/epfl-mobots/vpl-teacher-tools/releases/</a></p>
 
 <p>At least the first time, the Mac is likely to complain that the application represents a security risk. To open it anyway, control-click its icon, choose Open in the contextual menu; in the dialog, click the checkbox to not show warnings again if there is one, and click Open. Repeat once if it fails.</p>
 
 <p>Should it still fail, install <a href="https://www.python.org/downloads/mac-osx/">Python&nbsp;3</a>, download the most recent <a href="#generic">generic version</a> below, uncompress the zip file, and double-click <em>launch_mac.command</em> (maybe shown as <em>launch_mac</em>).</p>
-
-<table>
-<tr>
-<td><a href="VPLServer-200831.dmg">VPLServer-200831.dmg</a></td>
-<td>macOS</td>
-<td>31 August 2020</td>
-<td></td>
-</tr>
-</table>
 
 <h3>Windows</h3>
 
@@ -64,18 +57,13 @@ python3 launch_tk.py
 
 <h3>Generic</h3>
 
-<p>Zip files below are just the text files of the teacher tools with Python source code, the teacher tools with their web user interface, VPL 3, and a few data files. They can be run on any computer which supports Python 3 and its distribution system PyPI.</p>
+<p>Zip files are just the text files of the teacher tools with Python source code, the teacher tools with their web user interface, VPL 3, and a few data files. They can be run on any computer which supports Python 3 and its distribution system PyPI.</p>
 
-<table id="generic">
-<tr>
-<td><a href="VPLServer-200831.zip">VPLServer-200831.zip</a></td>
-<td>generic</td>
-<td>31 August 2020</td>
-<td></td>
-</tr>
-</table>
+<p>Zip files can be found at the same place, at <a href="https://github.com/epfl-mobots/vpl-teacher-tools/releases/">https://github.com/epfl-mobots/vpl-teacher-tools/releases/</a>.</p>
 
-<p id="footnote">* Database format change. Please delete file vplserver-db.sqlite in your home directory manually. You will loose all its content, including the pupil names and the files. To preserve the pupil names, you can export them with your current version of the VPL Teacher Tools, delete vplserver-db.sqlite and upgrade the VPL Teacher Tools, and import the pupil names in the new version. Likewise for the teacher files, you can export them with the current version and reimport them with the new version.</p>
+<h3>Database format change</h3>
+
+<p>If release notes indicate that the database format has changed, please delete file vplserver-db.sqlite in your home directory manually. You will loose all its content, including the pupil names and the files. To preserve the pupil names, you can export them with your current version of the VPL Teacher Tools, delete vplserver-db.sqlite and upgrade the VPL Teacher Tools, and import the pupil names in the new version. Likewise for the teacher files, you can export them with the current version and reimport them with the new version.</p>
 
 </body>
 
