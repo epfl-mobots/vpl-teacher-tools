@@ -250,7 +250,7 @@ window.addEventListener("load", function () {
 			while (selFilterClass.firstElementChild) {
 				selFilterClass.removeChild(selFilterClass.firstElementChild);
 			}
-			classes.forEach(function (cl, currentClass) {
+			classes.forEach(function (cl) {
 				var option = document.createElement("option");
 				option.textContent = cl;
 				if (cl === currentClass) {

@@ -401,6 +401,28 @@ window.addEventListener("load", function () {
 		onStudents: function (studentArray) {
     		fillStudentTable(studentArray, pairing);
 		},
+		onClasses: function (classes, currentClass) {
+			// fill class filter
+			var selFilterClass = document.getElementById("sel-filter-class");
+
+			while (selFilterClass.firstElementChild) {
+				selFilterClass.removeChild(selFilterClass.firstElementChild);
+			}
+			classes.forEach(function (cl) {
+				var option = document.createElement("option");
+				option.textContent = cl;
+				if (cl === currentClass) {
+					option.selected = true;
+				}
+				selFilterClass.appendChild(option);
+			});
+			var option = document.createElement("option");
+			option.textContent = VPLTeacherTools.translate("All pupils");
+			if (currentClass === null) {
+				option.selected = true;
+			}
+			selFilterClass.appendChild(option);
+		},
 		onGroups: function (groupArray) {
 			fillGroupTable(groupArray, pairing);
 		},
@@ -427,9 +449,12 @@ window.addEventListener("load", function () {
 	}
 
 	// class filter
-	var vFilterClass = document.getElementById("v-filter-class");
-	vFilterClass.addEventListener("change", function () {
-		pairing.filterClass = vFilterClass.value;
+	var selFilterClass = document.getElementById("sel-filter-class");
+	selFilterClass.addEventListener("change", function () {
+		var filterClass = selFilterClass.selectedIndex === selFilterClass.options.length - 1
+			? null
+			: selFilterClass.options[selFilterClass.selectedIndex].value;
+		pairing.setClass(filterClass);
 		pairing.updateStudents();
 	}, false);
 

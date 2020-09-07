@@ -517,7 +517,7 @@ VPLTeacherTools.FileBrowser.prototype.callOnStudents = function () {
 
 VPLTeacherTools.FileBrowser.prototype.updateStudents = function () {
     var self = this;
-	this.client.listStudents(this.filterClass, {
+	this.client.listStudents(null, {
 		onSuccess: function (students) {
             if (self.options.onStudents || self.options.onClasses) {
                 // get list of unique classes

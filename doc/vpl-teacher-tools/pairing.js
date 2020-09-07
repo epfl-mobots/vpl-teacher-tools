@@ -6,13 +6,14 @@
 VPLTeacherTools.Pairing = function (options) {
     this.options = options || {};
     this.robots = [];
+    this.classes = [];
     this.groups = [];
     this.pairs = [];
     this.selectedRobot = "";
     this.selectedGroup = "";
     this.groupOfSelectedPair = "";
-    this.filterClass = null;
 	this.noRedraw = false;
+    this.currentClass = null;
 
     var self = this;
     this.nonRobots = options && options.nonRobots || [];
@@ -42,16 +43,49 @@ VPLTeacherTools.Pairing = function (options) {
     this.updateGroups();
 };
 
+VPLTeacherTools.Pairing.prototype.callOnStudents = function () {
+    if (this.options.onStudents) {
+        this.options.onStudents(this.students
+            .filter(function (st) {
+                return this.currentClass === null || st["class"] === this.currentClass;
+            }, this)
+            .map(function (st) {
+                return st.name;
+            }));
+    }
+};
+
 VPLTeacherTools.Pairing.prototype.updateStudents = function () {
     var self = this;
-	this.client.listStudents(this.filterClass, {
+	this.client.listStudents(null, {
 		onSuccess: function (students) {
+            // get list of unique classes
+        	self.classes = [];
+        	students.forEach(function (st) {
+        		var cl = st["class"];
+        		if (cl && self.classes.indexOf(cl) < 0) {
+        			self.classes.push(st["class"]);
+        		}
+        	});
+        	self.classes.sort();
+
             self.students = students;
             if (self.options.onStudents) {
-                self.options.onStudents(self.students);
+                self.options.onStudents(self.students
+                    .filter(function (st) {
+                        return self.currentClass === null || st["class"] === self.currentClass;
+                    }));
+            }
+            if (self.options.onClasses) {
+                self.options.onClasses(self.classes, self.currentClass);
             }
         }
 	});
+};
+
+VPLTeacherTools.Pairing.prototype.setClass = function (cl) {
+    this.currentClass = cl;
+    this.callOnStudents();
 };
 
 /** Find the id of the group a student belongs to
