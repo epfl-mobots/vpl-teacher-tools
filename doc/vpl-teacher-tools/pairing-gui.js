@@ -417,7 +417,7 @@ window.addEventListener("load", function () {
 				selFilterClass.appendChild(option);
 			});
 			var option = document.createElement("option");
-			option.textContent = VPLTeacherTools.translate("All pupils");
+			option.textContent = VPLTeacherTools.translate("All classes");
 			if (currentClass === null) {
 				option.selected = true;
 			}
