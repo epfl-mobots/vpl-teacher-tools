@@ -247,6 +247,16 @@ function fillGroupTable(groupArray, pairing) {
 				}
 			}
 
+			// button "remove"
+			td = document.createElement("td");
+			var btn = document.createElement("button");
+			btn.textContent = VPLTeacherTools.translate("remove");
+			btn.addEventListener("click", function () {
+				pairing.removeGroup(group.group_id);
+			}, false);
+			td.appendChild(btn);
+			tr.appendChild(td);
+
 			table.appendChild(tr);
 		}
 	});
