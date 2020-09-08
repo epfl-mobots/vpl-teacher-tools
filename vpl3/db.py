@@ -424,6 +424,11 @@ class Db:
         c = self._db.cursor()
         try:
             c.execute("DELETE FROM groups WHERE groupid=?", (group_id,))
+            c.execute("""
+                UPDATE students
+                SET groupid = NULL
+                WHERE groupid = ?
+            """, (group_id, ))
         finally:
             self._db.commit()
 
