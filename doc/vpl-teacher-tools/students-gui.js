@@ -261,7 +261,7 @@ window.addEventListener("load", function () {
 	btn.addEventListener("click", function () {
 		// make list of students, one name per line
 		var csv = students.students.map(function (student) {
-			return student.name + "\t" + student["class"] + "\n";
+			return student.name + "\t" + (student["class"] || "") + "\n";
 		}).join("");
 		VPLTeacherTools.downloadText(csv, "pupils.csv", "text/csv");
 	}, false);
