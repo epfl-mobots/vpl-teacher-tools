@@ -10,7 +10,8 @@ VPLTeacherTools.Pairing = function (options) {
     this.groups = [];
     this.pairs = [];
     this.selectedRobot = "";
-    this.selectedGroup = "";
+    /** @type {?number} */
+    this.selectedGroupId = null;
     this.groupOfSelectedPair = "";
 	this.noRedraw = false;
     this.currentClass = null;
@@ -229,7 +230,7 @@ VPLTeacherTools.Pairing.prototype.getRobotNodes = function () {
 VPLTeacherTools.Pairing.prototype.selectByStudentName = function (studentName) {
     for (var i = 0; i < this.groups.length; i++) {
         if (this.groups[i].students && this.groups[i].students.indexOf(studentName) >= 0) {
-            this.selectedGroup = this.groups[i].group_id;
+            this.selectedGroupId = this.groups[i].group_id;
             return true;
         }
     }
@@ -248,7 +249,7 @@ VPLTeacherTools.Pairing.prototype.findGroupByRobotName = function (robotName) {
 VPLTeacherTools.Pairing.prototype.selectByRobotName = function (robotName) {
 	var group = this.findGroupByRobotName(robotName);
 	if (group) {
-        this.selectedGroup = group.group_id;
+        this.selectedGroupId = group.group_id;
         return true;
     }
     return false;
@@ -260,26 +261,26 @@ VPLTeacherTools.Pairing.prototype.isRobot = function (robotName) {
 };
 
 VPLTeacherTools.Pairing.prototype.selectGroup = function (groupId) {
-    this.selectedGroup = groupId;
+    this.selectedGroupId = groupId;
 };
 
 VPLTeacherTools.Pairing.prototype.unselectGroup = function () {
-    this.selectedGroup = "";
+    this.selectedGroupId = null;
 };
 
 VPLTeacherTools.Pairing.prototype.isGroupSelected = function (groupId) {
-    return this.selectedGroup === groupId;
+    return this.selectedGroupId === groupId;
 };
 
 VPLTeacherTools.Pairing.prototype.getSelectedGroup = function () {
     return this.groups.find(function (group) {
-        return group.group_id === this.selectedGroup;
+        return group.group_id === this.selectedGroupId;
     }, this);
 };
 
 VPLTeacherTools.Pairing.prototype.canBeginSession = function (robotName, groupId) {
     robotName = robotName || this.selectedRobot;
-    groupId = groupId || this.selectedGroup;
+    groupId = groupId || this.selectedGroupId;
     return this.robots.find(function (r) { return r.name === robotName}, this) != undefined &&
         this.groups.find(function (g) { return g.group_id === groupId}, this) != undefined;
 };
@@ -298,6 +299,10 @@ VPLTeacherTools.Pairing.prototype.deletePairBySessionId = function (sessionId) {
         return pair.session_id === sessionId;
     });
     if (ix >= 0) {
+        if (this.pairs[ix].group_id === this.selectedGroupId) {
+            // unselect group to be deleted
+            this.unselectGroup();
+        }
         var groupIx = this.groups.findIndex(function (group) {
             return group.pair === this.pairs[ix];
         }, this);
@@ -330,7 +335,7 @@ VPLTeacherTools.Pairing.prototype.shortRobotName = function (robotName) {
 VPLTeacherTools.Pairing.prototype.beginSession = function (robotName, groupId) {
     if (this.canBeginSession(robotName, groupId)) {
         var self = this;
-        groupId = groupId || this.selectedGroup;
+        groupId = groupId || this.selectedGroupId;
         this.client.beginSession(groupId,
             this.shortRobotName(robotName || this.selectedRobot),
             true,

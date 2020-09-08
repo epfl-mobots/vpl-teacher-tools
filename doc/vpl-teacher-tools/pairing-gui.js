@@ -210,8 +210,10 @@ function fillGroupTable(groupArray, pairing) {
 
 			tr.appendChild(td);
 
+			// robot
+			td = document.createElement("td");
+			tr.appendChild(td);
 			if (group.pair) {
-				td = document.createElement("td");
 				td.className = pairing.isGroupSelected(group.group_id) ? "rect selected" : "rect";
 				td.textContent = (/^\{/.test(group.pair.robot) ? "Thymio II" : group.pair.robot.replace(/[()]/g, "")) + " ";
 				var rmBtn = document.createElement("span");
@@ -223,7 +225,6 @@ function fillGroupTable(groupArray, pairing) {
 				}, false);
 				td.appendChild(rmBtn);
 				td.addEventListener("click", select);
-				tr.appendChild(td);
 
 				var robot = pairing.getRobot(group.pair.robot);
 				if (robot && robot.hasFlash()) {
