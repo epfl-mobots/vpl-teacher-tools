@@ -174,8 +174,8 @@ VPLTeacherTools.FileBrowser.prototype.setDefaultFile = function (fileId, suffix)
     });
 };
 
-VPLTeacherTools.FileBrowser.prototype.addFile = function (filename, content, noRename) {
-    var props = {};
+VPLTeacherTools.FileBrowser.prototype.addFile = function (filename, content, noRename, props) {
+    var props = props || {};
     var self = this;
     this.client.addFile(filename, content,
         props,

@@ -310,10 +310,10 @@ window.addEventListener("load", function () {
 		}
 	});
 
-	function importFile(file, noRename) {
+	function importFile(file, noRename, props) {
 		var reader = new window.FileReader();
 		reader.addEventListener("load", function (event) {
-			fileBrowser.addFile(file.name, event.target.result, noRename);
+			fileBrowser.addFile(file.name, event.target.result, noRename, props);
 		});
 		reader["readAsText"](file);
 	}
@@ -324,9 +324,31 @@ window.addEventListener("load", function () {
 	document.body.addEventListener("drop", function (ev) {
 		ev.stopPropagation();
 		ev.preventDefault();
+		// plain files
 		var files = ev.dataTransfer.files;
 		for (var i = 0; i < files.length; i++) {
-			importFile(files[i], files.length !== 1);
+			importFile(files[i], files.length !== 1, {tag: fileBrowser.filterTeacherSet || null});
+		}
+		// folders
+		var items = ev.dataTransfer.items;
+		for (var i = 0; i < items.length; i++) {
+			var entry = items[i].getAsEntry ? items[i].getAsEntry()
+				: items[i].webkitGetAsEntry ? items[i].webkitGetAsEntry()
+				: null;
+			if (entry && entry.isDirectory) {
+				var dirReader = entry.createReader();
+				dirReader.readEntries(function (entries) {
+					// read files, not subdirectories, and import them
+					fileBrowser.filterTeacherSet = entry.name;	// to see them
+					for (var j = 0; j < entries.length; j++) {
+						if (entries[j].isFile) {
+							entries[j].file(function (file) {
+								importFile(file, true, {tag: entry.name});
+							});
+						}
+					}
+				});
+			}
 		}
 	}, false);
 

@@ -189,6 +189,7 @@ VPLTeacherTools.HTTPClient.prototype.listSessions = function (opt) {
 
 VPLTeacherTools.HTTPClient.prototype.addFile = function (filename, content, props, opt) {
 	this.rest("/api/addFile?filename=" + encodeURIComponent(filename) +
+		(props && props.tag ? "&tag=" + encodeURIComponent(props.tag) : "") +
 		(props && props.metadata ? "&metadata=" + encodeURIComponent(props.metadata) : ""),
 		opt,
 		content, "text/plain");
