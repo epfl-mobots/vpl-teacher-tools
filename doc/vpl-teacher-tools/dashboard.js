@@ -238,7 +238,8 @@ VPLTeacherTools.Dashboard.prototype.sendCommand = function (name, opt) {
 	};
 	if (opt && opt.selected) {
 		msg["data"]["selected"] = opt.selected;
-	} else if (opt && opt.state) {
+	}
+	if (opt && opt.state) {
 		msg["data"]["state"] = opt.state;
 	}
 	this.ws.send(JSON.stringify(msg));
