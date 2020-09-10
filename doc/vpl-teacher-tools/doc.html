@@ -46,7 +46,7 @@ main {
 
 <p>Here is how computers and robots are connected and where applications run.</p>
 
-<p>The central program is the <i>VPL server</i>. It runs typically on the teacher's laptop or on a desktop computer in the classroom (the <i>server computer</i>). It provides all the web applications, both to the teacher and the pupils, and manages data. Its data are stored in a single file, <tt>vpl.sqlite</tt>, located in the home directory.</p>
+<p>The central program is the <i>VPL server</i>. It runs typically on the teacher's laptop or on a desktop computer in the classroom (the <i>server computer</i>). It provides all the web applications, both to the teacher and the pupils, and manages data. Its data are stored in a single file, <tt>vplserver-db.sqlite</tt>, located in the home directory.</p>
 
 <p>All the robots are connected wirelessly to the server computer. The communication between the web applications and the robots is managed by Mobsya's <a href="https://www.thymio.org/news/thymio-suite/" target="mobsya">Thymio Suite 2</a>, which should be installed and started at the same time as the VPL server.</p>
 
@@ -63,7 +63,11 @@ main {
 
 <p>Note that you can have multiple instances of the teacher web applications open simultaneously, for instance on the server computer and on the teacher's tablet.</p>
 
-<p>Launching the pupils VPL web application is performed once a group of pupils and a robot have been associated in the VPL teacher tools. The URL <strong>specific to each group and  robot</strong> is displayed in the Classroom setup tab (see below).</p>
+<p>Launching the pupils VPL web application is performed once a group of pupils and a robot have been associated in the VPL teacher tools. There are two ways to do it:</p>
+
+<ol>
+
+<li>Direct VPL launch for each group. The URL <strong>specific to each group and  robot</strong> is displayed in the Classroom setup tab (see below).</li>
 
 <dl>
 <dt>VPL on tablet</dt>
@@ -71,6 +75,17 @@ main {
 <dt>VPL on computer without QR code scanning device</dt>
 <dd>Start Chrome or Firefox and type the URL displayed in the Classroom setup tab of the teacher.</dd>
 </dl>
+
+<li>Common page with the same URL for all groups. The list of groups is displayed and a click leads to VPL with the connection parameters specific to each group. This is recommended only if the pupils have not the age or desire to interfere with other groups.</li>
+
+<dl>
+<dt>VPL on tablet</dt>
+<dd>In the Classroom setup tab, scan the QR code in the "Single login URL" panel to launch the web application (on the iPad: Camera application, QR code scanner in the Control Center, or widget appearing in the address bar of Firefox when you click it).</dd>
+<dt>VPL on computer without QR code scanning device</dt>
+<dd>Start Chrome or Firefox and type the URL displayed in the "Single login URL" of the Classroom setup tab.</dd>
+</dl>
+
+</ol>
 
 <p>Different groups cannot share the same robot, and a group shouldn't launch the VPL web application (with its group-speficic URL) on more than one tablet or computer. Pupils using the same robot should be in the same group. Groups can be changed without constraint to cater for a dynamic environment.</p>
 
@@ -81,7 +96,7 @@ main {
 <dl>
 
 <dt>Pupils</dt>
-<dd>This is where the list of pupils is managed. Pupils can be added or removed. Pupils should not be removed once the they have generated data with VPL (programs or activity recording).</dd>
+<dd>This is where the list of pupils is managed. Each pupil can be associated to a class. Two pupils cannot share the same name, even if they belong to different classes. Pupils can be added, renamed, or removed. Pupils should not be removed once the they have generated data with VPL (programs or activity recording).</dd>
 
 <dt>Files</dt>
 <dd>The teacher has a file browser web app where they can upload files or create programs. Two types of files are supported for the moment:
@@ -103,7 +118,7 @@ main {
 <li>Store modified programs from VPL web apps with the relevant metadata (group, time, etc.).</li>
 <li>Log everything.</li>
 </ul>
-<dd>Only the VPL web applications communicate with the robots. Stopping all the robots is performed by sending a command to the VPL web apps which "forward" it to Thymio Suite.</dd>
+<dd>Only the VPL web applications communicate with the robots. When the teacher clicks the checkbox "Suspended", robots are stopped with a short animation of the yellow leds and the message (text or image) is displayed and blocks the VPL interface.</dd>
 
 <dt>VPL</dt>
 <dd>The VPL tab is displayed when a UI configuration file or a program is opened in the Files tool. It has two purposes: preparing a lesson by creating and running new programs, and inspecting the programs created by the pupils.</dd>

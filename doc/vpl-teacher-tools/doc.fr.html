@@ -46,9 +46,9 @@ main {
 
 <p>Voici comment les ordinateurs et les robots sont connectés et où les applications sont exécutées.</p>
 
-<p>Le programme central est le <i>serveur VPL</i>. Il tourne typiquement sur l'ordinateur portable de l'enseignant.e ou sur l'ordinateur de bureau de la salle de classe (le <i>serveur</i>). Il fournit toutes les applications web, aussi bien à l'enseignant.e qu'aux élèves, et gère les données. Ses données sont stockées dans un fichier unique, <tt>vpl.sqlite</tt>, situé dans le dossier de démarrage.</p>
+<p>Le programme central est le <i>serveur VPL</i>. Il tourne typiquement sur l'ordinateur portable de l'enseignant.e ou sur l'ordinateur de bureau de la salle de classe (le <i>serveur</i>). Il fournit toutes les applications web, aussi bien à l'enseignant.e qu'aux élèves, et gère les données. Ses données sont stockées dans un fichier unique, <tt>vplserver-db.sqlite</tt>, situé dans le dossier de démarrage.</p>
 
-<p>Tous les robots sont connectés au serveur par liaison sans fil. La communication entre les applications web et les robots sont gérées par la <a href="https://www.thymio.org/news/thymio-suite/" target="mobsya">Thymio Suite 2</a> de Mobsya, qui devrait être installée et lancée en même temps que le serveur VPL.</p>
+<p>Tous les robots sont connectés au serveur par liaison sans fil. La communication entre les applications web et les robots sont gérées par <a href="https://www.thymio.org/news/thymio-suite/" target="mobsya">Thymio Suite 2</a> de Mobsya, qui devrait être installé et lancé en même temps que le serveur VPL.</p>
 
 <p>L'interface-utilisateur principale, aussi bien pour l'enseignant.e que pour les élèves, est implémentée sous forme d'applications web. Typiquement l'enseignant.e utilise un navigateur web (Chrome ou Firefox) sur le serveur et les élèves ont des tablettes (une par groupe), mais d'autres configurations sont possibles. Les applications web n'ont pas besoin d'une installation spécifique.</o>
 
@@ -56,21 +56,36 @@ main {
 
 <dl>
 <dt>Navigateur sur le serveur</dt>
-<dd>Dans l'interface-utilisateur du serveur VPL, cliquez sur le bouton «Open tools in browser», tapez commande-B, ou choisissez le menu File&gt;Open Tools in Browser. Si le serveur n'a pas d'interface-utilisateur, voir ci-dessous.</dd>
+<dd>Dans l'interface-utilisateur du serveur VPL, cliquez sur le bouton «Ouvrir les outils dans le navigateur», tapez commande-B, ou choisissez le menu Fichier&gt;Ouvrir les outils dans le navigateur. Si le serveur n'a pas d'interface-utilisateur, voir ci-dessous.</dd>
 <dt>Navigateur sur un autre ordinateur ou une tablette, ou pas d'interface utilisateur</dt>
-<dd>Dans Chrome ou Firefox, entrez l'URL <tt>http://</tt><i>(adresse IP)</i><tt>:8000/tt.html</tt> où l'adresse IP est affichée dans le titre de la fenêtre du serveur VPL ou dans le terminal au lancement du serveur VLP.</dd>
+<dd>Dans Chrome ou Firefox, entrez l'URL <tt>http://</tt><i>(adresse IP)</i><tt>:8000/tt.html</tt> où l'adresse IP est affichée dans le titre de la fenêtre du serveur VPL ou dans le terminal au lancement du serveur VPL.</dd>
 </dl>
 
 <p>Vous pouvez avoir plusieurs instances des applications web de l'enseignant.e ouvertes en même temps, par exemple sur le serveur et sur la tablette de l'enseignant.e.</p>
 
-<p>Le lancement de l'application web VPL des élèves est faite une fois que l'association entre les groupe d'élèves et les robots a été faite dans les outils pour enseignants. L'URL, qui est <strong>spécifique à chaque groupe et robot</strong>, est affiché dans l'onglet Configuration (voir ci-dessous).</p>
+<p>Le lancement de l'application web VPL des élèves est faite une fois que l'association entre les groupes d'élèves et les robots a été faite dans les outils pour enseignants. Il y a deux moyens de le faire:</p>
+
+<ol>
+
+<li>Lancement direct de VPL pour chaque groupe. L'URL, qui est <strong>spécifique à chaque groupe et robot</strong>, est affiché dans l'onglet Configuration (voir ci-dessous).</li>
 
 <dl>
 <dt>VPL sur la tablette</dt>
-<dd>Dans l'onglet Configuration, cliquez sur le nom d'un groupe pour afficher son code QR. Lisez le code QR sur la tablette pour ouvrir l'URL dans le navigateur (sur un iPad: application Caméra, bouton code QR dans le Centre de contrôle, ou bouton afiché dans la barre d'adresse de Firefox quand vous cliquez dessus).</dd>
+<dd>Dans l'onglet Configuration, cliquez sur le nom d'un groupe pour afficher son code QR. Lisez le code QR sur la tablette pour ouvrir l'URL dans le navigateur (sur un iPad: application Caméra, bouton code QR dans le Centre de contrôle, ou bouton affiché dans la barre d'adresse de Firefox quand vous cliquez dessus).</dd>
 <dt>VPL sur un ordinateur sans possibilité de scanner un code QR</dt>
 <dd>Lancez Chrome ou Firefox et tapez l'URL affiché dans l'onglet Configuration au-dessus du code QR quand un groupe et son robot sont sélectionnés.</dd>
 </dl>
+
+<li>Page commune avec le même URL pour tous les groupes. La liste des groupes est affichée, et un clic conduit à VPL avec les paramètres de connexion spécifiques au groupe. Cela n'est possible que si les élèves n'ont pas l'âge ou la volonté d'accéder à un autre groupe.</li>
+
+<dl>
+<dt>VPL sur la tablette</dt>
+<dd>Dans l'onglet Configuration, scannez sur la tablette le code QR dans le panneau «Page de lancement unique» pour ouvrir l'URL dans le navigateur (sur un iPad: application Caméra, bouton code QR dans le Centre de contrôle, ou bouton affiché dans la barre d'adresse de Firefox quand vous cliquez dessus).</dd>
+<dt>VPL sur un ordinateur sans possibilité de scanner un code QR</dt>
+<dd>Lancez Chrome ou Firefox et tapez l'URL affiché dans l'onglet Configuration au-dessus du code QR du panneau «Page de lancement unique».</dd>
+</dl>
+
+</ol>
 
 <p>Chaque groupe doit avoir son propre robot et ne doit pas lancer l'application web de VPL (avec son URL spécifique au groupe) sur plus d'une tablette ou un ordinateur. Les élèves qui partagent le même robot doivent être dans le même groupe. Les groupes peuvent être réorganisés librement en fonction des besoins.</p>
 
@@ -81,7 +96,7 @@ main {
 <dl>
 
 <dt>Élèves</dt>
-<dd>C'est là que la liste des élèves est gérée. Les élèves peuvent être ajoutés ou supprimés. Les élèves ne devraient pas être supprimés une fois que des données ont été générée par VPL (programmes ou journal des activités).</dd>
+<dd>C'est là que la liste des élèves est gérée. Chaque élève peut être associé à une classe. Deux élèves ne doivent pas avoir le même nom, même s'ils sont dans deux classes différentes. Les élèves peuvent être ajoutés, renommés ou supprimés. Les élèves ne devraient pas être supprimés une fois que des données ont été générée par VPL (programmes ou journal des activités).</dd>
 
 <dt>Fichiers</dt>
 <dd>L'enseignant.e peut téléverser des fichiers ou créer des fichiers de configuration de l'interface de VPL ou des programmes. Deux types de fichiers sont supportés pour l'instant:
@@ -103,7 +118,7 @@ main {
 <li>Enregistrer les programmes en provenance des applications VPL des groupes avec des métadonnées comme la liste des élèves, l'heure, etc.</li>
 <li>Enregistrer un journal de chaque action des élèves.</li>
 </ul>
-<dd>Seule l'application web VPL des groupes communique directement avec les robots. Quand l'enseignant.e clique sur le bouton d'arrêt, l'ordre est transmis aux tablettes qui les renvoient à Thymio Suite.</dd>
+<dd>Seule l'application web VPL des groupes communique directement avec les robots. Quand l'enseignant.e clique sur le bouton «Suspendu», les robots sont arrêtés avec une courte animation des leds jaunes et le message (texte ou image) est affiché en bloquant VPL.</dd>
 
 <dt>VPL</dt>
 <dd>L'onglet VPL est affiché lorsqu'un fichier .vpl3 ou .vpl3ui est ouvert dans l'onglet Fichiers. Il a deux buts: préparer un cours en créant et exécutant de nouveaux programmes; et afficher et tester les programmes des élèves.</dd>
