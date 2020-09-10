@@ -275,6 +275,32 @@ window.addEventListener("load", function () {
 			dashboard.suspend(this.checked);
 		}
 	});
+	document.getElementById("suspended-text").addEventListener("change", function () {
+		if (document.getElementById("suspended").checked && document.getElementById("suspended-kind-text").checked) {
+			dashboard.setSuspendHTML("<div style='display: table; height: 100%; width: 100%; overflow: hidden;'>" +
+				"<div style='display: table-cell; vertical-align: middle;'>" +
+					"<p style='text-align: center;'>" +
+						document.getElementById("suspended-text").value +
+					"</p>" +
+				"</div>" +
+			"</div>");
+			dashboard.suspend(true);
+		}
+	});
+	document.getElementById("suspended-file").addEventListener("input", function () {
+		if (document.getElementById("suspended").checked && document.getElementById("suspended-kind-file").checked) {
+			var files = document.getElementById("suspended-file").files;
+			if (files.length === 1) {
+				var reader = new window.FileReader();
+				reader.addEventListener("load", function (event) {
+					dashboard.setSuspendFile(files[0].name, btoa(event.target.result));
+					dashboard.suspend(true);
+				});
+				reader["readAsBinaryString"](files[0]);
+			}
+			dashboard.suspend(true);
+		}
+	});
 
 	document.getElementById("clear-log").addEventListener("click", function () {
 		document.getElementById("log").textContent = "";
