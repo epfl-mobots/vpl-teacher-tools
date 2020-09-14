@@ -89,6 +89,6 @@ class WSServer:
                         only_websockets=None):
         for ws in self.instances:
             if (only_websockets is None
-                or ws.session_id not in only_websockets) \
+                or ws.session_id in only_websockets) \
                and ws is not except_websocket:
                 await self.send(ws, msg)
