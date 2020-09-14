@@ -272,7 +272,7 @@ window.addEventListener("load", function () {
 				}
 			}
 		} else {
-			dashboard.suspend(this.checked);
+			dashboard.suspend(false);
 		}
 	});
 	document.getElementById("suspended-text").addEventListener("change", function () {

@@ -236,7 +236,7 @@ VPLTeacherTools.Dashboard.prototype.sendCommand = function (name, opt) {
 			"cmd": name
 		}
 	};
-	if (opt && opt.selected) {
+	if (opt && opt.selected !== undefined) {
 		msg["data"]["selected"] = opt.selected;
 	}
 	if (opt && opt.state) {
