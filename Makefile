@@ -44,8 +44,9 @@ DOCFILES = \
 	doc/client.js \
 	doc/db.html \
 	doc/index.html \
-	doc/login.html \
+	doc/login.en.html \
 	doc/login.fr.html \
+	doc/login.it.html \
 	doc/login-gui.js \
 	doc/tr-mappings.json \
 	doc/tt.html \
@@ -95,20 +96,26 @@ UISVGFILES = \
 	doc/vpl/ui/svg/aseba.json \
 	doc/vpl/ui/svg/block-english.json \
 	doc/vpl/ui/svg/block-french.json \
+	doc/vpl/ui/svg/block-italian.json \
 	doc/vpl/ui/svg/block-list.json \
 	doc/vpl/ui/svg/Blocks.svg \
 	doc/vpl/ui/svg/Blocks16.svg \
 	doc/vpl/ui/svg/buttons.json \
 	doc/vpl/ui/svg/cmd-sim-english.json \
 	doc/vpl/ui/svg/cmd-sim-french.json \
+	doc/vpl/ui/svg/cmd-sim-italian.json \
 	doc/vpl/ui/svg/cmd-vpl-english.json \
 	doc/vpl/ui/svg/cmd-vpl-french.json \
+	doc/vpl/ui/svg/cmd-vpl-italian.json \
 	doc/vpl/ui/svg/doctemplate-english.html \
 	doc/vpl/ui/svg/doctemplate-french.html \
+	doc/vpl/ui/svg/doctemplate-italian.html \
 	doc/vpl/ui/svg/english.json \
 	doc/vpl/ui/svg/french.json \
+	doc/vpl/ui/svg/italian.json \
 	doc/vpl/ui/svg/help-blocks-english.json \
 	doc/vpl/ui/svg/help-blocks-french.json \
+	doc/vpl/ui/svg/help-blocks-italian.json \
 	doc/vpl/ui/svg/Icons.svg \
 	doc/vpl/ui/svg/js.json \
 	doc/vpl/ui/svg/l2.json \

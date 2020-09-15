@@ -28,6 +28,7 @@ class Server:
                  timeout=DEFAULT_START_TIMEOUT,
                  ws_link_url=None,
                  language=None,
+                 tt_language=None,
                  full_url=False,
                  logger=None,
                  update_connection=None,
@@ -43,6 +44,7 @@ class Server:
         self.ws_link_url = ws_link_url
         self.bridge = "none"
         self.language = language
+        self.tt_language = tt_language
         self.full_url = full_url
         self.ws = None
         self.ws_server = None
@@ -108,6 +110,7 @@ class Server:
             self.http_server = VPLHTTPServer(db_path=self.db_path,
                                              http_port=self.http_port,
                                              language=self.language,
+                                             tt_language=self.tt_language,
                                              full_url=self.full_url,
                                              logger=self.logger)
             self.http_port = self.http_server.get_port()

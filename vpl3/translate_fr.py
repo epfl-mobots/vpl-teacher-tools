@@ -7,7 +7,6 @@
 
 def add_translations_fr(tr):
     dict = {
-
         "Advanced Simulator Features": "Fonctions avancées du simulateur",
         "Copy URL": "Copier l'URL",
         "Developer Tools": "Outils pour les développeurs",
@@ -15,6 +14,7 @@ def add_translations_fr(tr):
         "English": "Anglais",
         "File": "Fichier",
         "French": "Français",
+        "Italian (English for Teacher Tools)": "Italien (anglais pour les outils pour les enseignants)",
         "JSON WebSocket": "WebSocket JSON",
         "Log Display in Dashboard": "Journal dans le tableau de bord",
         "Login Screen QR Code": "QR code sur la page de login",
@@ -27,7 +27,7 @@ def add_translations_fr(tr):
         "Shortened URLs": "URLs raccourcis",
         "Thymio Device Manager": "Thymio Device Manager",
         "VPL Server": "Serveur VPL",
-            "help-message": """Pour ouvrir l'interface utilisateur des Outils pour les enseignant.e.s:
+        "help-message": """Pour ouvrir l'interface utilisateur des Outils pour les enseignant.e.s:
 dans Firefox, cliquez sur le bouton
 dans un autre navigateur, menu Édition > Copier, puis collez l'URL dans le navigateur
 sur une tablette, scannez le code QR ci-dessus

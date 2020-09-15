@@ -39,6 +39,7 @@ class VPLHTTPServer:
     def __init__(self,
                  db_path=Db.DEFAULT_PATH,
                  http_port=None,
+                 tt_language=None,
                  language=None,
                  full_url=False,
                  has_login_qr_code=False,
@@ -49,6 +50,7 @@ class VPLHTTPServer:
                  logger=None):
         self.http_port = http_port
         self.language = language
+        self.tt_language = tt_language
         self.full_url = full_url
         self.has_login_qr_code = has_login_qr_code
         self.log_display = log_display
@@ -385,11 +387,14 @@ class VPLHTTPServer:
                     return VPLHTTPServer.error("unknown shortcut")
 
         self.httpd.add_filter(lambda s: s.replace(b"$LANGUAGE",
-                                                  bytes(self.language, "utf-8") if self.language else b"en"),
+                                                  bytes(self.tt_language, "utf-8") if self.tt_language else b"en"),
                               r"^/vpl-teacher-tools/.*\.(html|css|json|js)$")
+        self.httpd.add_filter(lambda s: s.replace(b"$VPLLANGUAGE",
+                                                  bytes(self.language, "utf-8") if self.language else b"en"),
+                              r"^/.*\.(html|css|json|js)$")
         self.httpd.add_filter(lambda s: s.replace(b"$LANGSUFFIX",
-                                                  bytes("." + self.language, "utf-8")
-                                                      if self.language and self.language != "en"
+                                                  bytes("." + self.tt_language, "utf-8")
+                                                      if self.tt_language and self.tt_language != "en"
                                                       else b""),
                               r"^/.*\.(html|js)$")
         self.httpd.add_filter(lambda s: s.replace(b"$BRIDGE",

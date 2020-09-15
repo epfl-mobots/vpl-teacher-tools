@@ -21,6 +21,7 @@ class Translate:
             "English": "English",
             "File": "File",
             "French": "French",
+            "Italian (English for Teacher Tools)": "Italian (English for Teacher Tools)",
             "JSON WebSocket": "JSON WebSocket",
             "Log Display in Dashboard": "Log Display in Dashboard",
             "Login Screen QR Code": "Login Screen QR Code",
@@ -49,6 +50,9 @@ on a tablet, scan the QR code above
             }
         else:
             self.dicts[language][key] = translation
+
+    def has_translation(self, language):
+        return language in self.dicts
 
     def set_language(self, language):
         self.language = language

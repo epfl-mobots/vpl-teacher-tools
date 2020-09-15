@@ -239,7 +239,7 @@ window.addEventListener("load", function () {
 			};
             sessionStorage.setItem("options", JSON.stringify(options));
             sessionStorage.setItem("initialFileContent", file.content);
-			document.location = "vpl$LANGSUFFIX.html?ui=$VPLUIURI&robot=sim&uilanguage=$LANGUAGE" +
+			document.location = "vpl$LANGSUFFIX.html?ui=$VPLUIURI&robot=sim&uilanguage=$VPLLANGUAGE" +
 				(teacherFile ? "&role=teacher" : "") +
 				(file.students ? "&user=" + encodeURIComponent(file.students.join(", ")) : "");
 		},

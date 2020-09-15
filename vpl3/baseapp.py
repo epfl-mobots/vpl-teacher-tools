@@ -22,7 +22,8 @@ class ApplicationBase:
     DEFAULT_WS_PORT = Server.DEFAULT_WS_PORT
     DEFAULT_PREFS_PATH = os.path.expanduser("~/vplserver-prefs.json")
     UI_TOC_PATH = "doc/vpl/ui/toc.json"
-    LANGUAGES = {"en", "fr"}
+    LANGUAGES = {"en", "fr", "it"}
+    TT_LANGUAGES = {"en", "fr"}
     BRIDGES = {"none", "tdm", "jws"}
 
     def __init__(self,
@@ -36,12 +37,14 @@ class ApplicationBase:
         self.translate = Translate()
         vpl3.translate_fr.add_translations_fr(self.translate)
         self.logger_lock = threading.Lock()
+        tt_language = language  if self.translate.has_translation(language) else None
         self.server = Server(db_path=db_path,
                              http_port=http_port,
                              ws_port=ws_port,
                              timeout=timeout,
                              ws_link_url=ws_link_url,
                              language=language,
+                             tt_language=tt_language,
                              full_url=full_url,
                              logger=self.logger,
                              update_connection=self.update_connection,
@@ -52,6 +55,7 @@ class ApplicationBase:
         self.http_port = self.server.get_http_port()
         self.no_serial = False
         self.language = language
+        self.tt_language = tt_language
         self.translate.set_language(language)
         self.bridge = "none"  # "tdm" or "jws" or "none"
         self.vpl_ui_set = {"classic"}
@@ -69,7 +73,7 @@ class ApplicationBase:
         # self.start_browser_tt() and self.quit()
 
     def tt_abs_path(self):
-        return f"/tt{'.' + self.language if self.language and self.language != 'en' else ''}.html"
+        return f"/tt{'.' + self.tt_language if self.tt_language and self.tt_language != 'en' else ''}.html"
 
     def tt_url(self, short=False):
         return f"{'' if short else 'http://'}{URLUtil.get_local_IP()}:{self.http_port}{self.tt_abs_path()}"
@@ -125,9 +129,12 @@ class ApplicationBase:
 
     def set_language(self, language):
         self.language = language
-        self.translate.set_language(language)
+        self.tt_language = language if language in self.TT_LANGUAGES else "en"
+        self.translate.set_language(self.tt_language)
         self.server.language = language
+        self.server.tt_language = self.tt_language
         self.server.http_server.language = language
+        self.server.http_server.tt_language = self.tt_language
 
     def set_full_url(self, b):
         self.full_url = b
