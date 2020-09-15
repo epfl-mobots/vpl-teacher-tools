@@ -47,6 +47,11 @@ class Application(ApplicationBase):
                     None,
                     lambda sender: self.menu_item_language("fr")
                 ],
+                [
+                    "Italian (English for Teacher Tools)",
+                    None,
+                    lambda sender: self.menu_item_language("it")
+                ],
                 None,
                 [
                     "Thymio Device Manager",
@@ -212,6 +217,8 @@ class Application(ApplicationBase):
         item.setState_(1 if self.language == "en" else 0)
         item = self.app_objc.getMenuItemWithTitle_inMenu_("French", "Options")
         item.setState_(1 if self.language == "fr" else 0)
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Italian (English for Teacher Tools)", "Options")
+        item.setState_(1 if self.language == "it" else 0)
 
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Thymio Device Manager", "Options")
         item.setState_(1 if self.bridge == "tdm" else 0)
