@@ -1,7 +1,7 @@
 {
 	"i18n": {
 		"it": {
-			"Duplicate action blocks": "Duplicare i blocchi azione",
+			"Same block used multiple times": "Stesso blocco utilizzato più volte",
 			"Rules with same events": "Eventi identici",
 			"Missing action block": "Blocco azione mancante",
 			"Missing event block": "Blocco evento mancante",

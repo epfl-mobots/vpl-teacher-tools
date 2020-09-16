@@ -72,13 +72,13 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 				}
 			}
 
-			var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename);
+			var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
 
 			var tr = document.createElement("tr");
 
 			// icon
 			var td = document.createElement("td");
-			var fileIconURL = {"vpl3": "icon-file-vpl3.svg", "vpl3ui": "icon-file-vpl3ui.svg"}[suffix];
+			var fileIconURL = VPLTeacherTools.FileBrowser.getFileIconURL(file.filename);
 			if (fileIconURL) {
 				var img = document.createElement("img");
 				img.src = fileIconURL;
@@ -174,7 +174,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 			} else {
 				// available in dashboard
 				td = document.createElement("td");
-				if (suffix === "vpl3" || suffix === "vpl3ui") {
+				if (["vpl3", "vpl3ui", "txt", "html", "jpg", "png", "svg"].indexOf(suffix) >= 0) {
 					td.textContent = file.mark ? "\u2612" : "\u2610";
 					td.addEventListener("click", function () {
 						fileBrowser.toggleMark(file.id);
@@ -311,11 +311,17 @@ window.addEventListener("load", function () {
 	});
 
 	function importFile(file, noRename, props) {
+		var isBase64 = VPLTeacherTools.FileBrowser.storeAsBase64(file.name);
 		var reader = new window.FileReader();
 		reader.addEventListener("load", function (event) {
-			fileBrowser.addFile(file.name, event.target.result, noRename, props);
+			var content = event.target.result;
+			if (isBase64) {
+				// skip data: header
+				content = content.slice(content.indexOf(',') + 1);
+			}
+			fileBrowser.addFile(file.name, content, noRename, props);
 		});
-		reader["readAsText"](file);
+		reader[isBase64 ? "readAsDataURL" : "readAsText"](file);
 	}
 
 	document.body.addEventListener("dragover", function (ev) {
@@ -398,7 +404,7 @@ window.addEventListener("load", function () {
 		cancel: VPLTeacherTools.translate("Cancel"),
 		title: VPLTeacherTools.translate("Import Files")
 	}, {
-		accept: ".vpl3,.vpl3ui",
+		accept: ".vpl3,.vpl3ui,.html,.txt,.jpg,.png,.svg",
 		multiple: true
 	});
 	btn.addEventListener("click", function () {

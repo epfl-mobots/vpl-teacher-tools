@@ -149,7 +149,7 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
     {
 		onSuccess: function (files) {
 			files = files.filter(function (file) {
-				return file.mark && /\.vpl3(ui)?$/.test(file.filename);
+				return file.mark && /\.(vpl3(ui)?|txt|html|jpg|png|svg)$/i.test(file.filename);
 			});
             self.files = files.map(function (file) {
                 var file1 = Object.create(file);    // prototype-based "copy"
@@ -282,7 +282,18 @@ VPLTeacherTools.Dashboard.prototype.sendFileById = function (fileId) {
 			if (file.tag) {
 				filename = file.tag + "/" + filename;
 			}
-			self.sendFile(filename, "vpl", file.content);
+			var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(filename).toLowerCase();
+			var kind = {
+				"html": "help",
+				"jpg": "help",
+				"png": "help",
+				"svg": "help",
+				"txt": "help",
+				"vpl3": "vpl",
+				"vpl3ui": "vpl"
+			}[suffix] || "other";
+			var isBase64 = VPLTeacherTools.FileBrowser.storeAsBase64(filename);
+			self.sendFile(filename, kind, file.content, isBase64);
         }
     });
 };

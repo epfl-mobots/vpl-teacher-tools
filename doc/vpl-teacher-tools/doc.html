@@ -99,10 +99,11 @@ main {
 <dd>This is where the list of pupils is managed. Each pupil can be associated to a class. Two pupils cannot share the same name, even if they belong to different classes. Pupils can be added, renamed, or removed. Pupils should not be removed once the they have generated data with VPL (programs or activity recording).</dd>
 
 <dt>Files</dt>
-<dd>The teacher has a file browser web app where they can upload files or create programs. Two types of files are supported for the moment:
+<dd>The teacher has a file browser web app where they can upload files or create programs. Three types of files are supported for the moment:
 <ul>
 <li>UI configuration files which defined which event and action blocs are available and which UI button is displayed (extension <code>.vpl3ui</code>);
 <li>VPL programs, also with UI configuration (extension <code>.vpl3</code>). VPL programs can be empty, ready to be completed by pupils.</li>
+<li>Help files, with extensions .html, .txt, .jpg, .png, or .svg. A help file can be sent to the pupils from the dashboard; it overrides the VPL documentation and is displayed when the Help button is clicked in VPL. You can prepare help files to explain what you expect from your pupils. HTML and text files are displayed with scrollbars; images (jpeg, png or svg) are centered. For technical reasons related to the browser, the file length should be limited to a few hundred kilobytes.</li>
 </ul>
 <dd>Pupils are asked to modify existing program files, typically starting from an empty program. This way, they don't have to enter filenames and manage different versions. The teacher should prepare one file for each program they expect, even if they're the same.</dd>
 <dd>Initial UI configuration files are provided. They can be duplicated and modified. A program is always based on a UI configuration file. To modify a UI configuration file or a program file, select it, click the “Edit” button to open it in the VPL tab, and switch back to the file tab when you're done (files are saved automatically).</dd>

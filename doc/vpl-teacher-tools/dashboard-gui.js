@@ -154,9 +154,8 @@ function fillFileTable(fileArray, dashboard) {
 		var tr = document.createElement("tr");
 
 		// icon
-		var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename);
 		var td = document.createElement("td");
-		var fileIconURL = {"vpl3": "icon-file-vpl3.svg", "vpl3ui": "icon-file-vpl3ui.svg"}[suffix];
+		var fileIconURL = VPLTeacherTools.FileBrowser.getFileIconURL(file.filename);
 		if (fileIconURL) {
 			var img = document.createElement("img");
 			img.src = fileIconURL;
@@ -184,6 +183,7 @@ function fillFileTable(fileArray, dashboard) {
 		}
 		tr.appendChild(td);
 
+		// button to send file to students
 		td = document.createElement("td");
 		var btn = document.createElement("button");
 		btn.textContent = "\u2197";

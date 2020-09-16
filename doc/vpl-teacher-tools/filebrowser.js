@@ -439,7 +439,7 @@ VPLTeacherTools.FileBrowser.prototype.exportFile = function () {
         var self = this;
         this.client.getFile(file.id, {
             onSuccess: function (file) {
-                var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename);
+                var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
                 var mimetype = VPLTeacherTools.FileBrowser.suffixToMimetype(suffix);
                 VPLTeacherTools.FileBrowser.downloadText(file.content, file.filename, mimetype);
             }
@@ -472,7 +472,7 @@ VPLTeacherTools.FileBrowser.prototype.deleteFiles = function () {
 
 VPLTeacherTools.FileBrowser.prototype.extractConfigFromVPL3 = function () {
     var file = this.selectedFile();
-    var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename);
+    var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
     if (suffix === "vpl3") {
         var self = this;
         this.client.extractConfigFromVPL3(file.id,
@@ -489,6 +489,24 @@ VPLTeacherTools.FileBrowser.prototype.extractConfigFromVPL3 = function () {
 
 VPLTeacherTools.FileBrowser.getFileSuffix = function (filename) {
     return /(\.[^.]*|)$/.exec(filename)[0].slice(1);
+};
+
+VPLTeacherTools.FileBrowser.getFileIconURL = function (filename) {
+    var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(filename).toLowerCase();
+	return fileIconURL = {
+		"html": "icon-file-html.svg",
+		"jpg": "icon-file-img.svg",
+		"png": "icon-file-img.svg",
+		"svg": "icon-file-img.svg",
+		"txt": "icon-file-txt.svg",
+		"vpl3": "icon-file-vpl3.svg",
+		"vpl3ui": "icon-file-vpl3ui.svg"
+	}[suffix] || null;
+};
+
+VPLTeacherTools.FileBrowser.storeAsBase64 = function (filename) {
+    var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(filename).toLowerCase();
+    return ["jpg", "png"].indexOf(suffix) >= 0;
 };
 
 VPLTeacherTools.FileBrowser.suffixToMimetype = function (suffix) {

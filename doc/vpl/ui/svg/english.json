@@ -1,7 +1,7 @@
 {
 	"i18n": {
 		"en": {
-			"Duplicate action blocks": "Duplicate action blocks",
+			"Same block used multiple times": "Same block used multiple times",
 			"Rules with same events": "Rules with same events",
 			"Missing action block": "Missing action block",
 			"Missing event block": "Missing event block",
