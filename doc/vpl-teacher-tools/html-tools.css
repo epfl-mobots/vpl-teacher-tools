@@ -15,6 +15,8 @@ nav ul {
 
 nav li {
 	float: left;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 nav a {
@@ -168,6 +170,7 @@ td {
 	border-style: none;
 	border-color: silver;
 	user-select: none;
+	-webkit-user-select: none;
 }
 td.selected {
 	border-width: 2px;
