@@ -54,6 +54,28 @@ window.addEventListener("load", function () {
 		simTab.setAttribute("class", "current");
 		window["vplApp"].setView(["sim"]);
 	}, false);
+
+	// resize vpl and sim containers
+	var div = document.getElementById("vpl-editor");
+	function resizeDiv() {
+		// resize div
+		var divComputedStyle = window.getComputedStyle(div);
+		div.style.height = (window.innerHeight - div.getBoundingClientRect().y
+			- parseFloat(divComputedStyle["margin-bottom"])) + "px";
+		var width = parseFloat(divComputedStyle["width"]);
+		var height = parseFloat(divComputedStyle["height"]);
+
+		// resize canvas
+		var canvas = document.getElementById("programCanvas");
+		var backingScale = "devicePixelRatio" in window ? window["devicePixelRatio"] : 1;
+		canvas.width = width * backingScale;
+		canvas.height = height * backingScale;
+		canvas.style.width = width + "px";
+		canvas.style.height = height + "px";
+	}
+	resizeDiv();
+
+	window.addEventListener("resize", resizeDiv);
 }, false);
 
 window.addEventListener("beforeunload", function () {

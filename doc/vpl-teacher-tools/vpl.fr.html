@@ -27,14 +27,13 @@ body {
 	display: none;
 }
 
-#programCanvas {
-	width: 100%;
-	heigh: 100%;
-}
-
 </style>
 
 <title>VPL Tools</title>
+
+<script>
+window["vplDisableResize"] = true;
+</script>
 
 <script src="../vpl/vpl-min.js"></script>
 <script src="../vpl/thymio/thymio.js"></script>
@@ -65,7 +64,7 @@ body {
 
 	<div id="vpl-editor">
 
-	<canvas id="programCanvas" width="900" height="700"></canvas>
+	<canvas id="programCanvas" width="10" height="10"></canvas>
 
 	<input id="input">
 
