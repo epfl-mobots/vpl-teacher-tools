@@ -75,6 +75,12 @@ main > p {
 	margin-left: 3em;
 }
 
+#viewer {
+	margin: 3em;
+	padding: 2em;
+	border: solid 1px black;
+}
+
 div.columncontainer {
 	display: flex;
 	margin-left: 3em;

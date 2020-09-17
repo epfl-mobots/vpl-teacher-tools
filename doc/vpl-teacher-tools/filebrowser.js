@@ -198,7 +198,21 @@ VPLTeacherTools.FileBrowser.prototype.canCreateProgramFile = function () {
 };
 
 VPLTeacherTools.FileBrowser.prototype.canEditTeacherFile = function () {
-    return this.countSelectedNotRenamedFiles() == 1;
+    if (this.countSelectedNotRenamedFiles() !== 1) {
+        return false;
+    }
+    var file = this.selectedFile();
+    var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
+    return ["vpl3", "vpl3ui"].indexOf(suffix) >= 0;
+};
+
+VPLTeacherTools.FileBrowser.prototype.canPreviewTeacherFile = function () {
+    if (this.countSelectedNotRenamedFiles() !== 1) {
+        return false;
+    }
+    var file = this.selectedFile();
+    var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
+    return ["txt", "html", "jpg", "png", "svg"].indexOf(suffix) >= 0;
 };
 
 VPLTeacherTools.FileBrowser.prototype.canGetConfigFile = function () {
@@ -517,6 +531,7 @@ VPLTeacherTools.FileBrowser.suffixToMimetype = function (suffix) {
         "json": "application/json",
         "pdf": "application/pdf",
         "png": "image/png",
+        "svg": "image/svg+xml",
         "txt": "text/plain"
     }[suffix] || "application/octet-stream";
 };

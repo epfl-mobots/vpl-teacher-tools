@@ -139,6 +139,9 @@ TOOLSFILES = \
 	doc/vpl-teacher-tools/filebrowser.js \
 	doc/vpl-teacher-tools/filedialog.js \
 	doc/vpl-teacher-tools/html-tools.css \
+	doc/vpl-teacher-tools/icon-file-txt.svg \
+	doc/vpl-teacher-tools/icon-file-html.svg \
+	doc/vpl-teacher-tools/icon-file-img.svg \
 	doc/vpl-teacher-tools/icon-file-vpl3.svg \
 	doc/vpl-teacher-tools/icon-file-vpl3ui.svg \
 	doc/vpl-teacher-tools/initdb-dev-gui.js \
@@ -164,6 +167,9 @@ TOOLSFILES = \
 	doc/vpl-teacher-tools/ui.json \
 	doc/vpl-teacher-tools/util-files.js \
 	doc/vpl-teacher-tools/util-url.js \
+	doc/vpl-teacher-tools/viewer-gui.js \
+	doc/vpl-teacher-tools/viewer.html \
+	doc/vpl-teacher-tools/viewer.fr.html \
 	doc/vpl-teacher-tools/vpl-about.html \
 	doc/vpl-teacher-tools/vpl-gui.js \
 	doc/vpl-teacher-tools/vpl.html \

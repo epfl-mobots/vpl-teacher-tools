@@ -7,6 +7,7 @@ function updateGUI(fileBrowser) {
 	enable("btn-new", fileBrowser.canCreateProgramFile());
 	enable("btn-get-conf", fileBrowser.canGetConfigFile());
 	enable("btn-edit-teacher", fileBrowser.canEditTeacherFile());
+	enable("btn-preview-teacher", fileBrowser.canPreviewTeacherFile());
 	enable("btn-rename-teacher", fileBrowser.canRenameTeacherFile());
 	enable("btn-move-teacher", fileBrowser.canMoveTeacherFile());
 	enable("btn-duplicate-teacher", fileBrowser.canDuplicateTeacherFile());
@@ -231,17 +232,33 @@ window.addEventListener("load", function () {
 		},
 		onOpen: function (file, readOnly) {
 			var teacherFile = !file.owner || file.owner.length == 0;
+            var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
 			var options = {
 				"initialFileName": file.filename,
+				"suffix": suffix,
+				"mimetype": VPLTeacherTools.FileBrowser.suffixToMimetype(suffix),
+				"isBase64": VPLTeacherTools.FileBrowser.storeAsBase64(file.filename),
 				"fileId": teacherFile ? file.id : null,
 				"readOnly": readOnly,
 				"customizationMode": /\.vpl3ui/.test(file.filename)
 			};
             sessionStorage.setItem("options", JSON.stringify(options));
             sessionStorage.setItem("initialFileContent", file.content);
-			document.location = "vpl$LANGSUFFIX.html?ui=$VPLUIURI&robot=sim&uilanguage=$VPLLANGUAGE" +
-				(teacherFile ? "&role=teacher" : "") +
-				(file.students ? "&user=" + encodeURIComponent(file.students.join(", ")) : "");
+			switch (suffix) {
+			case "vpl3":
+			case "vpl3ui":
+				document.location = "vpl$LANGSUFFIX.html?ui=$VPLUIURI&robot=sim&uilanguage=$VPLLANGUAGE" +
+					(teacherFile ? "&role=teacher" : "") +
+					(file.students ? "&user=" + encodeURIComponent(file.students.join(", ")) : "");
+				break;
+			case "jpg":
+			case "png":
+			case "svg":
+			case "html":
+			case "txt":
+				document.location = "viewer$LANGSUFFIX.html";
+				break;
+			}
 		},
 		onClasses: function (classes, currentClass) {
 			// fill class filter
@@ -379,6 +396,11 @@ window.addEventListener("load", function () {
 	}, false);
 
 	btn = document.getElementById("btn-edit-teacher");
+	btn.addEventListener("click", function () {
+		fileBrowser.openFile(false);
+	}, false);
+
+	btn = document.getElementById("btn-preview-teacher");
 	btn.addEventListener("click", function () {
 		fileBrowser.openFile(false);
 	}, false);
