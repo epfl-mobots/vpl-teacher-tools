@@ -371,7 +371,7 @@ window.addEventListener("load", function () {
 	var useJWS = "$BRIDGE" === "jws";
 	var tdmURL = VPLTeacherTools.getHashOption("w") || "ws://" + document.location.hostname + ":8597/";
 	var jwsURL = VPLTeacherTools.getHashOption("w") || "ws://" + document.location.hostname + ":8002/";
-	var url0 = "/vpl/vpl.html?ui=ui/classic/ui.json&uilanguage=$LANGUAGE&server=ws://" + document.location.hostname + ":8001/";
+	var url0 = "/vpl/vpl.html?ui=ui/classic/ui.json&uilanguage=$VPLLANGUAGE&server=ws://" + document.location.hostname + ":8001/";
 	var pairing = new VPLTeacherTools.Pairing({
 		tdmURL: useTDM ? tdmURL : null,
 		jwsURL: useJWS ? jwsURL : null,

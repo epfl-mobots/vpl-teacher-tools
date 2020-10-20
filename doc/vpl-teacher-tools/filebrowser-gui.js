@@ -247,7 +247,7 @@ window.addEventListener("load", function () {
 			switch (suffix) {
 			case "vpl3":
 			case "vpl3ui":
-				document.location = "vpl$LANGSUFFIX.html?ui=$VPLUIURI&robot=sim&uilanguage=$VPLLANGUAGE" +
+				document.location = "vpl$LANGSUFFIX.html?ui=$VPLUIURI&robot=sim&uilanguage=$LANGUAGE" +
 					(teacherFile ? "&role=teacher" : "") +
 					(file.students ? "&user=" + encodeURIComponent(file.students.join(", ")) : "");
 				break;
