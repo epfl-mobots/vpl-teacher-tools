@@ -48,6 +48,11 @@ class Application(ApplicationBase):
                     lambda sender: self.menu_item_language("fr")
                 ],
                 [
+                    "German (English for Teacher Tools)",
+                    None,
+                    lambda sender: self.menu_item_language("de")
+                ],
+                [
                     "Italian (English for Teacher Tools)",
                     None,
                     lambda sender: self.menu_item_language("it")
@@ -217,6 +222,8 @@ class Application(ApplicationBase):
         item.setState_(1 if self.language == "en" else 0)
         item = self.app_objc.getMenuItemWithTitle_inMenu_("French", "Options")
         item.setState_(1 if self.language == "fr" else 0)
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("German (English for Teacher Tools)", "Options")
+        item.setState_(1 if self.language == "de" else 0)
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Italian (English for Teacher Tools)", "Options")
         item.setState_(1 if self.language == "it" else 0)
 

@@ -22,7 +22,7 @@ class ApplicationBase:
     DEFAULT_WS_PORT = Server.DEFAULT_WS_PORT
     DEFAULT_PREFS_PATH = os.path.expanduser("~/vplserver-prefs.json")
     UI_TOC_PATH = "doc/vpl/ui/toc.json"
-    LANGUAGES = {"en", "fr", "it"}
+    LANGUAGES = {"en", "fr", "de", "it"}
     TT_LANGUAGES = {"en", "fr"}
     BRIDGES = {"none", "tdm", "jws"}
 

@@ -14,6 +14,7 @@ def add_translations_fr(tr):
         "English": "Anglais",
         "File": "Fichier",
         "French": "Français",
+        "German (English for Teacher Tools)": "Allemand (anglais pour les outils pour les enseignants)",
         "Italian (English for Teacher Tools)": "Italien (anglais pour les outils pour les enseignants)",
         "JSON WebSocket": "WebSocket JSON",
         "Log Display in Dashboard": "Journal dans le tableau de bord",

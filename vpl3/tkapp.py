@@ -126,6 +126,10 @@ class Application(ApplicationBase, tk.Tk):
                                           command=lambda: change_language("fr"))
         menu_items["French"] = (self.options_menu, self.options_menu.index("end"))
         self.options_menu.add_radiobutton(variable=self.v_language,
+                                          value="de",
+                                          command=lambda: change_language("de"))
+        menu_items["German (English for Teacher Tools)"] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_radiobutton(variable=self.v_language,
                                           value="it",
                                           command=lambda: change_language("it"))
         menu_items["Italian (English for Teacher Tools)"] = (self.options_menu, self.options_menu.index("end"))
