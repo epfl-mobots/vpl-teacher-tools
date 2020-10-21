@@ -22,7 +22,7 @@ class Application(ApplicationBase, tk.Tk):
         self.protocol("WM_DELETE_WINDOW", self.quit)  # close widget
         self.createcommand("exit", self.quit)  # Quit menu
 
-        self.geometry("500x400")
+        self.geometry("600x420")
         self.resizable(width=False, height=False)
 
         padding = 10

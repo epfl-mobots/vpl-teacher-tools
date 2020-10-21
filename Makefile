@@ -12,7 +12,8 @@ ROOTFILES = \
 	launch_windows.bat \
 	launch_mac.command \
 	launch_wx.py \
-	setup.py
+	setup.py \
+	setup_app.py
 
 VPL3PKGFILES = \
 	vpl3tt/__init__.py \
@@ -27,6 +28,7 @@ VPL3PKGFILES = \
 	vpl3tt/server_thymio.py \
 	vpl3tt/server_ws.py \
 	vpl3tt/tkapp.py \
+	vpl3tt/objcapp.py \
 	vpl3tt/translate.py \
 	vpl3tt/translate_fr.py \
 	vpl3tt/urltiny.py \
@@ -193,7 +195,9 @@ DATAFILES = \
 	vpl3tt/data/simple-track.vpl3ui
 
 .PHONY: all
-all:
+all: $(DIR).zip whl VPLServer.dmg
+
+$(DIR).zip:
 	rm -Rf $(DIR)
 	mkdir -p $(DIR)/vpl3tt
 	mkdir -p $(DIR)/vpl3tt/doc/vpl/thymio
@@ -215,10 +219,15 @@ all:
 	cp -p $(DATAFILES) $(DIR)/vpl3tt/data
 	zip -r - $(DIR) >$(DIR).zip
 
-.PHONY: VPL3Server.app
-VPL3Server.app: setup.py launch_objc.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES)
+.PHONY: whl
+whl: setup.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES)
 	rm -rf build
-	python3 setup.py py2app
+	python3 setup.py bdist_wheel sdist
+
+.PHONY: VPL3Server.app
+VPL3Server.app: setup_app.py launch_objc.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES)
+	rm -rf build
+	python3 setup_app.py py2app
 
 VPLServer.dmg: VPL3Server.app readme-mac.txt
 	rm -Rf "VPL Server" $@
