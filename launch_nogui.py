@@ -5,8 +5,8 @@
 
 # server app launcher without graphical user interface
 
-from vpl3.launch import launch
-from vpl3.noguiapp import Application
+from vpl3tt.launch import launch
+from vpl3tt.noguiapp import Application
 
 if __name__ == "__main__":
     launch(Application)

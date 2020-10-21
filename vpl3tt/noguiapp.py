@@ -5,7 +5,7 @@
 
 # server class without gui
 
-from vpl3.baseapp import ApplicationBase
+from vpl3tt.baseapp import ApplicationBase
 import time
 
 

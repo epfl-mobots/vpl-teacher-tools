@@ -5,9 +5,9 @@
 
 # server app launcher with tkinter user interface
 
-from vpl3.launch import launch
-from vpl3.tkapp import Application
-from vpl3.server_thymio import ThymioWebSocketServer
+from vpl3tt.launch import launch
+from vpl3tt.tkapp import Application
+from vpl3tt.server_thymio import ThymioWebSocketServer
 
 import threading
 import asyncio
@@ -25,7 +25,7 @@ class ApplicationJWS(Application):
             self.server_thymio.run()
 
         try:
-            from vpl3.thymio import Connection
+            from vpl3tt.thymio import Connection
             Connection.serial_default_port()
             self.ws_thymio = threading.Thread(target=thymio_thread)
             self.ws_thymio.start()

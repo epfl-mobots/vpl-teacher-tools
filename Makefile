@@ -15,211 +15,208 @@ ROOTFILES = \
 	setup.py
 
 VPL3PKGFILES = \
-	vpl3/__init__.py \
-	vpl3/baseapp.py \
-	vpl3/cacaoapp.py \
-	vpl3/com_http.py \
-	vpl3/com_ws.py \
-	vpl3/db.py \
-	vpl3/launch.py \
-	vpl3/server.py \
-	vpl3/server_http.py \
-	vpl3/server_thymio.py \
-	vpl3/server_ws.py \
-	vpl3/tkapp.py \
-	vpl3/translate.py \
-	vpl3/translate_fr.py \
-	vpl3/urltiny.py \
-	vpl3/urlutil.py \
-	vpl3/wxapp.py
-
-THYMIOPKGFILES = \
-	thymio/__init__.py \
-	thymio/assembler.py \
-	thymio/message.py \
-	thymio/connection.py \
-	thymio/thymio.py \
+	vpl3tt/__init__.py \
+	vpl3tt/baseapp.py \
+	vpl3tt/cacaoapp.py \
+	vpl3tt/com_http.py \
+	vpl3tt/com_ws.py \
+	vpl3tt/db.py \
+	vpl3tt/launch.py \
+	vpl3tt/server.py \
+	vpl3tt/server_http.py \
+	vpl3tt/server_thymio.py \
+	vpl3tt/server_ws.py \
+	vpl3tt/tkapp.py \
+	vpl3tt/translate.py \
+	vpl3tt/translate_fr.py \
+	vpl3tt/urltiny.py \
+	vpl3tt/urlutil.py \
+	vpl3tt/wxapp.py
 
 DOCFILES = \
-	doc/client.js \
-	doc/db.html \
-	doc/index.html \
-	doc/login.en.html \
-	doc/login.fr.html \
-	doc/login.it.html \
-	doc/login-gui.js \
-	doc/tr-mappings.json \
-	doc/tt.html \
-	doc/tt.fr.html
+	vpl3tt/doc/client.js \
+	vpl3tt/doc/db.html \
+	vpl3tt/doc/index.html \
+	vpl3tt/doc/login.en.html \
+	vpl3tt/doc/login.fr.html \
+	vpl3tt/doc/login.it.html \
+	vpl3tt/doc/login-gui.js \
+	vpl3tt/doc/tr-mappings.json \
+	vpl3tt/doc/tt.html \
+	vpl3tt/doc/tt.fr.html
 
 VPLFILES = \
-	doc/vpl/EPFL_Logo_SVG.svg \
-	doc/vpl/grs_logo_RGB.svg \
-	doc/vpl/Logo_vpl.svg \
-	doc/vpl/vpl-about.html \
-	doc/vpl/vpl.html \
-	doc/vpl/vpl-min.js
+	vpl3tt/doc/vpl/EPFL_Logo_SVG.svg \
+	vpl3tt/doc/vpl/grs_logo_RGB.svg \
+	vpl3tt/doc/vpl/Logo_vpl.svg \
+	vpl3tt/doc/vpl/vpl-about.html \
+	vpl3tt/doc/vpl/vpl.html \
+	vpl3tt/doc/vpl/vpl-min.js
 
 THYMIOFILES = \
-	doc/vpl/thymio/thymio.js
+	vpl3tt/doc/vpl/thymio/thymio.js
 
 UIFILES = \
-	doc/vpl/ui/toc.json
+	vpl3tt/doc/vpl/ui/toc.json
 
 UICLASSICFILES = \
-	doc/vpl/ui/classic/aesl.json \
-	doc/vpl/ui/classic/aseba.json \
-	doc/vpl/ui/classic/block-english.json \
-	doc/vpl/ui/classic/block-french.json \
-	doc/vpl/ui/classic/block-list.json \
-	doc/vpl/ui/classic/classic.css \
-	doc/vpl/ui/classic/cmd-sim-english.json \
-	doc/vpl/ui/classic/cmd-sim-french.json \
-	doc/vpl/ui/classic/cmd-vpl-english.json \
-	doc/vpl/ui/classic/cmd-vpl-french.json \
-	doc/vpl/ui/classic/doctemplate-english.html \
-	doc/vpl/ui/classic/doctemplate-french.html \
-	doc/vpl/ui/classic/french.json \
-	doc/vpl/ui/classic/help-blocks-english.json \
-	doc/vpl/ui/classic/help-blocks-french.json \
-	doc/vpl/ui/classic/help-buttons-english.json \
-	doc/vpl/ui/classic/help-buttons-french.json \
-	doc/vpl/ui/classic/js.json \
-	doc/vpl/ui/classic/l2.json \
-	doc/vpl/ui/classic/python.json \
-	doc/vpl/ui/classic/typical-param-set.json \
-	doc/vpl/ui/classic/typical-states.json \
-	doc/vpl/ui/classic/ui.json
+	vpl3tt/doc/vpl/ui/classic/aesl.json \
+	vpl3tt/doc/vpl/ui/classic/aseba.json \
+	vpl3tt/doc/vpl/ui/classic/block-en.json \
+	vpl3tt/doc/vpl/ui/classic/block-fr.json \
+	vpl3tt/doc/vpl/ui/classic/block-list.json \
+	vpl3tt/doc/vpl/ui/classic/classic.css \
+	vpl3tt/doc/vpl/ui/classic/cmd-sim-en.json \
+	vpl3tt/doc/vpl/ui/classic/cmd-sim-fr.json \
+	vpl3tt/doc/vpl/ui/classic/cmd-vpl-en.json \
+	vpl3tt/doc/vpl/ui/classic/cmd-vpl-fr.json \
+	vpl3tt/doc/vpl/ui/classic/doctemplate-en.html \
+	vpl3tt/doc/vpl/ui/classic/doctemplate-fr.html \
+	vpl3tt/doc/vpl/ui/classic/messages-fr.json \
+	vpl3tt/doc/vpl/ui/classic/help-blocks-en.json \
+	vpl3tt/doc/vpl/ui/classic/help-blocks-fr.json \
+	vpl3tt/doc/vpl/ui/classic/help-buttons-en.json \
+	vpl3tt/doc/vpl/ui/classic/help-buttons-fr.json \
+	vpl3tt/doc/vpl/ui/classic/js.json \
+	vpl3tt/doc/vpl/ui/classic/l2.json \
+	vpl3tt/doc/vpl/ui/classic/python.json \
+	vpl3tt/doc/vpl/ui/classic/typical-param-set.json \
+	vpl3tt/doc/vpl/ui/classic/typical-states.json \
+	vpl3tt/doc/vpl/ui/classic/ui.json
 
 UISVGFILES = \
-	doc/vpl/ui/svg/aesl.json \
-	doc/vpl/ui/svg/aseba.json \
-	doc/vpl/ui/svg/block-english.json \
-	doc/vpl/ui/svg/block-french.json \
-	doc/vpl/ui/svg/block-italian.json \
-	doc/vpl/ui/svg/block-list.json \
-	doc/vpl/ui/svg/Blocks.svg \
-	doc/vpl/ui/svg/Blocks16.svg \
-	doc/vpl/ui/svg/buttons.json \
-	doc/vpl/ui/svg/cmd-sim-english.json \
-	doc/vpl/ui/svg/cmd-sim-french.json \
-	doc/vpl/ui/svg/cmd-sim-italian.json \
-	doc/vpl/ui/svg/cmd-vpl-english.json \
-	doc/vpl/ui/svg/cmd-vpl-french.json \
-	doc/vpl/ui/svg/cmd-vpl-italian.json \
-	doc/vpl/ui/svg/doctemplate-english.html \
-	doc/vpl/ui/svg/doctemplate-french.html \
-	doc/vpl/ui/svg/doctemplate-italian.html \
-	doc/vpl/ui/svg/english.json \
-	doc/vpl/ui/svg/french.json \
-	doc/vpl/ui/svg/italian.json \
-	doc/vpl/ui/svg/help-blocks-english.json \
-	doc/vpl/ui/svg/help-blocks-french.json \
-	doc/vpl/ui/svg/help-blocks-italian.json \
-	doc/vpl/ui/svg/Icons.svg \
-	doc/vpl/ui/svg/js.json \
-	doc/vpl/ui/svg/l2.json \
-	doc/vpl/ui/svg/python.json \
-	doc/vpl/ui/svg/svg.css \
-	doc/vpl/ui/svg/toolbars.json \
-	doc/vpl/ui/svg/ui.json
+	vpl3tt/doc/vpl/ui/svg/aesl.json \
+	vpl3tt/doc/vpl/ui/svg/aseba.json \
+	vpl3tt/doc/vpl/ui/svg/block-en.json \
+	vpl3tt/doc/vpl/ui/svg/block-de.json \
+	vpl3tt/doc/vpl/ui/svg/block-fr.json \
+	vpl3tt/doc/vpl/ui/svg/block-it.json \
+	vpl3tt/doc/vpl/ui/svg/block-list.json \
+	vpl3tt/doc/vpl/ui/svg/Blocks.svg \
+	vpl3tt/doc/vpl/ui/svg/Blocks16.svg \
+	vpl3tt/doc/vpl/ui/svg/buttons.json \
+	vpl3tt/doc/vpl/ui/svg/cmd-sim-en.json \
+	vpl3tt/doc/vpl/ui/svg/cmd-sim-de.json \
+	vpl3tt/doc/vpl/ui/svg/cmd-sim-fr.json \
+	vpl3tt/doc/vpl/ui/svg/cmd-sim-it.json \
+	vpl3tt/doc/vpl/ui/svg/cmd-vpl-en.json \
+	vpl3tt/doc/vpl/ui/svg/cmd-vpl-de.json \
+	vpl3tt/doc/vpl/ui/svg/cmd-vpl-fr.json \
+	vpl3tt/doc/vpl/ui/svg/cmd-vpl-it.json \
+	vpl3tt/doc/vpl/ui/svg/doctemplate-en.html \
+	vpl3tt/doc/vpl/ui/svg/doctemplate-de.html \
+	vpl3tt/doc/vpl/ui/svg/doctemplate-fr.html \
+	vpl3tt/doc/vpl/ui/svg/doctemplate-it.html \
+	vpl3tt/doc/vpl/ui/svg/messages-en.json \
+	vpl3tt/doc/vpl/ui/svg/messages-de.json \
+	vpl3tt/doc/vpl/ui/svg/messages-fr.json \
+	vpl3tt/doc/vpl/ui/svg/messages-it.json \
+	vpl3tt/doc/vpl/ui/svg/help-blocks-en.json \
+	vpl3tt/doc/vpl/ui/svg/help-blocks-de.json \
+	vpl3tt/doc/vpl/ui/svg/help-blocks-fr.json \
+	vpl3tt/doc/vpl/ui/svg/help-blocks-it.json \
+	vpl3tt/doc/vpl/ui/svg/Icons.svg \
+	vpl3tt/doc/vpl/ui/svg/js.json \
+	vpl3tt/doc/vpl/ui/svg/l2.json \
+	vpl3tt/doc/vpl/ui/svg/python.json \
+	vpl3tt/doc/vpl/ui/svg/svg.css \
+	vpl3tt/doc/vpl/ui/svg/toolbars.json \
+	vpl3tt/doc/vpl/ui/svg/ui.json
 
 TOOLSFILES = \
-	doc/vpl-teacher-tools/dashboard-gui.js \
-	doc/vpl-teacher-tools/dashboard.html \
-	doc/vpl-teacher-tools/dashboard.fr.html \
-	doc/vpl-teacher-tools/dashboard.js \
-	doc/vpl-teacher-tools/dev.html \
-	doc/vpl-teacher-tools/dev.fr.html \
-	doc/vpl-teacher-tools/doc.html \
-	doc/vpl-teacher-tools/doc.fr.html \
-	doc/vpl-teacher-tools/filebrowser-gui.js \
-	doc/vpl-teacher-tools/filebrowser.html \
-	doc/vpl-teacher-tools/filebrowser.fr.html \
-	doc/vpl-teacher-tools/filebrowser.js \
-	doc/vpl-teacher-tools/filedialog.js \
-	doc/vpl-teacher-tools/html-tools.css \
-	doc/vpl-teacher-tools/icon-file-txt.svg \
-	doc/vpl-teacher-tools/icon-file-html.svg \
-	doc/vpl-teacher-tools/icon-file-img.svg \
-	doc/vpl-teacher-tools/icon-file-vpl3.svg \
-	doc/vpl-teacher-tools/icon-file-vpl3ui.svg \
-	doc/vpl-teacher-tools/initdb-dev-gui.js \
-	doc/vpl-teacher-tools/initdb-dev.html \
-	doc/vpl-teacher-tools/initdb-dev.fr.html \
-	doc/vpl-teacher-tools/json-ws-bridge-api.js \
-	doc/vpl-teacher-tools/login.js \
-	doc/vpl-teacher-tools/Logo_vpl.svg \
-	doc/vpl-teacher-tools/ns.js \
-	doc/vpl-teacher-tools/pairing-gui.js \
-	doc/vpl-teacher-tools/pairing.html \
-	doc/vpl-teacher-tools/pairing.fr.html \
-	doc/vpl-teacher-tools/robots.js \
-	doc/vpl-teacher-tools/pairing.js \
-	doc/vpl-teacher-tools/README.md \
-	doc/vpl-teacher-tools/students.html \
-	doc/vpl-teacher-tools/students-gui.js \
-	doc/vpl-teacher-tools/students.js \
-	doc/vpl-teacher-tools/students.fr.html \
-	doc/vpl-teacher-tools/student-debug.html \
-	doc/vpl-teacher-tools/student-debug.js \
-	doc/vpl-teacher-tools/translate.js \
-	doc/vpl-teacher-tools/ui.json \
-	doc/vpl-teacher-tools/util-files.js \
-	doc/vpl-teacher-tools/util-url.js \
-	doc/vpl-teacher-tools/viewer-gui.js \
-	doc/vpl-teacher-tools/viewer.html \
-	doc/vpl-teacher-tools/viewer.fr.html \
-	doc/vpl-teacher-tools/vpl-about.html \
-	doc/vpl-teacher-tools/vpl-gui.js \
-	doc/vpl-teacher-tools/vpl.html \
-	doc/vpl-teacher-tools/vpl.fr.html \
-	doc/vpl-teacher-tools/vplurl.js \
-    doc/vpl-teacher-tools/vpl_load.png \
-    doc/vpl-teacher-tools/vpl_new.png \
-    doc/vpl-teacher-tools/vpl_run.png \
-    doc/vpl-teacher-tools/vpl_stop.png
+	vpl3tt/doc/vpl-teacher-tools/dashboard-gui.js \
+	vpl3tt/doc/vpl-teacher-tools/dashboard.html \
+	vpl3tt/doc/vpl-teacher-tools/dashboard.fr.html \
+	vpl3tt/doc/vpl-teacher-tools/dashboard.js \
+	vpl3tt/doc/vpl-teacher-tools/dev.html \
+	vpl3tt/doc/vpl-teacher-tools/dev.fr.html \
+	vpl3tt/doc/vpl-teacher-tools/doc.html \
+	vpl3tt/doc/vpl-teacher-tools/doc.fr.html \
+	vpl3tt/doc/vpl-teacher-tools/filebrowser-gui.js \
+	vpl3tt/doc/vpl-teacher-tools/filebrowser.html \
+	vpl3tt/doc/vpl-teacher-tools/filebrowser.fr.html \
+	vpl3tt/doc/vpl-teacher-tools/filebrowser.js \
+	vpl3tt/doc/vpl-teacher-tools/filedialog.js \
+	vpl3tt/doc/vpl-teacher-tools/html-tools.css \
+	vpl3tt/doc/vpl-teacher-tools/icon-file-txt.svg \
+	vpl3tt/doc/vpl-teacher-tools/icon-file-html.svg \
+	vpl3tt/doc/vpl-teacher-tools/icon-file-img.svg \
+	vpl3tt/doc/vpl-teacher-tools/icon-file-vpl3.svg \
+	vpl3tt/doc/vpl-teacher-tools/icon-file-vpl3ui.svg \
+	vpl3tt/doc/vpl-teacher-tools/initdb-dev-gui.js \
+	vpl3tt/doc/vpl-teacher-tools/initdb-dev.html \
+	vpl3tt/doc/vpl-teacher-tools/initdb-dev.fr.html \
+	vpl3tt/doc/vpl-teacher-tools/json-ws-bridge-api.js \
+	vpl3tt/doc/vpl-teacher-tools/login.js \
+	vpl3tt/doc/vpl-teacher-tools/Logo_vpl.svg \
+	vpl3tt/doc/vpl-teacher-tools/ns.js \
+	vpl3tt/doc/vpl-teacher-tools/pairing-gui.js \
+	vpl3tt/doc/vpl-teacher-tools/pairing.html \
+	vpl3tt/doc/vpl-teacher-tools/pairing.fr.html \
+	vpl3tt/doc/vpl-teacher-tools/robots.js \
+	vpl3tt/doc/vpl-teacher-tools/pairing.js \
+	vpl3tt/doc/vpl-teacher-tools/README.md \
+	vpl3tt/doc/vpl-teacher-tools/students.html \
+	vpl3tt/doc/vpl-teacher-tools/students-gui.js \
+	vpl3tt/doc/vpl-teacher-tools/students.js \
+	vpl3tt/doc/vpl-teacher-tools/students.fr.html \
+	vpl3tt/doc/vpl-teacher-tools/student-debug.html \
+	vpl3tt/doc/vpl-teacher-tools/student-debug.js \
+	vpl3tt/doc/vpl-teacher-tools/translate.js \
+	vpl3tt/doc/vpl-teacher-tools/ui.json \
+	vpl3tt/doc/vpl-teacher-tools/util-files.js \
+	vpl3tt/doc/vpl-teacher-tools/util-url.js \
+	vpl3tt/doc/vpl-teacher-tools/viewer-gui.js \
+	vpl3tt/doc/vpl-teacher-tools/viewer.html \
+	vpl3tt/doc/vpl-teacher-tools/viewer.fr.html \
+	vpl3tt/doc/vpl-teacher-tools/vpl-about.html \
+	vpl3tt/doc/vpl-teacher-tools/vpl-gui.js \
+	vpl3tt/doc/vpl-teacher-tools/vpl.html \
+	vpl3tt/doc/vpl-teacher-tools/vpl.fr.html \
+	vpl3tt/doc/vpl-teacher-tools/vplurl.js \
+    vpl3tt/doc/vpl-teacher-tools/vpl_load.png \
+    vpl3tt/doc/vpl-teacher-tools/vpl_new.png \
+    vpl3tt/doc/vpl-teacher-tools/vpl_run.png \
+    vpl3tt/doc/vpl-teacher-tools/vpl_stop.png
 
 QRFILES = \
-	doc/libs/qrcodejs/LICENSE \
-	doc/libs/qrcodejs/README.md \
-	doc/libs/qrcodejs/qrcode.min.js
+	vpl3tt/doc/libs/qrcodejs/LICENSE \
+	vpl3tt/doc/libs/qrcodejs/README.md \
+	vpl3tt/doc/libs/qrcodejs/qrcode.min.js
 
 DATAFILES = \
-	data/basic-sensors.vpl3ui \
-	data/basic-touch.vpl3ui \
-	data/basic-track.vpl3ui \
-	data/simple-sensors.vpl3ui \
-	data/simple-touch.vpl3ui \
-	data/simple-track.vpl3ui
+	vpl3tt/data/basic-sensors.vpl3ui \
+	vpl3tt/data/basic-touch.vpl3ui \
+	vpl3tt/data/basic-track.vpl3ui \
+	vpl3tt/data/simple-sensors.vpl3ui \
+	vpl3tt/data/simple-touch.vpl3ui \
+	vpl3tt/data/simple-track.vpl3ui
 
 .PHONY: all
 all:
 	rm -Rf $(DIR)
-	mkdir -p $(DIR)/vpl3
-	mkdir -p $(DIR)/thymio
-	mkdir -p $(DIR)/doc/vpl/thymio
-	mkdir -p $(DIR)/doc/vpl/ui/classic
-	mkdir -p $(DIR)/doc/vpl/ui/svg
-	mkdir -p $(DIR)/doc/vpl-teacher-tools
-	mkdir -p $(DIR)/doc/libs/qrcodejs
-	mkdir -p $(DIR)/data
+	mkdir -p $(DIR)/vpl3tt
+	mkdir -p $(DIR)/vpl3tt/doc/vpl/thymio
+	mkdir -p $(DIR)/vpl3tt/doc/vpl/ui/classic
+	mkdir -p $(DIR)/vpl3tt/doc/vpl/ui/svg
+	mkdir -p $(DIR)/vpl3tt/doc/vpl-teacher-tools
+	mkdir -p $(DIR)/vpl3tt/doc/libs/qrcodejs
+	mkdir -p $(DIR)/vpl3tt/data
 	cp -p $(ROOTFILES) $(DIR)
-	cp -p $(VPL3PKGFILES) $(DIR)/vpl3
-	cp -p $(THYMIOPKGFILES) $(DIR)/thymio
-	cp -p $(DOCFILES) $(DIR)/doc
-	cp -p $(VPLFILES) $(DIR)/doc/vpl
-	cp -p $(THYMIOFILES) $(DIR)/doc/vpl/thymio
-	cp -p $(UIFILES) $(DIR)/doc/vpl/ui
-	cp -p $(UICLASSICFILES) $(DIR)/doc/vpl/ui/classic
-	cp -p $(UISVGFILES) $(DIR)/doc/vpl/ui/svg
-	cp -p $(TOOLSFILES) $(DIR)/doc/vpl-teacher-tools
-	cp -p $(QRFILES) $(DIR)/doc/libs/qrcodejs
-	cp -p $(DATAFILES) $(DIR)/data
+	cp -p $(VPL3PKGFILES) $(DIR)/vpl3tt
+	cp -p $(DOCFILES) $(DIR)/vpl3tt/doc
+	cp -p $(VPLFILES) $(DIR)/vpl3tt/doc/vpl
+	cp -p $(THYMIOFILES) $(DIR)/vpl3tt/doc/vpl/thymio
+	cp -p $(UIFILES) $(DIR)/vpl3tt/doc/vpl/ui
+	cp -p $(UICLASSICFILES) $(DIR)/vpl3tt/doc/vpl/ui/classic
+	cp -p $(UISVGFILES) $(DIR)/vpl3tt/doc/vpl/ui/svg
+	cp -p $(TOOLSFILES) $(DIR)/vpl3tt/doc/vpl-teacher-tools
+	cp -p $(QRFILES) $(DIR)/vpl3tt/doc/libs/qrcodejs
+	cp -p $(DATAFILES) $(DIR)/vpl3tt/data
 	zip -r - $(DIR) >$(DIR).zip
 
 .PHONY: VPL3Server.app
-VPL3Server.app: setup.py launch_objc.py $(VPL3PKGFILES) $(THYMIOPKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES)
+VPL3Server.app: setup.py launch_objc.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES)
 	rm -rf build
 	python3 setup.py py2app
 

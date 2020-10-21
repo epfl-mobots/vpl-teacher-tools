@@ -7,13 +7,13 @@
 
 # Websockets: see https://websockets.readthedocs.io/en/stable/intro.html
 
-from vpl3.com_ws import WSServer
+from vpl3tt.com_ws import WSServer
 import json
 import sys
 import getopt
 import websocket
 
-from vpl3.db import Db
+from vpl3tt.db import Db
 
 
 class VPLWebSocketServer:

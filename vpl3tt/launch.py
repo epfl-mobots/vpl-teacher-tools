@@ -3,13 +3,13 @@
 
 # server app launcher
 # usage:
-# from vpl3.launch import launch
-# from vpl3.tkapp import Application
+# from vpl3tt.launch import launch
+# from vpl3tt.tkapp import Application
 # if __name__ == "__main__": launch(Application)
 # (or replace tkapp with wxapp or objcapp)
 
-from vpl3.db import Db
-from vpl3.server import Server
+from vpl3tt.db import Db
+from vpl3tt.server import Server
 
 import getopt
 import sys

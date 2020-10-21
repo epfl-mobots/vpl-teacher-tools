@@ -5,10 +5,10 @@
 
 # server supervisor
 
-from vpl3.server_http import VPLHTTPServer
-from vpl3.server_ws import VPLWebSocketServer
-from vpl3.server_thymio import ThymioWebSocketServer
-from vpl3.db import Db
+from vpl3tt.server_http import VPLHTTPServer
+from vpl3tt.server_ws import VPLWebSocketServer
+from vpl3tt.server_thymio import ThymioWebSocketServer
+from vpl3tt.db import Db
 
 import threading
 import asyncio
@@ -86,7 +86,7 @@ class Server:
                         on_disconnect=self.update_robots)
                     self.thymio_server.run()
                 try:
-                    from vpl3.thymio import Connection
+                    from thymiodirect import Connection
                     Connection.serial_default_port()
                     self.ws_thymio = threading.Thread(target=thymio_thread)
                     self.ws_thymio.start()

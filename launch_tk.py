@@ -5,8 +5,8 @@
 
 # server app launcher with tkinter user interface
 
-from vpl3.launch import launch
-from vpl3.tkapp import Application
+from vpl3tt.launch import launch
+from vpl3tt.tkapp import Application
 
 if __name__ == "__main__":
     launch(Application)

@@ -5,8 +5,8 @@
 
 # server gui with tkinter
 
-from vpl3.baseapp import ApplicationBase
-from vpl3.urlutil import URLUtil
+from vpl3tt.baseapp import ApplicationBase
+from vpl3tt.urlutil import URLUtil
 
 import tkinter as tk
 from tkinter.scrolledtext import ScrolledText

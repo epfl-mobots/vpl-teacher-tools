@@ -4,18 +4,19 @@
 # Please don't redistribute without author's permission.
 
 import urllib
-from vpl3.com_http \
+from vpl3tt.com_http \
     import (
         HTTPServerWithContext, HTTPRequestHandler
     )
 import json
 
-from vpl3.db import Db
-from vpl3.urlutil import URLUtil
-from vpl3.urltiny import URLShortcuts
+from vpl3tt.db import Db
+from vpl3tt.urlutil import URLUtil
+from vpl3tt.urltiny import URLShortcuts
 import sys
 import getopt
 import json
+import pkg_resources
 
 
 class VPLHTTPRequestHandler(HTTPRequestHandler):
@@ -414,7 +415,7 @@ class VPLHTTPServer:
         self.groups = []
 
     def load_tr_mappings(self):
-        with open(self.TR_MAPPINGS_JSON) as file:
+        with pkg_resources.resource_stream("vpl3tt", self.TR_MAPPINGS_JSON) as file:
             self.tr_mappings = json.load(file)
 
     def run(self):

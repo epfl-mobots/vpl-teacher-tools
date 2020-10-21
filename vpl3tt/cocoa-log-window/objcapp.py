@@ -5,8 +5,8 @@
 
 # server gui with objc (for macOS only)
 
-from vpl3.baseapp import ApplicationBase
-from vpl3.cacaoapp import ApplicationObjCShell
+from vpl3tt.baseapp import ApplicationBase
+from vpl3tt.cacaoapp import ApplicationObjCShell
 
 
 class Application(ApplicationBase):

@@ -5,8 +5,8 @@
 
 # server gui with wxPython
 
-from vpl3.baseapp import ApplicationBase
-from vpl3.urlutil import URLUtil
+from vpl3tt.baseapp import ApplicationBase
+from vpl3tt.urlutil import URLUtil
 
 import wx
 # Ubuntu: sudo apt install python3-wxgtk4.0

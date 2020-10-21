@@ -5,15 +5,16 @@
 
 # server gui partial base class (must be subclassed for specific gui pkg)
 
-from vpl3.server import Server
-from vpl3.urlutil import URLUtil
-from vpl3.translate import Translate
-import vpl3.translate_fr
-from vpl3.db import Db
+from vpl3tt.server import Server
+from vpl3tt.urlutil import URLUtil
+from vpl3tt.translate import Translate
+import vpl3tt.translate_fr
+from vpl3tt.db import Db
 
 import threading
 import os
 import json
+import pkg_resources
 
 
 class ApplicationBase:
@@ -35,7 +36,7 @@ class ApplicationBase:
                  language=None,
                  full_url=False):
         self.translate = Translate()
-        vpl3.translate_fr.add_translations_fr(self.translate)
+        vpl3tt.translate_fr.add_translations_fr(self.translate)
         self.logger_lock = threading.Lock()
         tt_language = language  if self.translate.has_translation(language) else None
         self.server = Server(db_path=db_path,
@@ -228,7 +229,7 @@ class ApplicationBase:
 
     def load_ui_list(self):
         try:
-            with open(self.UI_TOC_PATH) as file:
+            with pkg_resources.resource_stream("vpl3tt", self.UI_TOC_PATH) as file:
                 self.ui_toc = json.load(file)
         except Exception:
             self.ui_toc = [

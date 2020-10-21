@@ -13,8 +13,8 @@ import re
 import sys
 import os
 
-from vpl3.cacaoapp import ApplicationObjCShell
-from vpl3.urlutil import URLUtil
+from vpl3tt.cacaoapp import ApplicationObjCShell
+from vpl3tt.urlutil import URLUtil
 
 
 

@@ -8,6 +8,7 @@ import http.server
 import urllib
 import mimetypes
 import re
+import pkg_resources
 
 
 class DocFilterSet:
@@ -68,7 +69,7 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             if (re.compile(r"^(/[-_a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?)+")
                   .match(path)):
                 try:
-                    with open(HTTPRequestHandler.DOC_ROOT + path, "rb") as f:
+                    with pkg_resources.resource_stream("vpl3tt", HTTPRequestHandler.DOC_ROOT + path) as f:
                         self.send_response(http.server.HTTPStatus.OK)
                         mimetype = mimetypes.MimeTypes().guess_type(path)
                         self.send_header("Content-type",
@@ -95,6 +96,7 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.send_header("Content-type", "text/plain; charset=utf-8")
             self.end_headers()
             if not head_only:
+                print("404 self.path", self.path)
                 self.wfile.write(("404 Not Found\n" + path).encode())
 
     def do_GET(self):
