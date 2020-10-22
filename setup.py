@@ -79,6 +79,11 @@ setup(
         "websocket",
         "websockets"
     ],
+    entry_points={
+        "console_scripts": [
+            "vpl3tt=vpl3tt:main",
+        ],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD License",
