@@ -194,8 +194,14 @@ DATAFILES = \
 	vpl3tt/data/simple-touch.vpl3ui \
 	vpl3tt/data/simple-track.vpl3ui
 
+UNAME = $(shell uname)
+ALL = $(DIR).zip whl
+ifeq ($(UNAME), Darwin)
+	ALL += VPLServer.dmg
+endif
+
 .PHONY: all
-all: $(DIR).zip whl VPLServer.dmg
+all: $(ALL)
 
 $(DIR).zip:
 	rm -Rf $(DIR)
