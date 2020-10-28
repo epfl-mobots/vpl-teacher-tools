@@ -14,7 +14,12 @@ from cx_Freeze import setup, Executable
 __version__ = "0.1.0"
 
 include_files = []
-excludes = []
+excludes = [
+	"curses",
+	"lib2to3",
+	"numpy",
+	"xmlrpc",
+]
 packages = ["os", "json",]
 
 build_exe = {
@@ -47,4 +52,3 @@ setup(
     **setup_options,
     executables=[Executable(launcher, base=base)],
 )
-
