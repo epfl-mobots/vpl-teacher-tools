@@ -47,12 +47,15 @@ setup_options = {
     "version": __version__,
     "options": options,
 }
+executable_options = {}
 
 if sys.platform == "win32":
     base = "Win32GUI"
     build_exe["include_msvcr"] = False
     # the end-user should download and install
     # https://aka.ms/vs/16/release/vc_redist.x64.exe
+    executable_options["shortcutName"] = "VPL3 Server"
+    executable_options["shortcutDir"] = "DesktopFolder"    
 elif sys.platform == "darwin":
     launcher = "launch_objc.py"
     info_plist_filename = create_plist({
@@ -70,7 +73,9 @@ elif sys.platform == "darwin":
         "custom_info_plist": info_plist_filename,
     }
 
+executable_options["base"] = base
+
 setup(
     **setup_options,
-    executables=[Executable(launcher, base=base)],
+    executables=[Executable(launcher, **executable_options)],
 )
