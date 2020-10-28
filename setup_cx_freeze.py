@@ -11,6 +11,15 @@
 import sys, os
 from cx_Freeze import setup, Executable
 
+def create_plist(properties):
+    """Create a temporary plist file from a dict of properties."""
+    # see create_plist in cx_Freeze/macdist.py
+    import plistlib
+    path = "/tmp/vpl-teacher-tools-cxf-Info.plist"
+    with open(path, "wb") as f:
+        plistlib.dump(properties, f)
+    return path
+
 __version__ = "0.1.0"
 
 include_files = []
@@ -46,7 +55,20 @@ if sys.platform == "win32":
     # https://aka.ms/vs/16/release/vc_redist.x64.exe
 elif sys.platform == "darwin":
     launcher = "launch_objc.py"
-    setup_options["bundle_name"] = "VPL3 Server"
+    info_plist_filename = create_plist({
+        "CFBundleIdentifier": "ch.epfl.mobots.vpl3server",
+        "CFBundleVersion": "0.1",
+        "CFBundleName": "VPL3 Server",
+        "CFBundleIconFile": "icon.icns",
+        "CFBundleDevelopmentRegion": "English",
+        "CFBundleIdentifier": "VPL3 Server",
+        "NSHumanReadableCopyright":
+            "2019-2020, École polytechnique fédérale de Lausanne (EPFL)",
+    })
+    options["bdist_mac"] = {
+        "bundle_name": "VPL3Server-cxf",
+        "custom_info_plist": info_plist_filename,
+    }
 
 setup(
     **setup_options,
