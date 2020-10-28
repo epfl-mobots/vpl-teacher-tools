@@ -6,7 +6,7 @@
 import sys, os
 from cx_Freeze import setup, Executable
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 include_files = []
 excludes = []
