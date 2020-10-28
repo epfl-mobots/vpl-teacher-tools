@@ -227,18 +227,19 @@ $(DIR).zip:
 
 .PHONY: whl
 whl: setup.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES)
-	rm -rf build
+	rm -Rf build
 	python3 setup.py bdist_wheel sdist bdist_pex
 
-.PHONY: VPL3Server.app
-VPL3Server.app: setup_app.py launch_objc.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES)
-	rm -rf build
+.PHONY: VPL3Server.app build/VPL3Server-cxf.app
+VPL3Server.app: setup_app.py setup_cx_freeze.py launch_objc.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES)
+	rm -Rf build
 	python3 setup_app.py py2app
+	python3 setup_cx_freeze.py bdist_mac
 
-VPLServer.dmg: VPL3Server.app readme-mac.txt
+VPLServer.dmg: VPL3Server.app build/VPL3Server-cxf.app readme-mac.txt
 	rm -Rf "VPL Server" $@
 	mkdir "VPL Server"
-	cp -R $^ "VPL Server"
+	cp -R $^ build/VPL3Server-cxf.app "VPL Server"
 	hdiutil create -format UDZO -imagekey zlib-level=9 -srcfolder "VPL Server" $@
 	rm -Rf "VPL Server"
 

@@ -10,4 +10,6 @@ For security reasons, macOS is more and more restrictive with which applications
 
 If you've done all these steps and it fails once, try a second time.
 
-YP/191118
+VPL3Server-cxf.app is a strict equivalent of VPL3Server.app, but created with another tool (cx_Freeze instead of py2app). If you have difficulties with VPL3Server.app, or if you have the time to also test it and tell us what works for you, please test it as above. You should not run both applications at the same time. Both use the same files and the same TCP ports.
+
+YP/201028
