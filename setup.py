@@ -66,6 +66,7 @@ setup(
     name="vpl3tt",
     version="0.1.0",
     author="Yves Piguet",
+    author_email="yves.piguet@epfl.ch",
     packages=["vpl3tt"],
     include_package_data=True,
     package_data=package_data,

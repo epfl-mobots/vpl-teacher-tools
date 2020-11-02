@@ -12,6 +12,8 @@ import wx
 # Ubuntu: sudo apt install python3-wxgtk4.0
 # macOS: pip3 install -U wxPython
 
+import re
+
 class QRControl(wx.Control):
     # see implementation of GenStaticText in wx/lib/stattext.py
 
@@ -77,7 +79,7 @@ class Application(ApplicationBase, wx.App):
                               style=wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER)
         self.frame.Bind(wx.EVT_CLOSE,
                         lambda event: self.quit())
-        self.frame.SetMinSize(wx.Size(600, 280))
+        self.frame.SetMinSize(wx.Size(600, 420))
 
         self.panel = wx.Panel(self.frame)
         self.vbox = wx.BoxSizer(wx.VERTICAL)
@@ -88,12 +90,15 @@ class Application(ApplicationBase, wx.App):
         self.robot_status = wx.StaticText(self.panel, -1)
         self.vbox.Add(self.robot_status, 0, wx.ALL | wx.EXPAND, 10)
 
-        launch_button = wx.Button(self.panel, -1, "Teacher Tools")
-        launch_button.Bind(wx.EVT_BUTTON, lambda event: self.start_browser_tt())
-        self.vbox.Add(launch_button, 0, wx.CENTER)
+        self.launch_button = wx.Button(self.panel, -1, "Ouvrir les outils dans le navigateur")  # french for worst case length
+        self.launch_button.Bind(wx.EVT_BUTTON, lambda event: self.start_browser_tt())
+        self.vbox.Add(self.launch_button, 0, wx.CENTER)
 
         self.qr_code = QRControl(self.panel, size=(160, 160), text="?")
         self.vbox.Add(self.qr_code, 0, wx.ALL | wx.CENTER, 10)
+
+        self.help = wx.StaticText(self.panel, -1)
+        self.vbox.Add(self.help, 0, wx.ALL | wx.EXPAND, 10)
 
         self.vbox.SetSizeHints(self.panel)
         self.panel.SetSizerAndFit(self.vbox)
@@ -102,24 +107,26 @@ class Application(ApplicationBase, wx.App):
         self.update_connection()
 
         # menu
-        menubar = wx.MenuBar()
+        self.menubar = wx.MenuBar()
 
         file_menu = wx.Menu()
-        menubar.Append(file_menu, "File")
+        self.menu_file = self.menubar.GetMenuCount()
+        self.menubar.Append(file_menu, "File")
         self.menu_item_open_tool = file_menu.Append(-1,
-                                                    "Open in Browser\tCtrl-B",
+                                                    "Open Tools in Browser\tCtrl-B",
                                                     "Open VPL3 teacher tools in browser")
         self.frame.Bind(wx.EVT_MENU,
                         lambda event: self.start_browser_tt(),
                         self.menu_item_open_tool)
-        menu_item = file_menu.Append(wx.ID_EXIT,
+        self.menu_item_quit = file_menu.Append(wx.ID_EXIT,
                                      "Quit\tCtrl-Q")
         self.frame.Bind(wx.EVT_MENU,
                         lambda event: self.quit(),
-                        menu_item)
+                        self.menu_item_quit)
 
         edit_menu = wx.Menu()
-        menubar.Append(edit_menu, "Edit")
+        self.menu_edit = self.menubar.GetMenuCount()
+        self.menubar.Append(edit_menu, "Edit")
         self.menu_item_copy_url = edit_menu.Append(-1,
                                                    "Copy URL\tCtrl-C",
                                                    "Copy the teacher tool URL to the clipboard")
@@ -128,7 +135,29 @@ class Application(ApplicationBase, wx.App):
                         self.menu_item_copy_url)
 
         options_menu = wx.Menu()
-        menubar.Append(options_menu, "Options")
+        self.menu_options = self.menubar.GetMenuCount()
+        self.menubar.Append(options_menu, "Options")
+        self.menu_item_language_en = options_menu.AppendRadioItem(-1,
+                                                                  "English")
+        self.menu_item_language_fr = options_menu.AppendRadioItem(-1,
+                                                                  "French")
+        self.menu_item_language_de = options_menu.AppendRadioItem(-1,
+                                                                  "German")
+        self.menu_item_language_it = options_menu.AppendRadioItem(-1,
+                                                                  "Italian")
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.do_menu_item_language(),
+                        self.menu_item_language_en)
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.do_menu_item_language(),
+                        self.menu_item_language_fr)
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.do_menu_item_language(),
+                        self.menu_item_language_de)
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.do_menu_item_language(),
+                        self.menu_item_language_it)
+        options_menu.AppendSeparator()
         self.menu_item_shortened_urls = options_menu.AppendCheckItem(-1,
                                                                      "Shortened URLs")
         self.menu_item_shortened_urls.Check(not self.full_url)
@@ -160,13 +189,22 @@ class Application(ApplicationBase, wx.App):
                         lambda event: self.do_menu_item_dev_tools(),
                         self.menu_item_dev_tools)
 
-        self.frame.SetMenuBar(menubar)
+        self.frame.SetMenuBar(self.menubar)
+
+        self.change_language()
+        self.update_menu()
 
         self.update_qr_code()
         self.frame.Show()
 
     def main_loop(self):
         self.MainLoop()
+
+    def update_menu(self):
+        self.menu_item_language_en.Check(self.language == "en")
+        self.menu_item_language_fr.Check(self.language == "fr")
+        self.menu_item_language_de.Check(self.language == "de")
+        self.menu_item_language_it.Check(self.language == "it")
 
     def update_qr_code(self):
         path = self.tt_abs_path()
@@ -175,13 +213,43 @@ class Application(ApplicationBase, wx.App):
         self.qr_code.SetText(url)
 
     def show_connection_status(self, str):
-        self.status.SetLabel(str)
+        if hasattr(self, "status") and self.status:
+            self.status.SetLabel(str)
 
     def show_robot_status(self, str):
         self.robot_status.SetLabel(str)
 
     def exit_app(self):
         self.frame.Destroy()
+
+    def change_language(self):
+        r = re.compile(r"^.*\t")
+        def tr(item, key):
+            label = item.GetItemLabel()
+            item.SetItemLabel(self.tr(key) +
+                              ("\t" + r.sub("", label)
+                               if "\t" in label
+                               else ""))
+        self.menubar.SetMenuLabel(self.menu_file, self.tr("File"))
+        tr(self.menu_item_open_tool, "Open Tools in Browser")
+        tr(self.menu_item_quit, "Quit")
+        self.menubar.SetMenuLabel(self.menu_edit, self.tr("Edit"))
+        tr(self.menu_item_copy_url, "Copy URL")
+        self.menubar.SetMenuLabel(self.menu_options, self.tr("Options"))
+        tr(self.menu_item_language_en, "English")
+        tr(self.menu_item_language_fr, "French")
+        tr(self.menu_item_language_de, "German (English for Teacher Tools)")
+        tr(self.menu_item_language_it, "Italian (English for Teacher Tools)")
+        tr(self.menu_item_shortened_urls, "Shortened URLs")
+        tr(self.menu_item_login_screen_qr_code, "Login Screen QR Code")
+        tr(self.menu_item_log_display, "Log Display in Dashboard")
+        tr(self.menu_item_advanced_sim_features, "Advanced Simulator Features")
+        tr(self.menu_item_dev_tools, "Developer Tools")
+
+        self.launch_button.SetLabel(self.tr("Open tools in browser"))
+        self.help.SetLabel(self.tr("help-message"))
+
+        self.frame.SetTitle(f"{self.tr('VPL Server')} - " + self.tt_url(True))
 
     def do_menu_item_copy_url(self):
         if wx.TheClipboard.Open():
@@ -190,6 +258,15 @@ class Application(ApplicationBase, wx.App):
                                             path=path)
             wx.TheClipboard.SetData(wx.TextDataObject(url))
             wx.TheClipboard.Close()
+
+    def do_menu_item_language(self):
+        self.set_language("en" if self.menu_item_language_en.IsChecked()
+                          else "fr" if self.menu_item_language_fr.IsChecked()
+                          else "de" if self.menu_item_language_de.IsChecked()
+                          else "it" if self.menu_item_language_it.IsChecked()
+                          else "en")
+        self.change_language()
+        self.save_prefs()
 
     def do_menu_item_shortened_urls(self):
         self.set_full_url(not self.menu_item_shortened_urls.IsChecked())
