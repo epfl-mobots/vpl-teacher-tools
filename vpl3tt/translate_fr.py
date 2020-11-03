@@ -27,6 +27,7 @@ def add_translations_fr(tr):
         "Options": "Options",
         "Quit": "Quitter",
         "Shortened URLs": "URLs raccourcis",
+        "TDM not running; please start Thymio Suite": "Veuillez lancer Thymio Suite pour permettre une connexion avec le TDM",
         "Thymio Device Manager": "Thymio Device Manager",
         "VPL Server": "Serveur VPL",
         "help-message": """Pour ouvrir l'interface utilisateur des Outils pour les enseignant.e.s:

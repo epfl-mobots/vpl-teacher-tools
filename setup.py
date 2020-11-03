@@ -78,7 +78,8 @@ setup(
         "qrcode",
         "thymiodirect",
         "websocket",
-        "websockets"
+        "websockets",
+        "websocket-client"
     ],
     entry_points={
         "console_scripts": [

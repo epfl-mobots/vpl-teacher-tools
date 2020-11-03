@@ -15,8 +15,8 @@ from tkinter.scrolledtext import ScrolledText
 class Application(ApplicationBase, tk.Tk):
 
     def __init__(self, **kwargs):
-        ApplicationBase.__init__(self, **kwargs)
         tk.Tk.__init__(self)
+        ApplicationBase.__init__(self, **kwargs)
 
         self.title(f"{self.tr('VPL Server')} - " + self.tt_url(True))
         self.protocol("WM_DELETE_WINDOW", self.quit)  # close widget
@@ -27,10 +27,10 @@ class Application(ApplicationBase, tk.Tk):
 
         padding = 10
 
-        self.status = tk.Label(self, anchor=tk.W, width=40)
+        self.status = tk.Label(self, anchor=tk.W, width=60)
         self.status.pack(padx=padding, pady=padding)
 
-        self.robot_status = tk.Label(self, anchor=tk.W, width=40)
+        self.robot_status = tk.Label(self, anchor=tk.W, width=60)
         self.robot_status.pack(padx=padding, pady=padding)
 
         self.browser_button = tk.Button(self,
@@ -196,8 +196,8 @@ class Application(ApplicationBase, tk.Tk):
         if self.is_initialized() and str:
             self.status["text"] = str
 
-    def show_robot_status(self, str):
-        if self.is_initialized() and str:
+    def show_robots_status(self, str):
+        if self.is_initialized():
             self.robot_status["text"] = str
 
     def draw_qr_code(self):

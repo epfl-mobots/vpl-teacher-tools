@@ -70,9 +70,8 @@ class QRControl(wx.Control):
 class Application(ApplicationBase, wx.App):
 
     def __init__(self, **kwargs):
-        ApplicationBase.__init__(self, **kwargs)
         wx.App.__init__(self)
-        self.load_prefs()
+        ApplicationBase.__init__(self, **kwargs)
 
         self.frame = wx.Frame(None,
                               title=f"{self.tr('VPL Server')} - " + self.tt_url(True),
@@ -158,6 +157,22 @@ class Application(ApplicationBase, wx.App):
                         lambda event: self.do_menu_item_language(),
                         self.menu_item_language_it)
         options_menu.AppendSeparator()
+        self.menu_item_bridge_tdm = options_menu.AppendRadioItem(-1,
+                                                                 "Thymio Device Manager")
+        self.menu_item_bridge_jws = options_menu.AppendRadioItem(-1,
+                                                                 "JSON WebSocket")
+        self.menu_item_bridge_none = options_menu.AppendRadioItem(-1,
+                                                                  "No Robot")
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.do_menu_item_bridge(),
+                        self.menu_item_bridge_tdm)
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.do_menu_item_bridge(),
+                        self.menu_item_bridge_jws)
+        self.frame.Bind(wx.EVT_MENU,
+                        lambda event: self.do_menu_item_bridge(),
+                        self.menu_item_bridge_none)
+        options_menu.AppendSeparator()
         self.menu_item_shortened_urls = options_menu.AppendCheckItem(-1,
                                                                      "Shortened URLs")
         self.menu_item_shortened_urls.Check(not self.full_url)
@@ -191,6 +206,8 @@ class Application(ApplicationBase, wx.App):
 
         self.frame.SetMenuBar(self.menubar)
 
+        self.load_prefs()
+
         self.change_language()
         self.update_menu()
 
@@ -205,6 +222,10 @@ class Application(ApplicationBase, wx.App):
         self.menu_item_language_fr.Check(self.language == "fr")
         self.menu_item_language_de.Check(self.language == "de")
         self.menu_item_language_it.Check(self.language == "it")
+        bridge = self.set_bridge(self.bridge)
+        self.menu_item_bridge_tdm.Check(bridge == "tdm")
+        self.menu_item_bridge_jws.Check(bridge == "jws")
+        self.menu_item_bridge_none.Check(bridge != "tdm" and bridge != "jws")
 
     def update_qr_code(self):
         path = self.tt_abs_path()
@@ -216,7 +237,7 @@ class Application(ApplicationBase, wx.App):
         if hasattr(self, "status") and self.status:
             self.status.SetLabel(str)
 
-    def show_robot_status(self, str):
+    def show_robots_status(self, str):
         self.robot_status.SetLabel(str)
 
     def exit_app(self):
@@ -230,16 +251,22 @@ class Application(ApplicationBase, wx.App):
                               ("\t" + r.sub("", label)
                                if "\t" in label
                                else ""))
+
         self.menubar.SetMenuLabel(self.menu_file, self.tr("File"))
         tr(self.menu_item_open_tool, "Open Tools in Browser")
         tr(self.menu_item_quit, "Quit")
+
         self.menubar.SetMenuLabel(self.menu_edit, self.tr("Edit"))
         tr(self.menu_item_copy_url, "Copy URL")
+
         self.menubar.SetMenuLabel(self.menu_options, self.tr("Options"))
         tr(self.menu_item_language_en, "English")
         tr(self.menu_item_language_fr, "French")
         tr(self.menu_item_language_de, "German (English for Teacher Tools)")
         tr(self.menu_item_language_it, "Italian (English for Teacher Tools)")
+        tr(self.menu_item_bridge_tdm, "Thymio Device Manager")
+        tr(self.menu_item_bridge_jws, "JSON WebSocket")
+        tr(self.menu_item_bridge_none, "No Robot")
         tr(self.menu_item_shortened_urls, "Shortened URLs")
         tr(self.menu_item_login_screen_qr_code, "Login Screen QR Code")
         tr(self.menu_item_log_display, "Log Display in Dashboard")
@@ -286,4 +313,14 @@ class Application(ApplicationBase, wx.App):
 
     def do_menu_item_dev_tools(self):
         self.set_dev_tools(self.menu_item_dev_tools.IsChecked())
+        self.save_prefs()
+
+    def do_menu_item_bridge(self):
+        bridge = ("tdm" if self.menu_item_bridge_tdm.IsChecked()
+                  else "jws" if self.menu_item_bridge_jws.IsChecked()
+                  else "none")
+        bridge = self.set_bridge(bridge)
+        self.menu_item_bridge_tdm.Check(bridge == "tdm")
+        self.menu_item_bridge_jws.Check(bridge == "jws")
+        self.menu_item_bridge_none.Check(bridge != "tdm" and bridge != "jws")
         self.save_prefs()

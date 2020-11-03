@@ -13,6 +13,7 @@ from vpl3tt.db import Db
 import threading
 import asyncio
 import logging
+import time
 
 
 class Server:
@@ -34,6 +35,7 @@ class Server:
                  update_connection=None,
                  update_robots=None,
                  initial_file_dir=None):
+        self.stopping = False
         self.db_path = db_path
         self.initial_file_dir = initial_file_dir
         self.http_port = http_port
@@ -74,7 +76,7 @@ class Server:
                 app.show_robots_status("")
             if self.bridge == "jws" and self.thymio_server:
                 self.thymio_server.stop()
-                self.ws_thymio.wait()
+                self.ws_thymio.join()
                 self.thymio_server = None
             self.bridge = bridge
             self.http_server.bridge = bridge
@@ -97,6 +99,13 @@ class Server:
                 except Exception as e:
                     if app:
                         app.disable_serial()
+            elif self.bridge == "tdm":
+                if app:
+                    def tdm_client_thread():
+                        while not self.stopping:
+                            app.update_robots()
+                            time.sleep(2)
+                    threading.Thread(target=tdm_client_thread).start()
 
     def start(self):
 
@@ -163,6 +172,7 @@ class Server:
                                  else "Server") + " launch timeout")
 
     def stop(self):
+        self.stopping = True
         self.http_server.stop()
         self.ws_server.stop()
         self.http.join()

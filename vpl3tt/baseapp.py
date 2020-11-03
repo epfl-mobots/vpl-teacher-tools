@@ -10,6 +10,7 @@ from vpl3tt.urlutil import URLUtil
 from vpl3tt.translate import Translate
 import vpl3tt.translate_fr
 from vpl3tt.db import Db
+from vpl3tt.tdm_client import TDMClient
 
 import threading
 import os
@@ -68,6 +69,7 @@ class ApplicationBase:
         self.dev_tools = False
         self.load_ui_list()
         self.set_bridge("tdm")
+        self.tdm_client = TDMClient()
 
         # to implement in subclasses:
         # GUI initialization showing self.tt_url() w/ a way to call
@@ -82,10 +84,10 @@ class ApplicationBase:
     def set_bridge(self, bridge):
         try:
             self.bridge = bridge
-            self.server.set_bridge(bridge)
+            self.server.set_bridge(bridge, self)
         except Exception:
             self.bridge = "none"
-            self.server.set_bridge("none")
+            self.server.set_bridge("none", self)
         return self.bridge
 
     def set_vpl_ui(self, ui):
@@ -119,6 +121,10 @@ class ApplicationBase:
                 else "-"
             }"""
             self.show_robots_status(str)
+        elif self.bridge == "tdm":
+            if hasattr(self, "tdm_client"):
+                is_tdm_connected = self.tdm_client.check_connection()
+                self.show_robots_status("" if is_tdm_connected else self.tr("TDM not running; please start Thymio Suite"))
         else:
             self.show_robots_status("")
 
@@ -170,6 +176,10 @@ class ApplicationBase:
 
     def show_connection_status(self, str):
         # should be overriden: should display str as the connection status
+        pass
+
+    def show_tdm_status(self, str):
+        # should be overriden: should display str as the TDM status
         pass
 
     def show_robots_status(self, str):
