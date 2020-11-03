@@ -27,6 +27,7 @@ VPL3PKGFILES = \
 	vpl3tt/server_http.py \
 	vpl3tt/server_thymio.py \
 	vpl3tt/server_ws.py \
+	vpl3tt/tdm_client.py \
 	vpl3tt/tkapp.py \
 	vpl3tt/objcapp.py \
 	vpl3tt/translate.py \
