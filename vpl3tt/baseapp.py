@@ -76,7 +76,7 @@ class ApplicationBase:
         # self.start_browser_tt() and self.quit()
 
     def tt_abs_path(self):
-        return f"/tt{'.' + self.tt_language if self.tt_language and self.tt_language != 'en' else ''}.html"
+        return f"/tt.html"
 
     def tt_url(self, short=False):
         return f"{'' if short else 'http://'}{URLUtil.get_local_IP()}:{self.http_port}{self.tt_abs_path()}"
