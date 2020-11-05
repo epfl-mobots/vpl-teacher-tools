@@ -26,6 +26,7 @@ class VPLWebSocketServer:
                  ws_port=DEFAULT_PORT,
                  on_connect=None,
                  on_disconnect=None,
+                 token=None,
                  logger=None):
         self.db_path = db_path if db_path is not None else Db.DEFAULT_PATH
         self.ws = WSServer(ws_port, self)

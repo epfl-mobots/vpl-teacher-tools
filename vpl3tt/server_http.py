@@ -9,6 +9,7 @@ from vpl3tt.com_http \
         HTTPServerWithContext, HTTPRequestHandler
     )
 import json
+import urllib
 
 from vpl3tt.db import Db
 from vpl3tt.urlutil import URLUtil
@@ -40,6 +41,7 @@ class VPLHTTPServer:
     def __init__(self,
                  db_path=Db.DEFAULT_PATH,
                  http_port=None,
+                 token=None,
                  tt_language=None,
                  language=None,
                  full_url=False,
@@ -50,6 +52,7 @@ class VPLHTTPServer:
                  bridge="tdm",
                  logger=None):
         self.http_port = http_port
+        self.token = token
         self.language = language
         self.tt_language = tt_language
         self.full_url = full_url
@@ -67,6 +70,23 @@ class VPLHTTPServer:
         self.httpd = HTTPServerWithContext(context=self,
                                            port=http_port, logger=logger)
 
+        def check_token(fn):
+
+            def fn_with_validation(self, handler):
+                q = VPLHTTPServer.query_param(handler)
+                token = q["token"][0] if "token" in q else ""
+                if self.token and self.token != token:
+                    return {
+                        "mime": "application/json",
+                        "data": json.dumps({
+                            "status": "err",
+                            "msg": "Invalid token"
+                        }, indent=4)
+                    }
+                return fn(self, handler)
+
+            return fn_with_validation
+
         @self.httpd.http_get("/")
         def http_get_root(self, handler):
             return {
@@ -74,13 +94,18 @@ class VPLHTTPServer:
             }
 
         @self.httpd.http_get("/api/groups")
+        @check_token
         def http_get_groups(self, handler):
+            print("http_get_groups")
+            # if not self.validate_token():
+            #     return {}
             return {
                 "mime": "application/json",
                 "data": json.dumps(self.groups, indent=4)
             }
 
         @self.httpd.http_get("/api/pairing")
+        @check_token
         def http_get_pairing(self, handler):
             return {
                 "mime": "application/json",
@@ -88,10 +113,12 @@ class VPLHTTPServer:
             }
 
         @self.httpd.http_get("/api/deleteAllStudents")
+        @check_token
         def http_get_api_deleteAllStudents(self, handler):
             return self.call_api(Db.delete_all_students)
 
         @self.httpd.http_get("/api/addStudent")
+        @check_token
         def http_get_api_addStudent(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "student" not in q:
@@ -101,6 +128,7 @@ class VPLHTTPServer:
                 q["class"][0] if "class" in q else None)
 
         @self.httpd.http_get("/api/addStudents")
+        @check_token
         def http_get_api_addStudents(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "students" not in q:
@@ -110,6 +138,7 @@ class VPLHTTPServer:
             return self.call_api(Db.add_students, name_list, class_list)
 
         @self.httpd.http_get("/api/removeStudent")
+        @check_token
         def http_get_api_removeStudent(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "student" not in q:
@@ -117,6 +146,7 @@ class VPLHTTPServer:
             return self.call_api(Db.remove_student, q["student"][0])
 
         @self.httpd.http_get("/api/updateStudent")
+        @check_token
         def http_get_api_updateStudent(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "student" not in q:
@@ -129,22 +159,26 @@ class VPLHTTPServer:
                 return self.call_api(Db.rename_student, student, new_name)
 
         @self.httpd.http_get("/api/listStudents")
+        @check_token
         def http_get_api_listStudents(self, handler):
             q = VPLHTTPServer.query_param(handler)
             return self.call_api(Db.list_students,
                                  q["class"][0] if "class" in q else None)
 
         @self.httpd.http_get("/api/listClasses")
+        @check_token
         def http_get_api_listClasses(self, handler):
             return self.call_api(Db.list_classes)
 
         @self.httpd.http_get("/api/addGroup")
+        @check_token
         def http_get_api_addGroup(self, handler):
             q = VPLHTTPServer.query_param(handler)
             student_name = q["student"][0] if "student" in q else None
             return self.call_api(Db.add_group, student_name)
 
         @self.httpd.http_get("/api/removeGroup")
+        @check_token
         def http_get_api_removeGroup(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "groupid" not in q:
@@ -152,10 +186,12 @@ class VPLHTTPServer:
             return self.call_api(Db.remove_group, q["groupid"][0])
 
         @self.httpd.http_get("/api/listGroups")
+        @check_token
         def http_get_api_listGroups(self, handler):
             return self.call_api(Db.list_groups)
 
         @self.httpd.http_get("/api/addStudentToGroup")
+        @check_token
         def http_get_api_addStudentToGroup(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "student" not in q:
@@ -166,6 +202,7 @@ class VPLHTTPServer:
                                  q["student"][0], q["groupid"][0])
 
         @self.httpd.http_get("/api/removeStudentFromGroup")
+        @check_token
         def http_get_api_removeStudentFromGroup(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "student" not in q:
@@ -174,6 +211,7 @@ class VPLHTTPServer:
                                  q["student"][0])
 
         @self.httpd.http_get("/api/listGroupStudents")
+        @check_token
         def http_get_api_listGroupStudents(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "groupid" not in q:
@@ -182,6 +220,7 @@ class VPLHTTPServer:
                                  q["groupid"][0])
 
         @self.httpd.http_get("/api/beginSession")
+        @check_token
         def http_get_api_beginSession(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "groupid" not in q:
@@ -193,6 +232,7 @@ class VPLHTTPServer:
                                  group_id, robot, force)
 
         @self.httpd.http_get("/api/endSession")
+        @check_token
         def http_get_api_endSession(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "session" not in q:
@@ -201,14 +241,17 @@ class VPLHTTPServer:
                                  q["session"][0])
 
         @self.httpd.http_get("/api/endAllSessions")
+        @check_token
         def http_get_api_endAllSessions(self, handler):
             return self.call_api(Db.end_all_sessions)
 
         @self.httpd.http_get("/api/listSessions")
+        @check_token
         def http_get_api_listSessions(self, handler):
             return self.call_api(Db.list_sessions)
 
         @self.httpd.http_post("/api/addFile")
+        @check_token
         def http_post_api_addFile(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "filename" not in q:
@@ -224,6 +267,7 @@ class VPLHTTPServer:
                                             else None)
 
         @self.httpd.http_get("/api/copyFile")
+        @check_token
         def http_get_api_copyFile(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "id" not in q:
@@ -242,6 +286,7 @@ class VPLHTTPServer:
                                           else None)
 
         @self.httpd.http_get("/api/extractConfigFromVPL3")
+        @check_token
         def http_get_api_extractConfigFromVPL3(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "id" not in q:
@@ -260,6 +305,7 @@ class VPLHTTPServer:
                                           else None)
 
         @self.httpd.http_get("/api/getFile")
+        @check_token
         def http_get_api_getFile(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "id" not in q:
@@ -267,6 +313,7 @@ class VPLHTTPServer:
             return self.call_api(Db.get_file, int(q["id"][0]))
 
         @self.httpd.http_get("/api/getLastFileForGroup")
+        @check_token
         def http_get_api_getLastFileForGroup(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "groupid" not in q:
@@ -274,6 +321,7 @@ class VPLHTTPServer:
             return self.call_api(Db.get_last_file_for_group, q["groupid"][0])
 
         @self.httpd.http_post("/api/updateFile")
+        @check_token
         def http_post_api_updateFile(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "id" not in q:
@@ -283,6 +331,7 @@ class VPLHTTPServer:
                                  int(q["id"][0]), content)
 
         @self.httpd.http_get("/api/renameFile")
+        @check_token
         def http_get_api_renameFile(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "id" not in q:
@@ -293,6 +342,7 @@ class VPLHTTPServer:
                                  int(q["id"][0]), q["name"][0])
 
         @self.httpd.http_get("/api/setFileTag")
+        @check_token
         def http_get_api_setFileTag(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "id" not in q:
@@ -303,6 +353,7 @@ class VPLHTTPServer:
                                  int(q["id"][0]), q["tag"][0])
 
         @self.httpd.http_get("/api/markFile")
+        @check_token
         def http_get_api_markFile(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "id" not in q:
@@ -319,6 +370,7 @@ class VPLHTTPServer:
                                      int(q["id"][0]))
 
         @self.httpd.http_get("/api/setDefaultFile")
+        @check_token
         def http_set_default_file(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "id" not in q:
@@ -327,6 +379,7 @@ class VPLHTTPServer:
             return self.call_api(Db.set_default_file, int(q["id"][0]), suffix)
 
         @self.httpd.http_get("/api/removeFiles")
+        @check_token
         def http_get_api_removeFiles(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "id" not in q:
@@ -335,6 +388,7 @@ class VPLHTTPServer:
             return self.call_api(Db.remove_files, idList)
 
         @self.httpd.http_get("/api/listFiles")
+        @check_token
         def http_get_api_listFiles(self, handler):
             q = VPLHTTPServer.query_param(handler)
             student = q["student"][0] if "student" in q else None
@@ -346,14 +400,17 @@ class VPLHTTPServer:
                                  last=last)
 
         @self.httpd.http_get("/api/listFileTags")
+        @check_token
         def http_get_api_listFileTags(self, handler):
             return self.call_api(Db.list_file_tags)
 
         @self.httpd.http_get("/api/clearFiles")
+        @check_token
         def http_get_api_clearFiles(self, handler):
             return self.call_api(Db.clear_files)
 
         @self.httpd.http_get("/api/getLog")
+        @check_token
         def http_get_api_getLog(self, handler):
             q = VPLHTTPServer.query_param(handler)
             id = q["id"][0] if "id" in q else None
@@ -361,10 +418,12 @@ class VPLHTTPServer:
             return self.call_api(Db.get_log, session_id=id, last_of_type=last)
 
         @self.httpd.http_get("/api/clearLog")
+        @check_token
         def http_get_api_clearLog(self, handler):
             return self.call_api(Db.clear_log)
 
         @self.httpd.http_get("/api/shortenURL")
+        @check_token
         def http_get_api_shortenURL(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "u" in q:
@@ -376,6 +435,7 @@ class VPLHTTPServer:
                 return VPLHTTPServer.error("missing url")
 
         @self.httpd.http_get_any()
+        @check_token
         def http_get_shortenedURL(path, self, handler):
             if path.startswith(VPLHTTPServer.SHORTENED_URL_PREFIX):
                 key = path[3:]

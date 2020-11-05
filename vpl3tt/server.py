@@ -13,6 +13,7 @@ from vpl3tt.db import Db
 import threading
 import asyncio
 import logging
+import os
 import time
 
 
@@ -45,6 +46,7 @@ class Server:
         self.timeout = timeout
         self.ws_link_url = ws_link_url
         self.bridge = "none"
+        self.tt_token = "".join([chr(97 + b % 26) for b in os.urandom(10)])
         self.language = language
         self.tt_language = tt_language
         self.full_url = full_url
@@ -118,6 +120,7 @@ class Server:
             logging.debug("http thread: beginning")
             self.http_server = VPLHTTPServer(db_path=self.db_path,
                                              http_port=self.http_port,
+                                             token = self.tt_token,
                                              language=self.language,
                                              tt_language=self.tt_language,
                                              full_url=self.full_url,
@@ -142,7 +145,8 @@ class Server:
                                                 ws_port=self.ws_port,
                                                 ws_link_url=self.ws_link_url,
                                                 on_connect=self.update_con,
-                                                on_disconnect=self.update_con)
+                                                on_disconnect=self.update_con,
+                                                token=self.tt_token)
             logging.debug("websocket thread: websocket server created")
             nonlocal ws_started
             ws_started = True

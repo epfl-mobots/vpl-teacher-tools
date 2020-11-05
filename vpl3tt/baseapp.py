@@ -76,7 +76,7 @@ class ApplicationBase:
         # self.start_browser_tt() and self.quit()
 
     def tt_abs_path(self):
-        return f"/tt.html"
+        return f"/tt.html?token={self.server.tt_token}"
 
     def tt_url(self, short=False):
         return f"{'' if short else 'http://'}{URLUtil.get_local_IP()}:{self.http_port}{self.tt_abs_path()}"

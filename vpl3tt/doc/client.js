@@ -7,6 +7,7 @@
 	@constructor
 */
 VPLTeacherTools.HTTPClient = function () {
+	this.token = sessionStorage.getItem("token") || "";
 };
 
 /** Send an http request, GET if !data or POST if data
@@ -46,6 +47,10 @@ VPLTeacherTools.HTTPClient.prototype.rest = function (url, opt, data, dataMimety
 		xhr.addEventListener("error", function () {
 			opt.onError("Connection");
 		});
+	}
+	if (this.token) {
+		// add token
+		url += (/\?/.test(url) ? "&" : "?") + "token=" + this.token;	// this.token is still encoded
 	}
 	xhr.open(data ? "POST" : "GET", url);
 	if (dataMimetype) {

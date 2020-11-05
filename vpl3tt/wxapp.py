@@ -74,7 +74,7 @@ class Application(ApplicationBase, wx.App):
         ApplicationBase.__init__(self, **kwargs)
 
         self.frame = wx.Frame(None,
-                              title=f"{self.tr('VPL Server')} - " + self.tt_url(True),
+                              title=f"{self.tr('VPL Server')}",
                               style=wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER)
         self.frame.Bind(wx.EVT_CLOSE,
                         lambda event: self.quit())
@@ -276,7 +276,7 @@ class Application(ApplicationBase, wx.App):
         self.launch_button.SetLabel(self.tr("Open tools in browser"))
         self.help.SetLabel(self.tr("help-message"))
 
-        self.frame.SetTitle(f"{self.tr('VPL Server')} - " + self.tt_url(True))
+        self.frame.SetTitle(f"{self.tr('VPL Server')}")
 
     def do_menu_item_copy_url(self):
         if wx.TheClipboard.Open():

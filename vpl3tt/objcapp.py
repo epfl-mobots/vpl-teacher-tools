@@ -179,7 +179,7 @@ class Application(ApplicationBase):
         self.translate_ui()
 
     def title(self):
-        return f"{self.tr('VPL Server')} - " + self.tt_url(True)
+        return f"{self.tr('VPL Server')}"
 
     def disable_serial(self):
         self.no_serial = True

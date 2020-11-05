@@ -10,6 +10,7 @@ from vpl3tt.urlutil import URLUtil
 
 import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
+import os
 
 
 class Application(ApplicationBase, tk.Tk):
@@ -18,7 +19,7 @@ class Application(ApplicationBase, tk.Tk):
         tk.Tk.__init__(self)
         ApplicationBase.__init__(self, **kwargs)
 
-        self.title(f"{self.tr('VPL Server')} - " + self.tt_url(True))
+        self.title(f"{self.tr('VPL Server')}")
         self.protocol("WM_DELETE_WINDOW", self.quit)  # close widget
         self.createcommand("exit", self.quit)  # Quit menu
 
@@ -80,7 +81,7 @@ class Application(ApplicationBase, tk.Tk):
                 menu, index = menu_items[key]
                 menu.entryconfigure(index, label=self.tr(key))
             self.v_language.set(self.language)
-            self.title(f"{self.tr('VPL Server')} - " + self.tt_url(True))
+            self.title(f"{self.tr('VPL Server')}")
             self.update_connection()
             self.update_robots()
             self.browser_button.config(text=self.tr("Open tools in browser"))
@@ -259,3 +260,4 @@ class Application(ApplicationBase, tk.Tk):
 
     def exit_app(self):
         self.destroy()
+        os._exit(0) # forced exit despite coroutines
