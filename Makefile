@@ -240,7 +240,7 @@ VPL3Server.app: setup_app.py setup_cx_freeze.py launch_objc.py $(VPL3PKGFILES) $
 VPLServer.dmg: VPL3Server.app build/VPL3Server-cxf.app readme-mac.txt
 	rm -Rf "VPL Server" $@
 	mkdir "VPL Server"
-	cp -R $^ build/VPL3Server-cxf.app "VPL Server"
+	cp -R $^ "VPL Server"
 	hdiutil create -format UDZO -imagekey zlib-level=9 -srcfolder "VPL Server" $@
 	rm -Rf "VPL Server"
 
