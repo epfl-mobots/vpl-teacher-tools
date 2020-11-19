@@ -237,7 +237,7 @@ VPL3Server.app: setup_app.py setup_cx_freeze.py launch_objc.py $(VPL3PKGFILES) $
 	python3 setup_app.py py2app
 	python3 setup_cx_freeze.py bdist_mac
 
-VPLServer.dmg: VPL3Server.app build/VPL3Server-cxf.app readme-mac.txt
+VPLServer.dmg: VPL3Server.app readme-mac.txt
 	rm -Rf "VPL Server" $@
 	mkdir "VPL Server"
 	cp -R $^ "VPL Server"
