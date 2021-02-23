@@ -4,7 +4,7 @@
 	@param {string} method "tdm" or "jws" or "none"
 */
 VPLTeacherTools.makeVPLURL = function (group, method) {
-	var url0 = "/vpl/vpl.html?ui=$VPLUIURI&uilanguage=$VPLLANGUAGE&server=ws://" + document.location.hostname + ":8001/";
+	var url0 = "/vpl/vpl.html?ui=$VPLUIURI&uilanguage=$VPLLANGUAGE&server=ws://" + document.location.hostname + ":$TTSERVERWSPORT/";
 	var tdmURL = VPLTeacherTools.getHashOption("w") || "ws://" + document.location.hostname + ":8597/";
 	var jwsURL = VPLTeacherTools.getHashOption("w") || "ws://" + document.location.hostname + ":8002/";
 	var url = url0 +

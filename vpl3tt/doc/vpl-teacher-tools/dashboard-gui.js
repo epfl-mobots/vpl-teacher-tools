@@ -203,7 +203,7 @@ window.addEventListener("load", function () {
 	if (!$LOGDISPLAY) {
 		document.getElementById("divlog").style.display = "none";
 	}
-	dashboard = new VPLTeacherTools.Dashboard("ws://" + document.location.hostname + ":8001/", {
+	dashboard = new VPLTeacherTools.Dashboard("ws://" + document.location.hostname + ":$TTSERVERWSPORT/", {
 		log: $LOGDISPLAY
 			? function (str) {
 				document.getElementById("log").textContent += str + "\n";

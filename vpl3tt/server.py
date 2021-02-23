@@ -120,6 +120,7 @@ class Server:
             logging.debug("http thread: beginning")
             self.http_server = VPLHTTPServer(db_path=self.db_path,
                                              http_port=self.http_port,
+                                             ws_port=self.ws_port,
                                              token = self.tt_token,
                                              language=self.language,
                                              tt_language=self.tt_language,

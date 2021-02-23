@@ -41,6 +41,7 @@ class VPLHTTPServer:
     def __init__(self,
                  db_path=Db.DEFAULT_PATH,
                  http_port=None,
+                 ws_port=None,
                  token=None,
                  tt_language=None,
                  language=None,
@@ -52,6 +53,7 @@ class VPLHTTPServer:
                  bridge="tdm",
                  logger=None):
         self.http_port = http_port
+        self.ws_port = ws_port
         self.token = token
         self.language = language
         self.tt_language = tt_language
@@ -471,6 +473,7 @@ class VPLHTTPServer:
         self.httpd.add_filter(lambda s: s.replace(b"$DEVTOOLSTYLE", b"block" if self.dev_tools else b"none"),
                               r"^/vpl-teacher-tools/.*\.(html|css)$")
         self.httpd.add_filter(lambda s: s.replace(b"$VPLUIURI", bytes(self.vpl_ui_uri, "utf-8")))
+        self.httpd.add_filter(lambda s: s.replace(b"$TTSERVERWSPORT", bytes(str(self.ws_port), "utf-8")))
         self.groups = []
 
     def load_tr_mappings(self):
@@ -521,9 +524,10 @@ class VPLHTTPServer:
 
 if __name__ == "__main__":
     port = VPLHTTPServer.DEFAULT_PORT
+    ws_port = VPLWebSocketServer.DEFAULT_PORT
     try:
         arguments, values = getopt.getopt(sys.argv[1:],
-                                          "", ["help", "port=", "link="])
+                                          "", ["help", "port=", "wsport=", "link="])
     except getopt.error as err:
         print(str(err))
         sys.exit(1)
@@ -533,12 +537,15 @@ if __name__ == "__main__":
 VPL 3 teacher tools http server
 
 Options:
-  --help     display help message and exit
-  --port num http server port number (default: {VPLHTTPServer.DEFAULT_PORT})
+  --help       display help message and exit
+  --port num   http server port number (default: {VPLHTTPServer.DEFAULT_PORT})
+  --wsport num server websocket port number (default: {VPLWebSocketServer.DEFAULT_PORT})
             """)
             sys.exit(0)
         elif arg == "--port":
             port = int(val)
+        elif arg == "--wsport":
+            ws_port = int(val)
 
-    server = VPLHTTPServer.create(http_port=port, logger=print)
+    server = VPLHTTPServer.create(http_port=port, ws_port=ws_port, logger=print)
     server.run()

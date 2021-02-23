@@ -8,4 +8,4 @@ $compress = @{
     CompressionLevel = "Fastest"
     DestinationPath = "VPL3Server-win.zip"
 }
-Compress-Archive @compress
+Compress-Archive -Force @compress
