@@ -293,6 +293,11 @@ VPLTeacherTools.HTTPClient.prototype.shortenURL = function (url, cb) {
 		var shortenedURL = this.responseText.trim();
 		cb(shortenedURL);
 	});
-	xhr.open("GET", "/api/shortenURL?u=" + encodeURIComponent(url));
+	var url = "/api/shortenURL?u=" + encodeURIComponent(url);
+	if (this.token) {
+		// add token
+		url += "&token=" + this.token;	// this.token is still encoded
+	}
+	xhr.open("GET", url);
 	xhr.send(null);
 };

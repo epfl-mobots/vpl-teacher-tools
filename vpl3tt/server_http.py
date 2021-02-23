@@ -87,23 +87,6 @@ class VPLHTTPServer:
 
             return fn_with_validation
 
-        def check_token_with_path(fn3):
-
-            def fn3_with_validation(path, self, handler):
-                q = VPLHTTPServer.query_param(handler)
-                token = q["token"][0] if "token" in q else ""
-                if self.token and self.token != token:
-                    return {
-                        "mime": "application/json",
-                        "data": json.dumps({
-                            "status": "err",
-                            "msg": "Invalid token"
-                        }, indent=4)
-                    }
-                return fn3(path, self, handler)
-
-            return fn3_with_validation
-
         @self.httpd.http_get("/")
         def http_get_root(self, handler):
             return {
@@ -452,7 +435,6 @@ class VPLHTTPServer:
                 return VPLHTTPServer.error("missing url")
 
         @self.httpd.http_get_any()
-        @check_token_with_path
         def http_get_shortenedURL(path, self, handler):
             if path.startswith(VPLHTTPServer.SHORTENED_URL_PREFIX):
                 key = path[3:]
