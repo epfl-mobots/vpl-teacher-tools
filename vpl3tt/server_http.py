@@ -188,7 +188,6 @@ class VPLHTTPServer:
             return self.call_api(Db.remove_group, q["groupid"][0])
 
         @self.httpd.http_get("/api/listGroups")
-        @check_token
         def http_get_api_listGroups(self, handler):
             return self.call_api(Db.list_groups)
 
@@ -213,7 +212,6 @@ class VPLHTTPServer:
                                  q["student"][0])
 
         @self.httpd.http_get("/api/listGroupStudents")
-        @check_token
         def http_get_api_listGroupStudents(self, handler):
             q = VPLHTTPServer.query_param(handler)
             if "groupid" not in q:
