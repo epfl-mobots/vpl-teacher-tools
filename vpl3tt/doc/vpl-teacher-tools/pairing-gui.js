@@ -43,7 +43,7 @@ function fillRobotTable(robotArray, pairing) {
 			// drag robot name
 			td.draggable = true;
 			td.addEventListener("dragstart", function (ev) {
-				ev.dataTransfer.setData("text/plain", "R/" + robot.name);
+				ev.dataTransfer.setData("text/plain", "R/" + robot.name + "/" + robot.niceName);
 				ev.dataTransfer.setDragImage(tr.getElementsByTagName("td")[0], 0, 0);
 				ev.dataTransfer.effectAllowed = "copy";
 			});
@@ -203,7 +203,9 @@ function fillGroupTable(groupArray, pairing) {
 					pairing.addStudentToGroup(studentName, group.group_id, true);
 				} else if (data && /^R\//.test(data)) {
 					ev.stopPropagation();
-					var robotName = data.slice(2);
+					dataParts = data.split("/");
+					var robotName = dataParts[1];
+					var robotNiceName = dataParts[2];
 					pairing.beginSession(robotName, group.group_id);
 				}
 			});
@@ -215,7 +217,7 @@ function fillGroupTable(groupArray, pairing) {
 			tr.appendChild(td);
 			if (group.pair) {
 				td.className = pairing.isGroupSelected(group.group_id) ? "rect selected" : "rect";
-				td.textContent = (/^\{/.test(group.pair.robot) ? "Thymio II" : group.pair.robot.replace(/[()]/g, "")) + " ";
+				td.textContent = (/^\{/.test(group.pair.robot) ? pairing.getRobotNiceName(group.pair.robot) : group.pair.robot.replace(/[()]/g, "")) + " ";
 				var rmBtn = document.createElement("span");
 				rmBtn.textContent = "\u2716";	// heavy multiplication mark
 				rmBtn.style.cursor = "pointer";

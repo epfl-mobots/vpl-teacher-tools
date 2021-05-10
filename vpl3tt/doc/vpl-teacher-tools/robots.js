@@ -54,7 +54,7 @@ VPLTeacherTools.Robot.prototype.flash = function (on) {
 	@param {*} node
 */
 VPLTeacherTools.RobotTDM = function (robotCon, name, node) {
-	VPLTeacherTools.Robot.call(this, robotCon, name, "Thymio II");
+	VPLTeacherTools.Robot.call(this, robotCon, name, node.name || "Thymio II");
 	this.node = node;
 };
 

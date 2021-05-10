@@ -327,6 +327,19 @@ VPLTeacherTools.Pairing.prototype.shortRobotName = function (robotName) {
 	return robotName;
 };
 
+/** Find nice name from the robot name, or return name as is
+    @param {string} robotName
+    @return {string}
+*/
+VPLTeacherTools.Pairing.prototype.getRobotNiceName = function (robotName) {
+    for (var i = 0; i < this.robots.length; i++) {
+        if (this.robots[i].name == robotName) {
+            return this.robots[i].niceName;
+        }
+    }
+    return robotName;
+};
+
 /** Begin a session by associating a robot with a group
     @param {?string=} robotName robot name (default: selected robot)
     @param {?string=} groupId group id (default: selected group)
