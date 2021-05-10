@@ -6,7 +6,7 @@
 # from vpl3tt.launch import launch
 # from vpl3tt.tkapp import Application
 # if __name__ == "__main__": launch(Application)
-# (or replace tkapp with wxapp or objcapp)
+# (or replace tkapp with another subclass of ApplicationBase)
 
 from vpl3tt.db import Db
 from vpl3tt.server import Server
@@ -16,15 +16,17 @@ import sys
 import logging
 
 
-def launch(App):
+def launch(App, args=None):
     http_port = None
     ws_port = App.DEFAULT_WS_PORT
     timeout = Server.DEFAULT_START_TIMEOUT
     ws_link_url = None
     db_path = Db.DEFAULT_PATH
     language = "fr"
+    if args is None:
+        args = sys.argv[1:]
     try:
-        arguments, values = getopt.getopt(sys.argv[1:],
+        arguments, values = getopt.getopt(args,
                                           "",
                                           [
                                               "db=",
