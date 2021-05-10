@@ -77,7 +77,6 @@ setup(
     install_requires=[
         "qrcode",
         "thymiodirect",
-        "websocket",
         "websockets",
         "websocket-client"
     ],

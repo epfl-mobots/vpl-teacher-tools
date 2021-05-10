@@ -16,7 +16,7 @@ APP = ['launch_objc.py']
 DATA_FILES = [
 ]
 OPTIONS = {
-    "packages": "sqlite3,tkinter,websocket,websockets",
+    "packages": "sqlite3,tkinter,websockets,websocket-client",
     "dist_dir": ".",
     "plist": {
         "CFBundleIdentifier": "ch.epfl.mobots.vpl3server",
