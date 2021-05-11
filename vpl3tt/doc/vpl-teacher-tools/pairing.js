@@ -40,6 +40,9 @@ VPLTeacherTools.Pairing = function (options) {
 
     var nonGroups = options && options.nonGroups.map(function (name) { return {"name": name}}) || [];
 	this.client = new VPLTeacherTools.HTTPClient();
+	this.client.onInvalidToken = function () {
+		document.getElementById("token-error-msg").style.display = "block";
+	};
     this.updateStudents();
     this.updateGroups();
 };

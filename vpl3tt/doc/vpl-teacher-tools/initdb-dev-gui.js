@@ -1,5 +1,8 @@
 window.addEventListener("load", function () {
 	var client = new VPLTeacherTools.HTTPClient();
+	this.client.onInvalidToken = function () {
+		document.getElementById("token-error-msg").style.display = "block";
+	};
 	var opt = {
 		logURL: function (url) {
 			document.getElementById("console").textContent += "URL: " + url + "\n";

@@ -15,6 +15,9 @@ VPLTeacherTools.FileBrowser = function (options) {
     this.filterStudentLast = true;
     this.filterStudentSet = "";
 	this.client = new VPLTeacherTools.HTTPClient();
+	this.client.onInvalidToken = function () {
+		document.getElementById("token-error-msg").style.display = "block";
+	};
     this.updateFiles();
     this.updateStudents();
 };

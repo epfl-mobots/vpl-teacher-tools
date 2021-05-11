@@ -8,6 +8,8 @@
 */
 VPLTeacherTools.HTTPClient = function () {
 	this.token = sessionStorage.getItem("token") || "";
+	/** @type {(function():void|null)} */
+	this.onInvalidToken = null;
 };
 
 /** Send an http request, GET if !data or POST if data
@@ -25,12 +27,15 @@ VPLTeacherTools.HTTPClient.prototype.rest = function (url, opt, data, dataMimety
 	}
 
 	var xhr = new XMLHttpRequest();
+	var self = this;
 	if (opt && opt.onSuccess) {
 		xhr.addEventListener("load", function () {
 			try {
 				var msg = JSON.parse(this.responseText);
 				if (msg["status"] === "ok") {
 					opt.onSuccess(msg["result"]);
+				} else if (msg["invalid_token"] && self.onInvalidToken) {
+					self.onInvalidToken();
 				} else if (opt.onError) {
 					opt.onError(msg["msg"]);
 				}

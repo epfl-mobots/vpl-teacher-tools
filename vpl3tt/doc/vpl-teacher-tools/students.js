@@ -11,6 +11,9 @@ VPLTeacherTools.StudentManagement = function (options) {
     this.filterClass = "";
 
 	this.client = new VPLTeacherTools.HTTPClient();
+	this.client.onInvalidToken = function () {
+		document.getElementById("token-error-msg").style.display = "block";
+	};
 
     if (options.onStudents) {
         this.students = [];

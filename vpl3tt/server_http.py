@@ -82,6 +82,7 @@ class VPLHTTPServer:
                         "mime": "application/json",
                         "data": json.dumps({
                             "status": "err",
+                            "invalid_token": True,
                             "msg": "Invalid token"
                         }, indent=4)
                     }

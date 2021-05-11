@@ -36,6 +36,9 @@ VPLTeacherTools.Dashboard = function (wsURL, options) {
 	this.wsConnections = [];
 
 	this.client = new VPLTeacherTools.HTTPClient();
+	this.client.onInvalidToken = function () {
+		document.getElementById("token-error-msg").style.display = "block";
+	};
 	this.loadSessions();
 	this.updateFiles();
 
