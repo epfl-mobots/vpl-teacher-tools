@@ -96,12 +96,17 @@ class VPLHTTPServer:
                 "location": "/index.html"
             }
 
+        @self.httpd.http_get("/api/check")
+        @check_token
+        def http_check(self, handler):
+            return {
+                "mime": "application/json",
+                "data": json.dumps(None)
+            }
+
         @self.httpd.http_get("/api/groups")
         @check_token
         def http_get_groups(self, handler):
-            print("http_get_groups")
-            # if not self.validate_token():
-            #     return {}
             return {
                 "mime": "application/json",
                 "data": json.dumps(self.groups, indent=4)

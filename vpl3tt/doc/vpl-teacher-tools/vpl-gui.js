@@ -89,6 +89,9 @@ window.addEventListener("beforeunload", function () {
 		var json = window["vplGetProgramAsJSON"](customizationMode);
 		console.info(json);
 		var client = new VPLTeacherTools.HTTPClient();
+		client.onInvalidToken = function () {
+			document.getElementById("token-error-msg").style.display = "block";
+		};
 		client.updateFile(fileId, json, {asBeacon: true});
 	}
 }, false);
