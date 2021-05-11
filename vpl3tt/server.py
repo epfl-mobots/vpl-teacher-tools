@@ -35,7 +35,8 @@ class Server:
                  logger=None,
                  update_connection=None,
                  update_robots=None,
-                 initial_file_dir=None):
+                 initial_file_dir=None,
+                 default_program_filename=None):
         self.stopping = False
         self.db_path = db_path
         self.initial_file_dir = initial_file_dir
@@ -50,6 +51,7 @@ class Server:
         self.language = language
         self.tt_language = tt_language
         self.full_url = full_url
+        self.default_program_filename = default_program_filename
         self.ws = None
         self.ws_server = None
         self.ws_thymio = None
@@ -147,7 +149,8 @@ class Server:
                                                 ws_link_url=self.ws_link_url,
                                                 on_connect=self.update_con,
                                                 on_disconnect=self.update_con,
-                                                token=self.tt_token)
+                                                token=self.tt_token,
+                                                default_program_filename=self.default_program_filename)
             logging.debug("websocket thread: websocket server created")
             nonlocal ws_started
             ws_started = True

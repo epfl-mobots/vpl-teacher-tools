@@ -38,6 +38,8 @@ class ApplicationBase:
                  full_url=False):
         self.translate = Translate()
         vpl3tt.translate_fr.add_translations_fr(self.translate)
+        self.language = language
+        self.translate.set_language(language)
         self.logger_lock = threading.Lock()
         tt_language = language  if self.translate.has_translation(language) else None
         self.server = Server(db_path=db_path,
@@ -51,14 +53,13 @@ class ApplicationBase:
                              logger=self.logger,
                              update_connection=self.update_connection,
                              update_robots=self.update_robots,
-                             initial_file_dir=pkg_resources.resource_filename("vpl3tt", "data/"))
+                             initial_file_dir=pkg_resources.resource_filename("vpl3tt", "data/"),
+                             default_program_filename=self.tr("program.vpl"))
         self.server.add_files(if_new_db=True)
         self.server.start()
         self.http_port = self.server.get_http_port()
         self.no_serial = False
-        self.language = language
         self.tt_language = tt_language
-        self.translate.set_language(language)
         self.bridge = "none"  # "tdm" or "jws" or "none"
         self.full_url = full_url
         self.log_display = False

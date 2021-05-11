@@ -27,7 +27,8 @@ class VPLWebSocketServer:
                  on_connect=None,
                  on_disconnect=None,
                  token=None,
-                 logger=None):
+                 logger=None,
+                 default_program_filename=None):
         self.db_path = db_path if db_path is not None else Db.DEFAULT_PATH
         self.ws = WSServer(ws_port, self)
         self.log_recipients = set()
@@ -35,6 +36,7 @@ class VPLWebSocketServer:
         self.on_connect_cb = on_connect
         self.on_disconnect_cb = on_disconnect
         self.logger = logger
+        self.default_program_filename = default_program_filename
 
         self.ws_link = None
         if ws_link_url:
@@ -119,18 +121,26 @@ class VPLWebSocketServer:
                     error_msg = "default file error"
                     default_file = db.get_default_file()
                     if default_file:
-                        await self.ws.send(websocket, {
-                            "sender": {
-                                "type": "server"
-                            },
-                            "type": "file",
-                            "data": {
-                                "name": default_file["filename"],
-                                "kind": "vpl",
-                                "metadata": {},
-                                "content": default_file["content"]
-                             }
-                        })
+                        data = {
+                            "name": default_file["filename"],
+                            "kind": "vpl",
+                            "metadata": {},
+                            "content": default_file["content"]
+                         }
+                    else:
+                        data = {
+                            "name": self.default_program_filename or "program.vpl",
+                            "kind": "vpl",
+                            "metadata": {},
+                            "content": "{}"
+                         }
+                    await self.ws.send(websocket, {
+                        "sender": {
+                            "type": "server"
+                        },
+                        "type": "file",
+                        "data": data
+                    })
                 except Exception:
                     await self.ws.send(websocket, {
                         "sender": {
