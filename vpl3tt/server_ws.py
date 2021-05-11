@@ -154,7 +154,7 @@ class VPLWebSocketServer:
             # save file
             websocket.is_connected = True
             session_id = msg["sender"]["sessionid"]
-            filename = msg["data"]["name"]
+            filename = msg["data"]["name"] or "-.vpl"
             # filename can be prefixed with "tag/"; get tag
             filename_parts = filename.split("/")
             if len(filename_parts) > 1:
