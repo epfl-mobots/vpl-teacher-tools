@@ -63,7 +63,7 @@ class VPLHTTPServer:
         self.advanced_sim_features = advanced_sim_features
         self.dev_tools = dev_tools
         self.bridge = bridge  # "tdm" or "jws" or "none"
-        self.vpl_ui_uri = "ui/classic/ui.json"
+        self.vpl_ui_uri = "ui/svg/ui.json"
         self.db_path = db_path
         self.db = Db(self.db_path)
         self.handler = VPLHTTPRequestHandler

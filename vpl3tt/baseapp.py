@@ -60,8 +60,6 @@ class ApplicationBase:
         self.tt_language = tt_language
         self.translate.set_language(language)
         self.bridge = "none"  # "tdm" or "jws" or "none"
-        self.vpl_ui_set = {"classic"}
-        self.vpl_ui = "classic"
         self.full_url = full_url
         self.log_display = False
         self.advanced_sim_features = False
@@ -253,7 +251,7 @@ class ApplicationBase:
             	}
             ]
         self.vpl_ui_set = {ui["id"] for ui in self.ui_toc}
-        self.vpl_ui = self.ui_toc[0]["id"]
+        self.set_vpl_ui(self.ui_toc[0]["id"])
         for ui in self.ui_toc:
             for language in ui["name"]:
                 if language != "en":
