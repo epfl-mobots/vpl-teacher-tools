@@ -764,7 +764,6 @@ class Db:
 
     def add_local_files(self, path_array, tag):
         for path in path_array:
-            print(f"add_local_files {path} {tag}")
             filename = os.path.split(path)[-1]
             with open(path, encoding="utf-8") as f:
                 content = f.read()

@@ -51,7 +51,7 @@ class ApplicationBase:
                              logger=self.logger,
                              update_connection=self.update_connection,
                              update_robots=self.update_robots,
-                             initial_file_dir="data")
+                             initial_file_dir=pkg_resources.resource_filename("vpl3tt", "data/"))
         self.server.add_files(if_new_db=True)
         self.server.start()
         self.http_port = self.server.get_http_port()
