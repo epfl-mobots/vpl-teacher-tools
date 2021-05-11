@@ -15,7 +15,6 @@ from vpl3tt.tdm_client import TDMClient
 import threading
 import os
 import json
-import pkg_resources
 
 
 class ApplicationBase:
@@ -42,6 +41,8 @@ class ApplicationBase:
         self.translate.set_language(language)
         self.logger_lock = threading.Lock()
         tt_language = language  if self.translate.has_translation(language) else None
+        data_path = os.path.join(os.path.split(__file__)[0], "data")
+        print("***", data_path)
         self.server = Server(db_path=db_path,
                              http_port=http_port,
                              ws_port=ws_port,
@@ -53,7 +54,7 @@ class ApplicationBase:
                              logger=self.logger,
                              update_connection=self.update_connection,
                              update_robots=self.update_robots,
-                             initial_file_dir=pkg_resources.resource_filename("vpl3tt", "data/"),
+                             initial_file_dir=data_path,
                              default_program_filename=self.tr("program.vpl"))
         self.server.add_files(if_new_db=True)
         self.server.start()
