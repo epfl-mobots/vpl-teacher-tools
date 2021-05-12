@@ -14,10 +14,12 @@ import urllib
 from vpl3tt.db import Db
 from vpl3tt.urlutil import URLUtil
 from vpl3tt.urltiny import URLShortcuts
+from vpl3tt.datapath import DataPath
+
 import sys
+import os
 import getopt
 import json
-import pkg_resources
 
 
 class VPLHTTPRequestHandler(HTTPRequestHandler):
@@ -481,7 +483,7 @@ class VPLHTTPServer:
         self.groups = []
 
     def load_tr_mappings(self):
-        with pkg_resources.resource_stream("vpl3tt", self.TR_MAPPINGS_JSON) as file:
+        with open(DataPath.path(os.path.join(self.TR_MAPPINGS_JSON)), "rb") as file:
             self.tr_mappings = json.load(file)
 
     def run(self):

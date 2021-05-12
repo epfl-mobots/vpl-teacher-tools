@@ -8,7 +8,9 @@ import http.server
 import urllib
 import mimetypes
 import re
-import pkg_resources
+import os
+
+from vpl3tt.datapath import DataPath
 
 
 class DocFilterSet:
@@ -69,7 +71,7 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             if (re.compile(r"^(/[-_a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?)+")
                   .match(path)):
                 try:
-                    with pkg_resources.resource_stream("vpl3tt", HTTPRequestHandler.DOC_ROOT + path) as f:
+                    with open(DataPath.path(os.path.join(HTTPRequestHandler.DOC_ROOT, path[1:])), "rb") as f:
                         self.send_response(http.server.HTTPStatus.OK)
                         mimetype = mimetypes.MimeTypes().guess_type(path)
                         self.send_header("Content-type",

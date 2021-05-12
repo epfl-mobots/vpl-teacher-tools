@@ -11,6 +11,7 @@ from vpl3tt.translate import Translate
 import vpl3tt.translate_fr
 from vpl3tt.db import Db
 from vpl3tt.tdm_client import TDMClient
+from vpl3tt.datapath import DataPath
 
 import threading
 import os
@@ -41,8 +42,6 @@ class ApplicationBase:
         self.translate.set_language(language)
         self.logger_lock = threading.Lock()
         tt_language = language  if self.translate.has_translation(language) else None
-        data_path = os.path.join(os.path.split(__file__)[0], "data")
-        print("***", data_path)
         self.server = Server(db_path=db_path,
                              http_port=http_port,
                              ws_port=ws_port,
@@ -54,7 +53,7 @@ class ApplicationBase:
                              logger=self.logger,
                              update_connection=self.update_connection,
                              update_robots=self.update_robots,
-                             initial_file_dir=data_path,
+                             initial_file_dir=DataPath.path("data"),
                              default_program_filename=self.tr("program.vpl"))
         self.server.add_files(if_new_db=True)
         self.server.start()
@@ -239,7 +238,7 @@ class ApplicationBase:
 
     def load_ui_list(self):
         try:
-            with pkg_resources.resource_stream("vpl3tt", self.UI_TOC_PATH) as file:
+            with open(DataPath.path(os.path.join(self.UI_TOC_PATH)), "rb") as file:
                 self.ui_toc = json.load(file)
         except Exception:
             self.ui_toc = [
