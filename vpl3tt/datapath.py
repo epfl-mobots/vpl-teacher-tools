@@ -22,7 +22,10 @@ class DataPath:
             # in the app resources
             # remove lib/python...zip/... before relative_path, if any
             import re
-            abs_path = re.sub(f"lib/python[0-9]*.zip/.*/(?={relative_path})", "", abs_path)
+            rel_path_slash = relative_path.replace('\\', '/')
+            abs_path = re.sub(f"lib/python[0-9]*.zip/.*/(?={rel_path_slash})",
+                              "",
+                              abs_path)
         return abs_path
 
     @staticmethod
