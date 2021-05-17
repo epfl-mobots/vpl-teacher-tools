@@ -14,15 +14,18 @@ AUTHOR = "Yves Piguet"
 AUTHOR_EMAIL = "yves dot piguet a epfl dot CH"
 APP = ['launch_objc.py']
 DATA_FILES = [
+    ("", ["vpl3tt/data"]),
+    ("", ["vpl3tt/doc"]),
 ]
 OPTIONS = {
-    "packages": "sqlite3,tkinter,websockets,websocket-client",
+    #"packages": "sqlite3,tkinter,websockets,websocket-client",
+    "packages": "sqlite3,tkinter,websockets,websocket",
     "dist_dir": ".",
     "plist": {
         "CFBundleIdentifier": "ch.epfl.mobots.vpl3server",
         "CFBundleVersion": "0.1",
         "NSHumanReadableCopyright":
-            "2019-2020, École polytechnique fédérale de Lausanne (EPFL)",
+            "2019-2021, École polytechnique fédérale de Lausanne (EPFL)",
     }
 }
 

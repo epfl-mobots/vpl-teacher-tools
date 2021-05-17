@@ -23,7 +23,7 @@ class ApplicationBase:
     DEFAULT_HTTP_PORT = Server.DEFAULT_HTTP_PORT
     DEFAULT_WS_PORT = Server.DEFAULT_WS_PORT
     DEFAULT_PREFS_PATH = os.path.expanduser("~/vplserver-prefs.json")
-    UI_TOC_PATH = "doc/vpl/ui/toc.json"
+    UI_TOC_PATH = os.path.join("doc", "vpl", "ui", "toc.json")
     LANGUAGES = {"en", "fr", "de", "it"}
     TT_LANGUAGES = {"en", "fr"}
     BRIDGES = {"none", "tdm", "jws"}
@@ -238,7 +238,7 @@ class ApplicationBase:
 
     def load_ui_list(self):
         try:
-            with open(DataPath.path(os.path.join(self.UI_TOC_PATH)), "rb") as file:
+            with open(DataPath.path(self.UI_TOC_PATH), "rb") as file:
                 self.ui_toc = json.load(file)
         except Exception:
             self.ui_toc = [

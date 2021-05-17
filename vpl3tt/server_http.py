@@ -38,7 +38,7 @@ class VPLHTTPServer:
 
     DEFAULT_PORT = HTTPServerWithContext.DEFAULT_PORT
     SHORTENED_URL_PREFIX = "/vv"
-    TR_MAPPINGS_JSON = HTTPRequestHandler.DOC_ROOT + "/" + "tr-mappings.json"
+    TR_MAPPINGS_JSON = os.path.join(HTTPRequestHandler.DOC_ROOT, "tr-mappings.json")
 
     def __init__(self,
                  db_path=Db.DEFAULT_PATH,
@@ -483,7 +483,7 @@ class VPLHTTPServer:
         self.groups = []
 
     def load_tr_mappings(self):
-        with open(DataPath.path(os.path.join(self.TR_MAPPINGS_JSON)), "rb") as file:
+        with open(DataPath.path(self.TR_MAPPINGS_JSON), "rb") as file:
             self.tr_mappings = json.load(file)
 
     def run(self):
