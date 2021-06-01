@@ -42,31 +42,54 @@ window.addEventListener("load", function () {
 			- parseFloat(divComputedStyle["margin-bottom"])) + "px";
 		break;
 	case "zip":
-		console.info(fileContent);
-		zip = new JSZip();
-		zip.loadAsync(options.isBase64 ? atob(fileContent) : fileContent)
-			.then(() => {
-				var containerDiv = document.createElement("div");
-				containerDiv.style.display = "table";
-				containerDiv.style.height = "100%";
-				containerDiv.style.width = "100%";
-				containerDiv.style.overflow = "hidden";
-				div.appendChild(containerDiv);
+		var zipContent = options.isBase64 ? atob(fileContent) : fileContent;
+		var zipbundle = new VPLTeacherTools.ZipBundle();
+		zipbundle.load(zipContent, () => {
+			var containerDiv = document.createElement("div");
+			containerDiv.style.display = "table";
+			containerDiv.style.height = "100%";
+			containerDiv.style.width = "100%";
+			containerDiv.style.overflow = "hidden";
+			div.appendChild(containerDiv);
 
-				var table = document.createElement("table");
-				containerDiv.appendChild(table);
+			var dl = document.createElement("dl");
+			containerDiv.appendChild(dl);
 
-				zip.forEach((relativePath, file) => {
-					if (!file.dir) {
-						var tr = document.createElement("tr");
-						table.appendChild(tr);
-						var td = document.createElement("td");
-						td.textContent = relativePath;
-						tr.appendChild(td);
-						console.info(file);
-					}
-				});
-			});
+			for (var i = 0; i < zipbundle.toc.length; i++) {
+				var path = zipbundle.toc[i];
+				var dt = document.createElement("dt");
+				dl.appendChild(dt);
+				var codeEl = document.createElement("code");
+				codeEl.textContent = path.slice(zipbundle.pathPrefix.length);
+				dt.appendChild(codeEl);
+
+				// content
+				var suffix = VPLTeacherTools.JSZip.getSuffix(path);
+
+				var contentContainer = null;
+				switch (suffix) {
+				case "txt":
+					contentContainer = document.createElement("div");
+					var pre = document.createElement("pre");
+					((pre) => {
+						zipbundle.zip.file(path).async("string").then((data) => {
+							pre.textContent = data;
+						});
+					})(pre);
+					contentContainer.appendChild(pre);
+					break;
+				}
+
+				if (contentContainer != null) {
+					contentContainer.style.margin = "1ex";
+					contentContainer.style.padding = "1ex";
+					contentContainer.style.border = "1px solid silver";
+					var dd = document.createElement("dd");
+					dd.appendChild(contentContainer);
+					dl.appendChild(dd);
+				}
+			}
+		});
 		break;
 	}
 }, false);
