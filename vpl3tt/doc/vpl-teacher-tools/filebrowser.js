@@ -517,13 +517,14 @@ VPLTeacherTools.FileBrowser.getFileIconURL = function (filename) {
 		"svg": "icon-file-img.svg",
 		"txt": "icon-file-txt.svg",
 		"vpl3": "icon-file-vpl3.svg",
-		"vpl3ui": "icon-file-vpl3ui.svg"
+		"vpl3ui": "icon-file-vpl3ui.svg",
+        "zip": "icon-file-bundle.svg"
 	}[suffix] || null;
 };
 
 VPLTeacherTools.FileBrowser.storeAsBase64 = function (filename) {
     var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(filename).toLowerCase();
-    return ["jpg", "png"].indexOf(suffix) >= 0;
+    return ["jpg", "png", "zip"].indexOf(suffix) >= 0;
 };
 
 VPLTeacherTools.FileBrowser.suffixToMimetype = function (suffix) {
@@ -535,7 +536,8 @@ VPLTeacherTools.FileBrowser.suffixToMimetype = function (suffix) {
         "pdf": "application/pdf",
         "png": "image/png",
         "svg": "image/svg+xml",
-        "txt": "text/plain"
+        "txt": "text/plain",
+        "zip": "application/zip"
     }[suffix] || "application/octet-stream";
 };
 

@@ -426,7 +426,7 @@ window.addEventListener("load", function () {
 		cancel: VPLTeacherTools.translate("Cancel"),
 		title: VPLTeacherTools.translate("Import Files")
 	}, {
-		accept: ".vpl3,.vpl3ui,.html,.txt,.jpg,.png,.svg",
+		accept: ".vpl3,.vpl3ui,.html,.txt,.jpg,.png,.svg,.zip",
 		multiple: true
 	});
 	btn.addEventListener("click", function () {
