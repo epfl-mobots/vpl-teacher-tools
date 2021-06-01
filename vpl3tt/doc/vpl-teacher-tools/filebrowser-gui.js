@@ -256,6 +256,7 @@ window.addEventListener("load", function () {
 			case "svg":
 			case "html":
 			case "txt":
+			case "zip":
 				document.location = "viewer$LANGSUFFIX.html";
 				break;
 			}

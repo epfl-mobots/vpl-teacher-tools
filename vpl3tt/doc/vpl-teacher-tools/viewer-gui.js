@@ -41,5 +41,32 @@ window.addEventListener("load", function () {
 			- parseFloat(divComputedStyle["margin-top"])
 			- parseFloat(divComputedStyle["margin-bottom"])) + "px";
 		break;
+	case "zip":
+		console.info(fileContent);
+		zip = new JSZip();
+		zip.loadAsync(options.isBase64 ? atob(fileContent) : fileContent)
+			.then(() => {
+				var containerDiv = document.createElement("div");
+				containerDiv.style.display = "table";
+				containerDiv.style.height = "100%";
+				containerDiv.style.width = "100%";
+				containerDiv.style.overflow = "hidden";
+				div.appendChild(containerDiv);
+
+				var table = document.createElement("table");
+				containerDiv.appendChild(table);
+
+				zip.forEach((relativePath, file) => {
+					if (!file.dir) {
+						var tr = document.createElement("tr");
+						table.appendChild(tr);
+						var td = document.createElement("td");
+						td.textContent = relativePath;
+						tr.appendChild(td);
+						console.info(file);
+					}
+				});
+			});
+		break;
 	}
 }, false);

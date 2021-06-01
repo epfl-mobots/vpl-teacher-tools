@@ -215,7 +215,7 @@ VPLTeacherTools.FileBrowser.prototype.canPreviewTeacherFile = function () {
     }
     var file = this.selectedFile();
     var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
-    return ["txt", "html", "jpg", "png", "svg"].indexOf(suffix) >= 0;
+    return ["txt", "html", "jpg", "png", "svg", "zip"].indexOf(suffix) >= 0;
 };
 
 VPLTeacherTools.FileBrowser.prototype.canGetConfigFile = function () {
