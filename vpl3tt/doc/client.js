@@ -264,6 +264,9 @@ VPLTeacherTools.HTTPClient.prototype.listFiles = function (queryProps, opt) {
 		if (queryProps.last) {
 			params.push("last=true");
 		}
+		if (queryProps.getZip) {
+			params.push("getzip=true");
+		}
 	}
 	this.rest("/api/listFiles" + (params.length > 0 ? "?" + params.join("&") : ""), opt);
 };

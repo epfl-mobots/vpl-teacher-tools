@@ -402,10 +402,12 @@ class VPLHTTPServer:
             student = q["student"][0] if "student" in q else None
             tag = q["tag"][0] if "tag" in q else None
             last = q["last"][0].lower() == "true" if "last" in q else False
+            get_zip = q["getzip"][0].lower() == "true" if "getzip" in q else False
             return self.call_api(Db.list_files,
                                  student=student,
                                  tag=tag,
-                                 last=last)
+                                 last=last,
+                                 get_zip=get_zip)
 
         @self.httpd.http_get("/api/listFileTags")
         @check_token

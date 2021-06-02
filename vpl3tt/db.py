@@ -1012,9 +1012,11 @@ class Db:
     def list_files(self,
                    filename=None, tag=None, student=None,
                    order=None,
-                   last=False):
+                   last=False,
+                   get_zip=False):
         """Get a list of files, optionnally filtering, ordering and last (submitted);
-        student is None for teacher, "*" for any student, or student name"""
+        student is None for teacher, "*" for any student, or student name.
+        If get_zip, also get content of zip files."""
         order = order or (Db.ORDER_FILENAME if last else Db.ORDER_TIME)
         c = self._db.cursor()
         try:
@@ -1031,6 +1033,7 @@ class Db:
                     SELECT fileid, name, tag,
                            {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
                            LENGTH(content),
+                           content,
                            mark, defaul,
                            submitted,
                            metadata,
@@ -1053,11 +1056,12 @@ class Db:
                             "tag": row[2],
                             "time": row[3],
                             "size": row[4],
-                            "mark": row[5] != 0,
-                            "default": row[6] != 0,
-                            "submitted": row[7] != 0,
-                            "metadata": row[8],
-                            "owner": row[9]
+                            "content": row[5] if get_zip and row[1][-4:] == ".zip" else None,
+                            "mark": row[6] != 0,
+                            "default": row[7] != 0,
+                            "submitted": row[8] != 0,
+                            "metadata": row[9],
+                            "owner": row[10]
                         } for row in c.fetchall()),
                         key=lambda e: (e["filename"], e["owner"]))
                 ]
@@ -1066,6 +1070,7 @@ class Db:
                     SELECT fileid, name, tag,
                            {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
                            LENGTH(content),
+                           content,
                            mark, defaul,
                            submitted,
                            metadata,
@@ -1091,11 +1096,12 @@ class Db:
                         "tag": row[2],
                         "time": row[3],
                         "size": row[4],
-                        "mark": row[5] != 0,
-                        "default": row[6] != 0,
-                        "submitted": row[7] != 0,
-                        "metadata": row[8],
-                        "owner": row[9]
+                        "content": row[5] if get_zip and row[1][-4:] == ".zip" else None,
+                        "mark": row[6] != 0,
+                        "default": row[7] != 0,
+                        "submitted": row[8] != 0,
+                        "metadata": row[9],
+                        "owner": row[10]
                     }
                     for row in c.fetchall()
                 ]
