@@ -166,6 +166,9 @@ function fillFileTable(fileArray, dashboard) {
 		// filename
 		var td = document.createElement("td");
 		td.textContent = file.filename;
+		if (file.zipbundle) {
+			td.style.fontStyle = "italic";
+		}
 		tr.appendChild(td);
 
 		// set
@@ -185,13 +188,14 @@ function fillFileTable(fileArray, dashboard) {
 
 		// button to send file to students
 		td = document.createElement("td");
-		var btn = document.createElement("button");
-		btn.textContent = "\u2197";
-		btn.addEventListener("click", function () {
-			dashboard.sendFileById(file.id);
-		}, false);
-		td.appendChild(btn);
-
+		if (file.filename.slice(-4) !== ".zip") {
+			var btn = document.createElement("button");
+			btn.textContent = "\u2197";
+			btn.addEventListener("click", function () {
+				dashboard.sendFileById(file.id);
+			}, false);
+			td.appendChild(btn);
+		}
 		tr.appendChild(td);
 
 		table.appendChild(tr);

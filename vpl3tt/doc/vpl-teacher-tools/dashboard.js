@@ -147,12 +147,35 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
 	this.client.listFiles({
         filterStudent: this.filterStudent,
         filterGroup: this.filterGroup,
-        last: this.filterLast
+        last: this.filterLast,
+		getZip: true
     },
     {
 		onSuccess: function (files) {
+			bundles = files.filter(function (file) {
+				return file.mark && /\.zip$/i.test(file.filename);
+			});
 			files = files.filter(function (file) {
 				return file.mark && /\.(vpl3(ui)?|txt|html|jpg|png|svg)$/i.test(file.filename);
+			});
+			bundles.forEach(function (bundle) {
+				var zipbundle = new VPLTeacherTools.ZipBundle();
+				zipbundle.load(atob(bundle.content), () => {
+					files.push(bundle);
+					for (var i = 0; i < zipbundle.toc.length; i++) {
+						var path = zipbundle.toc[i];
+						files.push({
+							zipbundle: zipbundle,
+							filename: path,
+							"tag": zipbundle["tag"],
+							"default": false
+						});
+					}
+					// update asynchronously
+					if (self.options.onFiles) {
+						self.options.onFiles(files);
+					}
+				});
 			});
             self.files = files.map(function (file) {
                 var file1 = Object.create(file);    // prototype-based "copy"
