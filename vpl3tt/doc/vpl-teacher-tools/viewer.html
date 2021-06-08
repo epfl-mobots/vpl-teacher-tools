@@ -37,6 +37,12 @@ body {
 
 <title>VPL Tools</title>
 
+<script>
+window["vplQueryOptions"] = "ui=/vpl/ui/svg/ui.json&robot=sim&uilanguage=$LANGUAGE";
+window["vplDisableResize"] = true;
+</script>
+<script src="../vpl/vpl-min.js"></script>
+
 <script src="ns.js"></script>
 <script src="../libs/jszip/jszip.js"></script>
 <script src="zipbundle.js"></script>
@@ -67,6 +73,8 @@ body {
 	</div>
 
 </main>
+
+<canvas id="programCanvas" width="10" height="10" style="display: none;"></canvas>
 
 </body>
 

@@ -1,4 +1,4 @@
-window.addEventListener("load", function () {
+function renderViewer () {
 	var fileContent = sessionStorage.getItem("initialFileContent");
 	var options = JSON.parse(sessionStorage.getItem("options"));
 
@@ -41,6 +41,16 @@ window.addEventListener("load", function () {
 			- parseFloat(divComputedStyle["margin-top"])
 			- parseFloat(divComputedStyle["margin-bottom"])) + "px";
 		break;
+	case "vpl3":
+		var containerDiv = document.createElement("div");
+		var html = window["vplConvertToHTML"](fileContent, false);
+		containerDiv.innerHTML = html;
+		break;
+	case "vpl3ui":
+		var containerDiv = document.createElement("div");
+		var html = window["vplConvertToHTML"](fileContent, true);
+		containerDiv.innerHTML = html;
+		break;
 	case "zip":
 		var zipContent = options.isBase64 ? atob(fileContent) : fileContent;
 		var zipbundle = new VPLTeacherTools.ZipBundle();
@@ -60,7 +70,7 @@ window.addEventListener("load", function () {
 				var dt = document.createElement("dt");
 				dl.appendChild(dt);
 				var codeEl = document.createElement("code");
-				codeEl.textContent = path.slice(zipbundle.pathPrefix.length);
+				codeEl.textContent = path;
 				dt.appendChild(codeEl);
 
 				// content
@@ -72,7 +82,7 @@ window.addEventListener("load", function () {
 					contentContainer = document.createElement("div");
 					var pre = document.createElement("pre");
 					((pre) => {
-						zipbundle.zip.file(path).async("string").then((data) => {
+						zipbundle.zip.file(zipbundle.pathPrefix + path).async("string").then((data) => {
 							pre.textContent = data;
 						});
 					})(pre);
@@ -84,7 +94,7 @@ window.addEventListener("load", function () {
 					contentContainer = document.createElement("div");
 					var img = document.createElement("img");
 					((img, suffix) => {
-						zipbundle.zip.file(path).async("uint8array").then((data) => {
+						zipbundle.zip.file(zipbundle.pathPrefix + path).async("uint8array").then((data) => {
 							var dataAsString = String.fromCharCode(...data);	// crazy, but required to give a string to btoa
 							img.src = "data:image/" + {"jpg":"jpeg","png":"png","svg":"svg+xml"}[suffix] +  ";base64," + btoa(dataAsString);
 						});
@@ -92,6 +102,34 @@ window.addEventListener("load", function () {
 					img.style.maxWidth = "100%";
 					img.style.maxHeight = "100%";
 					contentContainer.appendChild(img);
+					break;
+				case "vpl3":
+					contentContainer = document.createElement("div");
+					((div) => {
+						zipbundle.zip.file(zipbundle.pathPrefix + path).async("string").then((data) => {
+							var html = "";
+							try {
+								var obj = JSON.parse(data);
+								if (obj.program.length > 0) {
+									// not empty
+									html = window["vplConvertToHTML"](data, false);
+								}
+							} catch (e) {}
+							if (html === "") {
+								html = "<p>&mdash;</p>"
+							}
+							div.innerHTML = html;
+						});
+					})(contentContainer);
+					break;
+				case "vpl3ui":
+					contentContainer = document.createElement("div");
+					((div) => {
+						zipbundle.zip.file(zipbundle.pathPrefix + path).async("string").then((data) => {
+							var html = window["vplConvertToHTML"](data, true);
+							div.innerHTML = html;
+						});
+					})(contentContainer);
 					break;
 				}
 
@@ -107,4 +145,8 @@ window.addEventListener("load", function () {
 		});
 		break;
 	}
+}
+
+window.addEventListener("DOMContentLoaded", function () {
+	setTimeout(renderViewer, 500);
 }, false);
