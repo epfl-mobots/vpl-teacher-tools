@@ -6,6 +6,7 @@
 		log: (function(string):void | undefined),
 		onGroups: (function(Array.<Objects>):void | undefined),
 		onFiles: (function(Array.<Object>):void | undefined),
+		onAttentionFiles: (function(Array.<Object>):void | undefined),
 		onOpen: (function(Object,boolean):void | undefined)
 	}} options
 */
@@ -152,12 +153,13 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
     },
     {
 		onSuccess: function (files) {
-			bundles = files.filter(function (file) {
+			var bundles = files.filter(function (file) {
 				return file.mark && /\.zip$/i.test(file.filename);
 			});
 			files = files.filter(function (file) {
 				return file.mark && /\.(vpl3(ui)?|txt|html|jpg|png|svg)$/i.test(file.filename);
 			});
+			var attentionFiles = [];
 			bundles.forEach(function (bundle) {
 				var zipbundle = new VPLTeacherTools.ZipBundle();
 				zipbundle.load(atob(bundle.content), () => {
@@ -173,7 +175,15 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
 							files.push({
 								zipbundle: zipbundle,
 								filename: path,
-								"tag": zipbundle["tag"],
+								tag: zipbundle["tag"],
+								"default": false
+							});
+						}
+						if (zipbundle.getType(path) === VPLTeacherTools.ZipBundle.Manifest.File.Type.attention) {
+							attentionFiles.push({
+								zipbundle: zipbundle,
+								filename: path,
+								tag: zipbundle["tag"],
 								"default": false
 							});
 						}
@@ -181,6 +191,9 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
 					// update asynchronously
 					if (self.options.onFiles) {
 						self.options.onFiles(files);
+					}
+					if (self.options.onAttentionFiles) {
+						self.options.onAttentionFiles(attentionFiles);
 					}
 				});
 			});

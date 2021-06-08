@@ -206,6 +206,30 @@ function fillFileTable(fileArray, dashboard) {
 	});
 }
 
+function fillAttentionTable(fileArray, dashboard) {
+	var selAttention = document.getElementById("suspended-zip");
+	while (selAttention.firstElementChild) {
+		selAttention.removeChild(selAttention.firstElementChild);
+	}
+	fileArray.forEach(function (file, i) {
+		var option = document.createElement("option");
+		option.zipbundle = file.zipbundle;
+		option.textContent = file.filename;
+		option.selected = i === 0;
+		selAttention.appendChild(option);
+	});
+	if (fileArray.length > 0) {
+		document.getElementById("suspended-kind-zip").disabled = false;
+		document.getElementById("suspended-kind-zip").checked = true;
+		document.getElementById("suspended-zip").disabled = false;
+		document.getElementById("suspended-kind-text").checked = false;
+		document.getElementById("suspended-kind-file").checked = false;
+	} else {
+		document.getElementById("suspended-kind-zip").disabled = true;
+		document.getElementById("suspended-zip").disabled = true;
+	}
+}
+
 window.addEventListener("load", function () {
 	var sessions = null;
 	if (!$LOGDISPLAY) {
@@ -223,6 +247,9 @@ window.addEventListener("load", function () {
 		},
 		onFiles: function (fileArray) {
 			fillFileTable(fileArray, dashboard);
+		},
+		onAttentionFiles: function (fileArray) {
+			fillAttentionTable(fileArray, dashboard);
 		},
 		onOpen: function (file, readOnly) {
 			var teacherFile = !file.owner || file.owner.length == 0;
@@ -258,15 +285,36 @@ window.addEventListener("load", function () {
 	});
 
 	document.getElementById("suspended").addEventListener("change", function () {
+
+		function suspendWithText(str) {
+			dashboard.setSuspendHTML("<div style='display: table; height: 100%; width: 100%; overflow: hidden;'>" +
+				"<div style='display: table-cell; vertical-align: middle;'>" +
+					"<p style='text-align: center;'>" +
+						str +
+					"</p>" +
+				"</div>" +
+			"</div>");
+		}
+
 		if (this.checked) {
-			if (document.getElementById("suspended-kind-text").checked) {
-				dashboard.setSuspendHTML("<div style='display: table; height: 100%; width: 100%; overflow: hidden;'>" +
-					"<div style='display: table-cell; vertical-align: middle;'>" +
-						"<p style='text-align: center;'>" +
-							document.getElementById("suspended-text").value +
-						"</p>" +
-					"</div>" +
-				"</div>");
+			if (document.getElementById("suspended-kind-zip").checked) {
+				var selAttention = document.getElementById("suspended-zip");
+				var zipbundle = selAttention.options[selAttention.selectedIndex].zipbundle;
+				var path = selAttention.options[selAttention.selectedIndex].value;
+				var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(path).toLowerCase();
+				var isHTML = ["htm", "html"].indexOf(suffix) >= 0;
+				zipbundle.zip.file(zipbundle.pathPrefix + path).async(isHTML ? "string" : "uint8array").then((data) => {
+					if (isHTML) {
+						dashboard.setSuspendHTML(data);
+					} else {
+						var dataAsString = String.fromCharCode(...data);	// crazy, but required to give a string to btoa
+						data = btoa(dataAsString);
+						dashboard.setSuspendFile(path, data);
+					}
+				});
+				dashboard.suspend(true);
+			} else if (document.getElementById("suspended-kind-text").checked) {
+				suspendWithText(document.getElementById("suspended-text").value);
 				dashboard.suspend(true);
 			} else if (document.getElementById("suspended-kind-file").checked) {
 				var files = document.getElementById("suspended-file").files;
