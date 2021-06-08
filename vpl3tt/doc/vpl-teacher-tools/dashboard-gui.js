@@ -192,7 +192,11 @@ function fillFileTable(fileArray, dashboard) {
 			var btn = document.createElement("button");
 			btn.textContent = "\u2197";
 			btn.addEventListener("click", function () {
-				dashboard.sendFileById(file.id);
+				if (file.zipbundle) {
+					dashboard.sendZipBundleEntry(file.zipbundle, file.filename);
+				} else {
+					dashboard.sendFileById(file.id);
+				}
 			}, false);
 			td.appendChild(btn);
 		}

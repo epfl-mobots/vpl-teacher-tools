@@ -164,12 +164,19 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
 					files.push(bundle);
 					for (var i = 0; i < zipbundle.toc.length; i++) {
 						var path = zipbundle.toc[i];
-						files.push({
-							zipbundle: zipbundle,
-							filename: path,
-							"tag": zipbundle["tag"],
-							"default": false
-						});
+						if ([
+								VPLTeacherTools.ZipBundle.Manifest.File.Type.vpl3,
+								VPLTeacherTools.ZipBundle.Manifest.File.Type.ui,
+								VPLTeacherTools.ZipBundle.Manifest.File.Type.doc,
+								VPLTeacherTools.ZipBundle.Manifest.File.Type.statement
+							].indexOf(zipbundle.getType(path)) >= 0) {
+							files.push({
+								zipbundle: zipbundle,
+								filename: path,
+								"tag": zipbundle["tag"],
+								"default": false
+							});
+						}
 					}
 					// update asynchronously
 					if (self.options.onFiles) {
@@ -322,6 +329,33 @@ VPLTeacherTools.Dashboard.prototype.sendFileById = function (fileId) {
 			self.sendFile(filename, kind, file.content, isBase64);
         }
     });
+};
+
+/** Send a zipbundle entry
+	@param {} zipbundle
+	@param {string} filename
+	@return {void}
+*/
+VPLTeacherTools.Dashboard.prototype.sendZipBundleEntry = function (zipbundle, path) {
+	var self = this;
+	var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(path).toLowerCase();
+	var isBase64 = ["jpg", "png"].indexOf(suffix) >= 0;
+	zipbundle.zip.file(zipbundle.pathPrefix + path).async(isBase64 ? "uint8array" : "string").then((data) => {
+		if (isBase64) {
+			var dataAsString = String.fromCharCode(...data);	// crazy, but required to give a string to btoa
+			data = btoa(dataAsString);
+		}
+		var kind = {
+			"html": "help",
+			"jpg": "help",
+			"png": "help",
+			"svg": "help",
+			"txt": "help",
+			"vpl3": "vpl",
+			"vpl3ui": "vpl"
+		}[suffix] || "other";
+		self.sendFile(path, kind, data, isBase64);
+	});
 };
 
 /** Set the file to be displayed in suspended mode

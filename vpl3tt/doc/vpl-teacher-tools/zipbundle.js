@@ -105,6 +105,17 @@ VPLTeacherTools.ZipBundle.prototype.load = function (zipContent, cb) {
 };
 
 /**
+	@param {string} filename
+	@return VPLTeacherTools.ZipBundle.Manifest.File.Type
+*/
+VPLTeacherTools.ZipBundle.prototype.getType = function (filename) {
+	var manifestFile = this.manifest.getEntry(filename);
+	return manifestFile
+		? manifestFile.type
+		: VPLTeacherTools.ZipBundle.Manifest.File.Type.unknown;
+};
+
+/**
 	@constructor
 */
 VPLTeacherTools.ZipBundle.Manifest = function () {
@@ -159,6 +170,19 @@ VPLTeacherTools.ZipBundle.Manifest.prototype.parse = function (src, filenames) {
 			}
 		}
 	}
+};
+
+/**
+	@param {string} filename
+	@return VPLTeacherTools.ZipBundle.Manifest.File
+*/
+VPLTeacherTools.ZipBundle.Manifest.prototype.getEntry = function (filename) {
+	for (var i = 0; i < this.files.length; i++) {
+		if (this.files[i].filename === filename) {
+			return this.files[i];
+		}
+	}
+	return null;
 };
 
 /**
