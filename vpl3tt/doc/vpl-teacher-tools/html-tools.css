@@ -97,6 +97,7 @@ div.columncontainer > div {
 	margin-left: 0.5em;
 	margin-right: 0.5em;
 	margin-bottom: 0;
+	overflow-x: hidden;
 }
 div.columncontainer > div:first-child {
 	margin-left: 0;
