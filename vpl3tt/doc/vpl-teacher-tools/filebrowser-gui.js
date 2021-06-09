@@ -1,22 +1,75 @@
-function updateGUI(fileBrowser) {
+/** Update the buttons
+	@param {VPLTeacherTools.FileBrowser} fileBrowser
+	@param {boolean} forStudents
+	@param {HTMLElement} rowForFileButtons tr after which a tr of buttons should
+	be inserted for actions related to a single selected file, or null
+*/
+function updateGUI(fileBrowser, forStudents, rowForFileButtons) {
 	function enable(id, enabled) {
 		document.getElementById(id).disabled = !enabled;
 		document.getElementById(id).style.display = enabled ? "inline" : "none";
 	}
 
-	enable("btn-new", fileBrowser.canCreateProgramFile());
-	enable("btn-get-conf", fileBrowser.canGetConfigFile());
-	enable("btn-edit-teacher", fileBrowser.canEditTeacherFile());
-	enable("btn-preview-teacher", fileBrowser.canPreviewTeacherFile());
-	enable("btn-rename-teacher", fileBrowser.canRenameTeacherFile());
-	enable("btn-move-teacher", fileBrowser.canMoveTeacherFile());
-	enable("btn-duplicate-teacher", fileBrowser.canDuplicateTeacherFile());
-	enable("btn-import-teacher", fileBrowser.canImportTeacherFile());
-	enable("btn-export-teacher", fileBrowser.canExportTeacherFile());
-	enable("btn-remove-teacher", fileBrowser.canDeleteTeacherFiles());
-	enable("btn-view-st", fileBrowser.canViewStudentFile());
-	enable("btn-export-st", fileBrowser.canExportStudentFile());
-	enable("btn-remove-st", fileBrowser.canDeleteStudentFiles());
+	var buttonTR = null;
+	var buttonTD = null;
+
+	function copyButton(id, enabled) {
+		if (enabled) {
+			if (buttonTR == null) {
+				buttonTR = document.createElement("tr");
+				var iconTD = document.createElement("td");
+				buttonTR.appendChild(iconTD);
+				buttonTD = document.createElement("td");
+				buttonTD.setAttribute("colspan", 6);
+				buttonTR.appendChild(buttonTD);
+			} else {
+				buttonTD.appendChild(document.createTextNode(" "));
+			}
+			var origButton = document.getElementById(id);
+			var button = document.createElement("button");
+			button.textContent = origButton.textContent;
+			button.addEventListener("click", fileBrowser.buttonClickListeners[id], false);
+			buttonTD.appendChild(button);
+		}
+	}
+
+	if (rowForFileButtons) {
+		if (forStudents) {
+			copyButton("btn-view-st", fileBrowser.canViewStudentFile());
+			copyButton("btn-export-st", fileBrowser.canExportStudentFile());
+			copyButton("btn-remove-st", fileBrowser.canDeleteStudentFiles());
+		} else {
+			copyButton("btn-new", fileBrowser.canCreateProgramFile());
+			copyButton("btn-get-conf", fileBrowser.canGetConfigFile());
+			copyButton("btn-edit-teacher", fileBrowser.canEditTeacherFile());
+			copyButton("btn-preview-teacher", fileBrowser.canPreviewTeacherFile());
+			copyButton("btn-rename-teacher", fileBrowser.canRenameTeacherFile());
+			copyButton("btn-move-teacher", fileBrowser.canMoveTeacherFile());
+			copyButton("btn-duplicate-teacher", fileBrowser.canDuplicateTeacherFile());
+			copyButton("btn-export-teacher", fileBrowser.canExportTeacherFile());
+			copyButton("btn-remove-teacher", fileBrowser.canDeleteTeacherFiles());
+		}
+		if (buttonTR != null) {
+			rowForFileButtons.parentElement.insertBefore(buttonTR, rowForFileButtons.nextElementSibling);
+		}
+	}
+
+	if (forStudents) {
+		enable("btn-view-st", rowForFileButtons == null && fileBrowser.canViewStudentFile());
+		enable("btn-export-st", rowForFileButtons == null && fileBrowser.canExportStudentFile());
+		enable("btn-remove-st", rowForFileButtons == null && fileBrowser.canDeleteStudentFiles());
+	} else {
+		enable("btn-new", rowForFileButtons == null && fileBrowser.canCreateProgramFile());
+		enable("btn-get-conf", rowForFileButtons == null && fileBrowser.canGetConfigFile());
+		enable("btn-edit-teacher", rowForFileButtons == null && fileBrowser.canEditTeacherFile());
+		enable("btn-preview-teacher", rowForFileButtons == null && fileBrowser.canPreviewTeacherFile());
+		enable("btn-rename-teacher", rowForFileButtons == null && fileBrowser.canRenameTeacherFile());
+		enable("btn-move-teacher", rowForFileButtons == null && fileBrowser.canMoveTeacherFile());
+		enable("btn-duplicate-teacher", rowForFileButtons == null && fileBrowser.canDuplicateTeacherFile());
+		enable("btn-import-teacher", fileBrowser.canImportTeacherFile());
+		enable("btn-export-teacher", rowForFileButtons == null && fileBrowser.canExportTeacherFile());
+		enable("btn-remove-teacher", rowForFileButtons == null && fileBrowser.canDeleteTeacherFiles());
+	}
 }
 
 function clearTable(id, labels) {
@@ -40,6 +93,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 	var table = document.getElementById(tableId);
 	var renamedFilename = null;	// input element for renamed file name
 	var movedSet = null;	// input element for moved file set
+	var selectedRow = null;
 	if (fileArray.length > 0) {
 		clearTable(tableId,
 			VPLTeacherTools.translateArray(forStudents
@@ -111,7 +165,11 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 			}
 			td.addEventListener("click", select, false);
 			td.addEventListener("dblclick", doubleclick, false);
-			td.className = fileBrowser.isFileSelected(forStudents, file.id) ? "selected" : "";
+			if (fileBrowser.isFileSelected(forStudents, file.id)) {
+				td.className = "selected";
+				selectedRow = tr;
+			}
+
 			tr.appendChild(td);
 
 			// set
@@ -206,7 +264,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 		table.appendChild(tr);
 	}
 
-	updateGUI(fileBrowser);
+	updateGUI(fileBrowser, forStudents, selectedRow);
 	if (renamedFilename) {
 		var str = renamedFilename.value;
 		var r = /^(.*)\.([^.]*)$/.exec(str);
@@ -224,11 +282,9 @@ window.addEventListener("load", function () {
 	var fileBrowser = new VPLTeacherTools.FileBrowser({
 		onTeacherFiles: function (fileArray, fileBrowser) {
     		fillFileTable(fileArray, fileBrowser, false);
-			updateGUI(fileBrowser);
 		},
 		onStudentFiles: function (fileArray, fileBrowser) {
     		fillFileTable(fileArray, fileBrowser, true);
-			updateGUI(fileBrowser);
 		},
 		onOpen: function (file, readOnly) {
 			var teacherFile = !file.owner || file.owner.length == 0;
@@ -376,52 +432,6 @@ window.addEventListener("load", function () {
 		}
 	}, false);
 
-	var btn;
-
-	btn = document.getElementById("btn-new");
-	btn.addEventListener("click", function () {
-		var file = fileBrowser.selectedOrDefaultUIFile();
-		var filename = file.filename.replace(/vpl3ui$/, "vpl3");
-		fileBrowser.duplicateFile(file, filename);
-	}, false);
-
-	btn = document.getElementById("btn-new-conf");
-	btn.addEventListener("click", function () {
-		fileBrowser.addFile("untitled.vpl3ui",
-			'{"disabledUI":["vpl:download","vpl:load"]}');
-	}, false);
-
-	btn = document.getElementById("btn-get-conf");
-	btn.addEventListener("click", function () {
-		fileBrowser.extractConfigFromVPL3();
-	}, false);
-
-	btn = document.getElementById("btn-edit-teacher");
-	btn.addEventListener("click", function () {
-		fileBrowser.openFile(false);
-	}, false);
-
-	btn = document.getElementById("btn-preview-teacher");
-	btn.addEventListener("click", function () {
-		fileBrowser.openFile(false);
-	}, false);
-
-	btn = document.getElementById("btn-rename-teacher");
-	btn.addEventListener("click", function () {
-		fileBrowser.renameTeacherFile(null);
-	}, false);
-
-	btn = document.getElementById("btn-move-teacher");
-	btn.addEventListener("click", function () {
-		fileBrowser.moveTeacherFile(null);
-	}, false);
-
-	btn = document.getElementById("btn-duplicate-teacher");
-	btn.addEventListener("click", function () {
-		fileBrowser.duplicateTeacherFile(null);
-	}, false);
-
-	btn = document.getElementById("btn-import-teacher");
 	var loadModalDialog = new LoadModalDialog({
 		ok: VPLTeacherTools.translate("OK"),
 		cancel: VPLTeacherTools.translate("Cancel"),
@@ -430,23 +440,80 @@ window.addEventListener("load", function () {
 		accept: ".vpl3,.vpl3ui,.html,.txt,.jpg,.png,.svg,.zip",
 		multiple: true
 	});
-	btn.addEventListener("click", function () {
-		loadModalDialog.show(function (files) {
-			files.forEach(function (file) {
-				importFile(file, files.length !== 1);
+
+	// dict of button click listeners, also available to buttons created close to files
+	fileBrowser.buttonClickListeners = {
+		"btn-new": function () {
+			var file = fileBrowser.selectedOrDefaultUIFile();
+			var filename = file.filename.replace(/vpl3ui$/, "vpl3");
+			fileBrowser.duplicateFile(file, filename);
+		},
+		"btn-new-conf": function () {
+			fileBrowser.addFile("untitled.vpl3ui",
+				'{"disabledUI":["vpl:download","vpl:load"]}');
+		},
+		"btn-get-conf": function () {
+			fileBrowser.extractConfigFromVPL3();
+		},
+		"btn-edit-teacher": function () {
+			fileBrowser.openFile(false);
+		},
+		"btn-preview-teacher": function () {
+			fileBrowser.openFile(false);
+		},
+		"btn-rename-teacher": function () {
+			fileBrowser.renameTeacherFile(null);
+		},
+		"btn-move-teacher": function () {
+			fileBrowser.moveTeacherFile(null);
+		},
+		"btn-duplicate-teacher": function () {
+			fileBrowser.duplicateTeacherFile(null);
+		},
+		"btn-import-teacher": function () {
+			loadModalDialog.show(function (files) {
+				files.forEach(function (file) {
+					importFile(file, files.length !== 1);
+				});
 			});
-		});
-	}, false);
+		},
+		"btn-export-teacher": function () {
+			fileBrowser.exportFile();
+		},
+		"btn-remove-teacher": function () {
+			fileBrowser.deleteFiles();
+		},
+		"btn-view-st": function () {
+			fileBrowser.openFile(true);
+		},
+		"btn-export-st": function () {
+			fileBrowser.exportFile();
+		},
+		"btn-remove-st": function () {
+			fileBrowser.deleteFiles();
+		},
 
-	btn = document.getElementById("btn-export-teacher");
-	btn.addEventListener("click", function () {
-		fileBrowser.exportFile();
-	}, false);
+	};
 
-	btn = document.getElementById("btn-remove-teacher");
-	btn.addEventListener("click", function () {
-		fileBrowser.deleteFiles();
-	}, false);
+	[
+		"btn-new",
+		"btn-new-conf",
+		"btn-get-conf",
+		"btn-edit-teacher",
+		"btn-preview-teacher",
+		"btn-rename-teacher",
+		"btn-move-teacher",
+		"btn-duplicate-teacher",
+		"btn-import-teacher",
+		"btn-export-teacher",
+		"btn-remove-teacher",
+		"btn-view-st",
+		"btn-export-st",
+		"btn-remove-st",
+	].forEach(function (id) {
+		var btn = document.getElementById(id);
+		btn.addEventListener("click", fileBrowser.buttonClickListeners[id], false);
+	});
 
 	var selFilterTeacherSet = document.getElementById("sel-filter-set-teacher");
 	selFilterTeacherSet.addEventListener("change", function () {
@@ -462,21 +529,6 @@ window.addEventListener("load", function () {
 			? null
 			: selFilterStudentSet.options[selFilterStudentSet.selectedIndex].value;
 		fileBrowser.updateFiles();
-	}, false);
-
-	var btn = document.getElementById("btn-view-st");
-	btn.addEventListener("click", function () {
-		fileBrowser.openFile(true);
-	}, false);
-
-	btn = document.getElementById("btn-export-st");
-	btn.addEventListener("click", function () {
-		fileBrowser.exportFile();
-	}, false);
-
-	btn = document.getElementById("btn-remove-st");
-	btn.addEventListener("click", function () {
-		fileBrowser.deleteFiles();
 	}, false);
 
 	var selFilterClass = document.getElementById("sel-filter-class");
