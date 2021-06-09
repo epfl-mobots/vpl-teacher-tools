@@ -320,6 +320,15 @@ class VPLHTTPServer:
                 return VPLHTTPServer.error("Missing id")
             return self.call_api(Db.get_file, int(q["id"][0]))
 
+        @self.httpd.http_get("/api/getFiles")
+        @check_token
+        def http_get_api_getFiles(self, handler):
+            q = VPLHTTPServer.query_param(handler)
+            if "id" not in q:
+                return VPLHTTPServer.error("Missing id")
+            idList = list(map(int, q["id"][0].split(" ")))
+            return self.call_api(Db.get_files, idList)
+
         @self.httpd.http_get("/api/getLastFileForGroup")
         @check_token
         def http_get_api_getLastFileForGroup(self, handler):

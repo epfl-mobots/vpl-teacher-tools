@@ -937,6 +937,49 @@ class Db:
             "metadata": r[7]
         }
 
+    def get_files(self, file_id_list):
+        """Get multiple files."""
+        if len(file_id_list) == 0:
+            return []
+
+        c = self._db.cursor()
+        try:
+            sql = f"""
+                SELECT fileid,
+                       name,
+                       tag,
+                       {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
+                       content,
+                       owner,
+                       submitted,
+                       metadata
+                FROM files
+                WHERE
+                {
+                    " OR ".join([
+                        "fileid=?"
+                        for _ in file_id_list
+                    ])
+                }
+            """
+            c.execute(sql, (*file_id_list,))
+            files = [
+                {
+                    "id": row[0],
+                    "filename": row[1],
+                    "tag": row[2],
+                    "time": row[3],
+                    "content": row[4],
+                    "owner": row[5],
+                    "submitted": row[6] != 0,
+                    "metadata": row[7]
+                }
+                for row in c.fetchall()
+            ]
+            return files
+        finally:
+            self._db.commit()
+
     def get_last_file_for_group(self, group_id):
         """Get the most (submitted) recent file saved by the specified group"""
         student_id_list = self.list_to_str(self.get_group_student_list(group_id))

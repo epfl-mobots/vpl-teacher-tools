@@ -223,6 +223,10 @@ VPLTeacherTools.HTTPClient.prototype.getFile = function (id, opt) {
 	this.rest("/api/getFile?id=" + id.toString(10), opt);
 };
 
+VPLTeacherTools.HTTPClient.prototype.getFiles = function (idArray, opt) {
+	this.rest("/api/getFiles?id=" + idArray.map(function (id) { return id.toString(10); }).join("+"), opt);
+};
+
 VPLTeacherTools.HTTPClient.prototype.getLastFileForGroup = function (groupId, opt) {
 	this.rest("/api/getLastFileForGroup?groupid=" + encodeURIComponent(groupId), opt);
 };
