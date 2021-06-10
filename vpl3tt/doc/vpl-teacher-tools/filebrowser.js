@@ -23,9 +23,13 @@ VPLTeacherTools.FileBrowser = function (options) {
 };
 
 /** Fetch all files from db and refresh their display
-	@param {number=} renamedFileId id of the file to rename, or undefined
+    @param {{
+        renamedFileId: (number | undefined),
+        selectedFileIds: (Array.<number> | undefined)
+    }} opt
+    (renamedFileId: id of the file to rename; or selectedFileIds: list of files to select)
 */
-VPLTeacherTools.FileBrowser.prototype.updateFiles = function (renamedFileId) {
+VPLTeacherTools.FileBrowser.prototype.updateFiles = function (opt) {
     var self = this;
 
 	// teacher files
@@ -37,8 +41,16 @@ VPLTeacherTools.FileBrowser.prototype.updateFiles = function (renamedFileId) {
 		onSuccess: function (files) {
             self.teacherFiles = files.map(function (file) {
                 var file1 = Object.create(file);    // prototype-based "copy"
-                file1.selected = file.id === renamedFileId;
-				file1.renamed = file.id === renamedFileId;
+                if (opt && opt.renamedFileId != undefined) {
+                    file1.selected = file.id === opt.renamedFileId;
+    				file1.renamed = file.id === opt.renamedFileId;
+                } else if (opt && opt.selectedFileIds != undefined) {
+                    file1.selected = opt.selectedFileIds.indexOf(file.id) >= 0;
+                    file1.renamed = false;
+                } else {
+                    file1.selected = false;
+                    file1.renamed = false;
+                }
                 file1.moved = false;
                 return file1;
             });
@@ -144,6 +156,15 @@ VPLTeacherTools.FileBrowser.prototype.unselectFile = function (isStudentFile) {
     }
 };
 
+VPLTeacherTools.FileBrowser.prototype.selectFiles = function (selectedFileIds) {
+    this.teacherFiles.forEach((file) => {
+        file.selected = selectedFileIds.indexOf(file.id) >= 0;
+    });
+    this.studentFiles.forEach((file) => {
+        file.selected = selectedFileIds.indexOf(file.id) >= 0;
+    });
+};
+
 VPLTeacherTools.FileBrowser.prototype.isFileSelected = function (isStudentFile, fileId) {
     var ix = this.fileIdToIndex(isStudentFile, fileId);
     return ix >= 0 && (isStudentFile ? this.studentFiles : this.teacherFiles)[ix].selected;
@@ -185,7 +206,7 @@ VPLTeacherTools.FileBrowser.prototype.addFile = function (filename, content, noR
         {
             onSuccess: function (r) {
 				// rename immediately
-                self.updateFiles(noRename ? null : r);
+                self.updateFiles(noRename ? null : {renamedFileId: r});
             }
         });
 };
@@ -363,7 +384,7 @@ VPLTeacherTools.FileBrowser.prototype.duplicateFile = function (file, newFilenam
         {
             onSuccess: function (r) {
 				// rename immediately
-                self.updateFiles(r);
+                self.updateFiles({renamedFileId: r});
             }
         });
 };
@@ -424,13 +445,20 @@ VPLTeacherTools.FileBrowser.prototype.unbundleTeacherFile = function () {
             onSuccess: (file) => {
                 var zipbundle = new VPLTeacherTools.ZipBundle();
                 zipbundle.load(atob(file.content), () => {
+                    var selectedFileIds = [];
                     zipbundle.toc.forEach((filename) => {
                         var asBase64 = VPLTeacherTools.FileBrowser.storeAsBase64(filename);
                         zipbundle.getFile(filename, asBase64, (data) => {
-                            var props = {
-                                tag: file.filename
-                            };
-                            this.addFile(filename, data, true, props);
+                            this.client.addFile(filename, data,
+                                {
+                                    tag: file.filename  // tag with bundle name
+                                },
+                                {
+                                    onSuccess: (r) => {
+                                        selectedFileIds.push(r);
+                                        this.updateFiles({selectedFileIds: selectedFileIds});
+                                    }
+                                });
                         });
                     });
                 });
@@ -559,7 +587,7 @@ VPLTeacherTools.FileBrowser.prototype.extractConfigFromVPL3 = function () {
             {
                 onSuccess: function (r) {
     				// rename immediately
-                    self.updateFiles(r);
+                    self.updateFiles({renamedFileId: r});
                 }
             });
     }
