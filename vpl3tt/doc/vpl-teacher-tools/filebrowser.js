@@ -378,7 +378,13 @@ VPLTeacherTools.FileBrowser.prototype.duplicateTeacherFile = function (filename)
 };
 
 VPLTeacherTools.FileBrowser.prototype.canBundleTeacherFile = function () {
-    return this.countSelectedNotRenamedFiles() > 0;
+    // can bundle at least two files or one non-zip file
+    if (this.countSelectedNotRenamedFiles() !== 1) {
+        return this.countSelectedNotRenamedFiles() > 1;
+    }
+    var file = this.selectedFile();
+    var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
+    return suffix !== "zip";
 };
 
 VPLTeacherTools.FileBrowser.prototype.bundleTeacherFile = function () {
