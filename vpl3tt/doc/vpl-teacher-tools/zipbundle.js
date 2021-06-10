@@ -116,6 +116,32 @@ VPLTeacherTools.ZipBundle.prototype.getType = function (filename) {
 };
 
 /**
+	@param {string} filename
+    @param {boolean} asBase64 true for base64, false for text
+    @param {function(data):void} cb
+	@return VPLTeacherTools.ZipBundle.Manifest.File.Type
+*/
+VPLTeacherTools.ZipBundle.prototype.getFile = function (filename, asBase64, cb) {
+	this.zip.file(this.pathPrefix + filename).async(asBase64 ? "uint8array" : "string").then((data) => {
+		if (asBase64) {
+			var dataAsString = String.fromCharCode(...data);	// crazy, but required to give a string to btoa
+			data = btoa(dataAsString);
+		}
+		cb(data);
+	});
+};
+
+VPLTeacherTools.ZipBundle.prototype.addFile = function (filename, content) {
+    if (this.zip == null) {
+	       this.zip = new VPLTeacherTools.JSZip();
+    }
+    this.zip.file(this.pathPrefix + filename, content);
+    if (this.toc.indexOf(filename) < 0) {
+        this.toc.push(filename);
+    }
+};
+
+/**
 	@constructor
 */
 VPLTeacherTools.ZipBundle.Manifest = function () {

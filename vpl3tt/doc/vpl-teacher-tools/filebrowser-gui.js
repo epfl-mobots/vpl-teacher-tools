@@ -46,6 +46,8 @@ function updateGUI(fileBrowser, forStudents, rowForFileButtons) {
 			copyButton("btn-rename-teacher", fileBrowser.canRenameTeacherFile());
 			copyButton("btn-move-teacher", fileBrowser.canMoveTeacherFile());
 			copyButton("btn-duplicate-teacher", fileBrowser.canDuplicateTeacherFile());
+			copyButton("btn-bundle-teacher", fileBrowser.canBundleTeacherFile());
+			copyButton("btn-unbundle-teacher", fileBrowser.canUnbundleTeacherFile());
 			copyButton("btn-export-teacher", fileBrowser.canExportTeacherFile());
 			copyButton("btn-remove-teacher", fileBrowser.canDeleteTeacherFiles());
 		}
@@ -66,6 +68,8 @@ function updateGUI(fileBrowser, forStudents, rowForFileButtons) {
 		enable("btn-rename-teacher", rowForFileButtons == null && fileBrowser.canRenameTeacherFile());
 		enable("btn-move-teacher", rowForFileButtons == null && fileBrowser.canMoveTeacherFile());
 		enable("btn-duplicate-teacher", rowForFileButtons == null && fileBrowser.canDuplicateTeacherFile());
+		enable("btn-bundle-teacher", rowForFileButtons == null && fileBrowser.canBundleTeacherFile());
+		enable("btn-unbundle-teacher", rowForFileButtons == null && fileBrowser.canUnbundleTeacherFile());
 		enable("btn-import-teacher", fileBrowser.canImportTeacherFile());
 		enable("btn-export-teacher", rowForFileButtons == null && fileBrowser.canExportTeacherFile());
 		enable("btn-remove-teacher", rowForFileButtons == null && fileBrowser.canDeleteTeacherFiles());
@@ -470,6 +474,12 @@ window.addEventListener("load", function () {
 		"btn-duplicate-teacher": function () {
 			fileBrowser.duplicateTeacherFile(null);
 		},
+		"btn-bundle-teacher": function () {
+			fileBrowser.bundleTeacherFile(null);
+		},
+		"btn-unbundle-teacher": function () {
+			fileBrowser.unbundleTeacherFile(null);
+		},
 		"btn-import-teacher": function () {
 			loadModalDialog.show(function (files) {
 				files.forEach(function (file) {
@@ -504,6 +514,8 @@ window.addEventListener("load", function () {
 		"btn-rename-teacher",
 		"btn-move-teacher",
 		"btn-duplicate-teacher",
+		"btn-bundle-teacher",
+		"btn-unbundle-teacher",
 		"btn-import-teacher",
 		"btn-export-teacher",
 		"btn-remove-teacher",

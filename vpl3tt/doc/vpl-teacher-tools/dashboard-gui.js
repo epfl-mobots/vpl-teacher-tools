@@ -303,12 +303,10 @@ window.addEventListener("load", function () {
 				var path = selAttention.options[selAttention.selectedIndex].value;
 				var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(path).toLowerCase();
 				var isHTML = ["htm", "html"].indexOf(suffix) >= 0;
-				zipbundle.zip.file(zipbundle.pathPrefix + path).async(isHTML ? "string" : "uint8array").then((data) => {
+				zipbundle.getFile(path, !isHTML, (data) => {
 					if (isHTML) {
 						dashboard.setSuspendHTML(data);
 					} else {
-						var dataAsString = String.fromCharCode(...data);	// crazy, but required to give a string to btoa
-						data = btoa(dataAsString);
 						dashboard.setSuspendFile(path, data);
 					}
 				});

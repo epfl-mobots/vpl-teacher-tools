@@ -377,6 +377,62 @@ VPLTeacherTools.FileBrowser.prototype.duplicateTeacherFile = function (filename)
 	}
 };
 
+VPLTeacherTools.FileBrowser.prototype.canBundleTeacherFile = function () {
+    return this.countSelectedNotRenamedFiles() > 0;
+};
+
+VPLTeacherTools.FileBrowser.prototype.bundleTeacherFile = function () {
+    var selectedFileIds = this.teacherFiles.reduce(function (acc, val) {
+        return val.selected ? acc.concat(val.id) : acc;
+    }, []);
+    if (selectedFileIds.length > 0) {
+        this.client.getFiles(selectedFileIds, {
+            onSuccess: (files) => {
+                var zipbundle = new VPLTeacherTools.ZipBundle();
+                files.forEach((file) => {
+                    zipbundle.addFile(file.filename, file.content);
+                });
+                zipbundle.zip.generateAsync({type:"base64"}).then((content) => {
+                    this.addFile("newbundle.zip", content);
+                });
+            }
+        });
+    }
+};
+
+VPLTeacherTools.FileBrowser.prototype.canUnbundleTeacherFile = function () {
+    if (this.countSelectedNotRenamedFiles() !== 1) {
+        return false;
+    }
+    var file = this.selectedFile();
+    var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
+    return suffix === "zip";
+};
+
+VPLTeacherTools.FileBrowser.prototype.unbundleTeacherFile = function () {
+	if (this.canUnbundleTeacherFile()) {
+		var file = this.teacherFiles.find(function (val) {
+            return val.selected;
+        });
+        this.client.getFile(file.id, {
+            onSuccess: (file) => {
+                var zipbundle = new VPLTeacherTools.ZipBundle();
+                zipbundle.load(atob(file.content), () => {
+                    zipbundle.toc.forEach((filename) => {
+                        var asBase64 = VPLTeacherTools.FileBrowser.storeAsBase64(filename);
+                        zipbundle.getFile(filename, asBase64, (data) => {
+                            var props = {
+                                tag: file.filename
+                            };
+                            this.addFile(filename, data, true, props);
+                        });
+                    });
+                });
+            }
+        });
+	}
+};
+
 VPLTeacherTools.FileBrowser.prototype.canImportTeacherFile = function () {
     return true;
 };
@@ -483,7 +539,6 @@ VPLTeacherTools.FileBrowser.prototype.deleteFiles = function () {
                 self.updateFiles();
             }
         });
-
     }
 };
 

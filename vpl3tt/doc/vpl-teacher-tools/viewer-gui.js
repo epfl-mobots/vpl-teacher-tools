@@ -94,9 +94,8 @@ function renderViewer () {
 					contentContainer = document.createElement("div");
 					var img = document.createElement("img");
 					((img, suffix) => {
-						zipbundle.zip.file(zipbundle.pathPrefix + path).async("uint8array").then((data) => {
-							var dataAsString = String.fromCharCode(...data);	// crazy, but required to give a string to btoa
-							img.src = "data:image/" + {"jpg":"jpeg","png":"png","svg":"svg+xml"}[suffix] +  ";base64," + btoa(dataAsString);
+						zipbundle.getFile(path, true, (data) => {
+							img.src = "data:image/" + {"jpg":"jpeg","png":"png","svg":"svg+xml"}[suffix] +  ";base64," + data;
 						});
 					})(img, suffix);
 					img.style.maxWidth = "100%";

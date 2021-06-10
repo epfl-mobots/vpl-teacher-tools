@@ -352,12 +352,8 @@ VPLTeacherTools.Dashboard.prototype.sendFileById = function (fileId) {
 VPLTeacherTools.Dashboard.prototype.sendZipBundleEntry = function (zipbundle, path) {
 	var self = this;
 	var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(path).toLowerCase();
-	var isBase64 = ["jpg", "png"].indexOf(suffix) >= 0;
-	zipbundle.zip.file(zipbundle.pathPrefix + path).async(isBase64 ? "uint8array" : "string").then((data) => {
-		if (isBase64) {
-			var dataAsString = String.fromCharCode(...data);	// crazy, but required to give a string to btoa
-			data = btoa(dataAsString);
-		}
+	var asBase64 = ["jpg", "png"].indexOf(suffix) >= 0;
+	zipbundle.getFile(path, asBase64, (data) => {
 		var kind = {
 			"html": "help",
 			"jpg": "help",
@@ -367,7 +363,7 @@ VPLTeacherTools.Dashboard.prototype.sendZipBundleEntry = function (zipbundle, pa
 			"vpl3": "vpl",
 			"vpl3ui": "vpl"
 		}[suffix] || "other";
-		self.sendFile(path, kind, data, isBase64);
+		self.sendFile(path, kind, data, asBase64);
 	});
 };
 
