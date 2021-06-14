@@ -38,7 +38,7 @@ VPLTeacherTools.translate = function(str, language) {
 		"remove": "supprimer",
 		"Rows": "Lignes",
 		"sec": "s",
-		"Set": "Ensemble",
+		"Tag": "Étiquette",
 		"simulator": "simulateur",
 		"(simulator)": "(simulateur)",
 		"Size": "Taille",

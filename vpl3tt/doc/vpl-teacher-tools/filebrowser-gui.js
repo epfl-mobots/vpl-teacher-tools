@@ -101,8 +101,8 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 	if (fileArray.length > 0) {
 		clearTable(tableId,
 			VPLTeacherTools.translateArray(forStudents
-				? ["", "Filename", "Set", "Students", "Time", "Size", "Submitted"]
-				: ["", "Filename", "Set", "Time", "Size", "Dashboard", "Default"]));
+				? ["", "Filename", "Tag", "Students", "Time", "Size", "Submitted"]
+				: ["", "Filename", "Tag", "Time", "Size", "Dashboard", "Default"]));
 
 		fileArray.forEach(function (file) {
 			if (!file.renamed && !file.moved) {

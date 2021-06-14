@@ -28,7 +28,7 @@ function clearTable(id, labels) {
 
 function fillGroupTable(sessionArray, dashboard) {
 	clearTable("groups", [
-		VPLTeacherTools.translateArray(["", "Connection", "<", "Time (d)", "Filename", "", "Set", "Program", "<", "Message"]),
+		VPLTeacherTools.translateArray(["", "Connection", "<", "Time (d)", "Filename", "", "Tag", "Program", "<", "Message"]),
 		VPLTeacherTools.translateArray(["", "Teacher", "Robot", "", "", "", "", "Rows", "Blocks", ""])
 	]);
 	var table = document.getElementById("groups");
@@ -137,7 +137,7 @@ function fillGroupTable(sessionArray, dashboard) {
 
 function fillFileTable(fileArray, dashboard) {
 	clearTable("files-dashboard", [
-		VPLTeacherTools.translateArray(["", "Filename", "Set", "Default"])
+		VPLTeacherTools.translateArray(["", "Filename", "Tag", "Default"])
 	]);
 	var table = document.getElementById("files-dashboard");
 
