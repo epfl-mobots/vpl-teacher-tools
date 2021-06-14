@@ -7,7 +7,8 @@
 		onGroups: (function(Array.<Objects>):void | undefined),
 		onFiles: (function(Array.<Object>):void | undefined),
 		onAttentionFiles: (function(Array.<Object>):void | undefined),
-		onOpen: (function(Object,boolean):void | undefined)
+		onOpen: (function(Object,boolean):void | undefined),
+		showTags: (boolean | undefined)
 	}} options
 */
 VPLTeacherTools.Dashboard = function (wsURL, options) {

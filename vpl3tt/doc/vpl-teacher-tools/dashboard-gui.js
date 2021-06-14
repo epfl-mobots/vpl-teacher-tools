@@ -27,10 +27,15 @@ function clearTable(id, labels) {
 }
 
 function fillGroupTable(sessionArray, dashboard) {
-	clearTable("groups", [
-		VPLTeacherTools.translateArray(["", "Connection", "<", "Time (d)", "Filename", "", "Tag", "Program", "<", "Message"]),
-		VPLTeacherTools.translateArray(["", "Teacher", "Robot", "", "", "", "", "Rows", "Blocks", ""])
-	]);
+	clearTable("groups", dashboard.options.showTags
+		? [
+			VPLTeacherTools.translateArray(["", "Connection", "<", "Time (d)", "Filename", "", "Tag", "Program", "<", "Message"]),
+			VPLTeacherTools.translateArray(["", "Teacher", "Robot", "", "", "", "", "Rows", "Blocks", ""])
+		]
+		: [
+			VPLTeacherTools.translateArray(["", "Connection", "<", "Time (d)", "Filename", "", "Program", "<", "Message"]),
+			VPLTeacherTools.translateArray(["", "Teacher", "Robot", "", "", "", "Rows", "Blocks", ""])
+		]);
 	var table = document.getElementById("groups");
 
 	sessionArray.forEach(function (session) {
@@ -107,9 +112,11 @@ function fillGroupTable(sessionArray, dashboard) {
 				tr.appendChild(td);
 
 				// tag
-				td = document.createElement("td");
-				td.textContent = tag;
-				tr.appendChild(td);
+				if (dashboard.options.showTags) {
+					td = document.createElement("td");
+					td.textContent = tag;
+					tr.appendChild(td);
+				}
 
 				details = [
 					lastVPLChangedData["nrules"].toString(10),
@@ -137,7 +144,9 @@ function fillGroupTable(sessionArray, dashboard) {
 
 function fillFileTable(fileArray, dashboard) {
 	clearTable("files-dashboard", [
-		VPLTeacherTools.translateArray(["", "Filename", "Tag", "Default"])
+		VPLTeacherTools.translateArray(dashboard.options.showTags
+			? ["", "Filename", "Tag", "Default"]
+			: ["", "Filename", "Default"])
 	]);
 	var table = document.getElementById("files-dashboard");
 
@@ -171,10 +180,12 @@ function fillFileTable(fileArray, dashboard) {
 		}
 		tr.appendChild(td);
 
-		// set
-		var td = document.createElement("td");
-		td.textContent = file.tag;
-		tr.appendChild(td);
+		// tag
+		if (dashboard.options.showTags) {
+			var td = document.createElement("td");
+			td.textContent = file.tag;
+			tr.appendChild(td);
+		}
 
 		// default checkbox
 		td = document.createElement("td");
