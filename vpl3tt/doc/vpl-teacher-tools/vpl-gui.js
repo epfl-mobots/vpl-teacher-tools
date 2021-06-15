@@ -78,7 +78,7 @@ window.addEventListener("load", function () {
 	window.addEventListener("resize", resizeDiv);
 }, false);
 
-window.addEventListener("beforeunload", function () {
+function saveContent() {
 	var options = JSON.parse(sessionStorage.getItem("options") || "{}");
 	var readOnly = options ? options["readOnly"] === true : false;
 	var customizationMode = options ? options["customizationMode"] === true : false;
@@ -94,4 +94,16 @@ window.addEventListener("beforeunload", function () {
 		};
 		client.updateFile(fileId, json, {asBeacon: true});
 	}
-}, false);
+}
+
+window.addEventListener("beforeunload", saveContent, false);
+
+// for modern browsers
+window.addEventListener("visibilitychange ", function () {
+	if (document.visibilityState !== "visible") {
+		saveContent();
+	}
+});
+
+// for Safari
+window.addEventListener("pagehide", saveContent, false);
