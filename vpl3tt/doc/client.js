@@ -20,6 +20,11 @@ VPLTeacherTools.HTTPClient = function () {
 	@return {void}
 */
 VPLTeacherTools.HTTPClient.prototype.rest = function (url, opt, data, dataMimetype) {
+	if (this.token) {
+		// add token
+		url += (/\?/.test(url) ? "&" : "?") + "token=" + this.token;	// this.token is still encoded
+	}
+
 	if (opt && opt.asBeacon && navigator.sendBeacon) {
 		// should be used to send reliably data via post from a beforeunload event listener
 		navigator.sendBeacon(url, data || "");
@@ -52,10 +57,6 @@ VPLTeacherTools.HTTPClient.prototype.rest = function (url, opt, data, dataMimety
 		xhr.addEventListener("error", function () {
 			opt.onError("Connection");
 		});
-	}
-	if (this.token) {
-		// add token
-		url += (/\?/.test(url) ? "&" : "?") + "token=" + this.token;	// this.token is still encoded
 	}
 	xhr.open(data ? "POST" : "GET", url);
 	if (dataMimetype) {
