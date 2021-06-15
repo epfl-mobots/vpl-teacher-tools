@@ -47,6 +47,7 @@ function updateGUI(fileBrowser, forStudents, rowForFileButtons) {
 			copyButton("btn-move-teacher", fileBrowser.canMoveTeacherFile());
 			copyButton("btn-duplicate-teacher", fileBrowser.canDuplicateTeacherFile());
 			copyButton("btn-bundle-teacher", fileBrowser.canBundleTeacherFile());
+			copyButton("btn-manifest-teacher", fileBrowser.canManifestTeacherFile());
 			copyButton("btn-unbundle-teacher", fileBrowser.canUnbundleTeacherFile());
 			copyButton("btn-export-teacher", fileBrowser.canExportTeacherFile());
 			copyButton("btn-remove-teacher", fileBrowser.canDeleteTeacherFiles());
@@ -69,6 +70,7 @@ function updateGUI(fileBrowser, forStudents, rowForFileButtons) {
 		enable("btn-move-teacher", rowForFileButtons == null && fileBrowser.canMoveTeacherFile());
 		enable("btn-duplicate-teacher", rowForFileButtons == null && fileBrowser.canDuplicateTeacherFile());
 		enable("btn-bundle-teacher", rowForFileButtons == null && fileBrowser.canBundleTeacherFile());
+		enable("btn-manifest-teacher", rowForFileButtons == null && fileBrowser.canManifestTeacherFile());
 		enable("btn-unbundle-teacher", rowForFileButtons == null && fileBrowser.canUnbundleTeacherFile());
 		enable("btn-import-teacher", fileBrowser.canImportTeacherFile());
 		enable("btn-export-teacher", rowForFileButtons == null && fileBrowser.canExportTeacherFile());
@@ -482,6 +484,9 @@ window.addEventListener("load", function () {
 		"btn-bundle-teacher": function () {
 			fileBrowser.bundleTeacherFile(null);
 		},
+		"btn-manifest-teacher": function () {
+			fileBrowser.manifestTeacherFile(document.getElementById("manifest-template").textContent.replace(/^\n*/, ""));
+		},
 		"btn-unbundle-teacher": function () {
 			fileBrowser.unbundleTeacherFile(null);
 		},
@@ -520,6 +525,7 @@ window.addEventListener("load", function () {
 		"btn-move-teacher",
 		"btn-duplicate-teacher",
 		"btn-bundle-teacher",
+		"btn-manifest-teacher",
 		"btn-unbundle-teacher",
 		"btn-import-teacher",
 		"btn-export-teacher",

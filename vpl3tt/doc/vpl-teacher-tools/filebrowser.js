@@ -411,6 +411,20 @@ VPLTeacherTools.FileBrowser.prototype.canBundleTeacherFile = function () {
     return suffix !== "zip";
 };
 
+VPLTeacherTools.FileBrowser.prototype.canManifestTeacherFile = function () {
+    // can create a manifest for at least one file of a type recognized in manifest
+    var ok = false;
+    this.teacherFiles.forEach(function (file) {
+        if (file.selected) {
+            var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
+            if (["vpl3", "vpl3ui", "jpg", "png", "html", "txt"].indexOf(suffix) >= 0) {
+                ok = true;
+            }
+        }
+    });
+    return ok;
+};
+
 VPLTeacherTools.FileBrowser.prototype.bundleTeacherFile = function () {
     var selectedFileIds = this.teacherFiles.reduce(function (acc, val) {
         return val.selected ? acc.concat(val.id) : acc;
@@ -428,6 +442,45 @@ VPLTeacherTools.FileBrowser.prototype.bundleTeacherFile = function () {
             }
         });
     }
+};
+
+VPLTeacherTools.FileBrowser.prototype.manifestTeacherFile = function (manifestTemplate) {
+    var vpl3Files = [];
+    var uiFiles = [];
+    var attentionFiles = [];
+    var docFiles = [];
+    var statementFiles = [];
+
+    this.teacherFiles.forEach(function (file) {
+        if (file.selected) {
+            var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
+            switch (suffix) {
+            case "vpl3":
+                vpl3Files.push(file.filename);
+                break;
+            case "vpl3ui":
+                uiFiles.push(file.filename);
+                break;
+            case "jpg":
+            case "png":
+                attentionFiles.push(file.filename);
+                break;
+            case "html":
+            case "txt":
+                statementFiles.push(file.filename);
+                break;
+            }
+        }
+    });
+
+    var manifestFile = manifestTemplate
+        .replace("VPL3FILES", vpl3Files.join("\n"))
+        .replace("UIFILES", uiFiles.join("\n"))
+        .replace("ATTENTIONFILES", attentionFiles.join("\n"))
+        .replace("DOCFILES", docFiles.join("\n"))
+        .replace("STATEMENTFILES", statementFiles.join("\n"));
+
+    this.addFile("manifest.txt", manifestFile);
 };
 
 VPLTeacherTools.FileBrowser.prototype.canUnbundleTeacherFile = function () {

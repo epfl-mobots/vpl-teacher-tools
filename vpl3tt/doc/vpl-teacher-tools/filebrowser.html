@@ -43,6 +43,25 @@ var uiLanguage = "en";
 <script src="zipbundle.js"></script>
 <script src="filebrowser-gui.js"></script>
 
+<script id="manifest-template" type="text/plain">
+List of files specific to the teacher tools
+
+ui:
+UIFILES
+
+vpl3:
+VPL3FILES
+
+doc:
+DOCFILES
+
+statement:
+STATEMENTFILES
+
+attention:
+ATTENTIONFILES
+</script>
+
 </head>
 
 <body>
@@ -89,7 +108,8 @@ var uiLanguage = "en";
 		<button id="btn-rename-teacher" disabled="true">Rename</button>
 		<button id="btn-move-teacher" disabled="true">Change Set</button>
 		<button id="btn-duplicate-teacher" disabled="true">Duplicate</button>
-		<button id="btn-bundle-teacher" disabled="true">Make bundle</button>
+		<button id="btn-bundle-teacher" disabled="true">Create a bundle</button>
+		<button id="btn-manifest-teacher" disabled="true">Create a manifest</button>
 		<button id="btn-unbundle-teacher" disabled="true">Unbundle</button>
 		<button id="btn-import-teacher" disabled="true">Import</button>
 		<button id="btn-export-teacher" disabled="true">Export</button>
