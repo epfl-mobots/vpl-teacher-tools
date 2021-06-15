@@ -80,6 +80,8 @@ class VPLHTTPServer:
                 q = VPLHTTPServer.query_param(handler)
                 token = q["token"][0] if "token" in q else ""
                 if self.token and self.token != token:
+                    if logger is not None:
+                        logger(f"Bad token ({token} instead of {self.token})" if self.token else "No token")
                     return {
                         "mime": "application/json",
                         "data": json.dumps({
