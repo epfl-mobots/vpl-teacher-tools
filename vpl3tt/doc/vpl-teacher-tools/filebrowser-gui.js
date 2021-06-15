@@ -283,7 +283,8 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 }
 
 window.addEventListener("load", function () {
-	var fileBrowser = new VPLTeacherTools.FileBrowser({
+	var fileBrowser;
+	fileBrowser = new VPLTeacherTools.FileBrowser({
 		onTeacherFiles: function (fileArray, fileBrowser) {
     		fillFileTable(fileArray, fileBrowser, false);
 		},
@@ -315,9 +316,13 @@ window.addEventListener("load", function () {
 			case "png":
 			case "svg":
 			case "html":
-			case "txt":
 			case "zip":
 				document.location = "viewer$LANGSUFFIX.html";
+				break;
+			default:
+				if (fileBrowser.canEditTeacherFile()) {
+					document.location = "editor$LANGSUFFIX.html";
+				}
 				break;
 			}
 		},

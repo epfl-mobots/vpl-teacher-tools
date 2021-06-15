@@ -135,6 +135,9 @@ TOOLSFILES = \
 	vpl3tt/doc/vpl-teacher-tools/dev.fr.html \
 	vpl3tt/doc/vpl-teacher-tools/doc.html \
 	vpl3tt/doc/vpl-teacher-tools/doc.fr.html \
+	vpl3tt/doc/vpl-teacher-tools/editor-gui.js \
+	vpl3tt/doc/vpl-teacher-tools/editor.html \
+	vpl3tt/doc/vpl-teacher-tools/editor.fr.html \
 	vpl3tt/doc/vpl-teacher-tools/filebrowser-gui.js \
 	vpl3tt/doc/vpl-teacher-tools/filebrowser.html \
 	vpl3tt/doc/vpl-teacher-tools/filebrowser.fr.html \

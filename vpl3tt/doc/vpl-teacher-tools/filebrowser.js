@@ -227,7 +227,10 @@ VPLTeacherTools.FileBrowser.prototype.canEditTeacherFile = function () {
     }
     var file = this.selectedFile();
     var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
-    return ["vpl3", "vpl3ui"].indexOf(suffix) >= 0;
+    return [
+        "aseba", "asm", "bas", "c", "cpp", "h", "hpp", "java", "js", "py", "txt",
+        "vpl3", "vpl3ui"
+    ].indexOf(suffix) >= 0;
 };
 
 VPLTeacherTools.FileBrowser.prototype.canPreviewTeacherFile = function () {
@@ -236,7 +239,7 @@ VPLTeacherTools.FileBrowser.prototype.canPreviewTeacherFile = function () {
     }
     var file = this.selectedFile();
     var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
-    return ["txt", "html", "jpg", "png", "svg", "zip"].indexOf(suffix) >= 0;
+    return ["html", "jpg", "png", "svg", "zip"].indexOf(suffix) >= 0;
 };
 
 VPLTeacherTools.FileBrowser.prototype.canGetConfigFile = function () {
