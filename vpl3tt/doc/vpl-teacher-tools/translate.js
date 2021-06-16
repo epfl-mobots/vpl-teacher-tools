@@ -31,6 +31,7 @@ VPLTeacherTools.translate = function(str, language) {
 		"Marked": "Marque",
 		"Message": "Message",
 		"Name": "Nom",
+		"newbundle.zip": "nouveau-paquet.zip",
 		"no": "non",
 		"(none)": "(aucun)",
 		"OK": "OK",

@@ -482,7 +482,7 @@ window.addEventListener("load", function () {
 			fileBrowser.duplicateTeacherFile(null);
 		},
 		"btn-bundle-teacher": function () {
-			fileBrowser.bundleTeacherFile(null);
+			fileBrowser.bundleTeacherFile(VPLTeacherTools.translate("newbundle.zip"));
 		},
 		"btn-manifest-teacher": function () {
 			fileBrowser.manifestTeacherFile(document.getElementById("manifest-template").textContent.replace(/^\n*/, ""));
