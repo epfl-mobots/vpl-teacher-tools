@@ -425,19 +425,27 @@ VPLTeacherTools.FileBrowser.prototype.canManifestTeacherFile = function () {
     return ok;
 };
 
-VPLTeacherTools.FileBrowser.prototype.bundleTeacherFile = function () {
+VPLTeacherTools.FileBrowser.prototype.bundleTeacherFile = function (defaultBundleFilename) {
     var selectedFileIds = this.teacherFiles.reduce(function (acc, val) {
         return val.selected ? acc.concat(val.id) : acc;
     }, []);
     if (selectedFileIds.length > 0) {
         this.client.getFiles(selectedFileIds, {
             onSuccess: (files) => {
+                var bundleFilename = defaultBundleFilename || "newbundle.zip";
+                for (var i = 0; i < files.length; i++) {
+                    var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(files[i].tag).toLowerCase();
+                    if (suffix === "zip") {
+                        bundleFilename = files[i].tag;
+                        break;
+                    }
+                }
                 var zipbundle = new VPLTeacherTools.ZipBundle();
                 files.forEach((file) => {
                     zipbundle.addFile(file.filename, file.content);
                 });
                 zipbundle.zip.generateAsync({type:"base64"}).then((content) => {
-                    this.addFile("newbundle.zip", content);
+                    this.addFile(bundleFilename, content);
                 });
             }
         });
