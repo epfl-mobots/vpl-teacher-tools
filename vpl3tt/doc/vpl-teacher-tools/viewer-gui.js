@@ -72,6 +72,17 @@ function renderViewer () {
 				var codeEl = document.createElement("code");
 				codeEl.textContent = path;
 				dt.appendChild(codeEl);
+				var type = zipbundle.getType(path);
+				var typeStr = path === VPLTeacherTools.ZipBundle.manifestFilename
+					? "manifest"
+					: VPLTeacherTools.ZipBundle.Manifest.typeToString(zipbundle.getType(path));
+				if (typeStr) {
+					var typeSpan = document.createElement("span");
+					typeSpan.textContent = typeStr;
+					typeSpan.style.fontStyle = "italic";
+					dt.appendChild(document.createElement("br"));
+					dt.appendChild(typeSpan);
+				}
 
 				// content
 				var suffix = VPLTeacherTools.JSZip.getSuffix(path);

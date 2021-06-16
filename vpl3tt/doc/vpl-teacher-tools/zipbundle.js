@@ -224,6 +224,27 @@ VPLTeacherTools.ZipBundle.Manifest.File = function (filename, type) {
 	this.type = type;
 };
 
+/** Convert manifest type to string
+    @param {VPLTeacherTools.ZipBundle.Manifest.File.Type} type
+    @return {string}
+*/
+VPLTeacherTools.ZipBundle.Manifest.typeToString = function (type) {
+    switch (type) {
+    case VPLTeacherTools.ZipBundle.Manifest.File.Type.vpl3:
+        return "vpl";
+    case VPLTeacherTools.ZipBundle.Manifest.File.Type.ui:
+        return "ui";
+    case VPLTeacherTools.ZipBundle.Manifest.File.Type.attention:
+        return "attention";
+    case VPLTeacherTools.ZipBundle.Manifest.File.Type.doc:
+        return "doc";
+    case VPLTeacherTools.ZipBundle.Manifest.File.Type.statement:
+        return "statement";
+    default:
+        return "";
+    }
+};
+
 /** @enum {number} */
 VPLTeacherTools.ZipBundle.Manifest.File.Type = {
 	unknown: 0,
