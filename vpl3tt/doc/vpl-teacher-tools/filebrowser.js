@@ -228,7 +228,7 @@ VPLTeacherTools.FileBrowser.prototype.canEditTeacherFile = function () {
     var file = this.selectedFile();
     var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
     return [
-        "aseba", "asm", "bas", "c", "cpp", "h", "hpp", "java", "js", "py", "txt",
+        "aseba", "asm", "bas", "c", "cpp", "h", "hpp", "html", "java", "js", "py", "txt",
         "vpl3", "vpl3ui"
     ].indexOf(suffix) >= 0;
 };

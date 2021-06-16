@@ -317,9 +317,15 @@ window.addEventListener("load", function () {
 			case "jpg":
 			case "png":
 			case "svg":
-			case "html":
 			case "zip":
 				document.location = "viewer$LANGSUFFIX.html";
+				break;
+			case "html":
+				if (readOnly) {
+					document.location = "viewer$LANGSUFFIX.html";
+				} else if (fileBrowser.canEditTeacherFile()) {
+					document.location = "editor$LANGSUFFIX.html";
+				}
 				break;
 			default:
 				if (fileBrowser.canEditTeacherFile()) {
@@ -470,7 +476,7 @@ window.addEventListener("load", function () {
 			fileBrowser.openFile(false);
 		},
 		"btn-preview-teacher": function () {
-			fileBrowser.openFile(false);
+			fileBrowser.openFile(true);
 		},
 		"btn-rename-teacher": function () {
 			fileBrowser.renameTeacherFile(null);
