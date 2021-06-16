@@ -61,14 +61,16 @@ VPLTeacherTools.StudentManagement.prototype.canAddStudent = function (name) {
 };
 
 VPLTeacherTools.StudentManagement.prototype.addStudent = function (name, className) {
-    name = name.trim();
-    className = className && className.trim();
-    var self = this;
-    this.client.addStudent(name, className, {
-        onSuccess: function (r) {
-            self.updateStudents();
-        }
-    });
+    if (this.canAddStudent(name)) {
+        name = name.trim();
+        className = className && className.trim();
+        var self = this;
+        this.client.addStudent(name, className, {
+            onSuccess: function (r) {
+                self.updateStudents();
+            }
+        });
+    }
 };
 
 VPLTeacherTools.StudentManagement.prototype.addStudents = function (names, classNames) {
