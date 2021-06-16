@@ -415,7 +415,7 @@ VPLTeacherTools.FileBrowser.prototype.canManifestTeacherFile = function () {
     // can create a manifest for at least one file of a type recognized in manifest
     var ok = false;
     this.teacherFiles.forEach(function (file) {
-        if (file.selected) {
+        if (file.selected && file.filename != VPLTeacherTools.ZipBundle.manifestFilename) {
             var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
             if (["vpl3", "vpl3ui", "jpg", "png", "html", "txt"].indexOf(suffix) >= 0) {
                 ok = true;
@@ -480,7 +480,7 @@ VPLTeacherTools.FileBrowser.prototype.manifestTeacherFile = function (manifestTe
         .replace("DOCFILES", docFiles.join("\n"))
         .replace("STATEMENTFILES", statementFiles.join("\n"));
 
-    this.addFile("manifest.txt", manifestFile);
+    this.addFile(VPLTeacherTools.ZipBundle.manifestFilename, manifestFile);
 };
 
 VPLTeacherTools.FileBrowser.prototype.canUnbundleTeacherFile = function () {

@@ -72,6 +72,8 @@ VPLTeacherTools.ZipBundle = function () {
 	this.manifest = new VPLTeacherTools.ZipBundle.Manifest();
 };
 
+VPLTeacherTools.ZipBundle.manifestFilename = "manifest.txt";
+
 VPLTeacherTools.ZipBundle.prototype.load = function (zipContent, cb) {
 	this.zip = new VPLTeacherTools.JSZip();
 	this.toc = [];
@@ -90,7 +92,8 @@ VPLTeacherTools.ZipBundle.prototype.load = function (zipContent, cb) {
 			this.toc = this.zip.getCompleteFileList()
 				.map((path) => path.slice(this.pathPrefix.length));
 
-			var manifestFile = self.zip.file(this.pathPrefix + "manifest.txt");
+			var manifestFile = self.zip.file(this.pathPrefix +
+                VPLTeacherTools.ZipBundle.manifestFilename);
 			if (manifestFile) {
 				manifestFile.async("string").then((manifestSrc) => {
 					self.manifest.parse(manifestSrc, self.toc);
