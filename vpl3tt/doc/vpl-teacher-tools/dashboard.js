@@ -294,7 +294,7 @@ VPLTeacherTools.Dashboard.prototype.sendCommand = function (name, opt) {
 
 /** Send a file
 	@param {string} filename
-	@param {string} kind
+	@param {string} kind "vpl" | "help" | "statement" | "suspend"
 	@param {string} content
 	@param {boolean=} isBase64
 	@return {void}
@@ -331,11 +331,11 @@ VPLTeacherTools.Dashboard.prototype.sendFileById = function (fileId) {
 			}
 			var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(filename).toLowerCase();
 			var kind = {
-				"html": "help",
-				"jpg": "help",
-				"png": "help",
-				"svg": "help",
-				"txt": "help",
+				"html": "statement",
+				"jpg": "statement",
+				"png": "statement",
+				"svg": "statement",
+				"txt": "statement",
 				"vpl3": "vpl",
 				"vpl3ui": "vpl"
 			}[suffix] || "other";
@@ -355,15 +355,14 @@ VPLTeacherTools.Dashboard.prototype.sendZipBundleEntry = function (zipbundle, pa
 	var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(path).toLowerCase();
 	var asBase64 = ["jpg", "png"].indexOf(suffix) >= 0;
 	zipbundle.getFile(path, asBase64, (data) => {
+		var manifestType = zipbundle.getType(path);
 		var kind = {
-			"html": "help",
-			"jpg": "help",
-			"png": "help",
-			"svg": "help",
-			"txt": "help",
-			"vpl3": "vpl",
-			"vpl3ui": "vpl"
-		}[suffix] || "other";
+			"vpl": "vpl",
+			"ui": "vpl",
+			"doc": "help",
+			"statement": "statement",
+			"attention": "suspend"
+		}[VPLTeacherTools.ZipBundle.Manifest.typeToString(manifestType)] || "other";
 		self.sendFile(path, kind, data, asBase64);
 	});
 };
