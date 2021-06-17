@@ -182,7 +182,7 @@ VPLTeacherTools.ZipBundle.Manifest.prototype.parse = function (src, filenames) {
 				break;
 			}
 			if (type !== VPLTeacherTools.ZipBundle.Manifest.File.Type.unknown) {
-				var re = /([-_\/.a-z0-9]+)(\s+\([^)]*\))?$/i;
+				var re = /([-_\/.\p{Letter}0-9]+)(\s+\([^)]*\))?$/u;   // filename, accents allowed
 				for (; i + 1 < lines.length; i++) {
 					var line = lines[i + 1];
 					if (line != "") {
