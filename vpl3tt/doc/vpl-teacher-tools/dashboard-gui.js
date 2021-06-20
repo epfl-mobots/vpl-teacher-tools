@@ -314,8 +314,11 @@ window.addEventListener("load", function () {
 				var path = selAttention.options[selAttention.selectedIndex].value;
 				var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(path).toLowerCase();
 				var isHTML = ["htm", "html"].indexOf(suffix) >= 0;
-				zipbundle.getFile(path, !isHTML, (data) => {
-					if (isHTML) {
+				var isMD = suffix === "md";
+				zipbundle.getFile(path, !isHTML && !isMD, (data) => {
+					if (isMD) {
+						dashboard.setSuspendHTML(window["vplConvertMDToHtml"](data));
+					} else if (isHTML) {
 						dashboard.setSuspendHTML(data);
 					} else {
 						dashboard.setSuspendFile(path, data);

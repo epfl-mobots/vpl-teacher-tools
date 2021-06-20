@@ -158,7 +158,7 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
 				return file.mark && /\.zip$/i.test(file.filename);
 			});
 			files = files.filter(function (file) {
-				return file.mark && /\.(vpl3(ui)?|txt|html|jpg|png|svg)$/i.test(file.filename);
+				return file.mark && /\.(vpl3(ui)?|txt|html|jpg|md|png|svg)$/i.test(file.filename);
 			});
 			var attentionFiles = [];
 			bundles.forEach(function (bundle) {
@@ -333,6 +333,7 @@ VPLTeacherTools.Dashboard.prototype.sendFileById = function (fileId) {
 			var kind = {
 				"html": "statement",
 				"jpg": "statement",
+				"md": "statement",
 				"png": "statement",
 				"svg": "statement",
 				"txt": "statement",

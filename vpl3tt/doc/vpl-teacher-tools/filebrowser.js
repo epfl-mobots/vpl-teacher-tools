@@ -228,7 +228,7 @@ VPLTeacherTools.FileBrowser.prototype.canEditTeacherFile = function () {
 	var file = this.selectedFile();
 	var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
 	return [
-		"aseba", "asm", "bas", "c", "cpp", "h", "hpp", "html", "java", "js", "py", "txt",
+		"aseba", "asm", "bas", "c", "cpp", "h", "hpp", "html", "java", "js", "md", "py", "txt",
 		"vpl3", "vpl3ui"
 	].indexOf(suffix) >= 0;
 };
@@ -239,7 +239,7 @@ VPLTeacherTools.FileBrowser.prototype.canPreviewTeacherFile = function () {
 	}
 	var file = this.selectedFile();
 	var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
-	return ["html", "jpg", "png", "svg", "zip"].indexOf(suffix) >= 0;
+	return ["html", "md", "jpg", "png", "svg", "zip"].indexOf(suffix) >= 0;
 };
 
 VPLTeacherTools.FileBrowser.prototype.canGetConfigFile = function () {
@@ -417,7 +417,7 @@ VPLTeacherTools.FileBrowser.prototype.canManifestTeacherFile = function () {
 	this.teacherFiles.forEach(function (file) {
 		if (file.selected && file.filename != VPLTeacherTools.ZipBundle.manifestFilename) {
 			var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
-			if (["vpl3", "vpl3ui", "jpg", "png", "html", "txt"].indexOf(suffix) >= 0) {
+			if (["vpl3", "vpl3ui", "jpg", "png", "html", "md", "txt"].indexOf(suffix) >= 0) {
 				ok = true;
 			}
 		}
@@ -474,6 +474,7 @@ VPLTeacherTools.FileBrowser.prototype.manifestTeacherFile = function (manifestTe
 				attentionFiles.push(file.filename);
 				break;
 			case "html":
+            case "md":
 			case "txt":
 				statementFiles.push(file.filename);
 				break;
@@ -670,6 +671,7 @@ VPLTeacherTools.FileBrowser.getFileIconURL = function (filename) {
 	var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(filename).toLowerCase();
 	return fileIconURL = {
 		"html": "icon-file-html.svg",
+        "md": "icon-file-md.svg",
 		"jpg": "icon-file-img.svg",
 		"png": "icon-file-img.svg",
 		"svg": "icon-file-img.svg",
@@ -691,6 +693,7 @@ VPLTeacherTools.FileBrowser.suffixToMimetype = function (suffix) {
 		"html": "text/html",
 		"jpg": "image/jpeg",
 		"json": "application/json",
+        "md": "text/markdown",
 		"pdf": "application/pdf",
 		"png": "image/png",
 		"svg": "image/svg+xml",

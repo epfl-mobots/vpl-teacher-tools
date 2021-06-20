@@ -239,7 +239,7 @@ function fillFileTable(fileArray, fileBrowser, forStudents) {
 			} else {
 				// available in dashboard
 				td = document.createElement("td");
-				if (["vpl3", "vpl3ui", "txt", "html", "jpg", "png", "svg", "zip"].indexOf(suffix) >= 0) {
+				if (["vpl3", "vpl3ui", "txt", "html", "jpg", "md", "png", "svg", "zip"].indexOf(suffix) >= 0) {
 					td.textContent = file.mark ? "\u2612" : "\u2610";
 					td.addEventListener("click", function () {
 						fileBrowser.toggleMark(file.id);
@@ -321,6 +321,7 @@ window.addEventListener("load", function () {
 				document.location = "viewer$LANGSUFFIX.html";
 				break;
 			case "html":
+			case "md":
 				if (readOnly) {
 					document.location = "viewer$LANGSUFFIX.html";
 				} else if (fileBrowser.canEditTeacherFile()) {

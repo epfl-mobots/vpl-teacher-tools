@@ -13,6 +13,9 @@ function renderViewer () {
 	case "html":
 		div.innerHTML = fileContent;
 		break;
+	case "md":
+		div.innerHTML = window["vplConvertMDToHtml"](fileContent);
+		break;
 	case "jpg":
 	case "png":
 	case "svg":
