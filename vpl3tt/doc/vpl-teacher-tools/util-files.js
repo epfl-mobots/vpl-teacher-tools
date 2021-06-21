@@ -164,7 +164,8 @@ VPLTeacherTools.Load.prototype.close = function () {
     this.backgroundDiv.parentNode.removeChild(this.backgroundDiv);
 };
 
-/** Convert CSV or TSV data to array of array of strings, removing double-quotes
+/** Convert CSV (',' or ';' separator) or TSV data to array of array of strings,
+	removing double-quotes
 	@param {string} csv
 	@return {Array.<{Array.<string>>}}
 */
@@ -176,7 +177,7 @@ VPLTeacherTools.convertFromCSV = function (csv) {
 		.map(function (line) {
 			var a1 = [];
 			for (var i = 0; i < line.length; ) {
-				if (line[i] == "," || line[i] == "\t") {
+				if (line[i] == "," || line[i] == ";" || line[i] == "\t") {
 					a1.push("");
 					i++;
 				} else if (line[i] == "\"") {
@@ -187,7 +188,7 @@ VPLTeacherTools.convertFromCSV = function (csv) {
 					i += len + 1;
 				} else {
 					var len;
-					for (len = 0; i + len < line.length && line[i + len] != "," && line[i + len] != "\t"; len++) {}
+					for (len = 0; i + len < line.length && line[i + len] != "," && line[i + len] != ";" && line[i + len] != "\t"; len++) {}
 					a1.push(line.slice(i, i + len));
 					i += len + 1;
 				}
