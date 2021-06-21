@@ -293,6 +293,7 @@ class Db:
                            {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
                            groupid
                     FROM students
+                    ORDER BY class, name
                 """)
             else:
                 c.execute(f"""
@@ -303,6 +304,7 @@ class Db:
                            groupid
                     FROM students
                     WHERE equal_ic(class,?)
+                    ORDER BY name
                 """, (clas,))
         finally:
             self._db.commit()
