@@ -35,6 +35,6 @@ dans Firefox, cliquez sur le bouton
 dans un autre navigateur, menu Édition > Copier, puis collez l'URL dans le navigateur
 sur une tablette, scannez le code QR ci-dessus
 """,
-        "program.vpl": "programme.vpl",
+        "program.vpl3": "programme.vpl3",
     }
     tr.set_dictionary("fr", dict)

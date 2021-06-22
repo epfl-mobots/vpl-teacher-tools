@@ -38,7 +38,7 @@ in Firefox, click the button
 in another browser, menu Edit > Copy, then paste the URL in the browser
 on a tablet, scan the QR code above
 """,
-            "program.vpl": "program.vpl",
+            "program.vpl3": "program.vpl3",
         }
 
     def set_dictionary(self, language, dict):

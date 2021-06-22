@@ -129,7 +129,7 @@ class VPLWebSocketServer:
                          }
                     else:
                         data = {
-                            "name": self.default_program_filename or "program.vpl",
+                            "name": self.default_program_filename or "program.vpl3",
                             "kind": "vpl",
                             "metadata": {},
                             "content": "{}"

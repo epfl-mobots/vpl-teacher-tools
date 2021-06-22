@@ -54,7 +54,7 @@ class ApplicationBase:
                              update_connection=self.update_connection,
                              update_robots=self.update_robots,
                              initial_file_dir=DataPath.path("data"),
-                             default_program_filename=self.tr("program.vpl"))
+                             default_program_filename=self.tr("program.vpl3"))
         self.server.add_files(if_new_db=True)
         self.server.start()
         self.http_port = self.server.get_http_port()
