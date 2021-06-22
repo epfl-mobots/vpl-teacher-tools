@@ -167,6 +167,10 @@ table {
 	border-spacing: 1ex 1em;
 }
 
+col.narrow {
+	width: 10%;
+}
+
 th {
 	text-align: left;
 }
@@ -209,13 +213,16 @@ input:focus {
 }
 
 td.rect {
-	min-width: 10em;
+	min-width: 5em;
 	border-style: solid;
 	border-width: 1px;
 	border-radius: 5px;
 	box-shadow: 2px 2px 3px #ddd;
 	padding: 1ex;
 	margin: 3ex;
+}
+td.container {
+	min-width: 10em;
 }
 td.rect.selected {
 	border-width: 2px;

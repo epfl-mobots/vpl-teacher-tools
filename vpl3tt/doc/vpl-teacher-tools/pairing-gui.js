@@ -3,17 +3,44 @@ function clearChildren(id) {
 	while (el.firstElementChild) {
 		el.removeChild(el.firstElementChild);
 	}
+	return el;
 }
 
-function addLabels(id, labels) {
-	var table = document.getElementById(id);
-	var tr = document.createElement("tr");
-	labels.forEach(function (label) {
-		var th = document.createElement("th");
-		th.textContent = label;
-		tr.appendChild(th);
-	});
-	table.appendChild(tr);
+function clearTable(id, labels, colClasses) {
+	var table = clearChildren(id);
+	if (colClasses) {
+		var colgroup = document.createElement("colgroup");
+		for (var i = 0; i < (labels ? labels[0].length : colClasses.length); i++) {
+			var col = document.createElement("col");
+			if (i < colClasses.length) {
+				col.className = colClasses[i];
+			}
+			colgroup.appendChild(col);
+		}
+		table.appendChild(colgroup);
+	}
+	if (labels) {
+		labels.forEach(function (labelRow) {
+			var tr = document.createElement("tr");
+			labelRow.forEach(function (label, i) {
+				if (label !== "<") {
+					// "<" are merged to a single colspan
+					var th = document.createElement("th");
+					th.textContent = label;
+					if (labelRow[i + 1] === "<") {
+						var colSpan = 1;
+						while (labelRow[i + colSpan] === "<") {
+							colSpan++;
+						}
+						th.setAttribute("colspan", colSpan.toString(10));
+					}
+					tr.appendChild(th);
+				}
+			});
+			table.appendChild(tr);
+		});
+	}
+	return table;
 }
 
 /*
@@ -25,7 +52,7 @@ Drag-and-drop data:
 
 function fillRobotTable(robotArray, pairing) {
 	if (!pairing.noRedraw) {
-		clearChildren("robots");
+		clearTable("robots");
 		var table = document.getElementById("robots");
 
 		robotArray.forEach(function (robot) {
@@ -79,9 +106,9 @@ function fillRobotTable(robotArray, pairing) {
 }
 
 function fillStudentTable(studentArray, pairing) {
-	clearChildren("students");
-	addLabels("students",
-		VPLTeacherTools.translateArray(["Name", "Class"]));
+	clearTable("students",
+		[VPLTeacherTools.translateArray(["Name", "Class"])],
+		["", "narrow"]);
 
 	var table = document.getElementById("students");
 
@@ -160,7 +187,7 @@ function fillGroupTable(groupArray, pairing) {
 		return true;
 	}
 
-	clearChildren("groups");
+	clearTable("groups");
 	var table = document.getElementById("groups");
 
 	groupArray.forEach(function (group) {
@@ -173,7 +200,7 @@ function fillGroupTable(groupArray, pairing) {
 			var tr = document.createElement("tr");
 
 			var td = document.createElement("td");
-			td.className = pairing.isGroupSelected(group.group_id) ? "rect selected" : "rect";
+			td.className = pairing.isGroupSelected(group.group_id) ? "rect container selected" : "rect container";
 			group.students.forEach(function (studentName, i) {
 				var span = document.createElement("span");
 				span.className = "rect";

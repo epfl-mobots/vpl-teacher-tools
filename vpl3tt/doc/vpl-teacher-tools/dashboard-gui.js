@@ -1,29 +1,48 @@
 var dashboard = null;
 
-function clearTable(id, labels) {
-	var table = document.getElementById(id);
-	while (table.firstElementChild) {
-		table.removeChild(table.firstElementChild);
+function clearChildren(id) {
+	var el = document.getElementById(id);
+	while (el.firstElementChild) {
+		el.removeChild(el.firstElementChild);
 	}
-	labels.forEach(function (labelRow) {
-		var tr = document.createElement("tr");
-		labelRow.forEach(function (label, i) {
-			if (label !== "<") {
-				// "<" are merged to a single colspan
-				var th = document.createElement("th");
-				th.textContent = label;
-				if (labelRow[i + 1] === "<") {
-					var colSpan = 1;
-					while (labelRow[i + colSpan] === "<") {
-						colSpan++;
-					}
-					th.setAttribute("colspan", colSpan.toString(10));
-				}
-				tr.appendChild(th);
+	return el;
+}
+
+function clearTable(id, labels, colClasses) {
+	var table = clearChildren(id);
+	if (colClasses) {
+		var colgroup = document.createElement("colgroup");
+		for (var i = 0; i < (labels ? labels[0].length : colClasses.length); i++) {
+			var col = document.createElement("col");
+			if (i < colClasses.length) {
+				col.className = colClasses[i];
 			}
+			colgroup.appendChild(col);
+		}
+		table.appendChild(colgroup);
+	}
+	if (labels) {
+		labels.forEach(function (labelRow) {
+			var tr = document.createElement("tr");
+			labelRow.forEach(function (label, i) {
+				if (label !== "<") {
+					// "<" are merged to a single colspan
+					var th = document.createElement("th");
+					th.textContent = label;
+					if (labelRow[i + 1] === "<") {
+						var colSpan = 1;
+						while (labelRow[i + colSpan] === "<") {
+							colSpan++;
+						}
+						th.setAttribute("colspan", colSpan.toString(10));
+					}
+					tr.appendChild(th);
+				}
+			});
+			table.appendChild(tr);
 		});
-		table.appendChild(tr);
-	});
+	}
+	return table;
 }
 
 function fillGroupTable(sessionArray, dashboard) {
