@@ -75,7 +75,6 @@ class Application(ApplicationBase, tk.Tk):
         menubar.add_cascade(menu=self.edit_menu)
         menu_items["Edit"] = (menubar, menubar.index("end"))
 
-
         def set_text():
             for key in menu_items:
                 menu, index = menu_items[key]
@@ -117,56 +116,59 @@ class Application(ApplicationBase, tk.Tk):
         self.v_bridge = tk.StringVar(value=self.bridge)
         self.v_vpl_ui = tk.StringVar(value="A")
 
-        self.options_menu = tk.Menu(menubar, tearoff=False)
-        self.options_menu.add_radiobutton(variable=self.v_language,
-                                          value="en",
-                                          command=lambda: change_language("en"))
-        menu_items["English"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_radiobutton(variable=self.v_language,
-                                          value="fr",
-                                          command=lambda: change_language("fr"))
-        menu_items["French"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_radiobutton(variable=self.v_language,
-                                          value="de",
-                                          command=lambda: change_language("de"))
-        menu_items["German (English for Teacher Tools)"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_radiobutton(variable=self.v_language,
-                                          value="it",
-                                          command=lambda: change_language("it"))
-        menu_items["Italian (English for Teacher Tools)"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_separator()
-        self.options_menu.add_radiobutton(variable=self.v_bridge,
+        self.language_menu = tk.Menu(menubar, tearoff=False)
+        self.language_menu.add_radiobutton(variable=self.v_language,
+                                           value="en",
+                                           command=lambda: change_language("en"))
+        menu_items["English"] = (self.language_menu, self.language_menu.index("end"))
+        self.language_menu.add_radiobutton(variable=self.v_language,
+                                           value="fr",
+                                           command=lambda: change_language("fr"))
+        menu_items["French"] = (self.language_menu, self.language_menu.index("end"))
+        self.language_menu.add_radiobutton(variable=self.v_language,
+                                           value="de",
+                                           command=lambda: change_language("de"))
+        menu_items["German (English for Teacher Tools)"] = (self.language_menu, self.language_menu.index("end"))
+        self.language_menu.add_radiobutton(variable=self.v_language,
+                                           value="it",
+                                           command=lambda: change_language("it"))
+        menu_items["Italian (English for Teacher Tools)"] = (self.language_menu, self.language_menu.index("end"))
+        menubar.add_cascade(menu=self.language_menu)
+        menu_items["Language"] = (menubar, menubar.index("end"))
+
+        self.advanced_menu = tk.Menu(menubar, tearoff=False)
+        self.advanced_menu.add_radiobutton(variable=self.v_bridge,
                                           value="tdm",
                                           command=lambda: self.menu_item_bridge("tdm"))
-        menu_items["Thymio Device Manager"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_radiobutton(variable=self.v_bridge,
+        menu_items["Thymio Device Manager"] = (self.advanced_menu, self.advanced_menu.index("end"))
+        self.advanced_menu.add_radiobutton(variable=self.v_bridge,
                                           value="jws",
                                           command=lambda: self.menu_item_bridge("jws"))
-        menu_items["JSON WebSocket"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_radiobutton(variable=self.v_bridge,
+        menu_items["JSON WebSocket"] = (self.advanced_menu, self.advanced_menu.index("end"))
+        self.advanced_menu.add_radiobutton(variable=self.v_bridge,
                                           value="none",
                                           command=lambda: self.menu_item_bridge("none"))
-        menu_items["No Robot"] = (self.options_menu, self.options_menu.index("end"))
-        menubar.add_cascade(menu=self.options_menu)
+        menu_items["No Robot"] = (self.advanced_menu, self.advanced_menu.index("end"))
         if len(self.ui_toc) > 1:
-            self.options_menu.add_separator()
+            self.advanced_menu.add_separator()
             for ui in self.ui_toc:
-                self.options_menu.add_radiobutton(variable=self.v_vpl_ui,
+                self.advanced_menu.add_radiobutton(variable=self.v_vpl_ui,
                                                   value=ui["id"],
                                                   command=lambda: self.menu_item_ui(self.v_vpl_ui.get()))
-                menu_items[ui["name"]["en"]] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_separator()
-        self.options_menu.add_checkbutton(variable=self.v_shorten_url)
-        menu_items["Shortened URLs"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_checkbutton(variable=self.v_login_qr_code)
-        menu_items["Login Screen QR Code"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_checkbutton(variable=self.v_log_in_dashboard)
-        menu_items["Log Display in Dashboard"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_checkbutton(variable=self.v_advanced_sim_features)
-        menu_items["Advanced Simulator Features"] = (self.options_menu, self.options_menu.index("end"))
-        self.options_menu.add_checkbutton(variable=self.v_dev_tools)
-        menu_items["Developer Tools"] = (self.options_menu, self.options_menu.index("end"))
-        menu_items["Options"] = (menubar, menubar.index("end"))
+                menu_items[ui["name"]["en"]] = (self.advanced_menu, self.advanced_menu.index("end"))
+        self.advanced_menu.add_separator()
+        self.advanced_menu.add_checkbutton(variable=self.v_shorten_url)
+        menu_items["Shortened URLs"] = (self.advanced_menu, self.advanced_menu.index("end"))
+        self.advanced_menu.add_checkbutton(variable=self.v_login_qr_code)
+        menu_items["Login Screen QR Code"] = (self.advanced_menu, self.advanced_menu.index("end"))
+        self.advanced_menu.add_checkbutton(variable=self.v_log_in_dashboard)
+        menu_items["Log Display in Dashboard"] = (self.advanced_menu, self.advanced_menu.index("end"))
+        self.advanced_menu.add_checkbutton(variable=self.v_advanced_sim_features)
+        menu_items["Advanced Simulator Features"] = (self.advanced_menu, self.advanced_menu.index("end"))
+        self.advanced_menu.add_checkbutton(variable=self.v_dev_tools)
+        menu_items["Developer Tools"] = (self.advanced_menu, self.advanced_menu.index("end"))
+        menubar.add_cascade(menu=self.advanced_menu)
+        menu_items["Advanced"] = (menubar, menubar.index("end"))
 
         self.load_prefs()
         set_text()

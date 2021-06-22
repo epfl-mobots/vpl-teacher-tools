@@ -7,6 +7,7 @@
 
 def add_translations_fr(tr):
     dict = {
+        "Advanced": "Avancé",
         "Advanced Simulator Features": "Fonctions avancées du simulateur",
         "Copy URL": "Copier l'URL",
         "Developer Tools": "Outils pour les développeurs",
@@ -17,6 +18,7 @@ def add_translations_fr(tr):
         "German (English for Teacher Tools)": "Allemand (anglais pour les outils pour les enseignants)",
         "Italian (English for Teacher Tools)": "Italien (anglais pour les outils pour les enseignants)",
         "JSON WebSocket": "WebSocket JSON",
+        "Language": "Langue",
         "Log Display in Dashboard": "Journal dans le tableau de bord",
         "Login Screen QR Code": "QR code sur la page de login",
         "No Robot": "Aucun robot",
@@ -24,7 +26,6 @@ def add_translations_fr(tr):
         "Number of robots:": "Nombre de robots:",
         "Open Tools in Browser": "Ouvrir les outils dans le navigateur",
         "Open tools in browser": "Ouvrir les outils dans le navigateur",
-        "Options": "Options",
         "Quit": "Quitter",
         "Shortened URLs": "URLs raccourcis",
         "TDM not running; please start Thymio Suite": "Veuillez lancer Thymio Suite pour permettre une connexion avec le TDM",
