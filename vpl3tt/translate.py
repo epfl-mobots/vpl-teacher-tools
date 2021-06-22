@@ -14,6 +14,7 @@ class Translate:
 
     def init_default_lang(self):
         self.dicts["en"] = {
+            "Advanced": "Advanced",
             "Advanced Simulator Features": "Advanced Simulator Features",
             "Copy URL": "Copy URL",
             "Developer Tools": "Developer Tools",
@@ -23,13 +24,13 @@ class Translate:
             "French": "French",
             "Italian (English for Teacher Tools)": "Italian (English for Teacher Tools)",
             "JSON WebSocket": "JSON WebSocket",
+            "Language": "Language",
             "Log Display in Dashboard": "Log Display in Dashboard",
             "Login Screen QR Code": "Login Screen QR Code",
             "No Robot": "No Robot",
             "Number of connections:": "Number of connections:",
             "Open Tools in Browser": "Open Tools in Browser",
             "Open tools in browser": "Open tools in browser",
-            "Options": "Options",
             "Shortened URLs": "Shortened URLs",
             "Thymio Device Manager": "Thymio Device Manager",
             "VPL Server": "VPL Server",
