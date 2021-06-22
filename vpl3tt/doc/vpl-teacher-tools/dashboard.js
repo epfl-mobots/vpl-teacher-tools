@@ -221,7 +221,7 @@ VPLTeacherTools.Dashboard.prototype.openLastFile = function (group_id, group) {
 			};
             sessionStorage.setItem("options", JSON.stringify(options));
             sessionStorage.setItem("initialFileContent", file.content);
-			document.location = "vpl$LANGSUFFIX.html?robot=sim&uilanguage=$LANGUAGE" +
+			document.location = "vpl$LANGSUFFIX.html?ui=$VPLUIURI&robot=sim&uilanguage=$LANGUAGE" +
 				(group ? "&user=" + encodeURIComponent(group) : "");
         }
     });
