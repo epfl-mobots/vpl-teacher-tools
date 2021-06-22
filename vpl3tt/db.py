@@ -997,7 +997,8 @@ class Db:
                 metadata
             """,
             "files",
-            "submitted AND NOT list_aredisjoint(owner, ?)", (student_id_list,))
+            "submitted AND NOT list_aredisjoint(owner, ?)", (student_id_list,),
+            order="julianday(time) DESC")
         if r is None:
             r = self.get_first_result(
                 f"""fileid,
@@ -1011,7 +1012,8 @@ class Db:
                     metadata
                 """,
                 "files",
-                "NOT list_aredisjoint(owner, ?)", (student_id_list,))
+                "NOT list_aredisjoint(owner, ?)", (student_id_list,),
+                order="julianday(time) DESC")
         if r is None:
             raise ValueError("no file for group id")
         return {
