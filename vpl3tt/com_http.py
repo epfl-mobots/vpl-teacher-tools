@@ -9,6 +9,7 @@ import urllib
 import mimetypes
 import re
 import os
+import logging
 
 from vpl3tt.datapath import DataPath
 
@@ -63,6 +64,8 @@ class HTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
         p = urllib.parse.urlparse(self.path)
         path = self.map_path(p.path)
+
+        logging.debug(f"GET {self.path}")
 
         if path in self.server.dict_get:
             content = self.server.dict_get[path](self.server.context, self)
