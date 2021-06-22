@@ -988,6 +988,7 @@ class Db:
         r = self.get_first_result(
             f"""fileid,
                 name,
+                tag,
                 {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
                 LENGTH(content),
                 owner,
