@@ -127,7 +127,10 @@ VPLTeacherTools.ZipBundle.prototype.getType = function (filename) {
 VPLTeacherTools.ZipBundle.prototype.getFile = function (filename, asBase64, cb) {
 	this.zip.file(this.pathPrefix + filename).async(asBase64 ? "uint8array" : "string").then((data) => {
 		if (asBase64) {
-			var dataAsString = String.fromCharCode(...data);	// crazy, but required to give a string to btoa
+            var dataAsString = "";
+            for (var i = 0; i < data.length; i++) {
+                dataAsString += String.fromCharCode(data[i]);
+            }
 			data = btoa(dataAsString);
 		}
 		cb(data);
