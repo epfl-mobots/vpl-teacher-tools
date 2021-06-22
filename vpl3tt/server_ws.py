@@ -138,7 +138,7 @@ class VPLWebSocketServer:
                         "sender": {
                             "type": "server"
                         },
-                        "type": "file",
+                        "type": "defaultfile",
                         "data": data
                     })
                 except Exception:
