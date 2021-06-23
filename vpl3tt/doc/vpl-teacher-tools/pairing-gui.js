@@ -496,6 +496,7 @@ window.addEventListener("load", function () {
 			: selFilterClass.options[selFilterClass.selectedIndex].value;
 		pairing.setClass(filterClass);
 		pairing.updateStudents();
+		pairing.updateGroups();
 	}, false);
 
 	// show which connection method is used

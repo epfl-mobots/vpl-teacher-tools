@@ -387,26 +387,50 @@ class Db:
             self._db.commit()
         return group_id
 
-    def list_groups(self):
-        """Get the list of all groups"""
+    def list_groups(self, clas=None):
+        """Get the list of all groups, or groups containing students belonging
+        to a class"""
         c = self._db.cursor()
         try:
-            c.execute(f"""
-                SELECT groupid,
-                       {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
-                       (SELECT count()
+            if clas is None:
+                c.execute(f"""
+                    SELECT groupid,
+                           {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
+                           (SELECT count()
+                            FROM students
+                            WHERE students.groupid = groups.groupid),
+                           (SELECT sessionid
+                            FROM sessions
+                            WHERE sessions.groupid = groups.groupid
+                            LIMIT 1),
+                           (SELECT robot
+                            FROM sessions
+                            WHERE sessions.groupid = groups.groupid
+                            LIMIT 1)
+                    FROM groups
+                """)
+            else:
+                c.execute(f"""
+                    SELECT groupid,
+                           {"datetime(time,'localtime')" if Db.ORDER_TIME else "time"},
+                           (SELECT count()
+                            FROM students
+                            WHERE students.groupid = groups.groupid),
+                           (SELECT sessionid
+                            FROM sessions
+                            WHERE sessions.groupid = groups.groupid
+                            LIMIT 1),
+                           (SELECT robot
+                            FROM sessions
+                            WHERE sessions.groupid = groups.groupid
+                            LIMIT 1)
+                    FROM groups
+                    WHERE groupid IN (
+                        SELECT students.groupid
                         FROM students
-                        WHERE students.groupid = groups.groupid),
-                       (SELECT sessionid
-                        FROM sessions
-                        WHERE sessions.groupid = groups.groupid
-                        LIMIT 1),
-                       (SELECT robot
-                        FROM sessions
-                        WHERE sessions.groupid = groups.groupid
-                        LIMIT 1)
-                FROM groups
-            """)
+                        WHERE equal_ic(students.class,?)
+                    )
+                """, (clas,))
         finally:
             self._db.commit()
         return [

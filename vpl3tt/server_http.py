@@ -199,7 +199,9 @@ class VPLHTTPServer:
 
         @self.httpd.http_get("/api/listGroups")
         def http_get_api_listGroups(self, handler):
-            return self.call_api(Db.list_groups)
+            q = VPLHTTPServer.query_param(handler)
+            return self.call_api(Db.list_groups,
+                                 q["class"][0] if "class" in q else None)
 
         @self.httpd.http_get("/api/addStudentToGroup")
         @check_token

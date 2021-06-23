@@ -13,7 +13,7 @@ VPLTeacherTools.Login = function (options) {
 
 VPLTeacherTools.Login.prototype.updateGroups = function () {
     var self = this;
-	this.client.listGroupsWithStudents({
+	this.client.listGroupsWithStudents(null, {
 		onSuccess: function (groups) {
             self.groups = groups.filter(function (group) {
                 return group.session_id != null;

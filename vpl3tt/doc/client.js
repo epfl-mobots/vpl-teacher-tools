@@ -117,8 +117,8 @@ VPLTeacherTools.HTTPClient.prototype.removeGroup = function (groupId, opt) {
 	this.rest("/api/removeGroup?groupid=" + encodeURIComponent(groupId), opt);
 };
 
-VPLTeacherTools.HTTPClient.prototype.listGroups = function (opt) {
-	this.rest("/api/listGroups", opt);
+VPLTeacherTools.HTTPClient.prototype.listGroups = function (filterClass, opt) {
+	this.rest("/api/listGroups" + (filterClass ? "?class=" + encodeURIComponent(filterClass) : ""), opt);
 };
 
 VPLTeacherTools.HTTPClient.prototype.addStudentToGroup = function (student, groupId, opt) {
@@ -137,9 +137,9 @@ VPLTeacherTools.HTTPClient.prototype.listGroupStudents = function (groupId, opt)
 	this.rest("/api/listGroupStudents?groupid=" + encodeURIComponent(groupId), opt);
 };
 
-VPLTeacherTools.HTTPClient.prototype.listGroupsWithStudents = function (opt) {
+VPLTeacherTools.HTTPClient.prototype.listGroupsWithStudents = function (filterClass, opt) {
 	var self = this;
-	this.listGroups({
+	this.listGroups(filterClass, {
 		onSuccess: function (groups) {
 			var remaining = groups.length;
 			var errMsg = null;

@@ -120,7 +120,7 @@ VPLTeacherTools.Pairing.prototype.findGroup = function (groupId) {
 
 VPLTeacherTools.Pairing.prototype.updateGroups = function () {
     var self = this;
-	this.client.listGroupsWithStudents({
+	this.client.listGroupsWithStudents(this.currentClass, {
 		onSuccess: function (groups) {
             self.groups = groups;
             if (self.options.onGroups) {

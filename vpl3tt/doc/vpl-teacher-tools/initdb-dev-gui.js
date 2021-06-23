@@ -49,12 +49,12 @@ window.addEventListener("load", function () {
 
 	btn = document.getElementById("list-groups");
 	btn.addEventListener("click", function () {
-		client.listGroups(opt);
+		client.listGroups(null, opt);
 	});
 
 	btn = document.getElementById("list-members-a");
 	btn.addEventListener("click", function () {
-		client.listGroups({
+		client.listGroups(null, {
 			logURL: opt.logURL,
 			onSuccess: function (r) {
 				opt.onSuccess(r);
@@ -68,7 +68,7 @@ window.addEventListener("load", function () {
 
 	btn = document.getElementById("list-members-b");
 	btn.addEventListener("click", function () {
-		client.listGroupsWithStudents(opt);
+		client.listGroupsWithStudents(null, opt);
 	});
 
 	btn = document.getElementById("reset-sessions");
@@ -109,7 +109,7 @@ window.addEventListener("load", function () {
 	btn = document.getElementById("init-files-students");
 	btn.addEventListener("click", function () {
 		// add one file for each group
-		client.listGroups({
+		client.listGroups(null, {
 			logURL: opt.logURL,
 			onSuccess: function (r) {
 				opt.onSuccess(r);
