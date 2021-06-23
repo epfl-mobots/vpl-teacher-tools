@@ -59,6 +59,19 @@ class Application(ApplicationBase):
                 ],
             ]
             self.app_objc.addMenu_withItems_("Language", language_menu_items)
+            options_menu_items = [
+                [
+                    "Login Screen QR Code",
+                    None,
+                    lambda sender: self.menu_item_login_QR_code()
+                ],
+                [
+                    "Log Display in Dashboard",
+                    None,
+                    lambda sender: self.menu_item_log_display()
+                ],
+            ]
+            self.app_objc.addMenu_withItems_("Options", options_menu_items)
             advanced_menu_items = [
                 [
                     "Thymio Device Manager",
@@ -95,16 +108,6 @@ class Application(ApplicationBase):
                     "Shortened URLs",
                     None,
                     lambda sender: self.menu_item_shorten_urls()
-                ],
-                [
-                    "Login Screen QR Code",
-                    None,
-                    lambda sender: self.menu_item_login_QR_code()
-                ],
-                [
-                    "Log Display in Dashboard",
-                    None,
-                    lambda sender: self.menu_item_log_display()
                 ],
                 [
                     "Advanced Simulator Features",
@@ -245,10 +248,10 @@ class Application(ApplicationBase):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Shortened URLs", "Advanced")
         item.setState_(0 if self.full_url else 1)
 
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("Login Screen QR Code", "Advanced")
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Login Screen QR Code", "Options")
         item.setState_(1 if self.has_login_qr_code else 0)
 
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("Log Display in Dashboard", "Advanced")
+        item = self.app_objc.getMenuItemWithTitle_inMenu_("Log Display in Dashboard", "Options")
         item.setState_(1 if self.log_display else 0)
 
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Advanced Simulator Features", "Advanced")

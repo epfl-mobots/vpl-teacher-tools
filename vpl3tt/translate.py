@@ -31,6 +31,7 @@ class Translate:
             "Number of connections:": "Number of connections:",
             "Open Tools in Browser": "Open Tools in Browser",
             "Open tools in browser": "Open tools in browser",
+            "Options": "Options",
             "Shortened URLs": "Shortened URLs",
             "Thymio Device Manager": "Thymio Device Manager",
             "VPL Server": "VPL Server",

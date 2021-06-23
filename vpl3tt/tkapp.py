@@ -136,6 +136,14 @@ class Application(ApplicationBase, tk.Tk):
         menubar.add_cascade(menu=self.language_menu)
         menu_items["Language"] = (menubar, menubar.index("end"))
 
+        self.options_menu = tk.Menu(menubar, tearoff=False)
+        self.options_menu.add_checkbutton(variable=self.v_login_qr_code)
+        menu_items["Login Screen QR Code"] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_checkbutton(variable=self.v_log_in_dashboard)
+        menu_items["Log Display in Dashboard"] = (self.options_menu, self.options_menu.index("end"))
+        menubar.add_cascade(menu=self.options_menu)
+        menu_items["Options"] = (menubar, menubar.index("end"))
+
         self.advanced_menu = tk.Menu(menubar, tearoff=False)
         self.advanced_menu.add_radiobutton(variable=self.v_bridge,
                                           value="tdm",
@@ -159,10 +167,6 @@ class Application(ApplicationBase, tk.Tk):
         self.advanced_menu.add_separator()
         self.advanced_menu.add_checkbutton(variable=self.v_shorten_url)
         menu_items["Shortened URLs"] = (self.advanced_menu, self.advanced_menu.index("end"))
-        self.advanced_menu.add_checkbutton(variable=self.v_login_qr_code)
-        menu_items["Login Screen QR Code"] = (self.advanced_menu, self.advanced_menu.index("end"))
-        self.advanced_menu.add_checkbutton(variable=self.v_log_in_dashboard)
-        menu_items["Log Display in Dashboard"] = (self.advanced_menu, self.advanced_menu.index("end"))
         self.advanced_menu.add_checkbutton(variable=self.v_advanced_sim_features)
         menu_items["Advanced Simulator Features"] = (self.advanced_menu, self.advanced_menu.index("end"))
         self.advanced_menu.add_checkbutton(variable=self.v_dev_tools)

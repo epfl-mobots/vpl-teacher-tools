@@ -26,6 +26,7 @@ def add_translations_fr(tr):
         "Number of robots:": "Nombre de robots:",
         "Open Tools in Browser": "Ouvrir les outils dans le navigateur",
         "Open tools in browser": "Ouvrir les outils dans le navigateur",
+        "Options": "Options",
         "Quit": "Quitter",
         "Shortened URLs": "URLs raccourcis",
         "TDM not running; please start Thymio Suite": "Veuillez lancer Thymio Suite pour permettre une connexion avec le TDM",
