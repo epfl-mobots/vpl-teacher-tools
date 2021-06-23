@@ -23,12 +23,14 @@ def launch(App, args=None):
     ws_link_url = None
     db_path = Db.DEFAULT_PATH
     language = "fr"
+    advanced = False
     if args is None:
         args = sys.argv[1:]
     try:
         arguments, values = getopt.getopt(args,
                                           "",
                                           [
+                                              "advanced",
                                               "db=",
                                               "help",
                                               "http-port=",
@@ -47,6 +49,7 @@ def launch(App, args=None):
 VPL 3 teacher tools server
 
 Options:
+  --advanced      menu for advanced options in server application
   --db path       path of sqlite database (default: {Db.DEFAULT_PATH})
   --help          display help message and exit
   --http-port num HTTP port, or auto (default: auto, trying first {App.DEFAULT_HTTP_PORT})
@@ -67,6 +70,8 @@ Options:
             timeout = float(val)
         elif arg == "--link":
             ws_link_url = val
+        elif arg == "--advanced":
+            advanced = True
         elif arg == "--log":
             log_level = getattr(logging, val.upper(), None)
             if not isinstance(log_level, int):
@@ -81,5 +86,6 @@ Options:
               ws_port=ws_port,
               timeout=timeout,
               ws_link_url=ws_link_url,
+              advanced=advanced,
               language=language if language != "en" else None)
     app.run()

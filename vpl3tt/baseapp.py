@@ -35,7 +35,8 @@ class ApplicationBase:
                  timeout=5,
                  ws_link_url=None,
                  language=None,
-                 full_url=False):
+                 full_url=False,
+                 advanced=False):
         self.translate = Translate()
         vpl3tt.translate_fr.add_translations_fr(self.translate)
         self.language = language
@@ -62,6 +63,7 @@ class ApplicationBase:
         self.tt_language = tt_language
         self.bridge = "none"  # "tdm" or "jws" or "none"
         self.full_url = full_url
+        self.advanced = advanced
         self.log_display = False
         self.advanced_sim_features = False
         self.has_login_qr_code = False

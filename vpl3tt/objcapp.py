@@ -36,6 +36,7 @@ class Application(ApplicationBase):
                     lambda sender: self.menu_item_copy_url()
                 ]
             ])
+
             language_menu_items = [
                 [
                     "English",
@@ -59,6 +60,7 @@ class Application(ApplicationBase):
                 ],
             ]
             self.app_objc.addMenu_withItems_("Language", language_menu_items)
+
             options_menu_items = [
                 [
                     "Login Screen QR Code",
@@ -72,56 +74,60 @@ class Application(ApplicationBase):
                 ],
             ]
             self.app_objc.addMenu_withItems_("Options", options_menu_items)
-            advanced_menu_items = [
-                [
-                    "Thymio Device Manager",
-                    None,
-                    lambda sender: self.menu_item_bridge("tdm")
-                ],
-                [
-                    "JSON WebSocket",
-                    None,
-                    lambda sender: self.menu_item_bridge("jws")
-                ],
-                [
-                    "No Robot",
-                    None,
-                    lambda sender: self.menu_item_bridge("none")
-                ],
-            ]
-            if len(self.ui_toc) > 1:
-                def ui_cmd(id):
-                    # keep id in closure
-                    return lambda sender: self.menu_item_ui(id)
-                advanced_menu_items += [
-                    None
-                ] + [
+
+            if self.advanced:
+                advanced_menu_items = [
                     [
-                        ui["name"]["en"],
+                        "Thymio Device Manager",
                         None,
-                        ui_cmd(ui["id"])
-                    ] for ui in self.ui_toc
+                        lambda sender: self.menu_item_bridge("tdm")
+                    ],
+                    [
+                        "JSON WebSocket",
+                        None,
+                        lambda sender: self.menu_item_bridge("jws")
+                    ],
+                    [
+                        "No Robot",
+                        None,
+                        lambda sender: self.menu_item_bridge("none")
+                    ],
                 ]
-            advanced_menu_items += [
-                None,
-                [
-                    "Shortened URLs",
+                if len(self.ui_toc) > 1:
+                    def ui_cmd(id):
+                        # keep id in closure
+                        return lambda sender: self.menu_item_ui(id)
+                    advanced_menu_items += [
+                        None
+                    ] + [
+                        [
+                            ui["name"]["en"],
+                            None,
+                            ui_cmd(ui["id"])
+                        ] for ui in self.ui_toc
+                    ]
+                advanced_menu_items += [
                     None,
-                    lambda sender: self.menu_item_shorten_urls()
-                ],
-                [
-                    "Advanced Simulator Features",
-                    None,
-                    lambda sender: self.menu_item_advanced_sim_features()
-                ],
-                [
-                    "Developer Tools",
-                    None,
-                    lambda sender: self.menu_item_dev_tools()
-                ],
-            ]
-            self.app_objc.addMenu_withItems_("Advanced", advanced_menu_items)
+                    [
+                        "Shortened URLs",
+                        None,
+                        lambda sender: self.menu_item_shorten_urls()
+                    ],
+                    [
+                        "Advanced Simulator Features",
+                        None,
+                        lambda sender: self.menu_item_advanced_sim_features()
+                    ],
+                    [
+                        "Developer Tools",
+                        None,
+                        lambda sender: self.menu_item_dev_tools()
+                    ],
+                ]
+                self.app_objc.addMenu_withItems_("Advanced", advanced_menu_items)
+
             self.app_objc.start()
+
         except Exception as e:
             ApplicationObjCShell.modalAlert(str(e), buttons=["Quit"])
             NSApp.terminate_(None)
@@ -232,33 +238,34 @@ class Application(ApplicationBase):
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Italian (English for Teacher Tools)", "Language")
         item.setState_(1 if self.language == "it" else 0)
 
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("Thymio Device Manager", "Advanced")
-        item.setState_(1 if self.bridge == "tdm" else 0)
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("JSON WebSocket", "Advanced")
-        item.setEnabled_(0 if self.no_serial else 1)
-        item.setState_(1 if self.bridge == "jws" else 0)
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("No Robot", "Advanced")
-        item.setState_(1 if self.bridge == "none" else 0)
-
-        if len(self.ui_toc) > 1:
-            for ui in self.ui_toc:
-                item = self.app_objc.getMenuItemWithTitle_inMenu_(ui["name"]["en"], "Advanced")
-                item.setState_(1 if self.vpl_ui == ui["id"] else 0)
-
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("Shortened URLs", "Advanced")
-        item.setState_(0 if self.full_url else 1)
-
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Login Screen QR Code", "Options")
         item.setState_(1 if self.has_login_qr_code else 0)
 
         item = self.app_objc.getMenuItemWithTitle_inMenu_("Log Display in Dashboard", "Options")
         item.setState_(1 if self.log_display else 0)
 
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("Advanced Simulator Features", "Advanced")
-        item.setState_(1 if self.advanced_sim_features else 0)
+        if self.advanced:
+            item = self.app_objc.getMenuItemWithTitle_inMenu_("Thymio Device Manager", "Advanced")
+            item.setState_(1 if self.bridge == "tdm" else 0)
+            item = self.app_objc.getMenuItemWithTitle_inMenu_("JSON WebSocket", "Advanced")
+            item.setEnabled_(0 if self.no_serial else 1)
+            item.setState_(1 if self.bridge == "jws" else 0)
+            item = self.app_objc.getMenuItemWithTitle_inMenu_("No Robot", "Advanced")
+            item.setState_(1 if self.bridge == "none" else 0)
 
-        item = self.app_objc.getMenuItemWithTitle_inMenu_("Developer Tools", "Advanced")
-        item.setState_(1 if self.dev_tools else 0)
+            if len(self.ui_toc) > 1:
+                for ui in self.ui_toc:
+                    item = self.app_objc.getMenuItemWithTitle_inMenu_(ui["name"]["en"], "Advanced")
+                    item.setState_(1 if self.vpl_ui == ui["id"] else 0)
+
+            item = self.app_objc.getMenuItemWithTitle_inMenu_("Shortened URLs", "Advanced")
+            item.setState_(0 if self.full_url else 1)
+
+            item = self.app_objc.getMenuItemWithTitle_inMenu_("Advanced Simulator Features", "Advanced")
+            item.setState_(1 if self.advanced_sim_features else 0)
+
+            item = self.app_objc.getMenuItemWithTitle_inMenu_("Developer Tools", "Advanced")
+            item.setState_(1 if self.dev_tools else 0)
 
     def menu_item_copy_url(self):
         path = self.tt_abs_path()

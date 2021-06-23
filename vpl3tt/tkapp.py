@@ -144,35 +144,36 @@ class Application(ApplicationBase, tk.Tk):
         menubar.add_cascade(menu=self.options_menu)
         menu_items["Options"] = (menubar, menubar.index("end"))
 
-        self.advanced_menu = tk.Menu(menubar, tearoff=False)
-        self.advanced_menu.add_radiobutton(variable=self.v_bridge,
-                                          value="tdm",
-                                          command=lambda: self.menu_item_bridge("tdm"))
-        menu_items["Thymio Device Manager"] = (self.advanced_menu, self.advanced_menu.index("end"))
-        self.advanced_menu.add_radiobutton(variable=self.v_bridge,
-                                          value="jws",
-                                          command=lambda: self.menu_item_bridge("jws"))
-        menu_items["JSON WebSocket"] = (self.advanced_menu, self.advanced_menu.index("end"))
-        self.advanced_menu.add_radiobutton(variable=self.v_bridge,
-                                          value="none",
-                                          command=lambda: self.menu_item_bridge("none"))
-        menu_items["No Robot"] = (self.advanced_menu, self.advanced_menu.index("end"))
-        if len(self.ui_toc) > 1:
+        if self.advanced:
+            self.advanced_menu = tk.Menu(menubar, tearoff=False)
+            self.advanced_menu.add_radiobutton(variable=self.v_bridge,
+                                              value="tdm",
+                                              command=lambda: self.menu_item_bridge("tdm"))
+            menu_items["Thymio Device Manager"] = (self.advanced_menu, self.advanced_menu.index("end"))
+            self.advanced_menu.add_radiobutton(variable=self.v_bridge,
+                                              value="jws",
+                                              command=lambda: self.menu_item_bridge("jws"))
+            menu_items["JSON WebSocket"] = (self.advanced_menu, self.advanced_menu.index("end"))
+            self.advanced_menu.add_radiobutton(variable=self.v_bridge,
+                                              value="none",
+                                              command=lambda: self.menu_item_bridge("none"))
+            menu_items["No Robot"] = (self.advanced_menu, self.advanced_menu.index("end"))
+            if len(self.ui_toc) > 1:
+                self.advanced_menu.add_separator()
+                for ui in self.ui_toc:
+                    self.advanced_menu.add_radiobutton(variable=self.v_vpl_ui,
+                                                      value=ui["id"],
+                                                      command=lambda: self.menu_item_ui(self.v_vpl_ui.get()))
+                    menu_items[ui["name"]["en"]] = (self.advanced_menu, self.advanced_menu.index("end"))
             self.advanced_menu.add_separator()
-            for ui in self.ui_toc:
-                self.advanced_menu.add_radiobutton(variable=self.v_vpl_ui,
-                                                  value=ui["id"],
-                                                  command=lambda: self.menu_item_ui(self.v_vpl_ui.get()))
-                menu_items[ui["name"]["en"]] = (self.advanced_menu, self.advanced_menu.index("end"))
-        self.advanced_menu.add_separator()
-        self.advanced_menu.add_checkbutton(variable=self.v_shorten_url)
-        menu_items["Shortened URLs"] = (self.advanced_menu, self.advanced_menu.index("end"))
-        self.advanced_menu.add_checkbutton(variable=self.v_advanced_sim_features)
-        menu_items["Advanced Simulator Features"] = (self.advanced_menu, self.advanced_menu.index("end"))
-        self.advanced_menu.add_checkbutton(variable=self.v_dev_tools)
-        menu_items["Developer Tools"] = (self.advanced_menu, self.advanced_menu.index("end"))
-        menubar.add_cascade(menu=self.advanced_menu)
-        menu_items["Advanced"] = (menubar, menubar.index("end"))
+            self.advanced_menu.add_checkbutton(variable=self.v_shorten_url)
+            menu_items["Shortened URLs"] = (self.advanced_menu, self.advanced_menu.index("end"))
+            self.advanced_menu.add_checkbutton(variable=self.v_advanced_sim_features)
+            menu_items["Advanced Simulator Features"] = (self.advanced_menu, self.advanced_menu.index("end"))
+            self.advanced_menu.add_checkbutton(variable=self.v_dev_tools)
+            menu_items["Developer Tools"] = (self.advanced_menu, self.advanced_menu.index("end"))
+            menubar.add_cascade(menu=self.advanced_menu)
+            menu_items["Advanced"] = (menubar, menubar.index("end"))
 
         self.load_prefs()
         set_text()
