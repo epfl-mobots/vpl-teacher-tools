@@ -405,6 +405,17 @@ VPLTeacherTools.Dashboard.prototype.suspend = function (state) {
 	this.sendCommand("vpl:suspend", {selected: state, toAll: !state});
 };
 
+/** Change the volume value applied to the Thymio
+	@param {?number} volume null to keep current volume, 0 to mute, or 1-8
+	@return {void}
+*/
+VPLTeacherTools.Dashboard.prototype.setVolume = function (volume) {
+	var settingsJSON = JSON.stringify({
+		"volume": volume
+	});
+	this.sendFile("settings.json", "settings", settingsJSON, false);
+};
+
 /** Start websocket
 	@return {void}
 */

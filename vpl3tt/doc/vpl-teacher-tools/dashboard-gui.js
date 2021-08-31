@@ -389,6 +389,17 @@ window.addEventListener("load", function () {
 		}
 	});
 
+	function changeVolume() {
+		var volumeVal = document.getElementById("volume").checked
+			? parseInt(document.getElementById("volume-value").value, 10)
+			: null;
+		document.getElementById("volume-value").disabled = volumeVal === null;
+		document.getElementById("volume-muted").style.display = volumeVal === 0 ? "inline" : "none";
+		dashboard.setVolume(volumeVal);
+	}
+	document.getElementById("volume").addEventListener("change", changeVolume);
+	document.getElementById("volume-value").addEventListener("change", changeVolume);
+
 	document.getElementById("clear-log").addEventListener("click", function () {
 		document.getElementById("log").textContent = "";
 	}, false);
