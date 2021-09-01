@@ -417,7 +417,7 @@ VPLTeacherTools.FileBrowser.prototype.canManifestTeacherFile = function () {
 	this.teacherFiles.forEach(function (file) {
 		if (file.selected && file.filename != VPLTeacherTools.ZipBundle.manifestFilename) {
 			var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
-			if (["vpl3", "vpl3ui", "jpg", "png", "html", "md", "txt"].indexOf(suffix) >= 0) {
+			if (["vpl3", "vpl3ui", "aseba", "jpg", "png", "html", "md", "txt"].indexOf(suffix) >= 0) {
 				ok = true;
 			}
 		}
@@ -455,6 +455,7 @@ VPLTeacherTools.FileBrowser.prototype.bundleTeacherFile = function (defaultBundl
 VPLTeacherTools.FileBrowser.prototype.manifestTeacherFile = function (manifestTemplate) {
 	var vpl3Files = [];
 	var uiFiles = [];
+	var programFiles = [];
 	var attentionFiles = [];
 	var docFiles = [];
 	var statementFiles = [];
@@ -468,6 +469,9 @@ VPLTeacherTools.FileBrowser.prototype.manifestTeacherFile = function (manifestTe
 				break;
 			case "vpl3ui":
 				uiFiles.push(file.filename);
+				break;
+			case "aseba":
+				programFiles.push(file.filename);
 				break;
 			case "jpg":
 			case "png":
@@ -485,6 +489,7 @@ VPLTeacherTools.FileBrowser.prototype.manifestTeacherFile = function (manifestTe
 	var manifestFile = manifestTemplate
 		.replace("VPL3FILES", vpl3Files.join("\n"))
 		.replace("UIFILES", uiFiles.join("\n"))
+		.replace("PROGRAMFILES", programFiles.join("\n"))
 		.replace("ATTENTIONFILES", attentionFiles.join("\n"))
 		.replace("DOCFILES", docFiles.join("\n"))
 		.replace("STATEMENTFILES", statementFiles.join("\n"));
