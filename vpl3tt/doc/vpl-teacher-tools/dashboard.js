@@ -158,7 +158,7 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
 				return file.mark && /\.zip$/i.test(file.filename);
 			});
 			files = files.filter(function (file) {
-				return file.mark && /\.(vpl3(ui)?|txt|html|jpg|md|png|svg)$/i.test(file.filename);
+				return file.mark && /\.(vpl3(ui)?|txt|aseba|html|jpg|md|png|svg)$/i.test(file.filename);
 			});
 			var attentionFiles = [];
 			bundles.forEach(function (bundle) {
@@ -170,6 +170,7 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
 						if ([
 								VPLTeacherTools.ZipBundle.Manifest.File.Type.vpl3,
 								VPLTeacherTools.ZipBundle.Manifest.File.Type.ui,
+								VPLTeacherTools.ZipBundle.Manifest.File.Type.program,
 								VPLTeacherTools.ZipBundle.Manifest.File.Type.doc,
 								VPLTeacherTools.ZipBundle.Manifest.File.Type.statement
 							].indexOf(zipbundle.getType(path)) >= 0) {
@@ -331,6 +332,7 @@ VPLTeacherTools.Dashboard.prototype.sendFileById = function (fileId) {
 			}
 			var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(filename).toLowerCase();
 			var kind = {
+				"aseba": "aseba",
 				"html": "statement",
 				"jpg": "statement",
 				"md": "statement",
@@ -360,6 +362,7 @@ VPLTeacherTools.Dashboard.prototype.sendZipBundleEntry = function (zipbundle, pa
 		var kind = {
 			"vpl": "vpl",
 			"ui": "vpl",
+			"program": "aseba",
 			"doc": "help",
 			"statement": "statement",
 			"attention": "suspend"

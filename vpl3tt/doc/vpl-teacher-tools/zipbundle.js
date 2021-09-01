@@ -174,6 +174,9 @@ VPLTeacherTools.ZipBundle.Manifest.prototype.parse = function (src, filenames) {
 			case "ui":
 				type = VPLTeacherTools.ZipBundle.Manifest.File.Type.ui;
 				break;
+            case "program":
+                type = VPLTeacherTools.ZipBundle.Manifest.File.Type.program;
+                break;
 			case "attention":
 				type = VPLTeacherTools.ZipBundle.Manifest.File.Type.attention;
 				break;
@@ -237,6 +240,8 @@ VPLTeacherTools.ZipBundle.Manifest.typeToString = function (type) {
         return "vpl";
     case VPLTeacherTools.ZipBundle.Manifest.File.Type.ui:
         return "ui";
+    case VPLTeacherTools.ZipBundle.Manifest.File.Type.program:
+        return "program";
     case VPLTeacherTools.ZipBundle.Manifest.File.Type.attention:
         return "attention";
     case VPLTeacherTools.ZipBundle.Manifest.File.Type.doc:
@@ -253,7 +258,8 @@ VPLTeacherTools.ZipBundle.Manifest.File.Type = {
 	unknown: 0,
 	vpl3: 1,
 	ui: 2,
-	attention: 3,
-	doc: 4,
-	statement: 5
+    program: 3,
+	attention: 4,
+	doc: 5,
+	statement: 6
 };
