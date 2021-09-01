@@ -356,7 +356,7 @@ VPLTeacherTools.Dashboard.prototype.sendFileById = function (fileId) {
 VPLTeacherTools.Dashboard.prototype.sendZipBundleEntry = function (zipbundle, path) {
 	var self = this;
 	var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(path).toLowerCase();
-	var asBase64 = ["jpg", "png"].indexOf(suffix) >= 0;
+	var asBase64 = ["jpg", "pdf", "png"].indexOf(suffix) >= 0;
 	zipbundle.getFile(path, asBase64, (data) => {
 		var manifestType = zipbundle.getType(path);
 		var kind = {

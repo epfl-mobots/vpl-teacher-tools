@@ -684,11 +684,12 @@ VPLTeacherTools.FileBrowser.getFileIconURL = function (filename) {
 
 VPLTeacherTools.FileBrowser.storeAsBase64 = function (filename) {
 	var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(filename).toLowerCase();
-	return ["jpg", "png", "zip"].indexOf(suffix) >= 0;
+	return ["jpg", "pdf", "png", "zip"].indexOf(suffix) >= 0;
 };
 
 VPLTeacherTools.FileBrowser.suffixToMimetype = function (suffix) {
 	return {
+		"aseba": "text/x-aseba",
 		"gif": "image/gif",
 		"html": "text/html",
 		"jpg": "image/jpeg",
