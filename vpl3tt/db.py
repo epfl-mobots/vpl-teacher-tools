@@ -795,6 +795,24 @@ class Db:
                 content = f.read()
             self.add_file(filename, tag, content)
 
+    def add_zipped_local_folders(self, path_array, tag):
+        import io, zipfile, base64
+        f = re.compile("^[^.]")
+        for path in path_array:
+            # create zip file in memory
+            buffer = io.BytesIO()
+            with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_DEFLATED) as zip:
+                # add visible files in folder
+                for filename in os.listdir(path):
+                    if f.match(filename) and os.path.isfile(os.path.join(path, filename)):
+                        zip.write(os.path.join(path, filename), filename)
+            # add it to database as base64
+            filename = os.path.split(path)[-1] + ".zip"
+            content = str(base64.b64encode(buffer.getvalue()), "ascii")
+            self.add_file(filename, tag, content)
+
+            ...
+
     def copy_file(self, file_id, filename, tag, mark=False, metadata=None):
         """Copy a file"""
         r = self.get_first_result("content", "files", "fileid=?", (file_id,))

@@ -73,6 +73,13 @@ class Server:
                    os.path.isfile(os.path.join(self.initial_file_dir, filename))
             ]
             db.add_local_files(filenames, "")
+            folders = [
+                os.path.join(self.initial_file_dir, foldername)
+                for foldername in os.listdir(self.initial_file_dir)
+                if f.match(foldername) and
+                   os.path.isdir(os.path.join(self.initial_file_dir, foldername))
+            ]
+            db.add_zipped_local_folders(folders, "")
 
     def set_bridge(self, bridge, app=None):
         if self.bridge != bridge:
