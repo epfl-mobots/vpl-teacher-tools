@@ -32,6 +32,8 @@ package_data = {
         "data/*.html",
         "data/*.js",
         "data/*.json",
+        "data/behaviors/*.aseba",
+        "data/behaviors/*.txt",
         "doc/*.html",
         "doc/*.js",
         "doc/*.json",

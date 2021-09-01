@@ -15,6 +15,7 @@ AUTHOR_EMAIL = "yves dot piguet a epfl dot CH"
 APP = ['launch_objc.py']
 DATA_FILES = [
     ("", ["vpl3tt/data"]),
+    ("", ["vpl3tt/data/behaviors"]),
     ("", ["vpl3tt/doc"]),
 ]
 OPTIONS = {

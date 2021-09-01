@@ -190,6 +190,15 @@ QRFILES = \
 	vpl3tt/doc/libs/qrcodejs/README.md \
 	vpl3tt/doc/libs/qrcodejs/qrcode.min.js
 
+BEHAVIORFILES = \
+	vpl3tt/data/behaviors/amicalV3.aseba \
+	vpl3tt/data/behaviors/attentifV3.aseba \
+	vpl3tt/data/behaviors/explorateurV7.aseba \
+	vpl3tt/data/behaviors/obeissantV6.aseba \
+	vpl3tt/data/behaviors/peureuxV3.aseba \
+	vpl3tt/data/behaviors/suiveurV3.aseba \
+	vpl3tt/data/behaviors/LICENSE.txt
+
 DATAFILES = \
 	vpl3tt/data/basic-sensors.vpl3ui \
 	vpl3tt/data/basic-touch.vpl3ui \
@@ -216,6 +225,7 @@ $(DIR).zip:
 	mkdir -p $(DIR)/vpl3tt/doc/vpl-teacher-tools
 	mkdir -p $(DIR)/vpl3tt/doc/libs/qrcodejs
 	mkdir -p $(DIR)/vpl3tt/data
+	mkdir -p $(DIR)/vpl3tt/data/behaviors
 	cp -p $(ROOTFILES) $(DIR)
 	cp -p $(VPL3PKGFILES) $(DIR)/vpl3tt
 	cp -p $(DOCFILES) $(DIR)/vpl3tt/doc
@@ -227,15 +237,16 @@ $(DIR).zip:
 	cp -p $(TOOLSFILES) $(DIR)/vpl3tt/doc/vpl-teacher-tools
 	cp -p $(QRFILES) $(DIR)/vpl3tt/doc/libs/qrcodejs
 	cp -p $(DATAFILES) $(DIR)/vpl3tt/data
+	cp -p $(BEHAVIORFILES) $(DIR)/vpl3tt/data/behaviors
 	zip -r - $(DIR) >$(DIR).zip
 
 .PHONY: whl
-whl: setup.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES)
+whl: setup.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES) $(BEHAVIORFILES)
 	rm -Rf build
 	python3 setup.py bdist_wheel sdist bdist_pex
 
 .PHONY: VPL3Server.app build/VPL3Server-cxf.app
-VPL3Server.app: setup_app.py setup_cx_freeze.py launch_objc.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES)
+VPL3Server.app: setup_app.py setup_cx_freeze.py launch_objc.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES) $(BEHAVIORFILES)
 	rm -Rf build
 	python3 setup_app.py py2app
 	python3 setup_cx_freeze.py bdist_mac

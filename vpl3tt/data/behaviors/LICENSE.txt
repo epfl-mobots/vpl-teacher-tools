@@ -1,0 +1,10 @@
+Original work downloaded from <http://wiki.thymio.org/en:thymiostarting>,
+licensed under Creative Commons Attribution-ShareAlike 3.0 License
+(see <http://creativecommons.org/licenses/by-sa/3.0/>).
+
+The program files are an adaptation. The program source code has been
+extracted from .aesl files (xml) and saved as .aseba files (plain text).
+Constant declarations have been moved to source code with undocumented
+"const" statements, event declarations have been discarded, and "emit"
+statements (which require event declarations but are useful only in
+Studio) have been commented out.
