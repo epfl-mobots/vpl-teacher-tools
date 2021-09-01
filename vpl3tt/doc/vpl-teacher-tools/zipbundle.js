@@ -108,14 +108,35 @@ VPLTeacherTools.ZipBundle.prototype.load = function (zipContent, cb) {
 };
 
 /**
+    @param {string} filename
+    @return VPLTeacherTools.ZipBundle.Manifest.File.Type
+*/
+VPLTeacherTools.ZipBundle.mapSuffixToType = function (filename) {
+    var suffix = /(\.[^.]*|)$/.exec(filename)[0].slice(1).toLowerCase();
+    return {
+        "aseba": VPLTeacherTools.ZipBundle.Manifest.File.Type.program,
+        "html": VPLTeacherTools.ZipBundle.Manifest.File.Type.statement,
+        "jpg": VPLTeacherTools.ZipBundle.Manifest.File.Type.attention,
+        "md": VPLTeacherTools.ZipBundle.Manifest.File.Type.statement,
+        "png": VPLTeacherTools.ZipBundle.Manifest.File.Type.attension,
+        "txt": VPLTeacherTools.ZipBundle.Manifest.File.Type.statement,
+        "vpl3": VPLTeacherTools.ZipBundle.Manifest.File.Type.vpl3,
+        "vpl3ui": VPLTeacherTools.ZipBundle.Manifest.File.Type.ui
+    }[suffix] || VPLTeacherTools.ZipBundle.Manifest.File.Type.unknown;
+};
+
+/**
 	@param {string} filename
 	@return VPLTeacherTools.ZipBundle.Manifest.File.Type
 */
 VPLTeacherTools.ZipBundle.prototype.getType = function (filename) {
+    // use manifest file if it exists
 	var manifestFile = this.manifest.getEntry(filename);
-	return manifestFile
-		? manifestFile.type
-		: VPLTeacherTools.ZipBundle.Manifest.File.Type.unknown;
+    if (manifestFile) {
+        return manifestFile.type;
+    }
+
+    return VPLTeacherTools.ZipBundle.mapSuffixToType(filename);
 };
 
 /**

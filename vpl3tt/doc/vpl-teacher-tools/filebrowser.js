@@ -462,24 +462,21 @@ VPLTeacherTools.FileBrowser.prototype.manifestTeacherFile = function (manifestTe
 
 	this.teacherFiles.forEach(function (file) {
 		if (file.selected) {
-			var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(file.filename).toLowerCase();
-			switch (suffix) {
-			case "vpl3":
+			var type = VPLTeacherTools.ZipBundle.mapSuffixToType(file.filename);
+			switch (type) {
+			case VPLTeacherTools.ZipBundle.Manifest.File.Type.vpl3:
 				vpl3Files.push(file.filename);
 				break;
-			case "vpl3ui":
+			case VPLTeacherTools.ZipBundle.Manifest.File.Type.ui:
 				uiFiles.push(file.filename);
 				break;
-			case "aseba":
+			case VPLTeacherTools.ZipBundle.Manifest.File.Type.program:
 				programFiles.push(file.filename);
 				break;
-			case "jpg":
-			case "png":
+			case VPLTeacherTools.ZipBundle.Manifest.File.Type.attention:
 				attentionFiles.push(file.filename);
 				break;
-			case "html":
-            case "md":
-			case "txt":
+			case VPLTeacherTools.ZipBundle.Manifest.File.Type.statement:
 				statementFiles.push(file.filename);
 				break;
 			}
