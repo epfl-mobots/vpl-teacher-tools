@@ -672,6 +672,7 @@ VPLTeacherTools.FileBrowser.getFileSuffix = function (filename) {
 VPLTeacherTools.FileBrowser.getFileIconURL = function (filename) {
 	var suffix = VPLTeacherTools.FileBrowser.getFileSuffix(filename).toLowerCase();
 	return fileIconURL = {
+		"aseba": "icon-file-program.svg",
 		"html": "icon-file-html.svg",
         "md": "icon-file-md.svg",
 		"jpg": "icon-file-img.svg",

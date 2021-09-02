@@ -147,6 +147,7 @@ TOOLSFILES = \
 	vpl3tt/doc/vpl-teacher-tools/icon-file-txt.svg \
 	vpl3tt/doc/vpl-teacher-tools/icon-file-html.svg \
 	vpl3tt/doc/vpl-teacher-tools/icon-file-img.svg \
+	vpl3tt/doc/vpl-teacher-tools/icon-file-program.svg \
 	vpl3tt/doc/vpl-teacher-tools/icon-file-vpl3.svg \
 	vpl3tt/doc/vpl-teacher-tools/icon-file-vpl3ui.svg \
 	vpl3tt/doc/vpl-teacher-tools/initdb-dev-gui.js \
