@@ -1,0 +1,15 @@
+List of behavior files
+
+program:
+amicalV3.aseba
+attentifV3.aseba
+explorateurV7.aseba
+obeissantV6.aseba
+peureuxV3.aseba
+suiveurV3.aseba
+
+PDF files are tracks to be printed for the "suiveurV3.aseba" program or
+for your own exercises. The intended sheet sizes are:
+A4: "simplepath.pdf, piste_s_A4.pdf
+A3: piste 8.pdf
+A1: piste_poster.pdf
