@@ -133,17 +133,17 @@ class Application(ApplicationBase, wx.App):
                         lambda event: self.do_menu_item_copy_url(),
                         self.menu_item_copy_url)
 
-        options_menu = wx.Menu()
-        self.menu_options = self.menubar.GetMenuCount()
-        self.menubar.Append(options_menu, "Options")
-        self.menu_item_language_en = options_menu.AppendRadioItem(-1,
-                                                                  "English")
-        self.menu_item_language_fr = options_menu.AppendRadioItem(-1,
-                                                                  "French")
-        self.menu_item_language_de = options_menu.AppendRadioItem(-1,
-                                                                  "German")
-        self.menu_item_language_it = options_menu.AppendRadioItem(-1,
-                                                                  "Italian")
+        language_menu = wx.Menu()
+        self.menu_language = self.menubar.GetMenuCount()
+        self.menubar.Append(language_menu, "Language")
+        self.menu_item_language_en = language_menu.AppendRadioItem(-1,
+                                                                   "English")
+        self.menu_item_language_fr = language_menu.AppendRadioItem(-1,
+                                                                   "French")
+        self.menu_item_language_de = language_menu.AppendRadioItem(-1,
+                                                                   "German")
+        self.menu_item_language_it = language_menu.AppendRadioItem(-1,
+                                                                   "Italian")
         self.frame.Bind(wx.EVT_MENU,
                         lambda event: self.do_menu_item_language(),
                         self.menu_item_language_en)
@@ -156,29 +156,10 @@ class Application(ApplicationBase, wx.App):
         self.frame.Bind(wx.EVT_MENU,
                         lambda event: self.do_menu_item_language(),
                         self.menu_item_language_it)
-        options_menu.AppendSeparator()
-        self.menu_item_bridge_tdm = options_menu.AppendRadioItem(-1,
-                                                                 "Thymio Device Manager")
-        self.menu_item_bridge_jws = options_menu.AppendRadioItem(-1,
-                                                                 "JSON WebSocket")
-        self.menu_item_bridge_none = options_menu.AppendRadioItem(-1,
-                                                                  "No Robot")
-        self.frame.Bind(wx.EVT_MENU,
-                        lambda event: self.do_menu_item_bridge(),
-                        self.menu_item_bridge_tdm)
-        self.frame.Bind(wx.EVT_MENU,
-                        lambda event: self.do_menu_item_bridge(),
-                        self.menu_item_bridge_jws)
-        self.frame.Bind(wx.EVT_MENU,
-                        lambda event: self.do_menu_item_bridge(),
-                        self.menu_item_bridge_none)
-        options_menu.AppendSeparator()
-        self.menu_item_shortened_urls = options_menu.AppendCheckItem(-1,
-                                                                     "Shortened URLs")
-        self.menu_item_shortened_urls.Check(not self.full_url)
-        self.frame.Bind(wx.EVT_MENU,
-                        lambda event: self.do_menu_item_shortened_urls(),
-                        self.menu_item_shortened_urls)
+
+        options_menu = wx.Menu()
+        self.menu_options = self.menubar.GetMenuCount()
+        self.menubar.Append(options_menu, "Options")
         self.menu_item_login_screen_qr_code = options_menu.AppendCheckItem(-1,
                                                                            "Login Screen QR Code")
         self.menu_item_login_screen_qr_code.Check(self.has_login_qr_code)
@@ -191,18 +172,51 @@ class Application(ApplicationBase, wx.App):
         self.frame.Bind(wx.EVT_MENU,
                         lambda event: self.do_menu_item_log_display(),
                         self.menu_item_log_display)
-        self.menu_item_advanced_sim_features = options_menu.AppendCheckItem(-1,
-                                                                           "Advanced Simulator Features")
-        self.menu_item_advanced_sim_features.Check(self.advanced_sim_features)
+        options_menu.AppendSeparator()
+        self.menu_item_add_default_files = options_menu.Append(-1,
+                                                               "Add Default Files")
         self.frame.Bind(wx.EVT_MENU,
-                        lambda event: self.do_menu_item_advanced_sim_features(),
-                        self.menu_item_advanced_sim_features)
-        self.menu_item_dev_tools = options_menu.AppendCheckItem(-1,
-                                                                "Developer Tools")
-        self.menu_item_dev_tools.Check(self.dev_tools)
-        self.frame.Bind(wx.EVT_MENU,
-                        lambda event: self.do_menu_item_dev_tools(),
-                        self.menu_item_dev_tools)
+                        lambda event: self.server.add_files(),
+                        self.menu_item_add_default_files)
+
+        if self.advanced:
+            advanced_menu = wx.Menu()
+            self.menu_advanced = self.menubar.GetMenuCount()
+            self.menubar.Append(advanced_menu, "Advanced")
+            self.menu_item_bridge_tdm = advanced_menu.AppendRadioItem(-1,
+                                                                      "Thymio Device Manager")
+            self.menu_item_bridge_jws = advanced_menu.AppendRadioItem(-1,
+                                                                      "JSON WebSocket")
+            self.menu_item_bridge_none = advanced_menu.AppendRadioItem(-1,
+                                                                       "No Robot")
+            self.frame.Bind(wx.EVT_MENU,
+                            lambda event: self.do_menu_item_bridge(),
+                            self.menu_item_bridge_tdm)
+            self.frame.Bind(wx.EVT_MENU,
+                            lambda event: self.do_menu_item_bridge(),
+                            self.menu_item_bridge_jws)
+            self.frame.Bind(wx.EVT_MENU,
+                            lambda event: self.do_menu_item_bridge(),
+                            self.menu_item_bridge_none)
+            advanced_menu.AppendSeparator()
+            self.menu_item_shortened_urls = advanced_menu.AppendCheckItem(-1,
+                                                                          "Shortened URLs")
+            self.menu_item_shortened_urls.Check(not self.full_url)
+            self.frame.Bind(wx.EVT_MENU,
+                            lambda event: self.do_menu_item_shortened_urls(),
+                            self.menu_item_shortened_urls)
+            self.menu_item_advanced_sim_features = advanced_menu.AppendCheckItem(-1,
+                                                                                "Advanced Simulator Features")
+            self.menu_item_advanced_sim_features.Check(self.advanced_sim_features)
+            self.frame.Bind(wx.EVT_MENU,
+                            lambda event: self.do_menu_item_advanced_sim_features(),
+                            self.menu_item_advanced_sim_features)
+            self.menu_item_dev_tools = advanced_menu.AppendCheckItem(-1,
+                                                                     "Developer Tools")
+            self.menu_item_dev_tools.Check(self.dev_tools)
+            self.frame.Bind(wx.EVT_MENU,
+                            lambda event: self.do_menu_item_dev_tools(),
+                            self.menu_item_dev_tools)
 
         self.frame.SetMenuBar(self.menubar)
 
@@ -259,17 +273,20 @@ class Application(ApplicationBase, wx.App):
         self.menubar.SetMenuLabel(self.menu_edit, self.tr("Edit"))
         tr(self.menu_item_copy_url, "Copy URL")
 
-        self.menubar.SetMenuLabel(self.menu_options, self.tr("Options"))
+        self.menubar.SetMenuLabel(self.menu_language, self.tr("Language"))
         tr(self.menu_item_language_en, "English")
         tr(self.menu_item_language_fr, "French")
         tr(self.menu_item_language_de, "German (English for Teacher Tools)")
         tr(self.menu_item_language_it, "Italian (English for Teacher Tools)")
+        self.menubar.SetMenuLabel(self.menu_options, self.tr("Options"))
+        tr(self.menu_item_login_screen_qr_code, "Login Screen QR Code")
+        tr(self.menu_item_log_display, "Log Display in Dashboard")
+        tr(self.menu_item_add_default_files, "Add Default Files")
+        self.menubar.SetMenuLabel(self.menu_advanced, self.tr("Advanced"))
         tr(self.menu_item_bridge_tdm, "Thymio Device Manager")
         tr(self.menu_item_bridge_jws, "JSON WebSocket")
         tr(self.menu_item_bridge_none, "No Robot")
         tr(self.menu_item_shortened_urls, "Shortened URLs")
-        tr(self.menu_item_login_screen_qr_code, "Login Screen QR Code")
-        tr(self.menu_item_log_display, "Log Display in Dashboard")
         tr(self.menu_item_advanced_sim_features, "Advanced Simulator Features")
         tr(self.menu_item_dev_tools, "Developer Tools")
 
