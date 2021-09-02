@@ -811,8 +811,6 @@ class Db:
             content = str(base64.b64encode(buffer.getvalue()), "ascii")
             self.add_file(filename, tag, content)
 
-            ...
-
     def copy_file(self, file_id, filename, tag, mark=False, metadata=None):
         """Copy a file"""
         r = self.get_first_result("content", "files", "fileid=?", (file_id,))

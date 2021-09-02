@@ -131,9 +131,9 @@ VPLTeacherTools.ZipBundle.mapSuffixToType = function (filename) {
 */
 VPLTeacherTools.ZipBundle.prototype.getType = function (filename) {
     // use manifest file if it exists
-	var manifestFile = this.manifest.getEntry(filename);
-    if (manifestFile) {
-        return manifestFile.type;
+    if (this.manifest.explicitFile) {
+	       var manifestFile = this.manifest.getEntry(filename);
+           return manifestFile ? manifestFile.type : VPLTeacherTools.ZipBundle.Manifest.File.Type.unknown;
     }
 
     return VPLTeacherTools.ZipBundle.mapSuffixToType(filename);
@@ -172,6 +172,7 @@ VPLTeacherTools.ZipBundle.prototype.addFile = function (filename, content) {
 	@constructor
 */
 VPLTeacherTools.ZipBundle.Manifest = function () {
+    this.explicitFile = false;
 	this.src = "";
 	/** @type {Array.<VPLTeacherTools.ZipBundle.Manifest.File>} */
 	this.files = [];
@@ -226,6 +227,7 @@ VPLTeacherTools.ZipBundle.Manifest.prototype.parse = function (src, filenames) {
 			}
 		}
 	}
+    this.explicitFile = true;
 };
 
 /**
