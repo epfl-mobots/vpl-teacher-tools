@@ -14,6 +14,7 @@ class Translate:
 
     def init_default_lang(self):
         self.dicts["en"] = {
+            "Add Default Files": "Add Default Files",
             "Advanced": "Advanced",
             "Advanced Simulator Features": "Advanced Simulator Features",
             "Copy URL": "Copy URL",

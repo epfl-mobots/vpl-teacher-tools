@@ -72,6 +72,12 @@ class Application(ApplicationBase):
                     None,
                     lambda sender: self.menu_item_log_display()
                 ],
+                None,
+                [
+                    "Add Default Files",
+                    None,
+                    lambda sender: self.server.add_files()
+                ]
             ]
             self.app_objc.addMenu_withItems_("Options", options_menu_items)
 

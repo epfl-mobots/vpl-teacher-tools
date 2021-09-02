@@ -7,6 +7,7 @@
 
 def add_translations_fr(tr):
     dict = {
+        "Add Default Files": "Ajouter les fichiers standards",
         "Advanced": "Avancé",
         "Advanced Simulator Features": "Fonctions avancées du simulateur",
         "Copy URL": "Copier l'URL",

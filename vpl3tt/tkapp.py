@@ -141,6 +141,9 @@ class Application(ApplicationBase, tk.Tk):
         menu_items["Login Screen QR Code"] = (self.options_menu, self.options_menu.index("end"))
         self.options_menu.add_checkbutton(variable=self.v_log_in_dashboard)
         menu_items["Log Display in Dashboard"] = (self.options_menu, self.options_menu.index("end"))
+        self.options_menu.add_separator()
+        self.options_menu.add_command(command=lambda: self.server.add_files())
+        menu_items["Add Default Files"] = (self.options_menu, self.options_menu.index("end"))
         menubar.add_cascade(menu=self.options_menu)
         menu_items["Options"] = (menubar, menubar.index("end"))
 

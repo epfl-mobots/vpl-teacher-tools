@@ -62,7 +62,7 @@ class Server:
 
     def add_files(self, if_new_db=False):
         db = Db(self.db_path)
-        if db.new_db:
+        if not if_new_db or db.new_db:
             import os
             import re
             f = re.compile("^[^.]")
