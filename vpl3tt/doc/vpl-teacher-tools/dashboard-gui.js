@@ -218,18 +218,24 @@ function fillFileTable(fileArray, dashboard) {
 
 		// button to send file to students
 		td = document.createElement("td");
-		if (file.filename.slice(-4) !== ".zip") {
-			var btn = document.createElement("button");
-			btn.textContent = "\u2197";
-			btn.addEventListener("click", function () {
-				if (file.zipbundle) {
-					dashboard.sendZipBundleEntry(file.zipbundle, file.filename);
+		var btn = document.createElement("button");
+		btn.textContent = "\u2197";
+		btn.addEventListener("click", function () {
+			if (file.zipbundle) {
+				if (file.files != undefined) {
+					// multiple files in a bundle
+					for (var i = 0; i < file.files.length; i++) {
+						dashboard.sendZipBundleEntry(file.zipbundle, file.files[i]);
+					}
 				} else {
-					dashboard.sendFileById(file.id);
+					// file in a bundle
+					dashboard.sendZipBundleEntry(file.zipbundle, file.filename);
 				}
-			}, false);
-			td.appendChild(btn);
-		}
+			} else {
+				dashboard.sendFileById(file.id);
+			}
+		}, false);
+		td.appendChild(btn);
 		tr.appendChild(td);
 
 		table.appendChild(tr);

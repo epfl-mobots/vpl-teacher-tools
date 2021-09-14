@@ -164,7 +164,31 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
 			bundles.forEach(function (bundle) {
 				var zipbundle = new VPLTeacherTools.ZipBundle();
 				zipbundle.load(atob(bundle.content), () => {
+					// find files to send when the bundle itself is sent
+					var filesToSend = [];
+					function addFirstFileWithType(type) {
+						for (var i = 0; i < zipbundle.toc.length; i++) {
+							var path = zipbundle.toc[i];
+							if (zipbundle.getType(path) === type) {
+								filesToSend.push(path);
+								break;
+							}
+						}
+					}
+					addFirstFileWithType(VPLTeacherTools.ZipBundle.Manifest.File.Type.ui);
+					addFirstFileWithType(VPLTeacherTools.ZipBundle.Manifest.File.Type.vpl3);
+					addFirstFileWithType(VPLTeacherTools.ZipBundle.Manifest.File.Type.statement);
+					addFirstFileWithType(VPLTeacherTools.ZipBundle.Manifest.File.Type.doc);
+					if (filesToSend.length === 0) {
+						addFirstFileWithType(VPLTeacherTools.ZipBundle.Manifest.File.Type.program);
+					}
+
+					// add bundle
+					bundle.zipbundle = zipbundle;
+					bundle.files = filesToSend;
 					files.push(bundle);
+
+					// add bundle files
 					for (var i = 0; i < zipbundle.toc.length; i++) {
 						var path = zipbundle.toc[i];
 						if ([
