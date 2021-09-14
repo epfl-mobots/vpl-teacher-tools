@@ -201,12 +201,12 @@ BEHAVIORFILES = \
 	vpl3tt/data/behaviors/LICENSE.txt
 
 DATAFILES = \
-	vpl3tt/data/basic-sensors.vpl3ui \
-	vpl3tt/data/basic-touch.vpl3ui \
-	vpl3tt/data/basic-track.vpl3ui \
-	vpl3tt/data/simple-sensors.vpl3ui \
-	vpl3tt/data/simple-touch.vpl3ui \
-	vpl3tt/data/simple-track.vpl3ui
+	vpl3tt/data/ui/basic-sensors.vpl3ui \
+	vpl3tt/data/ui/basic-touch.vpl3ui \
+	vpl3tt/data/ui/basic-track.vpl3ui \
+	vpl3tt/data/ui/simple-sensors.vpl3ui \
+	vpl3tt/data/ui/simple-touch.vpl3ui \
+	vpl3tt/data/ui/simple-track.vpl3ui
 
 UNAME = $(shell uname)
 ALL = $(DIR).zip whl
@@ -246,10 +246,14 @@ whl: setup.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) 
 	rm -Rf build
 	python3 setup.py bdist_wheel sdist bdist_pex
 
-.PHONY: VPL3Server.app build/VPL3Server-cxf.app
-VPL3Server.app: setup_app.py setup_cx_freeze.py launch_objc.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES) $(BEHAVIORFILES)
+.PHONY: VPL3Server.app
+VPL3Server.app: setup_app.py launch_objc.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES) $(BEHAVIORFILES)
 	rm -Rf build
 	python3 setup_app.py py2app
+
+.PHONY: build/VPL3Server-cxf.app
+build/VPL3Server-cxf.app: setup_cx_freeze.py launch_objc.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES) $(BEHAVIORFILES)
+	rm -Rf build
 	python3 setup_cx_freeze.py bdist_mac
 
 VPLServer.dmg: VPL3Server.app readme-mac.txt

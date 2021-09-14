@@ -20,7 +20,7 @@ DATA_FILES = [
 ]
 OPTIONS = {
     #"packages": "sqlite3,tkinter,websockets,websocket-client",
-    "packages": "sqlite3,tkinter,websockets,websocket",
+    "packages": "sqlite3,tkinter,websockets,websocket,thymiodirect",
     "dist_dir": ".",
     "plist": {
         "CFBundleIdentifier": "ch.epfl.mobots.vpl3server",
