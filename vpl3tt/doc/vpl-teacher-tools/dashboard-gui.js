@@ -193,9 +193,11 @@ function fillFileTable(fileArray, dashboard) {
 
 		// filename
 		var td = document.createElement("td");
-		td.textContent = file.filename;
-		if (file.zipbundle) {
+		if (file.zipbundle && file.files == undefined) {
+			td.textContent = "\u00a0\u00a0" + file.filename;
 			td.style.fontStyle = "italic";
+		} else {
+			td.textContent = file.filename;
 		}
 		tr.appendChild(td);
 
