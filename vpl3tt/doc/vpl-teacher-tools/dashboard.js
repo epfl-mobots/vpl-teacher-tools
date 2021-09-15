@@ -46,6 +46,9 @@ VPLTeacherTools.Dashboard = function (wsURL, options) {
 
 	this.suspendFile = null;
 
+	/** @type {Array.<string>} */
+	this.expandedBundles = [];
+
 	window.addEventListener("unload", function () {
 		if (self.ws) {
 			self.ws.addEventListener("open", function () {
@@ -189,29 +192,31 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
 					files.push(bundle);
 
 					// add bundle files
-					for (var i = 0; i < zipbundle.toc.length; i++) {
-						var path = zipbundle.toc[i];
-						if ([
-								VPLTeacherTools.ZipBundle.Manifest.File.Type.vpl3,
-								VPLTeacherTools.ZipBundle.Manifest.File.Type.ui,
-								VPLTeacherTools.ZipBundle.Manifest.File.Type.program,
-								VPLTeacherTools.ZipBundle.Manifest.File.Type.doc,
-								VPLTeacherTools.ZipBundle.Manifest.File.Type.statement
-							].indexOf(zipbundle.getType(path)) >= 0) {
-							files.push({
-								zipbundle: zipbundle,
-								filename: path,
-								tag: zipbundle["tag"],
-								"default": false
-							});
-						}
-						if (zipbundle.getType(path) === VPLTeacherTools.ZipBundle.Manifest.File.Type.attention) {
-							attentionFiles.push({
-								zipbundle: zipbundle,
-								filename: path,
-								tag: zipbundle["tag"],
-								"default": false
-							});
+					if (self.expandedBundles.indexOf(bundle.filename) >= 0) {
+						for (var i = 0; i < zipbundle.toc.length; i++) {
+							var path = zipbundle.toc[i];
+							if ([
+									VPLTeacherTools.ZipBundle.Manifest.File.Type.vpl3,
+									VPLTeacherTools.ZipBundle.Manifest.File.Type.ui,
+									VPLTeacherTools.ZipBundle.Manifest.File.Type.program,
+									VPLTeacherTools.ZipBundle.Manifest.File.Type.doc,
+									VPLTeacherTools.ZipBundle.Manifest.File.Type.statement
+								].indexOf(zipbundle.getType(path)) >= 0) {
+								files.push({
+									zipbundle: zipbundle,
+									filename: path,
+									tag: zipbundle["tag"],
+									"default": false
+								});
+							}
+							if (zipbundle.getType(path) === VPLTeacherTools.ZipBundle.Manifest.File.Type.attention) {
+								attentionFiles.push({
+									zipbundle: zipbundle,
+									filename: path,
+									tag: zipbundle["tag"],
+									"default": false
+								});
+							}
 						}
 					}
 					// update asynchronously
@@ -233,6 +238,17 @@ VPLTeacherTools.Dashboard.prototype.updateFiles = function () {
             }
         }
 	});
+};
+
+VPLTeacherTools.Dashboard.prototype.toggleExpand = function (file) {
+	var filename = file.filename;
+	var ix = this.expandedBundles.indexOf(filename);
+	if (ix >= 0) {
+		this.expandedBundles.splice(ix, 1);
+	} else {
+		this.expandedBundles.push(filename);
+	}
+	this.updateFiles();
 };
 
 VPLTeacherTools.Dashboard.prototype.openLastFile = function (group_id, group) {
