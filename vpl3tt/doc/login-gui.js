@@ -25,9 +25,13 @@ function fillGroupTable(groupArray, login) {
 
 			tr.appendChild(td);
 
-			tr.addEventListener("click", function () {
-				login.launchVPL(group);
-			});
+			if (group.is_connected) {
+				td.className = "rect disabled"
+			} else {
+				tr.addEventListener("click", function () {
+					login.launchVPL(group);
+				});
+			}
 
 			table.appendChild(tr);
 		}

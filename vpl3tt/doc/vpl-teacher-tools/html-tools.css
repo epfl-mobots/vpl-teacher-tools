@@ -227,6 +227,10 @@ td.container {
 td.rect.selected {
 	border-width: 2px;
 }
+td.rect.disabled {
+	background: #fff;
+	color: #aaa;
+}
 span.rect {
 	border-style: solid;
 	border-width: 1px;
@@ -238,6 +242,9 @@ span.rect {
 	padding-bottom: 2px;
 	margin: 1ex;
 	white-space: nowrap;
+}
+td.rect.disabled span.rect {
+	border-color: #ddd;
 }
 
 table#students td:first-child, table#groups td:first-child, table#robots td:first-child {
