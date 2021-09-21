@@ -108,7 +108,7 @@ class ApplicationBase:
 
     def update_connection(self, session_id=None):
         str = f"""{self.tr('Number of connections:')} {
-            self.server.ws_server.connection_count
+            len(self.server.ws_server.session_ids)
             if self.server.ws_server
             else "-"
         }"""

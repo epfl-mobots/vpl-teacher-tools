@@ -53,7 +53,8 @@ class VPLHTTPServer:
                  advanced_sim_features=False,
                  dev_tools=False,
                  bridge="tdm",
-                 logger=None):
+                 logger=None,
+                 session_id_getter=None):
         self.http_port = http_port
         self.ws_port = ws_port
         self.token = token
@@ -65,6 +66,7 @@ class VPLHTTPServer:
         self.advanced_sim_features = advanced_sim_features
         self.dev_tools = dev_tools
         self.bridge = bridge  # "tdm" or "jws" or "none"
+        self.session_id_getter = session_id_getter
         self.vpl_ui_uri = "ui/svg/ui.json"
         self.db_path = db_path
         self.db = Db(self.db_path)
@@ -258,9 +260,21 @@ class VPLHTTPServer:
             return self.call_api(Db.end_all_sessions)
 
         @self.httpd.http_get("/api/listSessions")
-        @check_token
         def http_get_api_listSessions(self, handler):
-            return self.call_api(Db.list_sessions)
+
+            def process(result):
+                # add field "is_connected" which is True if session has ws
+                session_ids = self.session_id_getter() if self.session_id_getter is not None else set()
+                return [
+                    {
+                        **session,
+                        "is_connected": session["session_id"] in session_ids
+                    }
+                    for session in result
+                ]
+
+            r = self.call_api(Db.list_sessions, process=process)
+            return r
 
         @self.httpd.http_post("/api/addFile")
         @check_token
@@ -529,14 +543,14 @@ class VPLHTTPServer:
             }, indent=4)
         }
 
-    def call_api(self, fun, *args, **kwargs):
+    def call_api(self, fun, *args, process=None, **kwargs):
         try:
             result = fun(self.db, *args, **kwargs)
             return {
                 "mime": "application/json",
                 "data": json.dumps({
                     "status": "ok",
-                    "result": result
+                    "result": process(result) if process is not None else result,
                 }, indent=4)
             }
         except ValueError as ve:

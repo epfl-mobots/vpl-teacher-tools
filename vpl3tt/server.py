@@ -127,6 +127,10 @@ class Server:
 
         def http_thread():
             logging.debug("http thread: beginning")
+
+            def session_id_getter():
+                return self.ws_server.session_ids
+
             self.http_server = VPLHTTPServer(db_path=self.db_path,
                                              http_port=self.http_port,
                                              ws_port=self.ws_port,
@@ -134,6 +138,7 @@ class Server:
                                              language=self.language,
                                              tt_language=self.tt_language,
                                              full_url=self.full_url,
+                                             session_id_getter=session_id_getter,
                                              logger=self.logger)
             self.http_port = self.http_server.get_port()
             logging.debug(f"http thread: http server created, port={self.http_port}")

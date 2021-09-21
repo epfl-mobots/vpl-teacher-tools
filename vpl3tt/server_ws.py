@@ -32,7 +32,7 @@ class VPLWebSocketServer:
         self.db_path = db_path if db_path is not None else Db.DEFAULT_PATH
         self.ws = WSServer(ws_port, self)
         self.log_recipients = set()
-        self.connection_count = 0
+        self.session_ids = set()
         self.on_connect_cb = on_connect
         self.on_disconnect_cb = on_disconnect
         self.logger = logger
@@ -193,12 +193,12 @@ class VPLWebSocketServer:
                 self.ws_link.send(json.dumps(msg))
 
     def on_connect(self, session_id):
-        self.connection_count += 1
+        self.session_ids.add(session_id)
         if self.on_connect_cb:
             self.on_connect_cb(session_id)
 
     def on_disconnect(self, session_id):
-        self.connection_count -= 1
+        self.session_ids.remove(session_id)
         if self.on_disconnect_cb:
             self.on_disconnect_cb(session_id)
 
