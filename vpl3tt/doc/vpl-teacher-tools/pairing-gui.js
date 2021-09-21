@@ -52,6 +52,7 @@ Drag-and-drop data:
 
 function fillRobotTable(robotArray, pairing) {
 	if (!pairing.noRedraw) {
+		document.getElementById("btn-auto").disabled = !pairing.isAutoRobotAssociationEnabled();
 		clearTable("robots");
 		var table = document.getElementById("robots");
 
@@ -470,6 +471,10 @@ window.addEventListener("load", function () {
 			"(teacher)"
 		]
 	});
+
+	document.getElementById("btn-auto").addEventListener("click", function () {
+		pairing.autoRobotAssociation();
+	}, false);
 
 	var urlLogin = document.location.href.replace(/^(.*\/\/[^\/]*)\/.*$/, "$1");
 	var aLogin = document.getElementById("login");
