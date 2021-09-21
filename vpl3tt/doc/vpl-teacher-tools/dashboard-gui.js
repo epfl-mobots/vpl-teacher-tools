@@ -188,14 +188,26 @@ function fillFileTable(fileArray, dashboard) {
 			var img = document.createElement("img");
 			img.src = fileIconURL;
 			td.appendChild(img);
+			if (file.files) {
+				td.addEventListener("click", function () {
+					dashboard.toggleExpand(file);
+				}, false);
+			}
 		}
 		tr.appendChild(td);
 
 		// filename
-		var td = document.createElement("td");
-		td.textContent = file.filename;
-		if (file.zipbundle) {
+		td = document.createElement("td");
+		if (file.zipbundle && file.files == undefined) {
+			td.textContent = "\u00a0\u00a0" + file.filename;
 			td.style.fontStyle = "italic";
+		} else {
+			td.textContent = file.filename;
+		}
+		if (file.files) {
+			td.addEventListener("click", function () {
+				dashboard.toggleExpand(file);
+			}, false);
 		}
 		tr.appendChild(td);
 
