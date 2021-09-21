@@ -257,8 +257,9 @@ function fillGroupTable(groupArray, pairing) {
 				td.addEventListener("click", select);
 
 				var robot = pairing.getRobot(group.pair.robot);
+				td = document.createElement("td");
+				tr.appendChild(td);
 				if (robot && robot.hasFlash()) {
-					td = document.createElement("td");
 					var btn = document.createElement("button");
 					btn.textContent = "flash";
 					btn.disabled = !robot.canFlash();
@@ -273,8 +274,9 @@ function fillGroupTable(groupArray, pairing) {
 						pairing.noRedraw = false;
 					}, false);
 					td.appendChild(btn);
-					tr.appendChild(td);
 				}
+			} else {
+				tr.appendChild(document.createElement("td"));
 			}
 
 			// button "remove"
