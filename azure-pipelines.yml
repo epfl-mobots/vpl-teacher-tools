@@ -7,7 +7,7 @@ trigger:
 - master
 
 jobs:
-- job: 'Build-MacOS-dmg'
+- job: 'BuildMacDmg'
   pool:
     vmImage: 'macOS-10.14'
 
@@ -20,7 +20,7 @@ jobs:
       echo See https://aka.ms/yaml
     displayName: 'Run a multi-line script'
 
-- job: 'Build-Windows'
+- job: 'BuildWindows'
   pool:
     vmImage: 'windows-2019'
 
