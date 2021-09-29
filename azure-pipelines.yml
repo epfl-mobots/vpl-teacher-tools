@@ -9,16 +9,25 @@ trigger:
 jobs:
 - job: 'BuildMacDmg'
   pool:
-    vmImage: 'macOS-10.14'
+    vmImage: 'macOS-10.15'
 
   steps:
   - script: echo Hello, world!
     displayName: 'Run a one-line script'
+  - task: PythonScript@0
+    inputs:
+      scriptSource: 'inline'
+      script: '-m pip install -U py2app'
+      
+  - script: make $(Build.ArtifactStagingDirectory)/VPLServer.dmg
+    displayName: 'Make dmg'
 
-  - script: |
-      echo Add other tasks to build, test, and deploy your project.
-      echo See https://aka.ms/yaml
-    displayName: 'Run a multi-line script'
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'VPLServer.dmg'
+
+
 
 - job: 'BuildWindows'
   pool:
@@ -28,8 +37,19 @@ jobs:
   - script: echo Hello, world!
     displayName: 'Run a one-line script'
 
-  - script: |
-      echo Add other tasks to build, test, and deploy your project.
-      echo See https://aka.ms/yaml
-    displayName: 'Run a multi-line script'
+  - task: PythonScript@0
+    inputs:
+      scriptSource: 'inline'
+      script: |
+        -m pip install -U py2app
+        -m pip install --upgrade cx_Freeze
+
+  - task: PowerShell@2
+    inputs:
+      filePath: 'build-win.ps1'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'VPLServer.msi'
 
