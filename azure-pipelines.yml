@@ -14,14 +14,18 @@ jobs:
   steps:
   - script: echo Hello, world!
     displayName: 'Run a one-line script'
-  - task: PythonScript@0
-    inputs:
-      scriptSource: 'inline'
-      script: '-m pip install -U py2app'
       
-  - script: make $(Build.ArtifactStagingDirectory)/VPLServer.dmg
+  - script: |
+      pip3 install -U py2app
+      pip3 install thymiodirect websockets websocket websocket_client qrcode
+      pip3 install pyobjc-core
+      pip3 install pyobjc-framework-cocoa
+      make VPLServer.dmg
     displayName: 'Make dmg'
-
+  - task: CopyFiles@2
+    inputs:
+      targetFolder: '$(Build.ArtifactStagingDirectory)'
+      contents: '*.dmg'
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
@@ -37,19 +41,25 @@ jobs:
   - script: echo Hello, world!
     displayName: 'Run a one-line script'
 
-  - task: PythonScript@0
-    inputs:
-      scriptSource: 'inline'
-      script: |
-        -m pip install -U py2app
-        -m pip install --upgrade cx_Freeze
+  - script: |
+      pip install -U py2app
+      pip install --upgrade cx_Freeze
+      pip install thymiodirect websockets websocket websocket_client qrcode
+      pip install tk
+      python 
+    displayName: 'Install with pip'
 
   - task: PowerShell@2
     inputs:
       filePath: 'build-win.ps1'
-
+      
+  - task: CopyFiles@2
+    inputs:
+      targetFolder: '$(Build.ArtifactStagingDirectory)'
+      contents: '*.zip'
+      
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      artifactName: 'VPLServer.msi'
+      artifactName: 'VPLServerWin.zip'
 
