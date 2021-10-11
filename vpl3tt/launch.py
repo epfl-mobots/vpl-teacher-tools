@@ -58,6 +58,7 @@ Options:
   --language code language code such as "fr" (default: {language})
   --log level     set log level
                   (debug, info, warning (default), error, critical)
+  --logfile path  set log file (default: use default log facility)
   --link uri      websocket uri for linked server (default: no linked server)
   --timeout t     timeout in seconds to launch servers (default: {Server.DEFAULT_START_TIMEOUT})
   --ws-port num   websocket server port, or auto
