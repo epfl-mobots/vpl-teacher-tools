@@ -24,6 +24,7 @@ def launch(App, args=None):
     db_path = Db.DEFAULT_PATH
     language = "fr"
     advanced = False
+    log_basicConfig_kwargs = None  # not called
     if args is None:
         args = sys.argv[1:]
     try:
@@ -37,6 +38,7 @@ def launch(App, args=None):
                                               "language=",
                                               "link=",
                                               "log=",
+                                              "logfile=",
                                               "timeout=",
                                               "ws-port=",
                                           ])
@@ -76,7 +78,16 @@ Options:
             log_level = getattr(logging, val.upper(), None)
             if not isinstance(log_level, int):
                 raise ValueError(f"Invalid log level: {val}")
-            logging.basicConfig(level=log_level)
+            if log_basicConfig_kwargs is None:
+                log_basicConfig_kwargs = {}
+            log_basicConfig_kwargs["level"] = log_level
+        elif arg == "--logfile":
+            if log_basicConfig_kwargs is None:
+                log_basicConfig_kwargs = {}
+            log_basicConfig_kwargs["filename"] = val
+
+    if log_basicConfig_kwargs is not None:
+        logging.basicConfig(**log_basicConfig_kwargs)
 
     logging.info(f"sys.version: {sys.version}")
     logging.info(f"sys.platform: {sys.platform}")
