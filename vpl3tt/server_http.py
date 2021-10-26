@@ -244,8 +244,26 @@ class VPLHTTPServer:
             group_id = q["groupid"][0]
             robot = q["robot"][0] if "robot" in q else None
             force = "force" in q and q["force"][0] == "true"
+            update = "update" in q and q["update"][0] == "true"
+
+            # check if session already exists with a different robot
+            current_robot = self.db.get_session_robot(group_id)
+            if current_robot is not None and current_robot != robot:
+                # yes, notify vpl app
+                if self.server_ws is not None:
+                    # assume tdm
+                    robot_descr = {
+                        "robot": "thymio-tdm",
+                        # "url": unspecified, keep same
+                        "uuid": robot,
+                    }
+                    session_id = self.db.get_session_id(group_id)
+                    if session_id is not None:
+                        self.server_ws.schedule_send_message_threadsafe("robot", robot_descr,
+                                                                        only_websockets={session_id})
+
             return self.call_api(Db.begin_session,
-                                 group_id, robot, force)
+                                 group_id, robot, force=force, update=update)
 
         @self.httpd.http_get("/api/endSession")
         @check_token
