@@ -54,7 +54,8 @@ class VPLHTTPServer:
                  dev_tools=False,
                  bridge="tdm",
                  logger=None,
-                 session_id_getter=None):
+                 session_id_getter=None,
+                 server_ws=None):
         self.http_port = http_port
         self.ws_port = ws_port
         self.token = token
@@ -73,6 +74,7 @@ class VPLHTTPServer:
         self.handler = VPLHTTPRequestHandler
         self.url_shortcuts = URLShortcuts(length=3)
         self.load_tr_mappings()
+        self.server_ws = server_ws
         self.httpd = HTTPServerWithContext(context=self,
                                            port=http_port, logger=logger)
 
@@ -514,6 +516,9 @@ class VPLHTTPServer:
     def load_tr_mappings(self):
         with open(DataPath.path(self.TR_MAPPINGS_JSON), "rb") as file:
             self.tr_mappings = json.load(file)
+
+    def set_server_ws(self, server_ws):
+        self.server_ws = server_ws
 
     def run(self):
         self.httpd.serve_forever()
