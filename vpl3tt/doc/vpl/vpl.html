@@ -55,7 +55,7 @@ window["vplStorageGetFunction"] = function (filename, fun) {
 		];
 		progJSON = JSON.stringify(prog);
 
-		fun(progJSON);
+		fun(progJSON, {"fixedFilename": true});
 	}
 };
 

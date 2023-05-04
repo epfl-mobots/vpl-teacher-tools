@@ -52,6 +52,14 @@
 			}
 		},
 		{
+			"name": "!trace",
+			"aseba": {
+				"statement": [
+					"emit trace `$[0]`\n"
+				]
+			}
+		},
+		{
 			"name": "button 1",
 			"aseba": {
 				"sectionBegin": "onevent buttons\n",
@@ -163,9 +171,8 @@
 						"mic.threshold = 250\n"
 					]
 				],
-				"sectionBegin": "onevent mic\n",
-				"clause": "mic.intensity > mic.threshold",
-				"clauseOptional": true
+				"sectionBegin": "onevent buttons\n",
+				"clause": "mic.intensity > mic.threshold"
 			}
 		},
 		{
@@ -263,14 +270,16 @@
 			"name": "remote control arrows",
 			"aseba": {
 				"sectionBegin": "onevent rc5\n",
-				"clause": "`[[85, 17], [80, 32], [81, 33], [86, 16, 78], [87, 13]][$[0]].map(function (c) { return 'rc5.command == ' + c; }).join(' or ')`"
+				"clause": "`[[85, 17], [80, 32], [81, 33], [86, 16, 78], [87, 13]][$[0]].map(function (c) { return 'rc5.command == ' + c; }).join(' or ')`",
+				"clauseAlwaysEval": true
 			}
 		},
 		{
 			"name": "remote control keypad",
 			"aseba": {
 				"sectionBegin": "onevent rc5\n",
-				"clause": "rc5.command == `$[0]`"
+				"clause": "rc5.command == `$[0]`",
+				"clauseAlwaysEval": true
 			}
 		},
 		{
@@ -344,8 +353,8 @@
 				],
 				"statement":
 					[
-						"motor.left.target = `Math.round([0,200,250,100,-150,-200,-250,-100,150][$[0]] * slowdown)`\n",
-						"motor.right.target = `Math.round([0,200,150,-100,-250,-200,-150,100,250][$[0]] * slowdown)`\n"
+						"motor.left.target = `Math.round([0,200,200,100,-200,-200,-50,-100,50][$[0]] * slowdown)`\n",
+						"motor.right.target = `Math.round([0,200,50,-100,-50,-200,-200,100,200][$[0]] * slowdown)`\n"
 					]
 			}
 		},
@@ -444,8 +453,10 @@
 					"call leds.bottom.right(`$.map(function (x) { return Math.round(32 * x); }).join(', ')`)\n",
 					"bottomColor = [`$.map(function (x) { return Math.round(32 * x); }).join(', ')`]\n"
 				],
-				"statementWithoutInit":
-					"call leds.top(`$.map(function (x) { return Math.round(32 * x); }).join(', ')`)\n"
+				"statementWithoutInit": [
+					"call leds.bottom.left(`$.map(function (x) { return Math.round(32 * x); }).join(', ')`)\n",
+					"call leds.bottom.right(`$.map(function (x) { return Math.round(32 * x); }).join(', ')`)\n"
+				]
 			}
 		},
 		{
