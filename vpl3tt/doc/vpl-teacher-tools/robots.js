@@ -163,7 +163,7 @@ VPLTeacherTools.RobotConnection = function (options) {
 	    this.tdm = new window["TDM"](this.options.url || null,
 			{
 				"uuid": null,
-				"change": function () {
+				"anyNodeChange": function () {
 	                var nodes = self.tdm.nodes.filter(function (node) {
 				        return node.robotCon == undefined ||
 			 				node.status === window["TDM"].status.ready ||
