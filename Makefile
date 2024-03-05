@@ -301,3 +301,7 @@ cc: dashboard-min.js
 
 dashboard-min.js: dummy-defs.js ns.js client.js zipbundle.js dashboard.js translate.js filebrowser.js dashboard-gui.js
 	$(CLOSURE) $(CLOSUREFLAGS) $^ >$@ || (rm -f $@; false)
+
+.PHONY: clean
+clean:
+	rm -Rf $(DIR)

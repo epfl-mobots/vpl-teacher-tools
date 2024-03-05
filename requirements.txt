@@ -1,0 +1,8 @@
+# requirements.txt for VPL Teacher Tools
+
+tdmclient
+thymiodirect
+pex
+websocket-client
+websockets
+qrcode
