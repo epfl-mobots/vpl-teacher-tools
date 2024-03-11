@@ -244,7 +244,7 @@ $(DIR).zip:
 .PHONY: whl
 whl: setup.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES) $(BEHAVIORFILES)
 	rm -Rf build
-	python3 setup.py bdist_wheel sdist bdist_pex
+	python3 setup.py bdist sdist bdist_pex
 
 .PHONY: VPL3Server.app
 VPL3Server.app: setup_app.py launch_objc.py $(VPL3PKGFILES) $(DOCFILES) $(VPLFILES) $(THYMIOFILES) $(UIFILES) $(UICLASSICFILES) $(UISVGFILES) $(TOOLSFILES) $(QRFILES) $(DATAFILES) $(BEHAVIORFILES)
