@@ -8,8 +8,8 @@
 from vpl3tt.baseapp import ApplicationBase
 from vpl3tt.cacaoapp import ApplicationObjCShell
 from vpl3tt.urlutil import URLUtil
+import objc
 from Cocoa import *
-
 
 class Application(ApplicationBase):
 

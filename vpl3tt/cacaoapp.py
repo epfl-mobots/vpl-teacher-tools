@@ -6,6 +6,7 @@
 # pyobjc-based application class (for macOS only)
 
 # macOS: python3 -m pip install pyobjc
+import objc
 from Cocoa import *
 from Foundation import NSObject
 from objc import super
